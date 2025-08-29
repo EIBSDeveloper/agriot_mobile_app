@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "617838270571",
+    "firebase_url": "https://farmerapp-8f691-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "farmerapp-8f691",
+    "storage_bucket": "farmerapp-8f691.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617838270571:android:166db805325fc10618f92e",
+        "android_client_info": {
+          "package_name": "com.example.argiot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617838270571-v7dg88cfcs2v5ojm0pmt0a2p2ejj27pm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.argiot",
+            "certificate_hash": "85298a4091b508b38f1f8739a9bb95c466b523a4"
+          }
+        },
+        {
+          "client_id": "617838270571-5f0urgkbrv1egsnkrd7hq50nf2bde2go.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCre9zjD8tVtNX9MC58MLkxW1TKm2UwHUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617838270571-5f0urgkbrv1egsnkrd7hq50nf2bde2go.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "617838270571-grf7opm7f3a9vkihhsgral3gjjp1a59o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.argiot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

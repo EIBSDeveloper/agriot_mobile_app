@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+class BiPieChart extends StatelessWidget {
+  final List<ChartData> chartData;
+
+  const BiPieChart({super.key, required this.chartData});
+
+  @override
+  Widget build(BuildContext context) {
+    return SfCircularChart(
+      legend: Legend(
+        isVisible: false,
+        position: LegendPosition.top,
+        overflowMode: LegendItemOverflowMode.wrap,
+      ),
+      tooltipBehavior: TooltipBehavior(enable: true),
+      series: <CircularSeries>[
+        PieSeries<ChartData, String>(
+          dataSource: chartData,
+          xValueMapper: (ChartData d, _) => d.label,
+          yValueMapper: (ChartData d, _) => d.value,
+          pointColorMapper: (ChartData d, _) => d.color,
+          dataLabelSettings: DataLabelSettings(
+            isVisible: false,
+            labelPosition: ChartDataLabelPosition.outside,
+            textStyle: TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ChartData {
+  final String label;
+  final double value;
+  final Color color;
+
+  ChartData(this.label, this.value, this.color);
+}

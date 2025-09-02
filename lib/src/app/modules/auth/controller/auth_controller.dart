@@ -69,50 +69,41 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> signInWithGoogle() async {
-    // final account = await GoogleSignIn.instance.authenticate();
-    final signIn = GoogleSignIn.instance;
+Future<void> signInWithGoogle() async {
+  try {
+    final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
 
-    try {
-      await signIn.initialize(
-        clientId:
-            "458442885060-g0hr2jk54rvosgoh0hhj70u46mra971g.apps.googleusercontent.com",
-        serverClientId:
-            "617838270571-5f0urgkbrv1egsnkrd7hq50nf2bde2go.apps.googleusercontent.com",
+    if (signIn != null) {
+      final account = await signIn.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: account.idToken,
+        accessToken: account.accessToken,
       );
 
-      // Optional: try silent sign-in first
-      await signIn.attemptLightweightAuthentication();
+      // Sign in to Firebase
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
-      if (signIn.supportsAuthenticate()) {
-        final account = await signIn.authenticate();
+      User? user = userCredential.user;
 
-        final tokens = account.authentication;
+      if (user != null) {
+        String? name = user.displayName;
+        String? email = user.email;
+        String? photoUrl = user.photoURL;
 
-        final credential = GoogleAuthProvider.credential(
-          idToken: tokens.idToken,
-          // accessToken: tokens.accessToken,
-        );
-
-        await FirebaseAuth.instance.signInWithCredential(credential);
-
-        debugPrint(
-          'User signed in: ${FirebaseAuth.instance.currentUser?.displayName}',
-        );
-      } else {
-        debugPrint('authenticate() is not supported on this platform.');
+        debugPrint('✅ Name: $name');
+        debugPrint('✅ Email: $email');
+        debugPrint('✅ Photo: $photoUrl');
       }
-    } on GoogleSignInException catch (e) {
-      if (e.code == GoogleSignInExceptionCode.canceled) {
-        debugPrint('❌ Google Sign-In canceled by user.');
-        // Optionally show a Snackbar or dialog
-      } else {
-        // debugPrint('⚠️ Google Sign-In failed: ${e.code} - ${e.message}');
-      }
-    } catch (e) {
-      debugPrint('🔥 Unexpected error: $e');
+    } else {
+      debugPrint('⚠️ authenticate() is not supported on this platform.');
     }
+  } catch (e) {
+    debugPrint('🔥 Unexpected error: $e');
   }
+}
+
 
   Future<void> verifyOtp() async {
     try {

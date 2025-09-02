@@ -168,7 +168,7 @@ class CropController extends GetxController {
     List land = await _cropService.getSurveyDetails(landId: landId);
     surveyList.value = land[0];
     landCoordinates.value = land[1];
-    
+
     if (surveyList.isNotEmpty) selectedSurvey.value = surveyList.first;
   }
 
@@ -211,10 +211,10 @@ class CropController extends GetxController {
 
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
-    if (selectedSurvey.value == null) {
-      showError('Please select survey details');
-      return;
-    }
+    // if (selectedSurvey.value == null) {
+    //   showError('Please select survey details');
+    //   return;
+    // }
 
     try {
       isSubmitting(true);
@@ -231,7 +231,8 @@ class CropController extends GetxController {
         "harvesting_type": selectedHarvestFrequency.value!.id,
         "plantation_date": formattedDate,
         "land": selectedLand.value.id,
-        "survey_details": [selectedSurvey.value!.id],
+        if (selectedSurvey.value?.id != null)
+          "survey_details": [selectedSurvey.value!.id],
         "status": 0,
         "description": descriptionController.text.trim(),
         "measurement_value": measurementController.text.trim(),

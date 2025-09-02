@@ -281,7 +281,4 @@ class CropDetailsController extends GetxController {
     showError(message);
   }
 
-  void _showSuccess(String message) {
-    showSuccess(message);
-  }
 }

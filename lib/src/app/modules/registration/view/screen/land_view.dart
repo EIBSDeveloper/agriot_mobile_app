@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
 import '../../controller/kyc_controller.dart';
 import '../../controller/land_controller.dart';
-import '../../model/address_model.dart';
 import '../../model/dropdown_item.dart';
 import '../widget/document_item_widget.dart';
 import '../widget/searchable_dropdown.dart';
@@ -84,7 +83,7 @@ class LandView extends GetView<RegLandController> {
 
             displayItem: (value) => value.name.toString(),
           ),
-   gap,
+          gap,
           Container(
             decoration: AppStyle.decoration.copyWith(
               color: const Color.fromARGB(137, 221, 234, 234),
@@ -132,202 +131,6 @@ class LandView extends GetView<RegLandController> {
           gap,
           gap,
         ],
-      ),
-    );
-  }
-
-  Widget _buildCountryDropdown() {
-    return Obx(() {
-      if (kycController.isLoadingCountries.value) {
-        return _buildLoadingDropdown('Loading countries...');
-      }
-      return SearchableDropdown<CountryModel>(
-        label: 'Country *',
-        items: kycController.countries,
-        displayItem: (country) => country.name.toString(),
-        selectedItem: kycController.selectedCountry.value,
-        onChanged: (CountryModel? value) {
-          kycController.selectedCountry.value = value;
-          controller.formKey.currentState!.validate();
-        },
-        validator: (value) {
-          if (kycController.selectedCountry.value != null) {
-            return null;
-          }
-
-          return value == null ? 'Required field' : null;
-        },
-      );
-    });
-  }
-
-  Widget _buildStateDropdown() {
-    return Obx(() {
-      if (kycController.selectedCountry.value == null) {
-        return _buildDisabledDropdown('State *');
-      }
-      if (kycController.isLoadingStates.value) {
-        return _buildLoadingDropdown('Loading states...');
-      }
-      return SearchableDropdown<StateModel>(
-        label: 'State *',
-        items: kycController.states,
-
-        displayItem: (country) => country.name.toString(),
-        selectedItem: kycController.selectedState.value,
-        onChanged: (StateModel? value) {
-          kycController.selectedState.value = value;
-          controller.formKey.currentState!.validate();
-        },
-        validator: (value) {
-          if (kycController.selectedState.value != null) {
-            return null;
-          }
-
-          return value == null ? 'Required field' : null;
-        },
-      );
-    });
-  }
-
-  Widget _buildCityDropdown() {
-    return Obx(() {
-      if (kycController.selectedState.value == null) {
-        return _buildDisabledDropdown('City *');
-      }
-      if (kycController.isLoadingCities.value) {
-        return _buildLoadingDropdown('Loading cities...');
-      }
-      return SearchableDropdown<CityModel>(
-        label: 'City *',
-        items: kycController.cities,
-        displayItem: (country) => country.name.toString(),
-        selectedItem: kycController.selectedCity.value,
-        onChanged: (CityModel? value) {
-          kycController.selectedCity.value = value;
-          controller.formKey.currentState!.validate();
-        },
-        validator: (value) {
-          if (kycController.selectedCity.value != null) {
-            return null;
-          }
-
-          return value == null ? 'Required field' : null;
-        },
-      );
-    });
-  }
-
-  Widget _buildTalukDropdown() {
-    return Obx(() {
-      if (kycController.selectedCity.value == null) {
-        return _buildDisabledDropdown('Taluk *');
-      }
-      if (kycController.isLoadingTaluks.value) {
-        return _buildLoadingDropdown('Loading taluks...');
-      }
-      return SearchableDropdown<TalukModel>(
-        label: 'Taluk *',
-        items: kycController.taluks,
-        displayItem: (country) => country.name.toString(),
-        selectedItem: kycController.selectedTaluk.value,
-        onChanged: (TalukModel? value) {
-          kycController.selectedTaluk.value = value;
-          controller.formKey.currentState!.validate();
-        },
-        validator: (value) {
-          if (kycController.selectedTaluk.value != null) {
-            return null;
-          }
-          return value == null ? 'Required field' : null;
-        },
-      );
-    });
-  }
-
-  Widget _buildVillageDropdown() {
-    return Obx(() {
-      if (kycController.selectedTaluk.value == null) {
-        return _buildDisabledDropdown('Village *');
-      }
-      if (kycController.isLoadingVillages.value) {
-        return _buildLoadingDropdown('Loading villages...');
-      }
-      return SearchableDropdown<VillageModel>(
-        label: 'Village *',
-        items: kycController.villages,
-        selectedItem: kycController.selectedVillage.value,
-        displayItem: (country) => country.name.toString(),
-        onChanged: (VillageModel? value) {
-          kycController.selectedVillage.value = value;
-          controller.formKey.currentState!.validate();
-        },
-        validator: (value) {
-          if (kycController.selectedVillage.value != null) {
-            return null;
-          }
-          return value == null ? 'Required field' : null;
-        },
-      );
-    });
-  }
-
-  Widget _buildLoadingDropdown(String text) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          hintText: text,
-          border: InputBorder.none,
-          isDense: true,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text),
-            SizedBox(
-              width: 16,
-              height: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDisabledDropdown(String text) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          hintText: text,
-          border: InputBorder.none,
-          isDense: true,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Icon(
-                Icons.keyboard_arrow_down_outlined,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

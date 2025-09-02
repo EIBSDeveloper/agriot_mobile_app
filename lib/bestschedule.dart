@@ -1,6 +1,7 @@
 // lib/modules/schedules/models/schedule_model.dart
 import 'dart:convert';
 
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,8 +10,8 @@ import 'package:get/get.dart';
 import 'src/app/controller/app_controller.dart';
 import 'src/app/modules/task/model/model.dart';
 import 'src/app/utils/http/http_service.dart';
+import 'src/app/widgets/input_card_style.dart';
 import 'src/app/widgets/toggle_bar.dart';
-import 'src/core/app_style.dart';
 import 'src/utils.dart';
 
 // lib/common/models/land_crop_model.dart
@@ -377,7 +378,6 @@ class ScheduleController extends GetxController {
   }
 }
 
-
 // lib/modules/schedules/bindings/schedule_binding.dart
 
 class ScheduleBinding extends Bindings {
@@ -395,17 +395,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('schedules'.tr),
-        actions: [
-          // IconButton(
-          //   icon: const Icon(Icons.search),
-          //   onPressed: () {
-          //     // Implement search functionality if needed
-          //   },
-          // ),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'schedules'.tr),
       body: Column(
         children: [
           SizedBox(height: 10),
@@ -415,12 +405,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
               children: [
                 Expanded(
                   child: Obx(() {
-                    return Container(
-                      decoration: AppStyle.decoration.copyWith(
-                        color: const Color.fromARGB(137, 221, 234, 234),
-                        boxShadow: const [],
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                    return InputCardStyle(
                       child: DropdownButtonFormField<ScheduleLand>(
                         value: controller.selectedLand.value,
 
@@ -447,12 +432,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
                     final crops = controller.cropsForSelectedLand;
 
                     if (controller.selectedLand.value == null) {
-                      return Container(
-                        decoration: AppStyle.decoration.copyWith(
-                          color: const Color.fromARGB(137, 221, 234, 234),
-                          boxShadow: const [],
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 5),
+                      return InputCardStyle(
                         child: DropdownButtonFormField(
                           items: [],
                           onChanged: null,
@@ -464,12 +444,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
                       );
                     }
 
-                    return Container(
-                      decoration: AppStyle.decoration.copyWith(
-                        color: const Color.fromARGB(137, 221, 234, 234),
-                        boxShadow: const [],
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                    return InputCardStyle(
                       child: DropdownButtonFormField<ScheduleCrop>(
                         value: controller.selectedCrop.value,
 
@@ -636,7 +611,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('schedule_details'.tr)),
+       appBar: CustomAppBar(title: 'schedule_details'.tr),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -748,12 +723,8 @@ void addScheduleBottomSheet() {
               const SizedBox(height: 16),
 
               Obx(
-                () => Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(137, 221, 234, 234),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                () => InputCardStyle(
+                  noHeight: true,
                   child: ListTile(
                     title: const Text('Schedule Date*'),
                     subtitle: Text(
@@ -839,11 +810,8 @@ void addScheduleBottomSheet() {
 
                         // End date picker
                         Obx(
-                          () => Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(137, 221, 234, 234),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                          () => InputCardStyle(
+                            noHeight: true,
                             child: ListTile(
                               title: const Text('Schedule End Date*'),
                               subtitle: Text(
@@ -877,15 +845,8 @@ void addScheduleBottomSheet() {
               SizedBox(height: 8),
 
               // Description
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
+              InputCardStyle(
+                noHeight: true,
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Description*',

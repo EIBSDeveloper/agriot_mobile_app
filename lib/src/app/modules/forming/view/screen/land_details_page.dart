@@ -138,10 +138,7 @@ class LandDetailView extends GetView<LandDetailController> {
           'Soil Type',
           controller.landDetails['soil_type']!['name'] ?? "",
         ),
-        _buildDetailRow(
-          'Address',
-          '${controller.landDetails['village']['name']}, ${controller.landDetails['taluk']['name']}, ${controller.landDetails['city']['name']}, ${controller.landDetails['state']['name']} ',
-        ),
+        _buildDetailRow('Address', ' '),
 
         _buildDetailRow(
           'Patta No',

@@ -52,7 +52,7 @@ class DashboardController extends GetxController {
         loadInitialData();
         userLimit.loadUsage();
       }
-    } catch(w) {
+    } catch (w) {
       isLoading(false);
     }
   }
@@ -76,10 +76,10 @@ class DashboardController extends GetxController {
 
       // Load widget configuration
       widgetConfig.value = await _repository.getWidgetConfig();
-      // position.value = await Geolocator.getCurrentPosition();
+      position.value = await Geolocator.getCurrentPosition();
       await loadData();
 
-      // fetchWeatherData(position.latitude, position.longitude);
+      // fetchWeatherData(position.value!.latitude, position.value!.longitude);
     } catch (e) {
       showError('Failed to load dashboard data');
     } finally {
@@ -91,7 +91,6 @@ class DashboardController extends GetxController {
     try {
       isLoading.value = true;
       if (widgetConfig.value.weatherAndPayments) {
-        // fetchWeatherData(position.value!.latitude, position.value!.longitude);
         await fetchPaymentSummary();
       }
 
@@ -110,6 +109,7 @@ class DashboardController extends GetxController {
       if (widgetConfig.value.guidelines!) {
         await fetchGuidelines();
       }
+      fetchWeatherData(position.value!.latitude, position.value!.longitude);
     } catch (e) {
       showError('Failed to load dashboard data');
     } finally {

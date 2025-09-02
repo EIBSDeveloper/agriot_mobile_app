@@ -6,6 +6,7 @@ import 'package:argiot/src/app/modules/task/view/screens/task_details_controller
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/input_card_style.dart';
 import '../../model/model.dart';
 
 class TaskDetailView extends GetView<TaskDetailsController> {
@@ -25,7 +26,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         ],
       ),
       body: Obx(() {
-        if (controller.isLoading.value ) {
+        if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -54,12 +55,13 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildSectionHeader('Land Information'),
-              _buildDetailItem('Land Name', task.myLand.name),
-              const SizedBox(height: 16),
+              // _buildSectionHeader('Land Information'),
+             
+              // const SizedBox(height: 16),
 
               _buildSectionHeader('Crop Information'),
               _buildDetailItem('Crop Name', task.myCrop.name),
+               _buildDetailItem('Land Name', task.myLand.name),
               if (task.myCrop.cropImg.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -77,12 +79,12 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                 _buildDetailItem('Comment', task.comment),
               const SizedBox(height: 16),
 
-              _buildSectionHeader('Expenses'),
-              _buildDetailItem('Total Expenses', '${task.totalExpenseAmount}'),
+              // _buildSectionHeader('Expenses'),
+              // _buildDetailItem('Total Expenses', '${task.totalExpenseAmount}'),
               const SizedBox(height: 24),
 
               _buildActionButtons(),
-                  const SizedBox(height: 200),
+              const SizedBox(height: 200),
             ],
           ),
         );
@@ -156,11 +158,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
 
                 // Schedule Date
                 Obx(
-                  () => Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(137, 221, 234, 234),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                  () => InputCardStyle(
                     child: ListTile(
                       title: const Text('Schedule Date*'),
                       subtitle: Text(
@@ -186,15 +184,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                 const SizedBox(height: 8),
 
                 // Description
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(137, 221, 234, 234),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
+                InputCardStyle(
+                  noHeight: true,
                   child: TextFormField(
                     initialValue: controller.description.value,
                     decoration: const InputDecoration(
@@ -215,8 +206,9 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                   () => ElevatedButton(
                     onPressed: controller.isLoadingEdit.value
                         ? null
-                        : () =>
-                              controller.updateTask(controller.task.value!.scheduleId),
+                        : () => controller.updateTask(
+                            controller.task.value!.scheduleId,
+                          ),
                     child: controller.isLoadingEdit.value
                         ? const CircularProgressIndicator()
                         : const Text('Update Task'),
@@ -278,18 +270,44 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               child: const Text('Add Comment'),
             ),
           ),
-        const SizedBox(height: 8),
-        if (controller.task.value?.status == 0)
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor:Get.theme.primaryColor),
-              onPressed: () {
-                controller.markTaskCompleted();
-              },
-              child: const Text('Mark as Completed'),
-            ),
+        const SizedBox(height: 10),
+        DropdownButtonFormField<int>(
+          value: controller.selectedValue?.value,
+          decoration: const InputDecoration(
+            labelText: "Status",
+            border: OutlineInputBorder(),
           ),
+          items: controller.statusList.map((item) {
+            return DropdownMenuItem<int>(
+              value: item["value"],
+              child: Text(item["name"]),
+            );
+          }).toList(),
+          onChanged: (value) {
+            controller.selectedValue.value= value!;
+            // setState(() {
+            //   selectedValue = value;
+            // });
+          },
+        ),
+        const SizedBox(height: 10),
+        Obx(() {
+          return (controller.task.value?.scheduleStatus.id !=
+                  controller.selectedValue.value)
+              ? SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Get.theme.primaryColor,
+                    ),
+                    onPressed: () {
+                      controller.markTaskCompleted();
+                    },
+                    child: const Text('Update'),
+                  ),
+                )
+              : SizedBox();
+        }),
         const SizedBox(height: 8),
       ],
     );

@@ -12,59 +12,77 @@ class InventoryOverview extends GetView<InventoryController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (controller.errorMessage.value.isNotEmpty) {
-          return Center(child: Text(controller.errorMessage.value));
-        }
-
-        final inventory = controller.inventory.value;
-        if (inventory == null) {
-          return Center(child: Text('no_inventory_data'.tr));
-        }
-
-        return ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TitleText( "inventory".tr,fit: BoxFit.none,),
-            ),
-            SizedBox(height: 10,),
-            _buildInventoryItem(
-              'fuel'.tr,
-              '${inventory.fuel.totalQuantity} Ltr',
-            ),
-            const Divider(),
-            _buildInventoryItem(
-              'vehicle'.tr,
-              '${inventory.vehicle.totalFuelCapacity}',
-            ),
-            const Divider(),
-            _buildInventoryItem(
-              'machinery'.tr,
-              '${inventory.machinery.totalFuelCapacity}',
-            ),
-            const Divider(),
-            _buildInventoryItem('tools'.tr, '${inventory.tools.totalQuantity}'),
-            const Divider(),
-            _buildInventoryItem(
-              'pesticides'.tr,
-              '${inventory.pesticides.totalQuantity} kg',
-            ),
-            const Divider(),
-            _buildInventoryItem(
-              'fertilizers'.tr,
-              '${inventory.fertilizers.totalQuantity} kg',
-            ),
-            const Divider(),
-            _buildInventoryItem('seeds'.tr, '${inventory.seeds.totalQuantity}'),
-          ],
-        );
-      }),
+      body: RefreshIndicator(
+        onRefresh: ()async{
+          controller. loadInventory();
+        },
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+        
+          if (controller.errorMessage.value.isNotEmpty) {
+            return Center(child: Text(controller.errorMessage.value));
+          }
+        
+          final inventory = controller.inventory.value;
+          if (inventory == null) {
+            return Center(child: Text('no_inventory_data'.tr));
+          }
+        
+          return ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TitleText("inventory".tr, fit: BoxFit.none),
+              ),
+              SizedBox(height: 10),
+              _buildInventoryItem(
+                'fuel'.tr,
+                '${inventory.fuel.totalQuantity.round()} Ltr',
+                inventory.fuel.id,
+              ),
+              const Divider(),
+              _buildInventoryItem(
+                'vehicle'.tr,
+                '${inventory.vehicle.totalFuelCapacity.round()}',
+                inventory.vehicle.id,
+              ),
+              const Divider(),
+              _buildInventoryItem(
+                'machinery'.tr,
+                '${inventory.machinery.totalFuelCapacity.round()}',
+                inventory.machinery.id,
+              ),
+              const Divider(),
+              _buildInventoryItem(
+                'tools'.tr,
+                '${inventory.tools.totalQuantity.round()}',
+                inventory.tools.id
+              ),
+              const Divider(),
+              _buildInventoryItem(
+                'pesticides'.tr,
+                '${inventory.pesticides.totalQuantity.round()} kg',
+                inventory.pesticides.id
+              ),
+              const Divider(),
+              _buildInventoryItem(
+                'fertilizers'.tr,
+                '${inventory.fertilizers.totalQuantity.round()} kg',
+                inventory.fertilizers.id
+              ),
+              const Divider(),
+              _buildInventoryItem(
+                'seeds'.tr,
+                '${inventory.seeds.totalQuantity.round()}',
+                inventory.seeds.id
+              ),
+            ],
+          );
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Get.theme.primaryColor,
         onPressed: controller.navigateToAddInventory,
@@ -73,11 +91,14 @@ class InventoryOverview extends GetView<InventoryController> {
     );
   }
 
-  Widget _buildInventoryItem(String title, String quantity) {
+  Widget _buildInventoryItem(String title, String quantity, int id) {
     return ListTile(
       title: Text(title),
-      trailing: Text('($quantity)'),
-      onTap: () => controller.navigateToCategoryDetail(title.toLowerCase()),
+      trailing: Text(
+        '$quantity ',
+        style: TextStyle(color: Get.theme.colorScheme.primary),
+      ),
+      onTap: () => controller.navigateToCategoryDetail(title.toLowerCase(), id),
     );
   }
 }

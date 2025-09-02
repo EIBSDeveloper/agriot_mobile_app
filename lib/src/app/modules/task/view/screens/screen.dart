@@ -574,7 +574,7 @@ class TaskView extends GetView<TaskController> {
             _buildFilterChip('Waiting', 'waiting'),
             _buildFilterChip('Cancelled', 'cancelled'),
             _buildFilterChip('Pending', 'pending'),
-            _buildFilterChip('In Progress', 'in_progress'),
+            // _buildFilterChip('In Progress', 'in_progress'),
           ],
         ),
       ),

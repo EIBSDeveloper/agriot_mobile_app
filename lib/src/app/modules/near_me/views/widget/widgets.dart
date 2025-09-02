@@ -4,6 +4,7 @@ import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Worker;
 // widgets/land_dropdown.dart
+import '../../../../widgets/input_card_style.dart';
 import '../../model/models.dart';
 
 class LandDropdown extends StatelessWidget {
@@ -22,12 +23,8 @@ class LandDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+    return InputCardStyle(
+     
       child: DropdownButtonFormField<Land>(
         value: selectedLand,
         items: lands.map((Land land) {
@@ -67,7 +64,7 @@ class CountCard extends StatelessWidget {
       child: Container(
         decoration: AppStyle.decoration,
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -96,47 +93,59 @@ class MarketCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (market.marketImg.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: MyNetworkImage(
-                market.marketImg,
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.fill,
-              ),
-            ),
-          Text(
-            market.name,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.location_on, size: 16, color: Colors.grey),
-              SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  market.address,
-                  style: TextStyle(color: Colors.grey),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              if (market.marketImg.isNotEmpty)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: MyNetworkImage(
+                    market.marketImg,
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.fill,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(Icons.access_time, size: 16, color: Colors.grey),
-              SizedBox(width: 4),
-              Text(
-                '${market.openingTime} - ${market.closingTime}',
-                style: TextStyle(color: Colors.grey),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      market.name,
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on, size: 16, color: Colors.grey),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            market.address,
+                            style: TextStyle(color: Colors.grey),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, size: 16, color: Colors.grey),
+                        SizedBox(width: 4),
+                        Text(
+                          '${market.openingTime} - ${market.closingTime}',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -150,14 +159,14 @@ class MarketCard extends StatelessWidget {
               );
             }).toList(),
           ),
-          if (market.products.length > 3)
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                '+${market.products.length - 3} more',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
+          // if (market.products.length > 3)
+          //   Align(
+          //     alignment: Alignment.centerRight,
+          //     child: Text(
+          //       '+${market.products.length - 3} more',
+          //       style: TextStyle(color: Colors.grey),
+          //     ),
+          //   ),
         ],
       ),
     );
@@ -241,9 +250,9 @@ class ManPowerAgentCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: AppStyle.decoration,
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -286,6 +295,7 @@ class ManPowerAgentCard extends StatelessWidget {
     );
   }
 }
+
 class WorkerCard extends StatelessWidget {
   final Worker worker;
 
@@ -308,7 +318,11 @@ class WorkerCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 28,
                   backgroundColor: Get.theme.primaryColor.withAlpha(100),
-                  child: Icon(Icons.person, size: 30, color:  Get.theme.primaryColor),
+                  child: Icon(
+                    Icons.person,
+                    size: 30,
+                    color: Get.theme.primaryColor,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -374,7 +388,6 @@ class WorkerCard extends StatelessWidget {
     );
   }
 }
-
 
 class RentalDetailCard extends StatelessWidget {
   final RentalDetail detail;
@@ -462,8 +475,7 @@ class CustomSearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-          contentPadding: EdgeInsets.symmetric(vertical: 0),
+          border: InputBorder.none,
         ),
         onChanged: onChanged,
       ),

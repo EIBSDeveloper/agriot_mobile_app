@@ -2,8 +2,10 @@ import 'package:argiot/src/sercis/address_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../utils.dart';
+import '../../../bindings/app_binding.dart';
 import '../model/address_model.dart';
 import '../repostrory/address_service.dart';
+import '../view/screen/landpicker.dart';
 import 'resgister_controller.dart';
 
 class KycController extends GetxController {
@@ -40,6 +42,9 @@ class KycController extends GetxController {
   final RxBool isSubmitting = false.obs;
 
   final formKey = GlobalKey<FormState>();
+  final locationController = TextEditingController();
+  final RxDouble latitude = 0.0.obs;
+  final RxDouble longitude = 0.0.obs;
 
   @override
   void onInit() {
@@ -156,7 +161,7 @@ class KycController extends GetxController {
 
       final farmerRepository = Get.put(FarmerRepository());
       // Call API (replace with your actual endpoint)
-      await farmerRepository.editFarmer(
+      Map? response = await farmerRepository.editFarmer(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
         country: selectedCountry.value?.id ?? 1,
@@ -166,20 +171,40 @@ class KycController extends GetxController {
         village: selectedVillage.value?.id ?? 1,
         doorNo: doorNoController.text.trim(),
         pincode: pincodeController.text.trim(),
-
+        latitude: latitude.value,
+        longitude: longitude.value,
         companyName: companyController.text.trim(),
         taxNo: taxNoController.text.trim(),
       );
+      if (response != null) {
+        showSuccess('KYC submitted successfully');
 
-      showSuccess('KYC submitted successfully');
-
-      // Navigate to next screen
-      ResgisterController resgisterController = Get.find();
-      resgisterController.moveNextPage();
+        // Navigate to next screen
+        ResgisterController resgisterController = Get.find();
+        resgisterController.moveNextPage();
+      } else {
+        showError('Failed');
+      }
     } catch (e) {
-      showError('Error');
+      showError('Failed');
     } finally {
       isSubmitting(false);
+    }
+  }
+
+  Future<void> pickLocation() async {
+    try {
+      final location = await Get.to(
+        LocationPickerView(),
+        binding: LocationViewerBinding(),
+      );
+      if (location != null) {
+        latitude.value = location['latitude'];
+        longitude.value = location['longitude'];
+        locationController.text = '${latitude.value}, ${longitude.value}';
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to pick location');
     }
   }
 

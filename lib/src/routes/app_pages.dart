@@ -1,5 +1,8 @@
 import 'package:argiot/consumption_view.dart';
 import 'package:argiot/land_details.dart';
+import 'package:argiot/src/app/modules/expense/fuel.dart/fertilizer_screen.dart';
+import 'package:argiot/src/app/modules/expense/fuel.dart/machinery_entry_screen.dart';
+import 'package:argiot/src/app/modules/expense/fuel.dart/vehicle_view.dart';
 import 'package:argiot/src/app/modules/inventory/view/add_inventory.dart';
 import 'package:argiot/guideline.dart';
 import 'package:argiot/src/app/modules/inventory/view/inventory_overview.dart';
@@ -30,6 +33,9 @@ import '../../map_view.dart';
 import '../../test.dart';
 import '../app/bindings/app_binding.dart';
 import '../app/modules/auth/view/screens/otp_screen.dart';
+import '../app/modules/expense/fuel.dart/fuel_entry_binding.dart';
+import '../app/modules/expense/fuel.dart/fuel_entry_view.dart';
+import '../app/modules/expense/fuel.dart/test.dart';
 import '../app/modules/forming/controller/location_viewer_view.dart';
 import '../app/modules/forming/view/screen/document_viewer_view.dart';
 import '../app/modules/forming/view/screen/land_details_page.dart';
@@ -115,43 +121,17 @@ class AppPages {
         GetPage(name: '/edit', page: () => SalesAddEditView(isEdit: true)),
       ],
     ),
-    //  GetPage(
-    //   name: Routes.salesDetails,
-    //   page: () {
 
-    //     return SalesDetailsView();
-    //   },binding: FuelBinding()
-    // ),
-    // GetPage(
-    //   name: Routes.newSales,
-    //   page: () => const SalesFormView(isEdit: false),binding: FuelBinding()
-    // ),
-    // GetPage(
-    //   name: Routes.editSales,
-    //   page: () {
-    //     final salesId = int.tryParse(Get.arguments['id'] ?? '');
-    //     return SalesFormView(isEdit: true, salesId: salesId);
-    //   },binding: FuelBinding()
-    // ),
     GetPage(
       name: Routes.guidelines,
       page: () => const GuidelinesView(),
       binding: GuidelineBinding(),
     ),
-    //  GetPage(
-    //   name: Routes.SALES,
-    //   page: () => const SalesListView(),
-    //   binding: SalesBinding(),
-    // ),
-    // GetPage(
-    //   name: Routes.SALES_DETAILS,
-    //   page: () => const SalesDetailsView(),
-    //   binding: SalesBinding(), // Reuses the same controller instance
-    // ),
+
     GetPage(
       name: "/myEdit",
       page: () => SalesFormScreen(),
-      binding: SalesBindings(), // Reuses the same controller instance
+      binding: SalesBindings(),
     ),
     GetPage(
       name: Routes.SALES_DETAILS,
@@ -343,6 +323,33 @@ class AppPages {
         scheduleId: Get.arguments['scheduleId'],
       ),
       binding: ScheduleBinding(),
+    ),
+    GetPage(
+      name: '/fuel-expenses-entry',
+      page: () => FuelEntryView(),
+      binding: FuelEntryBinding(),
+    ),
+    GetPage(
+      name: '/machinery_entry',
+      page: () => const MachineryEntryScreen(),
+      binding: FuelEntryBinding(),
+    ),
+    GetPage(
+      name: '/vehicle_entry',
+      page: () => const VehicleView(),
+      binding: FuelEntryBinding(),
+    ),
+    GetPage(
+      name: '/fertilizer_entry',
+      page: () => FertilizerScreen(),
+      binding: FuelEntryBinding(),
+    ),
+    GetPage(
+      name: '/consumption-purchase',
+      page: () => const ConsumptionPurchaseView(),
+      binding: ConsumptionPurchaseBinding(),
+      // Add middleware for auth if needed
+      // middlewares: [AuthMiddleware()],
     ),
   ];
 }

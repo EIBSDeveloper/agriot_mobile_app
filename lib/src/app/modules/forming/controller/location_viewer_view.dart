@@ -11,14 +11,13 @@ class LocationViewerView extends GetView<LocationViewerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: 
-        CustomAppBar(title: 'Location Viewer', showBackButton: true),
-       
+      appBar: CustomAppBar(title: 'Location Viewer', showBackButton: true),
+
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator());
         }
-        
+
         return Column(
           children: [
             Expanded(

@@ -41,12 +41,12 @@ double kelvinToCelsius(double kelvin) {
 }
 
 PackageUsage? findLimit() {
-  UserLimitController limitController = Get.find();
+  UserLimitController limitController = Get.put(UserLimitController());
   return limitController.packageUsage.value;
 }
 
 packageRefresh() {
-  UserLimitController limitController = Get.find();
+  UserLimitController limitController = Get.put(UserLimitController());
   limitController.loadUsage();
 }
 

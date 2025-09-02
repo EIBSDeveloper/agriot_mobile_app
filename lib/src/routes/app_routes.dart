@@ -21,8 +21,6 @@ abstract class Routes {
   
   // Sales
    static const sales = '/sales';
-  // static const SALES_DETAILS = '/sales/details';
-  // static const SALES_FORM = '/sales/form';
   static const String salesDetails = '/fuel/sales-details';
   static const String newSales = '/fuel/new-sales';
   static const String editSales = '/fuel/edit-sales';

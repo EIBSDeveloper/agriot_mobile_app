@@ -26,6 +26,12 @@ class TaskDetailsController extends GetxController {
   final RxString description = ''.obs;
   final RxBool isLoadingEdit = false.obs;
   TaskDetailsController({required this.taskId});
+  RxInt selectedValue = 1.obs;
+  final List<Map<String, dynamic>> statusList = [
+    {"name": "Waiting Completion", "value": 1},
+    {"name": "Completed", "value": 2},
+    {"name": "In Progress", "value": 3},
+  ];
 
   @override
   void onInit() {
@@ -49,6 +55,9 @@ class TaskDetailsController extends GetxController {
         taskId,
       );
       task(fetchedTask);
+      
+      selectedValue.value = fetchedTask.scheduleStatus.id;
+
       final activityList = await _taskRepository.getActivityTypes();
       activity.assignAll(activityList);
 
@@ -108,6 +117,8 @@ class TaskDetailsController extends GetxController {
         task.value!.myCrop.id,
         task.value!.startDate,
         task.value!.description,
+        selectedValue.value
+
       );
       await fetchTaskDetails(); // Refresh task details
     } catch (e) {

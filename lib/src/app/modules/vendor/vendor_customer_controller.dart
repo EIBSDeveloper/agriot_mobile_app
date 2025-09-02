@@ -72,7 +72,12 @@ class VendorCustomerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    var type= Get.arguments?["type"];
+    if(type != null ){
+      selectedType.value = type;
+    }
     fetchVendorCustomerList();
+
     loadCountries();
     loadMarkets();
     loadPurchaseList();
@@ -356,7 +361,7 @@ class VendorCustomerController extends GetxController {
         openingBalance: double.tryParse(openingBalanceController.text) ?? 0,
         description: descriptionController.text,
         marketIds: [selectedMarket.value!.id],
-        inventoryTypeIds: selectedType.value == 'vendor'
+        inventoryTypeIds: selectedType.value == 'vendor'||selectedType.value == 'both'
             ? (purchaseModel.value != null)
                   ? selectedKeys
                         .where(

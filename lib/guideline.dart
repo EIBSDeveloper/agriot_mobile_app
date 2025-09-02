@@ -4,7 +4,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'src/core/app_style.dart';
+import 'src/app/widgets/input_card_style.dart';
 import 'src/utils.dart';
 
 class Guideline {
@@ -307,13 +307,8 @@ class GuidelinesView extends GetView<GuidelineController> {
   }
 
   Widget _buildSearchField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return   InputCardStyle(
+         
       child: TextField(
         decoration: InputDecoration(
           hintText: 'search_placeholder'.tr,
@@ -336,41 +331,10 @@ class GuidelinesView extends GetView<GuidelineController> {
     );
   }
 
-  Widget _buildCropDropdown() {
-    return DropdownButtonFormField2<Crop>(
-      isExpanded: true,
-      hint: Text('select_crop'.tr),
-      value: controller.selectedCrop.value,
-      items: controller.crops
-          .map(
-            (crop) => DropdownMenuItem<Crop>(
-              value: crop,
-              child: Text(crop.name, style: Get.textTheme.bodyMedium),
-            ),
-          )
-          .toList(),
-      onChanged: (value) => controller.filterByCrop(value),
-      buttonStyleData: const ButtonStyleData(
-        padding: EdgeInsets.only(right: 8),
-      ),
-      iconStyleData: const IconStyleData(
-        icon: Icon(Icons.arrow_drop_down),
-        iconSize: 24,
-      ),
-      dropdownStyleData: DropdownStyleData(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
-  }
 
   Widget _buildCategoryDropdown() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return   InputCardStyle(
+         
       child: DropdownButtonFormField2<GuidelineCategory>(
         isExpanded: true,
         decoration: const InputDecoration(

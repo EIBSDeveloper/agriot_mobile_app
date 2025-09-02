@@ -1,7 +1,4 @@
-import 'dart:io';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
-import 'package:argiot/src/app/modules/registration/model/address_model.dart';
-import 'package:argiot/src/app/modules/registration/view/widget/searchable_dropdown.dart';
 import 'package:argiot/src/app/modules/vendor/vendor_customer_controller.dart';
 import 'package:argiot/src/app/modules/vendor/vendor_customer_model.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../../core/app_style.dart';
+import '../../widgets/input_card_style.dart';
 import '../../widgets/title_text.dart';
 
 class VendorCustomerListView extends GetView<VendorCustomerController> {
@@ -219,13 +217,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
       }
       return Column(
         children: [
-          Container(
-            decoration: AppStyle.decoration.copyWith(
-              color: const Color.fromARGB(137, 221, 234, 234),
-              boxShadow: const [],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            height: 55,
+          InputCardStyle(
             child: DropdownButtonFormField<Market>(
               isExpanded: true,
               value: controller.selectedMarket.value,
@@ -309,13 +301,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
       children: [
         Text('basic_info'.tr, style: Get.textTheme.titleSmall),
         const SizedBox(height: 8),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 55,
+        InputCardStyle(
           child: TextFormField(
             controller: controller.nameController,
             decoration: InputDecoration(
@@ -329,13 +315,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 55,
+        InputCardStyle(
           child: TextFormField(
             controller: controller.mobileController,
             decoration: InputDecoration(
@@ -351,13 +331,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 55,
+        InputCardStyle(
           child: TextFormField(
             controller: controller.emailController,
             decoration: InputDecoration(
@@ -374,13 +348,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 55,
+        InputCardStyle(
           child: TextFormField(
             controller: controller.shopNameController,
             decoration: InputDecoration(
@@ -394,9 +362,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        // if (controller.selectedType.value == 'customer' ||
-        //     controller.selectedType.value == 'both')
-        _buildMarketTypeSection(),
+        if (controller.selectedType.value != 'both') _buildMarketTypeSection(),
       ],
     );
   }
@@ -407,16 +373,10 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
       children: [
         Text('location_info'.tr, style: Get.textTheme.titleSmall),
         const SizedBox(height: 8),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-
+        InputCardStyle(
           child: TextField(
             controller: controller.doorNoController,
-           maxLines: 3,
+            maxLines: 3,
             decoration: InputDecoration(
               hintText: 'door_no_street'.tr,
               border: InputBorder.none,
@@ -424,13 +384,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 55,
+        InputCardStyle(
           child: TextFormField(
             controller: controller.pincodeController,
             decoration: InputDecoration(
@@ -465,102 +419,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
     );
   }
 
-  Widget _buildCountryDropdown() {
-    return Obx(() {
-      if (controller.isLoadingCountries.value) {
-        return _buildLoadingDropdown('loading_countries'.tr);
-      }
-      return SearchableDropdown<CountryModel>(
-        label: 'country'.tr,
-        items: controller.countries,
-        displayItem: (country) => country.name.toString(),
-        selectedItem: controller.selectedCountry.value,
-        onChanged: (CountryModel? value) =>
-            controller.selectedCountry.value = value,
-        validator: (value) => value == null ? 'required_field'.tr : null,
-      );
-    });
-  }
-
-  Widget _buildStateDropdown() {
-    return Obx(() {
-      if (controller.selectedCountry.value == null) {
-        return _buildDisabledDropdown('state'.tr);
-      }
-      if (controller.isLoadingStates.value) {
-        return _buildLoadingDropdown('loading_states'.tr);
-      }
-      return SearchableDropdown<StateModel>(
-        label: 'state'.tr,
-        items: controller.states,
-        displayItem: (state) => state.name.toString(),
-        selectedItem: controller.selectedState.value,
-        onChanged: (StateModel? value) =>
-            controller.selectedState.value = value,
-        validator: (value) => value == null ? 'required_field'.tr : null,
-      );
-    });
-  }
-
-  Widget _buildCityDropdown() {
-    return Obx(() {
-      if (controller.selectedState.value == null) {
-        return _buildDisabledDropdown('city'.tr);
-      }
-      if (controller.isLoadingCities.value) {
-        return _buildLoadingDropdown('loading_cities'.tr);
-      }
-      return SearchableDropdown<CityModel>(
-        label: 'city'.tr,
-        items: controller.cities,
-        displayItem: (city) => city.name.toString(),
-        selectedItem: controller.selectedCity.value,
-        onChanged: (CityModel? value) => controller.selectedCity.value = value,
-        validator: (value) => value == null ? 'required_field'.tr : null,
-      );
-    });
-  }
-
-  Widget _buildTalukDropdown() {
-    return Obx(() {
-      if (controller.selectedCity.value == null) {
-        return _buildDisabledDropdown('taluk'.tr);
-      }
-      if (controller.isLoadingTaluks.value) {
-        return _buildLoadingDropdown('loading_taluks'.tr);
-      }
-      return SearchableDropdown<TalukModel>(
-        label: 'taluk'.tr,
-        items: controller.taluks,
-        displayItem: (taluk) => taluk.name.toString(),
-        selectedItem: controller.selectedTaluk.value,
-        onChanged: (TalukModel? value) =>
-            controller.selectedTaluk.value = value,
-        validator: (value) => value == null ? 'required_field'.tr : null,
-      );
-    });
-  }
-
-  Widget _buildVillageDropdown() {
-    return Obx(() {
-      if (controller.selectedTaluk.value == null) {
-        return _buildDisabledDropdown('village'.tr);
-      }
-      if (controller.isLoadingVillages.value) {
-        return _buildLoadingDropdown('loading_villages'.tr);
-      }
-      return SearchableDropdown<VillageModel>(
-        label: 'village'.tr,
-        items: controller.villages,
-        displayItem: (village) => village.name.toString(),
-        selectedItem: controller.selectedVillage.value,
-        onChanged: (VillageModel? value) =>
-            controller.selectedVillage.value = value,
-        validator: (value) => value == null ? 'required_field'.tr : null,
-      );
-    });
-  }
-
   Widget _buildMarketLoadingDropdown() {
     return InputDecorator(
       decoration: InputDecoration(
@@ -580,59 +438,13 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
     );
   }
 
-  Widget _buildLoadingDropdown(String text) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(text, style: TextStyle(color: Colors.grey)),
-          const SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDisabledDropdown(String text) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(text, style: TextStyle(color: Colors.grey)),
-          const Icon(Icons.arrow_drop_down, color: Colors.grey),
-        ],
-      ),
-    );
-  }
-
   Widget _buildFinancialSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('financial_info'.tr, style: Get.textTheme.titleSmall),
         const SizedBox(height: 8),
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          height: 55,
+        InputCardStyle(
           child: TextFormField(
             controller: controller.gstNoController,
             decoration: InputDecoration(
@@ -726,39 +538,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             maxLines: 3,
           ),
         ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget _buildImageSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('photo'.tr, style: Get.textTheme.titleSmall),
-        const SizedBox(height: 8),
-        Obx(() {
-          if (controller.imagePath.value.isNotEmpty) {
-            return Column(
-              children: [
-                Image.file(
-                  File(controller.imagePath.value),
-                  height: 100,
-                  width: 100,
-                  fit: BoxFit.cover,
-                ),
-                TextButton(
-                  onPressed: () => controller.imagePath.value = '',
-                  child: Text('remove_photo'.tr),
-                ),
-              ],
-            );
-          }
-          return ElevatedButton(
-            onPressed: controller.pickImage,
-            child: Text('upload_photo'.tr),
-          );
-        }),
         const SizedBox(height: 16),
       ],
     );

@@ -1,0 +1,46 @@
+{
+  "task": "Convert raw API endpoint details into a well-structured markdown format",
+  "sections": [
+    "Endpoint Name",
+    "HTTP Method",
+    "URL Path (with parameters in <angle_brackets>)",
+    "Request Body (if applicable)",
+    "Response Body (formatted JSON)"
+  ],
+  "format_rules": [
+    "Remove unnecessary quotation mark escapes (\\\" → \")",
+    "Keep JSON responses properly indented",
+    "Use code blocks for request/response bodies",
+    "Replace IDs in URLs with <parameter> notation (e.g., /user/<id>/)"
+  ],
+  "example_input": {
+    "Endpoint Name": "Inventory Type List",
+    "HTTP Method": "GET",
+    "URL Path": "/purchase_list/<Farmer Id>/",
+    "Response Body": {
+      "fuel": {
+        "total_quantity": "20.0"
+      }
+    }
+  },
+  "expected_output": {
+    "format": "Json",
+    "example_output": [
+      {
+        "Endpoint Name": "Inventory Type List",
+        "HTTP Method": "GET",
+        "URL Path": "/purchase_list/<Farmer Id>/",
+        "Response Body": {
+          "fuel": {
+            "total_quantity": "20.0"
+          }
+        }
+      }
+    ]
+  },
+  "additional_notes": [
+    "Include query parameters (e.g., ?inventory_type=6)",
+    "Highlight required fields in requests",
+    "Add descriptions for complex fields"
+  ]
+}

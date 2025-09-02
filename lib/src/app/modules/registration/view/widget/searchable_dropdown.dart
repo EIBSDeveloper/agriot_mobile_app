@@ -1,5 +1,7 @@
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../widgets/input_card_style.dart';
 // Often not needed for this pattern, but kept if you have other uses.
 
 class SearchableDropdown<T> extends StatefulWidget {
@@ -56,14 +58,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      alignment: Alignment.center,
+    return  InputCardStyle(
       child: TextFormField(
         controller: _displayController,
         readOnly: true,

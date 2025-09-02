@@ -1,0 +1,20 @@
+{
+    "date_of_consumption": "2025-03-25",
+    "vendor": "1",
+    "inventory_type": "2",
+    "inventory_category": "2",
+    "inventory_items": "2",
+    "machinery_type": "1",
+    "quantity": "20",
+    "quantity_unit": 1,
+    "fuel_capacity": "20",
+    "warranty_start_date": "2025-03-25",
+    "warranty_end_date": "2025-03-25",
+    "purchase_amount": "300",
+    "reusable": true,
+    "description": "Add Machinery",
+    "farmer": 1,
+    "start_kilometer": 33.0,
+    "end_kilometer": 34.0
+ 
+}

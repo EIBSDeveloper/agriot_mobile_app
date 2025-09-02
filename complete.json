@@ -1,0 +1,412 @@
+{
+  "context": {
+    "app_scale": "large",
+    "tech_stack": [
+      "Flutter",
+      "GetX",
+      "GetStorage",
+      "GetX Localization",
+      "HTTP"
+    ],
+    "http_service": "Reuse existing HttpService for all API calls (get/post/put/multipart with built-in error handling).",
+    "architecture": "Clean Architecture (GetX)",
+    "constraints": {
+      "themes": "Use Get.theme only (no custom themes)",
+      "localization": "Use GetX Localization",
+      "feedback": "Use Flutter toast (no SnackBar)",
+      "performance": [
+        "avoid memory leaks",
+        "minimize widget rebuilds",
+        "ensure smooth UI",
+        "provide instant feedback"
+      ]
+    }
+  },
+  "inputs": {
+    "api_endpoints": [
+      {
+        "name": "<endpoint_name>",
+        "method": "GET|POST|PUT|MULTIPART",
+        "path": "<relative_path>",
+        "headers": {
+          "Authorization": "<token_optional>"
+        },
+        "query_params": {
+          "<key>": "<value>"
+        },
+        "body_example": {
+          "<key>": "<value>"
+        }
+      }
+    ],
+    "json_responses": {
+      "<endpoint_name_response>": {
+        "status": true,
+        "message": "Success",
+        "data": {
+          "...": "..."
+        }
+      }
+    },
+    "ui_image": "<screen_image_link_or_description>",
+    "ux_flow": "Describe screen flow and user journey."
+  },
+  "module_scope": {
+    "type": "single_screen",
+    "screen_key": "<unique_screen_id>",
+    "route": "/<route>",
+    "storage_keys": [
+      "<GetStorage_key_if_any>"
+    ]
+  },
+  "deliverables": {
+    "code": [
+      "controller",
+      "models",
+      "repository",
+      "view_widgets",
+      "bindings",
+      "routes",
+      "localization_en"
+    ],
+    "rules": [
+      "Reuse HttpService for network operations",
+      "Follow GetX structure (controllers, models, repository, views, bindings, routes)",
+      "Use toast for feedback (no SnackBar)",
+      "Dispose resources to avoid leaks",
+      "Place Obx/GetBuilder carefully to minimize rebuilds"
+    ]
+  },
+  "screen_spec": {
+    "name": "<Screen Name>",
+    "inputs_and_controls": [
+      {
+        "id": "<field_id>",
+        "widget": "TextFormField|Dropdown|DatePicker|Switch|Checkbox",
+        "hint": "<hint_text>",
+        "constraints": {
+          "required": true,
+          "min_length": 3,
+          "max_length": 50,
+          "pattern": "<regex_optional>"
+        },
+        "keyboard_type": "text|email|number|phone"
+      }
+    ],
+    "user_interactions": [
+      {
+        "trigger": "onTap|onPressed|onChanged",
+        "target_id": "<widget_id>",
+        "action": "navigate|submit_form|refresh|open_sheet",
+        "navigation": {
+          "to": "/<route>",
+          "with_args": {
+            "<key>": "<value>"
+          }
+        },
+        "state_changes": [
+          "loading=true",
+          "show_toast='Saved'",
+          "loading=false"
+        ]
+      }
+    ],
+    "validation_rules": [
+      {
+        "field_id": "<field_id>",
+        "rules": [
+          "required",
+          "email_format|min|max|regex"
+        ],
+        "error_messages": {
+          "required": "This field is required",
+          "email_format": "Enter a valid email"
+        }
+      }
+    ],
+    "api_mapping": {
+      "load_on_init": {
+        "endpoint": "<endpoint_name>",
+        "params": {
+          "<q>": "<v>"
+        },
+        "maps_to_model": "<ModelName>"
+      },
+      "submit_actions": [
+        {
+          "trigger_id": "<submit_button_id>",
+          "endpoint": "<endpoint_name>",
+          "method": "POST|PUT|MULTIPART",
+          "body": {
+            "<field_id>": "<controller.value>"
+          },
+          "on_success": [
+            "update_state",
+            "show_toast:'Success'",
+            "navigate:'/next'"
+          ],
+          "on_error": [
+            "show_toast:'Failed'",
+            "set_error_state"
+          ]
+        }
+      ]
+    },
+    "state_management": {
+      "controller": "<ScreenController>",
+      "observables": [
+        "isLoading",
+        "items",
+        "formState",
+        "error"
+      ],
+      "rebuild_strategy": "Wrap only dynamic parts with Obx/GetBuilder; keep Scaffold static"
+    },
+    "storage_usage": {
+      "read": [
+        {
+          "key": "<GetStorage_key>",
+          "purpose": "auth token"
+        }
+      ],
+      "write": [
+        {
+          "key": "<GetStorage_key>",
+          "source": "<controller.field>"
+        }
+      ]
+    },
+    "localization_keys_en": [
+      {
+        "key": "screen.title",
+        "value": "Title"
+      },
+      {
+        "key": "button.submit",
+        "value": "Submit"
+      },
+      {
+        "key": "toast.success",
+        "value": "Saved successfully"
+      }
+    ],
+    "routes": {
+      "define": [
+        {
+          "name": "/<route>",
+          "page": "<ScreenWidget>",
+          "binding": "<ScreenBinding>"
+        }
+      ],
+      "guards": [
+        {
+          "type": "auth_guard_optional",
+          "redirect_to": "/login"
+        }
+      ]
+    },
+    "feedback_toast": {
+      "library": "fluttertoast",
+      "patterns": [
+        {
+          "when": "success",
+          "message_key": "toast.success"
+        },
+        {
+          "when": "error",
+          "message_key": "toast.error"
+        }
+      ]
+    },
+    "error_handling": {
+      "network": [
+        "timeout_toast",
+        "optional_retry"
+      ],
+      "validation": [
+        "field_level_errors",
+        "disable_submit_if_invalid"
+      ]
+    },
+    "performance": {
+      "tips": [
+        "Use permanent bindings if caching needed",
+        "Dispose controllers in onClose",
+        "Prefer const widgets",
+        "Split UI into smaller stateless components"
+      ]
+    },
+    "accessibility": {
+      "semantics": true,
+      "min_tap_size": 48
+    },
+    "tests": {
+      "unit": [
+        "repository returns parsed model",
+        "controller maps API to state"
+      ],
+      "widget": [
+        "renders loading/data states",
+        "form validation shows errors"
+      ],
+      "navigation": [
+        "navigates on success"
+      ]
+    },
+    "acceptance_criteria": [
+      "Screen loads initial data via repository using HttpService",
+      "User actions show instant toast feedback",
+      "No unnecessary rebuilds; smooth performance",
+      "All strings localized"
+    ]
+  },
+  "output_format": {
+    "generate": {
+      "controller": "<ScreenController.dart>",
+      "models": [
+        "<PrimaryModel>.dart",
+        "<NestedModel>.dart"
+      ],
+      "repository": "<ScreenRepository.dart>",
+      "views": [
+        "<ScreenWidget>.dart",
+        "components/<PartWidget>.dart"
+      ],
+      "bindings": "<ScreenBinding.dart>",
+      "routes": "append_to_routes_map",
+      "localization_en": "append_to_en_US.json"
+    },
+    "notes": [
+      "Do not create a new HTTP client",
+      "Keep files inside modules/<screen_key>/",
+      "Do not expose secrets in code"
+    ]
+  },
+  "screens": [
+    {
+      "screen": "Fuel Inventory Detail Screen",
+      "purpose": "Provide a read-only view of detailed fuel inventory information including vendor, amount, quantity, uploaded documents, and description for reference and record verification.",
+      "ui_elements": {
+        "static": [
+          "AppBar with logo (Agriot WiFarm)",
+          "Notification icon",
+          "Profile avatar",
+          "Back arrow icon",
+          "Screen title (Petrol)",
+          "Labels: Date, Inventory Type, Inventory Category, Vendor, Purchase Amount, Quantity",
+          "Section titles: Uploaded Documents, Description"
+        ],
+        "dynamic": [
+          "Text values for Date, Inventory Type, Inventory Category, Vendor, Purchase Amount, Quantity",
+          "Icons for edit and delete actions",
+          "Document thumbnails with view icons (Bill, Receipt)",
+          "Multiline text description content"
+        ]
+      },
+      "layout_recommendations": [
+        "Use Scaffold with AppBar",
+        "SingleChildScrollView to allow vertical scrolling",
+        "Column for structured vertical layout",
+        "Row for label-value pairs (aligned with spaceBetween)",
+        "Card or Container with padding for grouped content",
+        "Divider before 'Uploaded Documents' section",
+        "Consistent typography: labels in caption style, values in titleMedium",
+        "IconButton for edit and delete placed near the title"
+      ],
+      "input_controls": [],
+      "user_interactions": [
+        "Tap back arrow → navigate to previous screen",
+        "Tap edit icon → navigate to Edit Fuel Entry screen",
+        "Tap delete icon → show confirmation dialog, then remove record on confirm",
+        "Tap document thumbnail → open full-screen document viewer",
+        "Scroll → to view all details if overflow"
+      ],
+      "validation_rules": {},
+      "actions": [
+        {
+          "type": "icon_button",
+          "label": "Edit",
+          "action": "navigate_to_edit_screen"
+        },
+        {
+          "type": "icon_button",
+          "label": "Delete",
+          "action": "show_delete_confirmation"
+        },
+        {
+          "type": "tap_thumbnail",
+          "label": "View Document",
+          "action": "open_document_viewer"
+        }
+      ]
+    }
+  ],
+  "api_details": [
+    {
+      "Endpoint Name": "Fuel View",
+      "HTTP Method": "POST",
+      "URL Path": "/get_myfuel/<Farmer Id>/",
+      "Request Body": {
+        "my_fuel": 9
+      },
+      "Response Body": {
+        "fuel_data": {
+          "farmer": {
+            "id": 1,
+            "name": "Dharshan"
+          },
+          "fuel_id": 9,
+          "quantity": 20.0,
+          "purchase_amount": 300.0,
+          "description": "Add Fuel",
+          "date": "2025-03-25",
+          "inventory_item": {
+            "id": 6,
+            "name": "MMFuel"
+          },
+          "inventory_type": {
+            "id": 6,
+            "name": "Fuel"
+          },
+          "inventory_category": {
+            "id": 6,
+            "name": "MFuel"
+          },
+          "vendor": {
+            "id": 1,
+            "name": "Updated Vendor Name"
+          },
+          "documents": [
+            {
+              "category_id": 4,
+              "documents": [
+                {
+                  "id": 1,
+                  "document_category": {
+                    "id": 4,
+                    "name": "Expense"
+                  },
+                  "upload_document": "http://192.168.3.24:1710/SuperAdmin/media/myFuel_documents/fuel_1_4_0.png",
+                  "language": {
+                    "default": "en"
+                  }
+                },
+                {
+                  "id": 2,
+                  "document_category": {
+                    "id": 4,
+                    "name": "Expense"
+                  },
+                  "upload_document": "http://192.168.3.24:1710/SuperAdmin/media/myFuel_documents/fuel_1_4_1.jpeg",
+                  "language": {
+                    "default": "en"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

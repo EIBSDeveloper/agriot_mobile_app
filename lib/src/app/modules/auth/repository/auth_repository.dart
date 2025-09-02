@@ -14,7 +14,7 @@ class AuthRepository {
       if (!value) 'mobile_number': mobileNumber,
       if (value) 'email': mobileNumber,
       'name': 'user',
-      "google_login":false
+   if (value)   "google_login":false
     };
     final response = await _httpService.post('/get_otp', body);
 

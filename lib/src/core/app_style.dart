@@ -28,4 +28,8 @@ class AppStyle {
     borderRadius: BorderRadius.all(Radius.circular(borderRadiusbox)),
     boxShadow: AppStyle.boxShadow,
   );
+  static const BoxDecoration inputDecoration = BoxDecoration(
+    color:  Color.fromARGB(137, 221, 234, 234),
+    borderRadius: BorderRadius.all(Radius.circular(borderRadiusbox)),
+  );
 }

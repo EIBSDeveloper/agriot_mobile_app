@@ -7,9 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import 'src/app/controller/app_controller.dart';
+import 'src/app/modules/near_me/views/widget/widgets.dart';
+import 'src/app/modules/registration/model/dropdown_item.dart';
 import 'src/app/modules/task/model/model.dart';
 import 'src/app/modules/task/view/screens/screen.dart';
 import 'src/app/utils/http/http_service.dart';
+import 'src/core/app_style.dart';
 import 'src/routes/app_routes.dart';
 
 class SalesListResponse {
@@ -152,12 +155,12 @@ class SalesDetail {
       datesOfSales: json['dates_of_sales'] ?? '',
       myCrop: Crop.fromJson(json['my_crop'] ?? {}),
       myCustomer: Customer.fromJson(json['my_customer'] ?? {}),
-      salesQuantity: (json['sales_quantity'] ?? 0.0).toDouble(),
+      salesQuantity: (json['sales_quantity'] ?? 0.0).round(),
       salesUnit: SalesUnit.fromJson(json['sales_unit'] ?? {}),
-      quantityAmount: json['quantity_amount'] ?? '',
+      quantityAmount: int.tryParse(json['quantity_amount']) ?? 0,
       totalAmount: json['total_amount'] ?? '',
-      salesAmount: (json['sales_amount'] ?? 0.0).toDouble(),
-      deductionAmount: json['deduction_amount'] ?? '',
+      salesAmount: (json['sales_amount'] ?? 0.0).round(),
+      deductionAmount: int.tryParse(json['deduction_amount']) ?? 0,
       totalSalesAmount: (json['total_sales_amount'] ?? 0.0).toDouble(),
       amountPaid: (json['amount_paid'] ?? 0.0).toDouble(),
       description: json['description'],
@@ -609,7 +612,7 @@ class NewSalesController extends GetxController {
   final Rx<Unit> selectedUnit = Unit(id: 0, name: '').obs;
   RxBool isNewResion = false.obs;
   var selectedCustomer = Rx<int?>(null);
-  Rx<DateTime>  selectedDate = DateTime.now().obs;
+  Rx<DateTime> selectedDate = DateTime.now().obs;
   var salesQuantity = Rx<int?>(0);
   // var selectedUnit = Rx<int?>(null);
   var quantityAmount = Rx<int>(0);
@@ -836,7 +839,7 @@ class NewSalesController extends GetxController {
         total += charges;
       } else if (deduction['rupee'] == '2') {
         // Percentage
-        final salesAmt = salesAmount.value ?? 0;
+        final salesAmt = salesAmount.value;
         total += (salesAmt * charges / 100).round();
       }
     }
@@ -911,9 +914,7 @@ class NewSalesBinding extends Bindings {
 }
 
 // views/sales/sales_details_view.dart
-
 class NewSalesDetailsView extends StatefulWidget {
-
   const NewSalesDetailsView({super.key});
 
   @override
@@ -931,15 +932,13 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
       controller.fetchSalesDetails(Get.arguments["id"]);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text('Sales Details'),
+      appBar: CustomAppBar(
+        title: 'Sales Details',
+        showBackButton: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -952,6 +951,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
           ),
         ],
       ),
+
       body: Obx(() {
         final salesDetail = controller.salesDetail.value;
         if (salesDetail == null) {
@@ -982,7 +982,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
               if (salesDetail.documents.isNotEmpty) const SizedBox(height: 20),
 
               // Description Section
-              if (salesDetail.description != null)
+              if (salesDetail.description != null&&salesDetail.description != '')
                 _buildDescriptionSection(salesDetail),
             ],
           ),
@@ -1017,7 +1017,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
             _buildDetailRow('Date', salesDetail.datesOfSales),
             _buildDetailRow('Customer Name', salesDetail.myCustomer.name),
             _buildDetailRow('Gross Sales', '₹${salesDetail.salesAmount}'),
-            _buildDetailRow('Deduction', '₹${salesDetail.deductionAmount}'),
+            // _buildDetailRow('Deduction', '₹${salesDetail.deductionAmount}'),
             _buildDetailRow('Net Sales', '₹${salesDetail.totalSalesAmount}'),
             _buildDetailRow('Amount Paid', '₹${salesDetail.amountPaid}'),
           ],
@@ -1120,13 +1120,8 @@ class NewSalesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text('New Sales Entry'),
-      ),
+      appBar: CustomAppBar(title: 'New Sales', showBackButton: true),
+
       body: Obx(() {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -1162,10 +1157,14 @@ class NewSalesView extends StatelessWidget {
                 _buildQuantityAmountField(),
                 const SizedBox(height: 16),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Total"),
-                    Spacer(),
-                    Text("${controller.salesAmount.value}"),
+                    Text('Total', style: Get.textTheme.bodyLarge),
+
+                    Text(
+                      "${controller.salesAmount.value}",
+                      style: Get.textTheme.bodyLarge,
+                    ),
                   ],
                 ),
                 // // Sales Amount
@@ -1178,11 +1177,13 @@ class NewSalesView extends StatelessWidget {
 
                 // Amount Paid
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Total"),
-                    Spacer(),
+                    Text('Net sale', style: Get.textTheme.bodyLarge),
+
                     Text(
                       "${controller.salesAmount.value - controller.deductionAmount.value}",
+                      style: Get.textTheme.bodyLarge,
                     ),
                   ],
                 ),
@@ -1218,68 +1219,110 @@ class NewSalesView extends StatelessWidget {
   }
 
   Widget _buildCustomerDropdown() {
-    return DropdownButtonFormField<int>(
-      decoration: const InputDecoration(
-        labelText: 'Customer',
-        border: OutlineInputBorder(),
-      ),
-      value: controller.selectedCustomer.value,
-      onChanged: (value) => controller.selectedCustomer.value = value,
-      items: controller.customerList.map((customer) {
-        return DropdownMenuItem<int>(
-          value: customer.id,
-          child: Text(customer.name),
-        );
-      }).toList(),
-      validator: (value) => value == null ? 'Please select a customer' : null,
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: AppStyle.decoration.copyWith(
+              color: const Color.fromARGB(137, 221, 234, 234),
+              boxShadow: const [],
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            height: 55,
+            child: DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                hintText: 'Customer',
+                border: InputBorder.none,
+              ),
+              value: controller.selectedCustomer.value,
+              onChanged: (value) => controller.selectedCustomer.value = value,
+              items: controller.customerList.map((customer) {
+                return DropdownMenuItem<int>(
+                  value: customer.id,
+                  child: Text(customer.name),
+                );
+              }).toList(),
+              // validator: (value) => value == null ? 'Please select a customer' : null,
+            ),
+          ),
+        ),
+            IconButton(
+          onPressed: () {
+            Get.toNamed(
+              '/add-vendor-customer',
+              // arguments: {"type": 'vendor'},
+            )?.then((result) {
+              controller.fetchCustomerList();
+            });
+          },
+          icon: Icon(Icons.add),
+        ),
+      ],
     );
   }
 
   Widget _buildDatePicker() {
-    return InkWell(
-      onTap: () async {
-        final selected = await showDatePicker(
-          context: Get.context!,
-          initialDate: controller.selectedDate.value,
-          firstDate: DateTime(2000),
-          lastDate: DateTime.now(),
-        );
-        if (selected != null) {
-          controller.selectedDate.value = selected;
-        }
-      },
-      child: InputDecorator(
-        decoration: const InputDecoration(
-          labelText: 'Date',
-          border: OutlineInputBorder(),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '${controller.selectedDate.value.day}/${controller.selectedDate.value.month}/${controller.selectedDate.value.year}',
-            ),
-            const Icon(Icons.calendar_today),
-          ],
+    return Container(
+      decoration: AppStyle.decoration.copyWith(
+        color: const Color.fromARGB(137, 221, 234, 234),
+        boxShadow: const [],
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      height: 55,
+      child: InkWell(
+        onTap: () async {
+          final selected = await showDatePicker(
+            context: Get.context!,
+            initialDate: controller.selectedDate.value,
+            firstDate: DateTime(2000),
+            lastDate: DateTime.now(),
+          );
+          if (selected != null) {
+            controller.selectedDate.value = selected;
+          }
+        },
+        child: InputDecorator(
+          decoration: const InputDecoration(
+            hintText: 'Date',
+            border: InputBorder.none,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${controller.selectedDate.value.day}/${controller.selectedDate.value.month}/${controller.selectedDate.value.year}',
+              ),
+              const Icon(Icons.calendar_today),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildSalesQuantityField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Sales Quantity',
-        border: OutlineInputBorder(),
+    return Container(
+      decoration: AppStyle.decoration.copyWith(
+        color: const Color.fromARGB(137, 221, 234, 234),
+        boxShadow: const [],
       ),
-      keyboardType: TextInputType.number,
-      onChanged: (value) {
-        controller.salesQuantity.value = int.tryParse(value);
-        controller.salesAmount.value =
-            (controller.quantityAmount.value * controller.salesQuantity.value!);
-      },
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter quantity' : null,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      height: 55,
+      child: TextFormField(
+        decoration: const InputDecoration(
+          labelText: 'Sales Quantity',
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          controller.salesQuantity.value = int.tryParse(value);
+          controller.salesAmount.value =
+              (controller.quantityAmount.value *
+              controller.salesQuantity.value!);
+        },
+        validator: (value) =>
+            value == null || value.isEmpty ? 'Please enter quantity' : null,
+      ),
     );
   }
 
@@ -1296,36 +1339,28 @@ class NewSalesView extends StatelessWidget {
   }
 
   Widget _buildQuantityAmountField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Amount per unit*',
-        border: OutlineInputBorder(),
+    return Container(
+      decoration: AppStyle.decoration.copyWith(
+        color: const Color.fromARGB(137, 221, 234, 234),
+        boxShadow: const [],
       ),
-      keyboardType: TextInputType.number,
-      onChanged: (value) {
-        controller.quantityAmount.value = int.tryParse(value)!;
-        controller.salesAmount.value =
-            (controller.quantityAmount.value * controller.salesQuantity.value!);
-      },
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter amount' : null,
-    );
-  }
-
-  Widget _buildSalesAmountField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Sales Amount',
-        border: OutlineInputBorder(),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      height: 55,
+      child: TextFormField(
+        decoration: const InputDecoration(
+          labelText: 'Amount per unit*',
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          controller.quantityAmount.value = int.tryParse(value)!;
+          controller.salesAmount.value =
+              (controller.quantityAmount.value *
+              controller.salesQuantity.value!);
+        },
+        validator: (value) =>
+            value == null || value.isEmpty ? 'Please enter amount' : null,
       ),
-      enabled: false,
-      keyboardType: TextInputType.number,
-      onChanged: (value) {
-        controller.salesAmount.value = int.tryParse(value) ?? 0;
-        controller.calculateTotalDeduction();
-      },
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter sales amount' : null,
     );
   }
 
@@ -1365,9 +1400,15 @@ class NewSalesView extends StatelessWidget {
           ),
         ),
         Obx(
-          () => Text(
-            'Total Deduction: ₹${controller.deductionAmount.value}',
-            style: Get.textTheme.bodyLarge,
+          () => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Total Deduction:', style: Get.textTheme.bodyLarge),
+              Text(
+                controller.deductionAmount.value.toString(),
+                style: Get.textTheme.bodyLarge,
+              ),
+            ],
           ),
         ),
       ],
@@ -1375,26 +1416,42 @@ class NewSalesView extends StatelessWidget {
   }
 
   Widget _buildAmountPaidField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Amount Paid',
-        border: OutlineInputBorder(),
+    return Container(
+      decoration: AppStyle.decoration.copyWith(
+        color: const Color.fromARGB(137, 221, 234, 234),
+        boxShadow: const [],
       ),
-      keyboardType: TextInputType.number,
-      onChanged: (value) => controller.amountPaid.value = value,
-      validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter amount paid' : null,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      height: 55,
+      child: TextFormField(
+        decoration: const InputDecoration(
+          hintText: 'Amount Paid',
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (value) => controller.amountPaid.value = value,
+        validator: (value) =>
+            value == null || value.isEmpty ? 'Please enter amount paid' : null,
+      ),
     );
   }
 
   Widget _buildDescriptionField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Description',
-        border: OutlineInputBorder(),
+    return Container(
+      decoration: AppStyle.decoration.copyWith(
+        color: const Color.fromARGB(137, 221, 234, 234),
+        boxShadow: const [],
       ),
-      maxLines: 3,
-      onChanged: (value) => controller.description.value = value,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+
+      child: TextFormField(
+        decoration: const InputDecoration(
+          hintText: 'Description',
+          border: InputBorder.none,
+        ),
+        maxLines: 3,
+        onChanged: (value) => controller.description.value = value,
+      ),
     );
   }
 
@@ -1444,13 +1501,8 @@ class _NewEditSalesViewState extends State<NewEditSalesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text('Edit Sales Entry'),
-      ),
+      appBar: CustomAppBar(title: 'Edit Sale Details', showBackButton: true),
+
       body: Obx(() {
         if (controller.isLoading.value &&
             controller.salesDetail.value == null) {
@@ -1534,7 +1586,7 @@ class _NewEditSalesViewState extends State<NewEditSalesView> {
   Widget _buildCustomerDropdown() {
     return DropdownButtonFormField<int>(
       decoration: const InputDecoration(
-        labelText: 'Customer',
+        hintText: 'Customer',
         border: OutlineInputBorder(),
       ),
       value: controller.selectedCustomer.value,
@@ -1554,7 +1606,7 @@ class _NewEditSalesViewState extends State<NewEditSalesView> {
       onTap: () async {
         final selected = await showDatePicker(
           context: Get.context!,
-          initialDate: controller.selectedDate.value ?? DateTime.now(),
+          initialDate: controller.selectedDate.value,
           firstDate: DateTime(2000),
           lastDate: DateTime.now(),
         );
@@ -1564,7 +1616,7 @@ class _NewEditSalesViewState extends State<NewEditSalesView> {
       },
       child: InputDecorator(
         decoration: const InputDecoration(
-          labelText: 'Date',
+          hintText: 'Date',
           border: OutlineInputBorder(),
         ),
         child: Row(
@@ -1583,7 +1635,7 @@ class _NewEditSalesViewState extends State<NewEditSalesView> {
   Widget _buildSalesQuantityField() {
     return TextFormField(
       decoration: const InputDecoration(
-        labelText: 'Sales Quantity',
+        hintText: 'Sales Quantity',
         border: OutlineInputBorder(),
       ),
       keyboardType: TextInputType.number,
@@ -1797,15 +1849,26 @@ class AddDeductionView extends StatelessWidget {
             ),
           if (controller.isNewResion.value)
             Expanded(
-              child: TextFormField(
-                controller: _reasonController,
-                decoration: const InputDecoration(
-                  labelText: 'Reason for Deduction',
-                  border: OutlineInputBorder(),
+              child: Container(
+                decoration: AppStyle.decoration.copyWith(
+                  color: const Color.fromARGB(137, 221, 234, 234),
+                  boxShadow: const [],
                 ),
-                validator: (value) => value == null || value.isEmpty
-                    ? 'Please enter a reason'
-                    : null,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                height: 55,
+                child: TextFormField(
+                  controller: _reasonController,
+                  decoration: const InputDecoration(
+                    hintText: 'Reason for Deduction',
+                    border: InputBorder.none,
+                  ),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter a reason'
+                      : null,
+                ),
               ),
             ),
           IconButton.filled(
@@ -1820,26 +1883,34 @@ class AddDeductionView extends StatelessWidget {
   }
 
   Widget _buildChargesInput() {
-    return TextFormField(
-      controller: _chargesController,
-      decoration: const InputDecoration(
-        labelText: 'Deduction Amount',
-        border: OutlineInputBorder(),
+    return Container(
+      decoration: AppStyle.decoration.copyWith(
+        color: const Color.fromARGB(137, 221, 234, 234),
+        boxShadow: const [],
       ),
-      keyboardType: TextInputType.number,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter deduction amount';
-        }
-        final amount = double.tryParse(value);
-        if (amount == null || amount <= 0) {
-          return 'Deduction must be greater than 0';
-        }
-        if (_selectedType.value == '2' && amount > 100) {
-          return 'Percentage cannot exceed 100%';
-        }
-        return null;
-      },
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      height: 55,
+      child: TextFormField(
+        controller: _chargesController,
+        decoration: const InputDecoration(
+          hintText: 'Deduction Amount',
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter deduction amount';
+          }
+          final amount = double.tryParse(value);
+          if (amount == null || amount <= 0) {
+            return 'Deduction must be greater than 0';
+          }
+          if (_selectedType.value == '2' && amount > 100) {
+            return 'Percentage cannot exceed 100%';
+          }
+          return null;
+        },
+      ),
     );
   }
 
@@ -1895,4 +1966,177 @@ class AddDeductionView extends StatelessWidget {
       ),
     );
   }
+}
+
+// NewSalesController
+class AddDocumentRepository {
+  final HttpService _httpService = Get.find<HttpService>();
+
+  Future<List<DropdownItem>> getDocumentTypes() async {
+    final response = await _httpService.get('/document_categories');
+    final jsonData = json.decode(response.body);
+    return (jsonData['data'] as List)
+        .map((item) => DropdownItem.fromJson(item))
+        .toList();
+  }
+}
+
+class AddDocumentController extends GetxController {
+  final AddDocumentRepository _salesRepository =
+      Get.find<AddDocumentRepository>();
+  Rx<DocumentAdd?> documents = Rx<DocumentAdd?>(null);
+  RxBool isNewResion = false.obs;
+  var docTypeList = <DropdownItem>[].obs;
+  final Rx<DropdownItem> selectedResion = DropdownItem(id: 0, name: '').obs;
+  Future<void> fetchReasons() async {
+    try {
+      final response = await _salesRepository.getDocumentTypes();
+      docTypeList.assignAll(response);
+      if (docTypeList.isNotEmpty) {
+        selectedResion.value = docTypeList.first;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Failed to fetch reasons: $e');
+    }
+  }
+
+  void changeResion(DropdownItem crop) {
+    selectedResion.value = crop;
+  }
+}
+
+class AddDocumentView extends StatefulWidget {
+  const AddDocumentView({super.key});
+
+  @override
+  State<AddDocumentView> createState() => _AddDocumentViewState();
+}
+
+class _AddDocumentViewState extends State<AddDocumentView> {
+  final AddDocumentController controller = Get.find<AddDocumentController>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _textController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
+        title: const Text('Add Deduction'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Reason Input
+              _buildReasonInput(),
+              const SizedBox(height: 16),
+              // Add Button
+              _buildAddButton(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReasonInput() {
+    return Obx(() {
+      return Row(
+        children: [
+          if (!controller.isNewResion.value)
+            Expanded(
+              child: MyDropdown(
+                items: controller.docTypeList,
+                selectedItem: controller.selectedResion.value,
+                onChanged: (land) => controller.changeResion(land!),
+                label: 'Reason*',
+                // disable: isEditing,
+              ),
+            ),
+          if (controller.isNewResion.value)
+            Expanded(
+              child: Container(
+                decoration: AppStyle.decoration.copyWith(
+                  color: const Color.fromARGB(137, 221, 234, 234),
+                  boxShadow: const [],
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                height: 55,
+                child: TextFormField(
+                  controller: _textController,
+                  decoration: const InputDecoration(
+                    hintText: 'Reason for Deduction',
+                    border: InputBorder.none,
+                  ),
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Please enter a reason'
+                      : null,
+                ),
+              ),
+            ),
+          IconButton.filled(
+            onPressed: () {
+              controller.isNewResion.value = !controller.isNewResion.value;
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget _buildAddButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            final documents = DocumentAdd(
+              documents: [],
+              fileType: controller.selectedResion.value.id,
+              isNew: controller.isNewResion.value,
+              newFileType: _textController.text,
+            );
+
+            Get.back(result: documents.toJson());
+          }
+        },
+        child: const Text('Add Deduction'),
+      ),
+    );
+  }
+}
+
+class DocumentAdd {
+  final int? fileType;
+  final bool isNew;
+  final String? newFileType;
+  final List? documents;
+
+  DocumentAdd({
+    this.fileType,
+    this.isNew = false,
+    this.newFileType,
+    this.documents,
+  });
+
+  Map<String, dynamic> toJson() => {
+    if (isNew) "file_type": fileType,
+    if (isNew) "new_file_type": newFileType,
+    "documents": documents ?? [],
+  };
 }

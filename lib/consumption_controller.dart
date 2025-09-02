@@ -51,13 +51,17 @@ class ConsumptionController extends GetxController {
 
   void setInventoryType(int typeId) {
     selectedInventoryType.value = typeId;
+
     selectedInventoryCategory.value = null;
+    inventoryCategories.clear();
     selectedInventoryItem.value = null;
+    inventoryItems.clear();
   }
 
   void setInventoryCategory(int categoryId) {
     selectedInventoryCategory.value = categoryId;
-    selectedInventoryItem.value = null;
+   selectedInventoryItem.value = null;
+    inventoryItems.clear();
   }
 
   void setInventoryItem(int itemId) {

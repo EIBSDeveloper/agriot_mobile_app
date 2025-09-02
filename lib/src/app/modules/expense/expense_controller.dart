@@ -66,7 +66,13 @@ class ExpenseController extends GetxController {
       }
       // final summary = await _repository.getExpenseSummary(selectedPeriod.value);
       // expenseSummary.assignAll(summary);
-      cardexpenses.clear();
+    
+
+      final response = await _repository.getExpenses(selectedPeriod.value);
+      expenses.assignAll(response.expenses);
+      purchases.assignAll(response.purchases);
+
+        cardexpenses.clear();
       final summary = await _repository.getExpenseSummary(selectedPeriod.value);
 
       cardexpenses.addAll(summary);
@@ -74,10 +80,6 @@ class ExpenseController extends GetxController {
         0,
         (sum, item) => sum + item.total_amount,
       );
-
-      final response = await _repository.getExpenses(selectedPeriod.value);
-      expenses.assignAll(response.expenses);
-      purchases.assignAll(response.purchases);
     } catch (e) {
      showError('Error', );
     } finally {

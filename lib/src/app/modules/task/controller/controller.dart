@@ -272,16 +272,16 @@ class TaskController extends GetxController {
     allTasks.addAll(
       _getTasksFromDateTasks(taskResponse.value!.waitingTasks, dateString),
     );
-    // allTasks.addAll(
-    //   _getTasksFromDateTasks(taskResponse.value!.cancelledTasks, dateString),
-    // );
-    // allTasks.addAll(
-    //   _getTasksFromDateTasks(taskResponse.value!.pendingTasks, dateString),
-    // );
-    // allTasks.addAll(
-    //   _getTasksFromDateTasks(taskResponse.value!.inProgressTasks, dateString),
-    // );
-    // update();
+    allTasks.addAll(
+      _getTasksFromDateTasks(taskResponse.value!.cancelledTasks, dateString),
+    );
+    allTasks.addAll(
+      _getTasksFromDateTasks(taskResponse.value!.pendingTasks, dateString),
+    );
+    allTasks.addAll(
+      _getTasksFromDateTasks(taskResponse.value!.inProgressTasks, dateString),
+    );
+    update();
     return _applyFilter(allTasks);
   }
 

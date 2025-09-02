@@ -22,7 +22,7 @@ class CropOverviewScreen extends StatefulWidget {
 
 class _CropOverviewScreenState extends State<CropOverviewScreen> {
   final CropDetailsController controller = Get.find();
-
+  final CropDetailsController cropDetailsController = Get.find();
   final int landId = Get.arguments['landId'];
 
   final int cropId = Get.arguments['cropId'];
@@ -34,12 +34,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     controller.cropId.value = cropId;
     controller.fetchCropOverview();
     controller.loadTasks();
+    cropDetailsController.fetchCropDetails(landId, cropId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Crop Overview', showBackButton: true),
+      appBar: CustomAppBar(title: 'Crop Details', showBackButton: true),
       body: Obx(() {
         if (controller.isOverviewLoading.value) {
           return Center(child: CircularProgressIndicator());
@@ -55,7 +56,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Crop Info Section
-              _buildCropInfoSection(overview, cropId),
+              _buildCropInfoSection(),
               SizedBox(height: 10),
               // Statistics Section
               _buildStatisticsSection(overview),
@@ -72,36 +73,165 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     );
   }
 
-  Widget _buildCropInfoSection(CropOverview overview, int cropId) {
-    return InkWell(
-      onTap: () => Get.toNamed(
-        '/crop-detail',
-        arguments: {'landId': landId, 'cropId': cropId},
-      ),
-      child: Card(
-        elevation: 1,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(overview.crop.imageUrl ?? ''),
-                child: overview.crop.imageUrl == null
-                    ? Icon(Icons.agriculture, size: 30)
-                    : null,
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(overview.crop.name, style: Get.textTheme.titleLarge),
-                  Text(overview.land.name),
-                ],
-              ),
-              Spacer(),
-            ],
+  Widget _buildCropInfoSection() {
+    return Obx(() {
+      if (cropDetailsController.isDetailsLoading.value) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (cropDetailsController.details.value == null) {
+        return Center(child: Text('No crop details available'));
+      }
+
+      final crop = cropDetailsController.details.value;
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Crop Info Section
+          _buildCropInfo(crop),
+         
+          // Crop Details
+          _buildCropDetailsSection(crop),
+          
+          // Survey Details
+          _buildSurveyDetailsSection(crop),
+         
+          // Location
+          // _buildLocationSection(crop),
+        ],
+      );
+    });
+  }
+
+  Widget _buildCropInfo(MyCropDetails? details) {
+    return Stack(
+      children: [
+        Card(
+          elevation: 1,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+
+                  backgroundImage: NetworkImage(details!.imageUrl!),
+                  child: details.imageUrl!.isEmpty
+                      ? Icon(Icons.agriculture, size: 30)
+                      : null,
+                ),
+                SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${details.crop!.name} (Day - ${cropDetailsController.getDaysSincePlantation(details.plantationDate)})',
+                      style: Get.textTheme.titleLarge,
+                    ),
+                    Text(details.land!.name!),
+                  ],
+                ),
+              ],
+            ),
           ),
+        ),
+        Positioned(
+          top: 8,
+          right: 8,
+          child: IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () =>
+                Get.toNamed(
+                  Routes.addCrop,
+                  arguments: {'landId': landId, 'cropId': cropId},
+                )?.then((rturn) {
+                  cropDetailsController.fetchCropDetails(landId, cropId);
+                }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCropDetailsSection(MyCropDetails? details) {
+    return Card(
+      elevation: 1,
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Crop Details', style: Get.textTheme.titleLarge),
+            SizedBox(height: 10),
+            _buildDetailRow('Crop Type', details!.cropType!.name!),
+            _buildDetailRow('Harvest Frequency', details.harvestingType!.name!),
+            _buildDetailRow(
+              'Plantation Date',
+              details.plantationDate.toString(),
+            ),
+            _buildDetailRow(
+              'Measurement',
+              '${details.measurementValue} ${details.measurementUnit!.name}',
+            ),
+            // _buildDetailRow('Patta Number', '${details.} '),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              label,
+              style: Get.textTheme.titleMedium!.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Expanded(flex: 3, child: Text(value, style: Get.textTheme.bodyLarge)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSurveyDetailsSection(MyCropDetails? details) {
+    if (details!.surveyDetails!.isEmpty) return SizedBox();
+
+    return Card(
+      elevation: 1,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+
+        child: ExpansionTile(
+          title: Text('Survey Details (${details.surveyDetails!.length})'),
+          children: [
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text('Survey No')),
+                  DataColumn(label: Text('Area')),
+                ],
+                rows: details.surveyDetails!.map((survey) {
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(survey.surveyNo!)),
+                      DataCell(
+                        Text(
+                          '${survey.measurementValue} ${survey.measurementUnit}',
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
         ),
       ),
     );

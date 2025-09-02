@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
+import '../../../../widgets/input_card_style.dart';
 import '../../../near_me/views/widget/widgets.dart';
 import '../../../registration/model/crop_model.dart';
 import '../../../registration/model/dropdown_item.dart';
@@ -76,7 +77,8 @@ class CropViewPage extends GetView<CropController> {
               _buildMeasurementSection(),
               _buildTextField(
                 controller: controller.descriptionController,
-                label: 'Description',maxLines:4,
+                label: 'Description',
+                maxLines: 4,
                 // validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
               SizedBox(height: 16),
@@ -101,16 +103,12 @@ class CropViewPage extends GetView<CropController> {
     required String label,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
-    bool readOnly = false,int? maxLines,
+    bool readOnly = false,
+    int? maxLines,
     VoidCallback? onTap,
   }) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-  
+    return InputCardStyle(
+      noHeight: true,
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
@@ -119,7 +117,7 @@ class CropViewPage extends GetView<CropController> {
           isDense: true,
           suffixIcon: readOnly ? Icon(Icons.location_on) : null,
         ),
-        maxLines: maxLines??1,
+        maxLines: maxLines ?? 1,
         validator: validator,
         keyboardType: keyboardType,
         readOnly: readOnly,
@@ -208,12 +206,7 @@ class CropViewPage extends GetView<CropController> {
 
   Widget _buildPlantationDateField(BuildContext context) {
     return Obx(() {
-      return Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      return InputCardStyle(
         child: TextFormField(
           readOnly: true,
           decoration: InputDecoration(
@@ -244,15 +237,7 @@ class CropViewPage extends GetView<CropController> {
           children: [
             Expanded(
               flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
+              child: InputCardStyle(
                 child: TextFormField(
                   controller: controller.measurementController,
                   decoration: InputDecoration(
@@ -269,21 +254,14 @@ class CropViewPage extends GetView<CropController> {
             Expanded(
               flex: 2,
               child: Obx(() {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(137, 221, 234, 234),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
+                return InputCardStyle(
                   child: DropdownButtonFormField<DropdownItem>(
                     value: controller.selectedMeasurementUnit.value,
                     decoration: InputDecoration(
-                      labelText: 'Unit *',
+                      hintText: 'Unit *',
                       border: InputBorder.none,
                     ),
+                    isExpanded : true,
                     items: controller.landUnits.isNotEmpty
                         ? [
                             ...controller.landUnits.map((unit) {
@@ -300,7 +278,6 @@ class CropViewPage extends GetView<CropController> {
                   ),
                 );
               }),
-             
             ),
           ],
         ),

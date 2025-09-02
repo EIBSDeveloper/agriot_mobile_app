@@ -95,6 +95,7 @@ class VendorCustomerRepository {
     final farmerId = _appDataController.userId;
     try {
       var json2 = formData.toJson();
+      json2['farmer'] ="${farmerId}";
       final response = await _httpService.post('/add_vendor/$farmerId', json2);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body)['id'] ?? 0;
@@ -110,12 +111,15 @@ class VendorCustomerRepository {
     final farmerId = _appDataController.userId;
     try {
       var json2 = formData.toJson();
+      json2["is_customer_is_vendor"]="yes";
+      
       final response = await _httpService.post(
         '/add_customer/$farmerId',
         json2,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return json.decode(response.body)['id'] ?? 0;
+        var decode = json.decode(response.body);
+        return decode['id'] ?? 0;
       } else {
         throw Exception('Failed to add customer/vendor');
       }

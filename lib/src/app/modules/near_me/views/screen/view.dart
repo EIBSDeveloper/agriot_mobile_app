@@ -18,10 +18,10 @@ class NearMeScreen extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 8),
             child: Row(
               children: [
-                Expanded(child: Text("Near me")),
+                // Expanded(child: Text("Near me")),
                 Expanded(
                   child: Obx(() {
                     return LandDropdown(
@@ -97,7 +97,7 @@ class MarketListScreen extends StatelessWidget {
           Expanded(
             child: Obx(
               () => ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                // padding: EdgeInsets.symmetric(horizontal: 16),
                 itemCount: controller.filteredMarkets.length,
                 itemBuilder: (context, index) {
                   final market = controller.filteredMarkets[index];

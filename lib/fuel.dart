@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'common.dart';
 import 'src/app/controller/app_controller.dart';
 import 'src/app/utils/http/http_service.dart';
-import 'src/core/app_style.dart';
+import 'src/app/widgets/input_card_style.dart';
 import 'src/routes/app_routes.dart';
 
 class FuelPurchase {
@@ -100,7 +100,6 @@ class FuelType {
 
 class FuelController extends GetxController {
   final FuelRepository _repository = Get.find();
-  final CommonControllers _commonControllers = Get.find();
 
   // Fuel Types List
   var fuelTypes = <FuelType>[].obs;
@@ -484,7 +483,7 @@ class FuelBindings extends Bindings {
 class FuelListScreen extends StatelessWidget {
   final FuelController controller = Get.find();
 
-   FuelListScreen({super.key});
+  FuelListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -614,7 +613,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
       controller.setFormData(controller.selectedFuelPurchase.value!);
     } else {
       controller.clearForm();
-      commonControllers.fetchVendors(); 
+      commonControllers.fetchVendors();
       commonControllers.fetchInventoryItems(inventoryItemId);
     }
 
@@ -696,13 +695,8 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
               SizedBox(height: 16),
 
               // Fuel Category (read-only)
-             Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+               InputCardStyle(
+         
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Fuel Category'.tr,
@@ -769,13 +763,8 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
               SizedBox(height: 16),
 
               // Purchase Amount
-            Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+              InputCardStyle(
+         
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Purchase Amount'.tr,
@@ -784,7 +773,9 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                   ),
                   keyboardType: TextInputType.number,
                   controller:
-                      TextEditingController(text: controller.purchaseAmount.value)
+                      TextEditingController(
+                          text: controller.purchaseAmount.value,
+                        )
                         ..selection = TextSelection.collapsed(
                           offset: controller.purchaseAmount.value.length,
                         ),
@@ -803,12 +794,8 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
               SizedBox(height: 16),
 
               // Quantity
-              Container( decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+               InputCardStyle(
+         
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Quantity (Litre)'.tr,
@@ -871,12 +858,8 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
               SizedBox(height: 16),
 
               // Description
-              Container( decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+              InputCardStyle(
+         
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Description'.tr,
@@ -930,7 +913,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
 class FuelPurchaseDetailsScreen extends StatelessWidget {
   final FuelController controller = Get.find();
 
-   FuelPurchaseDetailsScreen({super.key});
+  FuelPurchaseDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

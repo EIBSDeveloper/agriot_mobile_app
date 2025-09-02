@@ -212,7 +212,7 @@ class DashboardView extends GetView<DashboardController> {
                     ),
                     Expanded(
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           Get.to(PayablesReceivablesPage());
                         },
                         child: Padding(
@@ -304,7 +304,7 @@ class DashboardView extends GetView<DashboardController> {
     return (controller.financeData.value != null ||
             controller.landVSCropData.value != null)
         ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -316,32 +316,32 @@ class DashboardView extends GetView<DashboardController> {
                           : 'monthly_based_graph'.tr,
                     ),
                   ),
-                
+
                   Row(
                     children: [
-                         IconButton(
-                    onPressed: () {
-                      controller.idlandVSCropGraph.value =
-                          !controller.idlandVSCropGraph.value;
-                    },
-                    icon: Icon(Icons.keyboard_arrow_left),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      controller.idlandVSCropGraph.value =
-                          !controller.idlandVSCropGraph.value;
-                    },
-                    icon: Icon(Icons.keyboard_arrow_right),
-                  ),
+                      IconButton(
+                        onPressed: () {
+                          controller.idlandVSCropGraph.value =
+                              !controller.idlandVSCropGraph.value;
+                        },
+                        icon: Icon(Icons.keyboard_arrow_left),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          controller.idlandVSCropGraph.value =
+                              !controller.idlandVSCropGraph.value;
+                        },
+                        icon: Icon(Icons.keyboard_arrow_right),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // if (controller.financeData.value?.totalExpenses == 0 &&   controller.financeData.value?.totalSales == 0)
-                Expanded(
+                  Expanded(
                     child: (controller.idlandVSCropGraph.value)
                         ? ScrollableBarChart(
                             data: controller.landVSCropData.value!,
@@ -418,8 +418,8 @@ class DashboardView extends GetView<DashboardController> {
                             ),
                           ),
                   ),
+
                   // if (controller.financeData.value?.totalExpenses == 0 &&    controller.financeData.value?.totalSales == 0)
-                 
                 ],
               ),
             ],

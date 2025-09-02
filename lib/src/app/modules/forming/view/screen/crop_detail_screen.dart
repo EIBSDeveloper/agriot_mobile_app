@@ -16,7 +16,7 @@ class CropDetailScreen extends StatefulWidget {
 }
 
 class _CropDetailScreenState extends State<CropDetailScreen> {
-  final CropDetailsController controller = Get.find();
+  final CropDetailsController cropDetailsController = Get.find();
 
   final int landId = Get.arguments['landId'];
   final int cropId = Get.arguments['cropId'];
@@ -24,7 +24,7 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
   @override
   void initState() {
     super.initState();
-    controller.fetchCropDetails(landId, cropId);
+    cropDetailsController.fetchCropDetails(landId, cropId);
   }
 
   @override
@@ -33,31 +33,24 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
       appBar: CustomAppBar(
         title: 'Crop Details ',
         showBackButton: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              controller.deleteCrop(controller.details.value!.id!);
-            },
-            icon: Icon(Icons.delete),
-          ),
-        ],
+        actions: [],
       ),
       body: Obx(() {
-        if (controller.isDetailsLoading.value) {
+        if (cropDetailsController.isDetailsLoading.value) {
           return Center(child: CircularProgressIndicator());
         }
-        if (controller.details.value == null) {
+        if (cropDetailsController.details.value == null) {
           return Center(child: Text('No crop details available'));
         }
 
-        final crop = controller.details.value;
+        final crop = cropDetailsController.details.value;
         return SingleChildScrollView(
           padding: EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Crop Info Section
-              _buildCropInfoSection(crop),
+              _buildCropInfo(crop),
               SizedBox(height: 10),
               // Crop Details
               _buildCropDetailsSection(crop),
@@ -74,7 +67,7 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
     );
   }
 
-  Widget _buildCropInfoSection(MyCropDetails? details) {
+  Widget _buildCropInfo(MyCropDetails? details) {
     return Stack(
       children: [
         Card(
@@ -96,7 +89,7 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${details.crop!.name} (Day - ${controller.getDaysSincePlantation(details.plantationDate)})',
+                      '${details.crop!.name} (Day - ${cropDetailsController.getDaysSincePlantation(details.plantationDate)})',
                       style: Get.textTheme.titleLarge,
                     ),
                     Text(details.land!.name!),
@@ -205,33 +198,4 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
       ),
     );
   }
-
-  //   Widget _buildLocationSection(CropLandDetails land) {
-  //     return Card(
-  //       child: Padding(
-  //         padding: EdgeInsets.all(16),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text('Location', style: Get.textTheme.titleLarge),
-  //             SizedBox(height: 10),
-
-  //             SizedBox(height: 10),
-  //             Container(
-  //               height: 200,
-  //               decoration: BoxDecoration(
-  //                 border: Border.all(color: Colors.grey),
-  //                 borderRadius: BorderRadius.circular(8),
-  //               ),
-  //               child: Center(
-  //                 // child: Text(
-  //                 //   'Map View\nLat: ${land.latitude}, Lng: ${land.longitude}',
-  //                 // ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
 }

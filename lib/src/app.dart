@@ -41,13 +41,22 @@ class _AppState extends State<App> {
       },
     );
 
-    await _requestNotificationPermission();
+    await requestNotificationPermission();
   }
 
-  Future<void> _requestNotificationPermission() async {
+  Future<void> requestNotificationPermission() async {
     if (Platform.isAndroid) {
       if (await Permission.notification.isDenied) {
         await Permission.notification.request();
+      }
+      await Permission.storage.request();
+      var status = await Permission.location.request();
+      if (status.isGranted) {
+        print("Location permission granted");
+      } else if (status.isDenied) {
+        print("Location permission denied");
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings(); // take user to settings
       }
     } else if (Platform.isIOS) {
       await flutterLocalNotificationsPlugin

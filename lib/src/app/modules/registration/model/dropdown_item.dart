@@ -1,5 +1,9 @@
-class DropdownItem {
+import '../../task/view/screens/screen.dart';
+
+class DropdownItem extends NamedItem{
+  @override
   final int id;
+    @override
   final String name;
   final String? description;
 

@@ -11,6 +11,7 @@ import '../../../controller/app_controller.dart';
 import '../model/document_model.dart';
 import '../model/dropdown_item.dart';
 import '../model/survey_model.dart';
+import '../repostrory/address_service.dart';
 import '../repostrory/crop_service.dart';
 import '../repostrory/land_service.dart';
 import '../view/screen/location_picker_view.dart';
@@ -146,6 +147,7 @@ class RegLandController extends GetxController {
 
         locationListController.text = location.toString();
       }
+    update();
     } catch (e) {
       showError('Failed to pick location');
     }
@@ -207,16 +209,14 @@ class RegLandController extends GetxController {
         "measurement_unit": selectedLandUnit.value?.id,
         if (selectedSoilType.value?.id != null)
           "soil_type": selectedSoilType.value?.id,
-        "country": Get.find<KycController>().selectedCountry.value?.id??1,
-        "state": Get.find<KycController>().selectedState.value?.id??1,
-        "city": Get.find<KycController>().selectedCity.value?.id??1,
-        "taluk": Get.find<KycController>().selectedTaluk.value?.id??1,
-        "village": Get.find<KycController>().selectedVillage.value?.id??1,
+        "country": Get.find<KycController>().selectedCountry.value?.id ?? 1,
+        "state": Get.find<KycController>().selectedState.value?.id ?? 1,
+        "city": Get.find<KycController>().selectedCity.value?.id ?? 1,
+        "taluk": Get.find<KycController>().selectedTaluk.value?.id ?? 1,
+        "village": Get.find<KycController>().selectedVillage.value?.id ?? 1,
         "door_no": Get.find<KycController>().doorNoController.text.trim(),
-        "locations": "${latitude.value} , ${longitude.value} ",
+        "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
         "geo_marks": convertLatLngListToMap(landCoordinates),
-        "latitude": latitude.value,
-        "longitude": longitude.value,
         if (pattaNoController.text.isNotEmpty)
           "patta_number": pattaNoController.text.trim(),
         if (surveyItems.isNotEmpty) ...surveyDetails,

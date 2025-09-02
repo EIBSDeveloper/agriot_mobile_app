@@ -4,11 +4,10 @@ import 'package:argiot/src/app/modules/expense/expense_controller.dart';
 import 'package:argiot/src/app/modules/expense/expense_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:pie_chart/pie_chart.dart';
 
-import '../../../core/app_style.dart';
+import '../../widgets/input_card_style.dart';
 import '../../widgets/title_text.dart';
 
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
@@ -86,7 +85,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               onTap: () {
                 Get.back();
 
-                Get.toNamed("/addExpense");
+                Get.toNamed("/addExpense")?.then((res){
+                    controller.loadExpenseData();
+                  });
               },
             ),
             ListTile(
@@ -100,7 +101,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               onTap: () {
                 Get.back();
 
-                Get.toNamed("/purchaseItems");
+                Get.toNamed("/purchaseItems")?.then((res){
+                     controller.loadExpenseData();
+                  });
               },
             ),
             SizedBox(height: 100),
@@ -119,12 +122,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         // ),
         Expanded(
-          child: Container(
-            decoration: AppStyle.decoration.copyWith(
-              color: const Color.fromARGB(137, 221, 234, 234),
-              boxShadow: const [],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: InputCardStyle(
             child: Text(
               "Total Expenses\n₹ ${controller.totalExpense.value.toStringAsFixed(0)}",
               textAlign: TextAlign.center,
@@ -132,15 +130,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             ),
           ),
         ),
-
+        SizedBox(width: 10),
         Expanded(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: AppStyle.decoration.copyWith(
-              color: const Color.fromARGB(137, 221, 234, 234),
-              boxShadow: const [],
-            ),
+          child: InputCardStyle(
             // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
@@ -259,16 +251,6 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
     });
   }
 
-  Color _getColorForCategory(String category) {
-    final colors = [
-      Colors.blue,
-      Colors.green,
-      Colors.orange,
-      Colors.red,
-      Colors.purple,
-    ];
-    return colors[category.hashCode % colors.length];
-  }
 
   Widget _buildTabBar() {
     return Row(
@@ -333,7 +315,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             margin: EdgeInsets.symmetric(vertical: 4),
             child: ListTile(
               title: Text(
-                '${_formatDate(item.createdDay)} - ${item.typeExpenses.name}',
+                '${item.createdDay} - ${item.typeExpenses.name}',
               ),
               subtitle: Text(item.myCrop.name),
               trailing: Text(
@@ -346,12 +328,13 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           );
         } else if (item is Purchase) {
           return Card(
+            elevation: 1,
             margin: EdgeInsets.symmetric(vertical: 4),
             child: ListTile(
               title: Text(
-                '${_formatDate(item.dateOfConsumption)} - ${item.inventoryItems.name}',
+                '${item.dateOfConsumption} - ${item.inventoryItems.name}',
               ),
-              subtitle: Text('Quantity: ${item.quantity}'),
+              subtitle: Text('Quantity: ${item.availableQuans}'),
               trailing: Text(
                 '₹${item.purchaseAmount}',
                 style: Get.textTheme.titleMedium?.copyWith(
@@ -367,11 +350,11 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
     );
   }
 
-  String _formatDate(String date) {
-    try {
-      return DateFormat('MMM dd').format(DateTime.parse(date));
-    } catch (e) {
-      return date;
-    }
-  }
+  // String _formatDate(String date) {
+  //   try {
+  //     return DateFormat('MMM dd').format(DateTime.parse(date));
+  //   } catch (e) {
+  //     return date;
+  //   }
+  // }
 }

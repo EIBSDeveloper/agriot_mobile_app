@@ -216,7 +216,9 @@ class RegCropController extends GetxController {
 
       final http.Response response = await _cropService.addCrop(request);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        Get.back();
+        // Get.back();
+      ResgisterController registerController = Get.find();
+      registerController.moveNextPage();
         showSuccess('Success');
       } else {
         showError(json.decode(response.body)["message"]);
@@ -224,8 +226,6 @@ class RegCropController extends GetxController {
 
       // // Navigate to next screen or back
 
-      ResgisterController registerController = Get.find();
-      registerController.moveNextPage();
     } catch (e) {
       showError('Error');
     } finally {

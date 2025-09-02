@@ -10,8 +10,6 @@ import '../../../../../core/app_style.dart';
 import '../../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../near_me/views/widget/widgets.dart';
-import '../../../registration/model/address_model.dart';
-import '../../../registration/view/widget/searchable_dropdown.dart';
 import '../../controller/controller.dart';
 import '../../model/model.dart';
 
@@ -562,136 +560,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
       ),
     );
   }
-
-  Widget _buildCountryDropdown() {
-    return Obx(() {
-      if (controller.isLoadingCountries.value) {
-        return _buildLoadingDropdown('Loading countries...');
-      }
-      return SearchableDropdown<CountryModel>(
-        label: 'Country *',
-        items: controller.countries,
-        selectedItem: controller.selectedCountry.value,
-        displayItem: (country) => country.name!,
-        onChanged: (value) => controller.selectedCountry.value = value,
-        validator: (value) => value == null ? 'Required field' : null,
-      );
-    });
-  }
-
-  Widget _buildStateDropdown() {
-    return Obx(() {
-      if (controller.selectedCountry.value == null) {
-        return _buildDisabledDropdown('Select country first');
-      }
-      if (controller.isLoadingStates.value) {
-        return _buildLoadingDropdown('Loading states...');
-      }
-      return SearchableDropdown<StateModel>(
-        label: 'State *',
-        items: controller.states,
-        selectedItem: controller.selectedState.value,
-        displayItem: (state) => state.name!,
-        onChanged: (value) => controller.selectedState.value = value,
-        validator: (value) => value == null ? 'Required field' : null,
-      );
-    });
-  }
-
-  Widget _buildCityDropdown() {
-    return Obx(() {
-      if (controller.selectedState.value == null) {
-        return _buildDisabledDropdown('Select state first');
-      }
-      if (controller.isLoadingCities.value) {
-        return _buildLoadingDropdown('Loading cities...');
-      }
-      return SearchableDropdown<CityModel>(
-        label: 'District *',
-        items: controller.cities,
-        selectedItem: controller.selectedCity.value,
-        displayItem: (city) => city.name!,
-        onChanged: (value) => controller.selectedCity.value = value,
-        validator: (value) => value == null ? 'Required field' : null,
-      );
-    });
-  }
-
-  Widget _buildTalukDropdown() {
-    return Obx(() {
-      if (controller.selectedCity.value == null) {
-        return _buildDisabledDropdown('Select city first');
-      }
-      if (controller.isLoadingTaluks.value) {
-        return _buildLoadingDropdown('Loading taluks...');
-      }
-      return SearchableDropdown<TalukModel>(
-        label: 'Taluk *',
-        items: controller.taluks,
-        selectedItem: controller.selectedTaluk.value,
-        displayItem: (taluk) => taluk.name!,
-        onChanged: (value) => controller.selectedTaluk.value = value,
-        validator: (value) => value == null ? 'Required field' : null,
-      );
-    });
-  }
-
-  Widget _buildVillageDropdown() {
-    return Obx(() {
-      if (controller.selectedTaluk.value == null) {
-        return _buildDisabledDropdown('Select taluk first');
-      }
-      if (controller.isLoadingVillages.value) {
-        return _buildLoadingDropdown('Loading villages...');
-      }
-      return SearchableDropdown<VillageModel>(
-        label: 'Village *',
-        items: controller.villages,
-        selectedItem: controller.selectedVillage.value,
-        displayItem: (village) => village.name!,
-        onChanged: (value) => controller.selectedVillage.value = value,
-        validator: (value) => value == null ? 'Required field' : null,
-      );
-    });
-  }
-
-  Widget _buildLoadingDropdown(String text) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: text,
-        border: OutlineInputBorder(),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(text),
-          const SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDisabledDropdown(String text) {
-    return InputDecorator(
-      decoration: InputDecoration(
-        labelText: text,
-        border: OutlineInputBorder(),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(text),
-          const Icon(Icons.arrow_drop_down, color: Colors.grey),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton() {
+Widget _buildSubmitButton() {
     return Obx(() {
       return SizedBox(
         width: double.infinity,

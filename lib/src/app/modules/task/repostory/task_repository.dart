@@ -162,6 +162,7 @@ class TaskRepository {
     int cropId,
     String startDate,
     String description,
+    int scheduleStatus
   ) async {
     final farmerId = _appDataController.userId;
     try {
@@ -178,7 +179,7 @@ class TaskRepository {
         'my_crop': cropId,
         'start_date': formattedDate,
         'description': description,
-        'schedule_status': 2,
+        'schedule_status': scheduleStatus,
         'schedule_choice': 0,
       });
     } catch (e) {

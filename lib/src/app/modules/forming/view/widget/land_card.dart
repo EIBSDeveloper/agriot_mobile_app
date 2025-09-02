@@ -66,7 +66,7 @@ class LandCard extends StatelessWidget {
                           ),
                           SizedBox(height: 4),
                           Text(
-                            '${land.village.name} • ${land.measurementValue} ${land.measurementUnit.name}',
+                            '${land.measurementValue} ${land.measurementUnit.name}',
                             style: TextStyle(color: Colors.black),
                           ),
                         ],
@@ -128,7 +128,6 @@ class LandCard extends StatelessWidget {
                         TextButton(
                           onPressed: () {
                             PackageUsage? package = findLimit();
-
                             if (package!.cropBalance > 0) {
                               Get.toNamed(Routes.addCrop, arguments: land.id);
                             } else {

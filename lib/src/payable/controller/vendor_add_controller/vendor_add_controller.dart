@@ -16,25 +16,24 @@ class VendorAddController extends GetxController {
 
   // Add Vendor Payable
   Future<void> addVendorPayable({
-   
     required int vendorId,
     required int fuelPurchaseId,
     required String date,
     required double amount,
-    required String description, required String type,
+    required String description,
+    required String type,
   }) async {
     isLoading.value = true;
 
     try {
-     await repository.createVendorPayable(
-      
+      await repository.createVendorPayable(
         vendorId: vendorId,
         fuelPurchaseId: fuelPurchaseId,
-        date: date,    type: type,
+        date: date,
+        type: type,
         paymentAmount: amount,
         description: description,
       );
-
 
       Get.snackbar(
         "Success",
@@ -58,25 +57,24 @@ class VendorAddController extends GetxController {
 
   // Add Vendor Receivable
   Future<void> addVendorReceivable({
-    
     required int vendorId,
     required int fuelPurchaseId,
     required String date,
     required double amount,
-    required String description,required String type,
+    required String description,
+    required String type,
   }) async {
     isLoading.value = true;
 
     try {
       final response = await repository.createVendorReceivable(
-       
         vendorId: vendorId,
         fuelPurchaseId: fuelPurchaseId,
-        date: date, type: type,
+        date: date,
+        type: type,
         paymentAmount: amount,
         description: description,
       );
-
 
       Get.snackbar(
         "Success",

@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCre9zjD8tVtNX9MC58MLkxW1TKm2UwHUI',
-    appId: '1:617838270571:android:166db805325fc10618f92e',
-    messagingSenderId: '617838270571',
-    projectId: 'farmerapp-8f691',
-    storageBucket: 'farmerapp-8f691.firebasestorage.app',
+    apiKey: 'AIzaSyAFhajRJEWrHyL4ChMiOYQqNDD6XkPXOlE',
+    appId: '1:498296743350:android:9902113b00d4c37f014d17',
+    messagingSenderId: '498296743350',
+    projectId: 'tes21-d2190',
+    storageBucket: 'tes21-d2190.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDyGcBcds4Y-K439CDRqQZnqKBKSzMSXH4',
-    appId: '1:617838270571:ios:d015be35a386f8d918f92e',
-    messagingSenderId: '617838270571',
-    projectId: 'farmerapp-8f691',
-    storageBucket: 'farmerapp-8f691.firebasestorage.app',
-    iosClientId: '617838270571-grf7opm7f3a9vkihhsgral3gjjp1a59o.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDx-vv6Q105TE7bX4sj61PquCU5zMlXsOo',
+    appId: '1:498296743350:ios:ed84ab8a2afe967b014d17',
+    messagingSenderId: '498296743350',
+    projectId: 'tes21-d2190',
+    storageBucket: 'tes21-d2190.firebasestorage.app',
     iosBundleId: 'com.example.argiot',
   );
+
 }

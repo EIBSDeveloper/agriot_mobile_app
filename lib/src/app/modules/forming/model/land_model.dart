@@ -3,7 +3,7 @@ import 'land_detail_model.dart';
 class Land {
   final int id;
   final String name;
-  final Village village;
+  // final Village village;
   final double measurementValue;
   final MeasurementUnit measurementUnit;
   final int landCropCount;
@@ -12,7 +12,7 @@ class Land {
   Land({
     required this.id,
     required this.name,
-    required this.village,
+    // required this.village,
     required this.measurementValue,
     required this.measurementUnit,
     required this.landCropCount,
@@ -23,7 +23,7 @@ class Land {
     return Land(
       id: json['id'],
       name: json['name'],
-      village: Village.fromJson(json['village']),
+      // village: Village.fromJson(json['village']),
       measurementValue: json['measurement_value'].toDouble(),
       measurementUnit: MeasurementUnit.fromJson(json['measurement_unit']),
       landCropCount: json['land_crop_count'],

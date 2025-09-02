@@ -134,8 +134,8 @@ class FarmerUsageResponse {
 
   factory FarmerUsageResponse.fromJson(Map<String, dynamic> json) {
     return FarmerUsageResponse(
-      name: json['farmer']['name'] ?? '',
-      packageDetails: (json['farmer']['package_details'] as List)
+      name: json ['name'] ?? '',
+      packageDetails: (json ['package_details'] as List)
           .map((detail) => PackageUsage.fromJson(detail))
           .toList().first,
     );

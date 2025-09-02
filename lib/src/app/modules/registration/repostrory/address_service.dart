@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
 
+String generateGoogleMapsUrl(double latitude, double longitude) {
+  return "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
+}
+
 class FarmerRepository {
   final HttpService _httpService = Get.find();
   final AppDataController appData = Get.find();
@@ -20,6 +24,8 @@ class FarmerRepository {
     required int village,
     required String doorNo,
     required String pincode,
+    required double latitude,
+    required double longitude,
     String? description,
     String? img,
     required String companyName,
@@ -39,6 +45,7 @@ class FarmerRepository {
         "village": village,
         "door_no": doorNo,
         "pincode": pincode,
+        "locations": generateGoogleMapsUrl(latitude, longitude),
         "description": description ?? '',
         if (img != null) "img": img,
         "company_name": companyName,

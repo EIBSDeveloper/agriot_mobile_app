@@ -1,12 +1,11 @@
-// lib/app/modules/guidelines/models/inventory_model.dart
-
 import 'package:argiot/src/app/modules/inventory/model/inventory_model.dart';
 import 'package:argiot/src/app/modules/inventory/repostory/inventory_repository.dart';
+import 'package:argiot/src/app/widgets/location_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../../../routes/app_routes.dart';
 import '../../../controller/user_limit.dart';
-import '../../subscription/package_model.dart';
 
 class InventoryController extends GetxController {
   final InventoryRepository _repository = InventoryRepository();
@@ -33,7 +32,6 @@ class InventoryController extends GetxController {
         msg: "Failed to load inventory: ${e.toString()}",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-     
       );
     } finally {
       isLoading(false);
@@ -41,12 +39,15 @@ class InventoryController extends GetxController {
   }
 
   void navigateToAddInventory() {
- PackageUsage packageDetails2 = usage.usage.value!.packageDetails;
-packageDetails2.landBalance;
-    Get.toNamed('/add-inventory');
+    Get.toNamed(Routes.fuelConsumption)?.then((res) {
+      loadInventory();
+    });
   }
 
-  void navigateToCategoryDetail(String category) {
-    // Implement navigation to category detail if needed
+  void navigateToCategoryDetail(String category, int id) {
+    Get.toNamed(
+      '/consumption-purchase',
+      arguments: {"id": id, "type": category},
+    );
   }
 }

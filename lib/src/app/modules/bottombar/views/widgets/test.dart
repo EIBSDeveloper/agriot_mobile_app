@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_images.dart';
 import '../../../../../routes/app_routes.dart';
+import '../../../../../utils.dart';
 import '../../contoller/user_profile_controller.dart';
 
 class ProfileAppBar extends GetView<UserProfileController>
@@ -35,6 +36,7 @@ class ProfileAppBar extends GetView<UserProfileController>
         ),
         IconButton(
           onPressed: () {
+            packageRefresh();
             Get.toNamed(Routes.profile);
           },
           icon: Icon(
@@ -46,51 +48,51 @@ class ProfileAppBar extends GetView<UserProfileController>
     );
   }
 
-void showLanguageDialog() {
-  Locale currentLocale = Get.locale ?? const Locale('en', 'US');
-  String selectedValue = currentLocale.languageCode;
+  void showLanguageDialog() {
+    Locale currentLocale = Get.locale ?? const Locale('en', 'US');
+    String selectedValue = currentLocale.languageCode;
 
-  Get.defaultDialog(
-    title: 'choose_language'.tr,
-    content: StatefulBuilder(
-      builder: (context, setState) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile(
-              title: const Text('English'),
-              value: 'en',
-              groupValue: selectedValue,
-              onChanged: (value) {
-                setState(() => selectedValue = value!);
-                Get.updateLocale(const Locale('en', 'US'));
-                Get.back();
-              },
-            ),
-            RadioListTile(
-              title: const Text('Tamil'),
-              value: 'ta',
-              groupValue: selectedValue,
-              onChanged: (value) {
-                setState(() => selectedValue = value!);
-                Get.updateLocale(const Locale('ta', 'IN'));
-                Get.back();
-              },
-            ),
-            RadioListTile(
-              title: const Text('Hindi'),
-              value: 'hi',
-              groupValue: selectedValue,
-              onChanged: (value) {
-                setState(() => selectedValue = value!);
-                Get.updateLocale(const Locale('hi', 'IN'));
-                Get.back();
-              },
-            ),
-          ],
-        );
-      },
-    ),
-  );
-}
+    Get.defaultDialog(
+      title: 'choose_language'.tr,
+      content: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile(
+                title: const Text('English'),
+                value: 'en',
+                groupValue: selectedValue,
+                onChanged: (value) {
+                  setState(() => selectedValue = value!);
+                  Get.updateLocale(const Locale('en', 'US'));
+                  Get.back();
+                },
+              ),
+              RadioListTile(
+                title: const Text('Tamil'),
+                value: 'ta',
+                groupValue: selectedValue,
+                onChanged: (value) {
+                  setState(() => selectedValue = value!);
+                  Get.updateLocale(const Locale('ta', 'IN'));
+                  Get.back();
+                },
+              ),
+              RadioListTile(
+                title: const Text('Hindi'),
+                value: 'hi',
+                groupValue: selectedValue,
+                onChanged: (value) {
+                  setState(() => selectedValue = value!);
+                  Get.updateLocale(const Locale('hi', 'IN'));
+                  Get.back();
+                },
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }

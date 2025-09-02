@@ -347,23 +347,6 @@ class CropView extends GetView<RegCropController> {
     );
   }
 
-  Widget _buildLoadingCard(String text) {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text(text),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class SurveyDropdown extends StatelessWidget {

@@ -1,42 +1,42 @@
 import 'dart:convert';
 import 'package:argiot/consumption_controller.dart';
 import 'package:argiot/consumption_model.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
-import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'src/app/widgets/input_card_style.dart';
+
 class ConsumptionView extends StatelessWidget {
-  final ConsumptionController _controller = Get.put(
-    ConsumptionController(),
-  );
+  final ConsumptionController _controller = Get.put(ConsumptionController());
 
   ConsumptionView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Consumption'.tr)),
+      appBar: CustomAppBar(title: 'Consumption'.tr),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildDatePicker(),
-              SizedBox(height: 16),
-              _buildCropDropdown(),
-              SizedBox(height: 16),
               _buildInventoryTypeDropdown(),
               SizedBox(height: 16),
               _buildInventoryCategoryDropdown(),
               SizedBox(height: 16),
               _buildInventoryItemDropdown(),
               SizedBox(height: 16),
+              _buildDatePicker(),
+              SizedBox(height: 16),
+              _buildCropDropdown(),
+              SizedBox(height: 16),
               _buildQuantityField(),
               SizedBox(height: 16),
-              _buildDocumentsSection(),
-              SizedBox(height: 16),
+              // _buildDocumentsSection(),
+              // SizedBox(height: 16),
               _buildDescriptionField(),
               SizedBox(height: 24),
               _buildSaveButton(),
@@ -49,13 +49,7 @@ class ConsumptionView extends StatelessWidget {
 
   Widget _buildDatePicker() {
     return Obx(
-      () => Container(
-        decoration: AppStyle.decoration.copyWith(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          boxShadow: const [],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        height: 55,
+      () => InputCardStyle(
         child: TextFormField(
           decoration: InputDecoration(
             hintText: 'Date'.tr,
@@ -98,13 +92,7 @@ class ConsumptionView extends StatelessWidget {
 
   Widget _buildInventoryTypeDropdown() {
     return Obx(
-      () => Container(
-        decoration: AppStyle.decoration.copyWith(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          boxShadow: const [],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        height: 55,
+      () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
             hintText: 'Inventory Type'.tr,
@@ -130,13 +118,7 @@ class ConsumptionView extends StatelessWidget {
 
   Widget _buildInventoryCategoryDropdown() {
     return Obx(
-      () => Container(
-        decoration: AppStyle.decoration.copyWith(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          boxShadow: const [],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        height: 55,
+      () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
             hintText: 'Inventory Category'.tr,
@@ -164,13 +146,7 @@ class ConsumptionView extends StatelessWidget {
 
   Widget _buildInventoryItemDropdown() {
     return Obx(
-      () => Container(
-        decoration: AppStyle.decoration.copyWith(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          boxShadow: const [],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        height: 55,
+      () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
             hintText: 'Inventory Item'.tr,
@@ -195,13 +171,7 @@ class ConsumptionView extends StatelessWidget {
   }
 
   Widget _buildQuantityField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'Quantity (Liter)'.tr,
@@ -213,45 +183,41 @@ class ConsumptionView extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Documents'.tr, style: Get.textTheme.titleLarge),
-        SizedBox(height: 8),
-        DocumentPickerWidget(
-          onDocumentAdded: _controller.addDocument,
-          onDocumentRemoved: _controller.removeDocument,
-        ),
-        SizedBox(height: 8),
-        Obx(
-          () => Column(
-            children: _controller.documents.asMap().entries.map((entry) {
-              final index = entry.key;
-              final document = entry.value;
-              return ListTile(
-                title: Text('Document ${index + 1}'),
-                subtitle: Text('Files: ${document.documents.length}'),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () => _controller.removeDocument(index),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildDocumentsSection() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text('Documents'.tr, style: Get.textTheme.titleLarge),
+  //       SizedBox(height: 8),
+  //       DocumentPickerWidget(
+  //         onDocumentAdded: _controller.addDocument,
+  //         onDocumentRemoved: _controller.removeDocument,
+  //       ),
+  //       SizedBox(height: 8),
+  //       Obx(
+  //         () => Column(
+  //           children: _controller.documents.asMap().entries.map((entry) {
+  //             final index = entry.key;
+  //             final document = entry.value;
+  //             return ListTile(
+  //               title: Text('Document ${index + 1}'),
+  //               subtitle: Text('Files: ${document.documents.length}'),
+  //               trailing: IconButton(
+  //                 icon: Icon(Icons.delete),
+  //                 onPressed: () => _controller.removeDocument(index),
+  //               ),
+  //             );
+  //           }).toList(),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _buildDescriptionField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
+      noHeight: true,
+
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'Description'.tr,
@@ -282,7 +248,6 @@ class ConsumptionView extends StatelessWidget {
     );
   }
 }
-
 
 class DocumentPickerWidget extends StatefulWidget {
   final Function(Document) onDocumentAdded;
@@ -364,13 +329,7 @@ class _DocumentPickerWidgetState extends State<DocumentPickerWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Obx(
-          () => Container(
-            decoration: AppStyle.decoration.copyWith(
-              color: const Color.fromARGB(137, 221, 234, 234),
-              boxShadow: const [],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            height: 55,
+          () => InputCardStyle(
             child: DropdownButtonFormField<int>(
               decoration: InputDecoration(
                 hintText: 'Document Category',
@@ -401,16 +360,7 @@ class _DocumentPickerWidgetState extends State<DocumentPickerWidget> {
             children: [
               SizedBox(height: 10),
 
-              Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                height: 55,
+              InputCardStyle(
                 child: TextFormField(
                   decoration: InputDecoration(
                     hintText: 'New Document Category',
@@ -479,5 +429,3 @@ class _DocumentPickerWidgetState extends State<DocumentPickerWidget> {
     );
   }
 }
-
-

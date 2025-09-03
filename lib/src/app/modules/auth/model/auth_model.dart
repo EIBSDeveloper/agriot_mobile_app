@@ -10,6 +10,7 @@ GetOtp getOtpFromJson(String str) => GetOtp.fromJson(json.decode(str));
 class GetOtp {
   String ?message;
   bool? user;
+  int? userId;
   bool? details;
   bool? land;
   bool? crop;
@@ -19,6 +20,7 @@ class GetOtp {
   GetOtp({
      this.message,
      this.user,
+     this.userId,
     required this.details,
     required this.land,
     required this.crop,
@@ -31,11 +33,12 @@ class GetOtp {
     return GetOtp(
     message: json["message"],
     user: json["user"],
+    userId: farmer["id"],
     details: json["details"],
     land: json["land"],
     crop: json["crop"],
     language: Language.fromJson(farmer["language"]),
-    otp: farmer["otp"],
+    otp: int.tryParse(farmer["otp"].toString())??0,
   );}
 
 

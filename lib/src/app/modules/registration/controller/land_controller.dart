@@ -27,16 +27,16 @@ class RegLandController extends GetxController {
   final locationListController = TextEditingController();
   final RxList<LatLng?> landCoordinates = <LatLng>[].obs;
   // Dropdown values
-  final RxList<DropdownItem> landUnits = <DropdownItem>[].obs;
-  final RxList<DropdownItem> soilTypes = <DropdownItem>[].obs;
-  final RxList<DropdownItem> areaUnits = <DropdownItem>[].obs;
-  final RxList<DropdownItem> documentTypes = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> soilTypes = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> areaUnits = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> documentTypes = <AppDropdownItem>[].obs;
 
   // Selected values
-  final Rx<DropdownItem?> selectedLandUnit = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedSoilType = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedAreaUnit = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedDocType = Rx<DropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedAreaUnit = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedDocType = Rx<AppDropdownItem?>(null);
 
   // Location
   final RxDouble latitude = 0.0.obs;

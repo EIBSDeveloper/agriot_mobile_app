@@ -1,262 +1,36 @@
-[
-  {
-    "Endpoint Name": "Fuel View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_myfuel/<Farmer Id>/",
-    "Request Body": {
-      "my_fuel": 9
-    },
-    "Response Body": {
-      "fuel_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "fuel_id": 9,
-        "quantity": 20.0,
-        "purchase_amount": 300.0,
-        "description": "Add Fuel",
-        "date": "2025-03-25",
-        "inventory_item": { "id": 6, "name": "MMFuel" },
-        "inventory_type": { "id": 6, "name": "Fuel" },
-        "inventory_category": { "id": 6, "name": "MFuel" },
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "documents": [
-          {
-            "category_id": 4,
-            "documents": [
-              {
-                "id": 1,
-                "document_category": { "id": 4, "name": "Expense" },
-                "upload_document": "http://192.168.3.24:1710/SuperAdmin/media/myFuel_documents/fuel_1_4_0.png"
-              },
-              {
-                "id": 2,
-                "document_category": { "id": 4, "name": "Expense" },
-                "upload_document": "http://192.168.3.24:1710/SuperAdmin/media/myFuel_documents/fuel_1_4_1.jpeg"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Machinery View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_my_machinery/<Farmer Id>/",
-    "Request Body": {
-      "my_machinery": 9
-    },
-    "Response Body": {
-      "machinery_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "machinery_id": 9,
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "inventory_item": { "id": 2, "name": "TNAU Regional Research Station" },
-        "inventory_type": { "id": 2, "name": "Machinery" },
-        "inventory_category": { "id": 2, "name": "NNNMachinery" },
-        "machinery_type": 1,
-        "fuel_capacity": 20.0,
-        "purchase_amount": 300.0,
-        "warranty_start_date": "2025-03-25",
-        "warranty_end_date": "2025-03-25",
-        "description": "Add Machinery",
-        "status": 0,
-        "available_quantity": "180.00",
-        "documents": [
-          {
-            "id": 13,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/myMachinary_documents/machinery_1_4_0_4xDsAOx.png",
-            "file_type": "Expense"
-          },
-          {
-            "id": 14,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/myMachinary_documents/machinery_1_4_1_HSQ9Egp.jpeg",
-            "file_type": "Expense"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Pesticides View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_my_pesticides/<Farmer Id>/",
-    "Request Body": {
-      "my_pesticides": 14
-    },
-    "Response Body": {
-      "pesticides_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "pesticides_id": 14,
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "inventory_item": { "id": 4, "name": "Packaging Costs" },
-        "inventory_type": { "id": 4, "name": "Pesticides" },
-        "inventory_category": { "id": 4, "name": "MPesticides" },
-        "quantity": 30.0,
-        "quantity_unit": { "id": 1, "name": "Pieces" },
-        "purchase_amount": 300.0,
-        "description": "Add Pesticides",
-        "status": 0,
-        "available_quantity": 290.0,
-        "documents": [
-          {
-            "id": 9,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/mypesticides_documents/pesticide_1_4_0_umQhajW.png",
-            "file_type": { "id": 4, "name": "Expense" }
-          },
-          {
-            "id": 10,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/mypesticides_documents/pesticide_1_4_1_w1amnJZ.jpeg",
-            "file_type": { "id": 4, "name": "Expense" }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Seeds View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_my_seeds/<Farmer Id>/",
-    "Request Body": {
-      "my_seeds": 1
-    },
-    "Response Body": {
-      "seeds_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "seeds_id": 1,
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "inventory_item": { "id": 7, "name": "MMSeeds" },
-        "inventory_type": { "id": 7, "name": "Seeds" },
-        "inventory_category": { "id": 7, "name": "MSeeds" },
-        "quantity": "5.00",
-        "quantity_unit": { "id": 3, "name": "Numbers " },
-        "purchase_amount": "5000.00",
-        "description": "",
-        "status": 0,
-        "available_quantity": "5.00",
-        "documents": [
-          {
-            "id": 1,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/myseeds_documents/tea_img.png",
-            "file_type": { "id": 2, "name": "Salesssss" }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Vehicle View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_myvehicle/<Farmer Id>/",
-    "Request Body": {
-      "my_vehicle": 1
-    },
-    "Response Body": {
-      "vehicle_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "vehicle_id": 1,
-        "register_number": "10165484",
-        "owner_name": "New",
-        "running_kilometer": 100.0,
-        "purchase_amount": 1000.0,
-        "insurance": false,
-        "description": "",
-        "status": 0,
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "inventory_item": { "id": 1, "name": "Department of Agriculture" },
-        "inventory_type": { "id": 1, "name": "Vehicle" },
-        "inventory_category": { "id": 1, "name": "new Vehicle" },
-        "documents": []
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Fertilizers View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_my_fertilizers/<Farmer Id>/",
-    "Request Body": {
-      "my_fertilizers": 1
-    },
-    "Response Body": {
-      "fertilizers_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "fertilizer_id": 1,
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "inventory_item": { "id": 5, "name": "Fuel" },
-        "inventory_type": { "id": 5, "name": "Fertilizers" },
-        "inventory_category": { "id": 5, "name": "MFertilizers" },
-        "quantity": 5.0,
-        "quantity_unit": { "id": 1, "name": "Pieces" },
-        "purchase_amount": 500.0,
-        "description": "",
-        "status": 0,
-        "available_quantity": 5.0,
-        "documents": [
-          {
-            "id": 1,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/myfertilizers_documents/fruits_img.png",
-            "file_type": { "id": 4, "name": "Expense" }
-          }
-        ]
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Tools View",
-    "HTTP Method": "POST",
-    "URL Path": "/get_my_tools/<Farmer Id>/",
-    "Request Body": {
-      "my_tools": 1
-    },
-    "Response Body": {
-      "tools_data": {
-        "farmer": { "id": 1, "name": "Dharshan" },
-        "tools_id": 1,
-        "vendor": { "id": 1, "name": "Updated Vendor Name" },
-        "inventory_item": { "id": 3, "name": "Acre" },
-        "inventory_type": { "id": 3, "name": "Tools" },
-        "inventory_category": { "id": 3, "name": "MTools" },
-        "quantity": 10.0,
-        "purchase_amount": 200.0,
-        "description": "",
-        "status": 0,
-        "available_quantity": 10.0,
-        "documents": [
-          {
-            "id": 1,
-            "document_name": "http://192.168.3.24:1710/SuperAdmin/media/myTools_documents/coffee_img_bXlCwX1.png",
-            "file_type": "Expense"
-          }
-        ]
-      }
-    }
-  },
-  {
-    "Endpoint Name": "Fuel Edit",
-    "HTTP Method": "PUT",
-    "URL Path": "/update_fuel/<Farmer Id>/",
-    "Request Body": {
-      "fuel_id": 10,
-      "date_of_consumption": "2025-02-16",
-      "vendor": 1,
-      "inventory_type": 6,
-      "inventory_category": 6,
-      "inventory_items": 6,
-      "quantity": 100,
-      "purchase_amount": 2500,
-      "description": "Updated fuel record.",
-      "documents": [
+{
+  "farmer_id": 1,
+  "date_of_consumption": "2025-03-26",
+  "vendor": 2,
+  "inventory_type": 1,
+  "inventory_category": 1,
+  "inventory_items": 1,
+  "register_number": "ABC1234",
+  "owner_name": "John Doe",
+  "date_of_registration": "2025-01-15",
+  "registration_valid_till": "2026-01-15",
+  "engine_number": "ENG123456",
+  "chasis_number": "CHS123456789",
+  "running_kilometer": 15000.50,
+  "service_frequency": 1000,
+  "service_frequency_unit": 0,  // 0: kilometers, 1: days, etc.
+  "fuel_capacity": 50.75,
+  "average_mileage": 15.25,
+  "purchase_amount": 200000.00,
+  "insurance": true,
+  "company_name": "Insurance Co.",
+  "insurance_no": "INS123456",
+  "insurance_amount": 5000.00,
+  "insurance_start_date": "2025-02-01",
+  "insurance_end_date": "2026-02-01",
+  "insurance_renewal_date": "2025-12-01",
+  "description": "This is a test vehicle for farming operations.",
+  "documents": [
         {
-          "id": 9,
-          "file_type": 3,
-          "documents": [
-            "data:image/png;base64,iVBORw0rkJggg=="
-          ]
+        "file_type": 2,  
+        "documents": [
+          "data:image/png;base64,/9j/2wDR80CF/9k=", 
+            "data:image/jpeg;base64,/9j/2wBgBlKDR80qFCEIIw5BBCF/9k="]
         }
-      ]
-    },
-    "Response Body": {
-      "success": true,
-      "message": "Fuel updated successfully!"
-    }
-  }
-]
+    ]
+}

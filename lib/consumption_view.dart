@@ -1,16 +1,16 @@
-import 'dart:convert';
+
 import 'package:argiot/consumption_controller.dart';
-import 'package:argiot/consumption_model.dart';
+
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 import 'src/app/widgets/input_card_style.dart';
 
+// consumption_view.dart
 class ConsumptionView extends StatelessWidget {
-  final ConsumptionController _controller = Get.put(ConsumptionController());
+  final ConsumptionController _controller = Get.find<ConsumptionController>();
 
   ConsumptionView({super.key});
 
@@ -23,20 +23,32 @@ class ConsumptionView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              _buildDatePicker(),
+              SizedBox(height: 16),
+              _buildCropDropdown(),
+              
+              SizedBox(height: 16),
               _buildInventoryTypeDropdown(),
               SizedBox(height: 16),
               _buildInventoryCategoryDropdown(),
               SizedBox(height: 16),
               _buildInventoryItemDropdown(),
               SizedBox(height: 16),
-              _buildDatePicker(),
-              SizedBox(height: 16),
-              _buildCropDropdown(),
-              SizedBox(height: 16),
               _buildQuantityField(),
               SizedBox(height: 16),
-              // _buildDocumentsSection(),
-              // SizedBox(height: 16),
+              // Conditional fields based on inventory type
+              Obx(() => _controller.requiresUsageHours ? _buildUsageHoursField() : SizedBox.shrink()),
+              Obx(() => _controller.requiresUsageHours ? SizedBox(height: 16) : SizedBox.shrink()),
+              
+              Obx(() => _controller.requiresKilometerFields ? _buildStartKilometerField() : SizedBox.shrink()),
+              Obx(() => _controller.requiresKilometerFields ? SizedBox(height: 16) : SizedBox.shrink()),
+              
+              Obx(() => _controller.requiresKilometerFields ? _buildEndKilometerField() : SizedBox.shrink()),
+              Obx(() => _controller.requiresKilometerFields ? SizedBox(height: 16) : SizedBox.shrink()),
+              
+              Obx(() => _controller.requiresToolItems ? _buildToolItemsField() : SizedBox.shrink()),
+              Obx(() => _controller.requiresToolItems ? SizedBox(height: 16) : SizedBox.shrink()),
+              
               _buildDescriptionField(),
               SizedBox(height: 24),
               _buildSaveButton(),
@@ -58,9 +70,7 @@ class ConsumptionView extends StatelessWidget {
           ),
           readOnly: true,
           controller: TextEditingController(
-            text: _controller.selectedDate.value.toLocal().toString().split(
-              ' ',
-            )[0],
+            text: _controller.selectedDate.value.toLocal().toString().split(' ')[0],
           ),
           onTap: () async {
             final DateTime? picked = await showDatePicker(
@@ -85,7 +95,6 @@ class ConsumptionView extends StatelessWidget {
         selectedItem: _controller.selectedCropType.value,
         onChanged: (land) => _controller.changeCrop(land!),
         label: 'crop'.tr,
-        // disable: isEditing,
       );
     });
   }
@@ -174,7 +183,7 @@ class ConsumptionView extends StatelessWidget {
     return InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: 'Quantity (Liter)'.tr,
+          hintText: 'Quantity'.tr,
           border: InputBorder.none,
         ),
         keyboardType: TextInputType.number,
@@ -183,41 +192,60 @@ class ConsumptionView extends StatelessWidget {
     );
   }
 
-  // Widget _buildDocumentsSection() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text('Documents'.tr, style: Get.textTheme.titleLarge),
-  //       SizedBox(height: 8),
-  //       DocumentPickerWidget(
-  //         onDocumentAdded: _controller.addDocument,
-  //         onDocumentRemoved: _controller.removeDocument,
-  //       ),
-  //       SizedBox(height: 8),
-  //       Obx(
-  //         () => Column(
-  //           children: _controller.documents.asMap().entries.map((entry) {
-  //             final index = entry.key;
-  //             final document = entry.value;
-  //             return ListTile(
-  //               title: Text('Document ${index + 1}'),
-  //               subtitle: Text('Files: ${document.documents.length}'),
-  //               trailing: IconButton(
-  //                 icon: Icon(Icons.delete),
-  //                 onPressed: () => _controller.removeDocument(index),
-  //               ),
-  //             );
-  //           }).toList(),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildUsageHoursField() {
+    return InputCardStyle(
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: 'Usage Hours'.tr,
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: _controller.setUsageHours,
+      ),
+    );
+  }
+
+  Widget _buildStartKilometerField() {
+    return InputCardStyle(
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: 'Start Kilometer'.tr,
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: _controller.setStartKilometer,
+      ),
+    );
+  }
+
+  Widget _buildEndKilometerField() {
+    return InputCardStyle(
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: 'End Kilometer'.tr,
+          border: InputBorder.none,
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: _controller.setEndKilometer,
+      ),
+    );
+  }
+
+  Widget _buildToolItemsField() {
+    return InputCardStyle(
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: 'Tool Items'.tr,
+          border: InputBorder.none,
+        ),
+        onChanged: _controller.setToolItems,
+      ),
+    );
+  }
 
   Widget _buildDescriptionField() {
     return InputCardStyle(
       noHeight: true,
-
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'Description'.tr,
@@ -245,187 +273,6 @@ class ConsumptionView extends StatelessWidget {
             ? CircularProgressIndicator()
             : Text('Save'.tr),
       ),
-    );
-  }
-}
-
-class DocumentPickerWidget extends StatefulWidget {
-  final Function(Document) onDocumentAdded;
-  final Function(int) onDocumentRemoved;
-
-  const DocumentPickerWidget({
-    super.key,
-    required this.onDocumentAdded,
-    required this.onDocumentRemoved,
-  });
-
-  @override
-  _DocumentPickerWidgetState createState() => _DocumentPickerWidgetState();
-}
-
-class _DocumentPickerWidgetState extends State<DocumentPickerWidget> {
-  final ConsumptionController _controller = Get.find();
-  final Rx<int?> _selectedDocType = Rx<int?>(null);
-
-  final RxString _newDocType = RxString('');
-  final RxList<String> _selectedFiles = RxList<String>();
-
-  final ImagePicker _picker = ImagePicker();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<void> _pickImage() async {
-    try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image != null) {
-        final bytes = await image.readAsBytes();
-        final base64Image =
-            'data:image/${image.path.split('.').last};base64,${base64Encode(bytes)}';
-        _selectedFiles.add(base64Image);
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to pick image');
-    }
-  }
-
-  void _addDocument() {
-    if (_selectedFiles.isEmpty) {
-      Get.snackbar('Error', 'Please select at least one file');
-      return;
-    }
-
-    Document document;
-    if (_selectedDocType.value != null) {
-      document = Document(
-        fileType: _selectedDocType.value,
-        documents: _selectedFiles.toList(),
-      );
-    } else if (_newDocType.value.isNotEmpty) {
-      document = Document(
-        newFileType: _newDocType.value,
-        documents: _selectedFiles.toList(),
-      );
-    } else {
-      Get.snackbar('Error', 'Please select or enter a document type');
-      return;
-    }
-
-    widget.onDocumentAdded(document);
-    _resetFields();
-  }
-
-  void _resetFields() {
-    _selectedDocType.value = null;
-    _newDocType.value = '';
-    _selectedFiles.clear();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Obx(
-          () => InputCardStyle(
-            child: DropdownButtonFormField<int>(
-              decoration: InputDecoration(
-                hintText: 'Document Category',
-                border: InputBorder.none,
-              ),
-              value: _selectedDocType.value,
-              items: _controller.documentTypes
-                  .map(
-                    (type) => DropdownMenuItem<int>(
-                      value: type.id,
-                      child: Text(type.name),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                _selectedDocType.value = value!;
-                _newDocType.value = '';
-              },
-            ),
-          ),
-        ),
-
-        Obx(() {
-          if (_selectedDocType.value != null) {
-            return SizedBox(height: 10);
-          }
-          return Column(
-            children: [
-              SizedBox(height: 10),
-
-              InputCardStyle(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'New Document Category',
-                    border: InputBorder.none,
-                  ),
-                  onChanged: (value) => _newDocType.value = value,
-                ),
-              ),
-            ],
-          );
-        }),
-        SizedBox(height: 10),
-
-        Obx(
-          () => _selectedDocType.value != null
-              ? Wrap(
-                  children: [
-                    // Upload button
-                    Container(
-                      margin: EdgeInsets.all(4),
-                      height: 60,
-                      width: 60,
-                      color: Colors.grey.withAlpha(100),
-                      child: IconButton(
-                        onPressed: _pickImage,
-                        icon: Icon(Icons.upload),
-                      ),
-                    ),
-
-                    // Preview of selected images
-                    ..._selectedFiles.map((file) {
-                      try {
-                        // remove base64 header part
-                        final base64Str = file.split(',').last;
-                        final bytes = base64Decode(base64Str);
-
-                        return Container(
-                          margin: EdgeInsets.all(4),
-                          height: 60,
-                          width: 60,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black26),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Image.memory(bytes, fit: BoxFit.cover),
-                        );
-                      } catch (e) {
-                        // if decoding fails, show fallback text
-                        return Container(
-                          margin: EdgeInsets.all(4),
-                          height: 60,
-                          width: 60,
-                          color: Colors.grey.withAlpha(100),
-                          child: Icon(Icons.insert_drive_file, size: 30),
-                        );
-                      }
-                    }),
-                  ],
-                )
-              : SizedBox(),
-        ),
-
-        SizedBox(height: 10),
-        ElevatedButton(onPressed: _addDocument, child: Text('Document Save')),
-      ],
     );
   }
 }

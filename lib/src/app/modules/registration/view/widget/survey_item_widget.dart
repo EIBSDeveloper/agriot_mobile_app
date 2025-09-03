@@ -8,7 +8,7 @@ import 'searchable_dropdown.dart';
 class SurveyItemWidget extends StatelessWidget {
   final int index;
   final SurveyItem item;
-  final List<DropdownItem> areaUnits;
+  final List<AppDropdownItem> areaUnits;
   final VoidCallback onRemove;
   final void Function(SurveyItem) onChanged; // Updated type
 
@@ -96,7 +96,7 @@ class SurveyItemWidget extends StatelessWidget {
                 
                 Expanded(
                   flex: 2,
-                  child: SearchableDropdown<DropdownItem>(
+                  child: SearchableDropdown<AppDropdownItem>(
                     label: 'Unit *',
                     items: areaUnits,
                     displayItem: (value) => value.name.toString(),

@@ -25,6 +25,8 @@ class CropDetailsController extends GetxController {
   final RxBool isList = true.obs;
   final RxBool isLoading = false.obs;
 
+  final RxBool isCropExpended= false.obs;
+
   final RxList<TaskGroup> taskGroups = <TaskGroup>[].obs;
 
   // Task view related
@@ -200,16 +202,16 @@ class CropDetailsController extends GetxController {
     allTasks.addAll(
       _getTasksFromDateTasks(taskResponse.value!.waitingTasks, dateString),
     );
-    // allTasks.addAll(
-    //   _getTasksFromDateTasks(taskResponse.value!.cancelledTasks, dateString),
-    // );
-    // allTasks.addAll(
-    //   _getTasksFromDateTasks(taskResponse.value!.pendingTasks, dateString),
-    // );
-    // allTasks.addAll(
-    //   _getTasksFromDateTasks(taskResponse.value!.inProgressTasks, dateString),
-    // );
-    // update();
+    allTasks.addAll(
+      _getTasksFromDateTasks(taskResponse.value!.cancelledTasks, dateString),
+    );
+    allTasks.addAll(
+      _getTasksFromDateTasks(taskResponse.value!.pendingTasks, dateString),
+    );
+    allTasks.addAll(
+      _getTasksFromDateTasks(taskResponse.value!.inProgressTasks, dateString),
+    );
+    update();
     return _applyFilter(allTasks);
   }
 

@@ -4,7 +4,7 @@ class SurveyItem {
   final int? id;
   final String surveyNo;
   final String measurement;
-  final DropdownItem? unit;
+  final AppDropdownItem? unit;
 
   SurveyItem({
     this.id,
@@ -16,7 +16,7 @@ class SurveyItem {
   SurveyItem copyWith({
     String? surveyNo,
     String? measurement,
-    DropdownItem? unit,
+    AppDropdownItem? unit,
   }) {
     return SurveyItem(
       surveyNo: surveyNo ?? this.surveyNo,

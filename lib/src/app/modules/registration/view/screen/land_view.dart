@@ -55,7 +55,7 @@ class LandView extends GetView<RegLandController> {
               SizedBox(width: 16),
               Expanded(
                 flex: 2,
-                child: SearchableDropdown<DropdownItem>(
+                child: SearchableDropdown<AppDropdownItem>(
                   label: 'Unit *',
                   items: controller.landUnits,
                   displayItem: (value) => value.name.toString(),
@@ -75,7 +75,7 @@ class LandView extends GetView<RegLandController> {
             ],
           ),
           gap,
-          SearchableDropdown<DropdownItem>(
+          SearchableDropdown<AppDropdownItem>(
             label: 'Soil Type',
             items: controller.soilTypes,
             selectedItem: controller.selectedSoilType.value,

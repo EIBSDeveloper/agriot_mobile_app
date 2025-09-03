@@ -1,4 +1,4 @@
-package com.example.argiot
+package com.eibs.agriot
 
 import io.flutter.embedding.android.FlutterActivity
 

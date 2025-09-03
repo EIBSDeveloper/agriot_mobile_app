@@ -28,16 +28,15 @@ class _LandPickerViewState extends State<LandPickerView> {
   LandPickerController controller = Get.find();
   @override
   void initState() {
-    // TODO: implement initState
     final args = Get.arguments;
     if (args != null && args['land'] != null) {
       var argument = Get.arguments['land'].toList();
-      controller.landpolyiline.addAll(argument);
+      controller.landPolylin.addAll(argument);
     }
     if (args != null && args['crop'] != null) {
       controller.croppolyiline.value = Get.arguments['crop'];
-    } 
-     if (args != null && args['zoom'] != null) {
+    }
+    if (args != null && args['zoom'] != null) {
       controller.zoom.value = Get.arguments['zoom'];
     }
 
@@ -71,30 +70,14 @@ class _LandPickerViewState extends State<LandPickerView> {
                         markerId: MarkerId('select'),
                         position: controller.selectedLocation.value!,
                       ),
-
-                      // Marker(
-                      //   markerId: MarkerId('test'),
-                      //   infoWindow: InfoWindow(title: "bala", snippet: "y6eg"),
-                      //   icon: BitmapDescriptor.defaultMarkerWithHue(
-                      //     BitmapDescriptor.hueOrange,
-                      //   ),
-                      //   flat: true,
-                      //   position: calculateCenter([
-                      //     LatLng(9.92528453256627, 78.14854178577662),
-                      //     LatLng(9.923958213072808, 78.14841940999031),
-                      //     LatLng(9.92392584763953, 78.14710143953562),
-                      //     LatLng(9.925232351771378, 78.14724426716566),
-                      //     LatLng(9.925248204165639, 78.14853373914957),
-                      //   ]),
-                      // ),
                     }
                   : {},
               polygons: {
-                if (controller.landpolyiline.isNotEmpty)
+                if (controller.landPolylin.isNotEmpty)
                   Polygon(
                     consumeTapEvents: false,
                     polygonId: PolygonId("test"),
-                    points: controller.landpolyiline,
+                    points: controller.landPolylin,
                     fillColor: Colors.green.withAlpha(50),
                     strokeColor: Colors.green,
 
@@ -139,21 +122,6 @@ class _LandPickerViewState extends State<LandPickerView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text(
-                      //   'Selected Location',
-                      //   style: TextStyle(
-                      //     fontWeight: FontWeight.bold,
-                      //     fontSize: 16,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 8),
-                      // Obx(
-                      //   () => Text(
-                      //     controller.address.value,
-                      //     style: TextStyle(fontSize: 14),
-                      //   ),
-                      // ),
-                      SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -192,5 +160,3 @@ class _LandPickerViewState extends State<LandPickerView> {
     );
   }
 }
-
-

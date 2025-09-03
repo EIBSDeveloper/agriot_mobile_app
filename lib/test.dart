@@ -2103,11 +2103,11 @@ class AddDeductionView extends StatelessWidget {
 class AddDocumentRepository {
   final HttpService _httpService = Get.find<HttpService>();
 
-  Future<List<DropdownItem>> getDocumentTypes() async {
+  Future<List<AppDropdownItem>> getDocumentTypes() async {
     final response = await _httpService.get('/document_categories');
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 }
@@ -2117,8 +2117,8 @@ class AddDocumentController extends GetxController {
       Get.find<AddDocumentRepository>();
   Rx<DocumentAdd?> documents = Rx<DocumentAdd?>(null);
   RxBool isNewResion = false.obs;
-  var docTypeList = <DropdownItem>[].obs;
-  final Rx<DropdownItem> selectedResion = DropdownItem(id: 0, name: '').obs;
+  var docTypeList = <AppDropdownItem>[].obs;
+  final Rx<AppDropdownItem> selectedResion = AppDropdownItem(id: 0, name: '').obs;
   Future<void> fetchReasons() async {
     try {
       final response = await _salesRepository.getDocumentTypes();
@@ -2131,7 +2131,7 @@ class AddDocumentController extends GetxController {
     }
   }
 
-  void changeResion(DropdownItem crop) {
+  void changeResion(AppDropdownItem crop) {
     selectedResion.value = crop;
   }
 }

@@ -25,10 +25,10 @@ class RegCropController extends GetxController {
   final measurementController = TextEditingController();
 
   // Dropdown values
-  final RxList<DropdownItem> cropTypes = <DropdownItem>[].obs;
-  final RxList<DropdownItem> crops = <DropdownItem>[].obs;
-  final RxList<DropdownItem> harvestFrequencies = <DropdownItem>[].obs;
-  final RxList<DropdownItem> landUnits = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> cropTypes = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> crops = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> harvestFrequencies = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
 
   // for test-Bala
   var selectedLand = Land(id: 0, name: '').obs;
@@ -38,12 +38,12 @@ class RegCropController extends GetxController {
 
   // Selected values
   final Rx<DateTime?> plantationDate = Rx<DateTime?>(null);
-  final Rx<DropdownItem?> selectedCropType = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedCrop = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedHarvestFrequency = Rx<DropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedCropType = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedCrop = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedHarvestFrequency = Rx<AppDropdownItem?>(null);
   // final Rx<LandWithSurvey?> selectedLand = Rx<LandWithSurvey?>(null);
   // final Rx<SurveyDetail?> selectedSurvey = Rx<SurveyDetail?>(null);
-  final Rx<DropdownItem?> selectedMeasurementUnit = Rx<DropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedMeasurementUnit = Rx<AppDropdownItem?>(null);
 
   var polylinePoints = <LatLng>[].obs;
   final locationController = TextEditingController();

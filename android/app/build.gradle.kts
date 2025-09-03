@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.argiot"
+    namespace = "com.eibs.agriot"
     compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.argiot"
+        applicationId = "com.eibs.agriot"
     //    minSdk= flutter.minSdkVersion
          minSdk =flutter.minSdkVersion
         // minSdk =23 

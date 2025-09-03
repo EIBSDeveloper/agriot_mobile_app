@@ -23,14 +23,14 @@ class CropController extends GetxController {
   final AppDataController appData = Get.find();
 
   late final String baseUrl = appData.baseUrl.value;
-  late final String baseUrlIWithodAPi = appData.baseUrlIWithodAPi.value;
+  late final String baseUrlIWithodAPi = appData.baseUrlWithoutAPi.value;
   final measurementController = TextEditingController();
   final descriptionController = TextEditingController();
   final locationController = TextEditingController();
 
-  final RxList<DropdownItem> cropTypes = <DropdownItem>[].obs;
-  final RxList<DropdownItem> crops = <DropdownItem>[].obs;
-  final RxList<DropdownItem> harvestFrequencies = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> cropTypes = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> crops = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> harvestFrequencies = <AppDropdownItem>[].obs;
   var lands = <Land>[].obs;
 
   var selectedLand = Land(id: 0, name: '').obs;
@@ -39,11 +39,11 @@ class CropController extends GetxController {
   var surveyList = <CropSurveyDetail>[].obs;
 
   final Rx<DateTime?> plantationDate = Rx<DateTime?>(null);
-  final Rx<DropdownItem?> selectedCropType = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedCrop = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedHarvestFrequency = Rx<DropdownItem?>(null);
-  final RxList<DropdownItem> landUnits = <DropdownItem>[].obs;
-  final Rx<DropdownItem?> selectedMeasurementUnit = Rx<DropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedCropType = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedCrop = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedHarvestFrequency = Rx<AppDropdownItem?>(null);
+  final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
+  final Rx<AppDropdownItem?> selectedMeasurementUnit = Rx<AppDropdownItem?>(null);
 
   final RxBool isLoadingCropTypes = false.obs;
   final RxBool isLoadingCrops = false.obs;

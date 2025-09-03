@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyASCFWakKndLDU_z0ttAzH0BZh-1TLYN7U',
-    appId: '1:383219851219:android:d13fe5baba61ae326b9926',
-    messagingSenderId: '383219851219',
-    projectId: 'newform-a2f42',
-    storageBucket: 'newform-a2f42.firebasestorage.app',
+    apiKey: 'AIzaSyDOcZk46GGlm9T_yqX7FqONGLSkK6bDwpQ',
+    appId: '1:12565808888:android:12cbd1be1f19e42148dd0d',
+    messagingSenderId: '12565808888',
+    projectId: 'agriot-df72d',
+    storageBucket: 'agriot-df72d.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAmHaLKH_dAnEEjBDA7VeNj3J8LDDaCvA8',
-    appId: '1:383219851219:ios:a45b679c1fc450826b9926',
-    messagingSenderId: '383219851219',
-    projectId: 'newform-a2f42',
-    storageBucket: 'newform-a2f42.firebasestorage.app',
-    iosBundleId: 'com.example.argiot',
+    apiKey: 'AIzaSyDUudfcHyyvEnv137CC4D8ShSDVveVAL4A',
+    appId: '1:12565808888:ios:38c1a4b8f9cf5fbd48dd0d',
+    messagingSenderId: '12565808888',
+    projectId: 'agriot-df72d',
+    storageBucket: 'agriot-df72d.firebasestorage.app',
+    iosBundleId: 'com.eibs.agriot',
   );
 
 }

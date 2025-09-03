@@ -13,11 +13,11 @@ class CropService extends GetxService {
   final HttpService _httpService = Get.find();
 
   final AppDataController appDeta = Get.put(AppDataController());
-  Future<List<DropdownItem>> getCropTypes() async {
+  Future<List<AppDropdownItem>> getCropTypes() async {
     final response = await _httpService.get('/crop_types');
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 
@@ -43,21 +43,21 @@ class CropService extends GetxService {
     }
   }
 
-  Future<List<DropdownItem>> getCrops(int cropTypeId) async {
+  Future<List<AppDropdownItem>> getCrops(int cropTypeId) async {
     final response = await _httpService.post('/crops', {
       'croptype_id': cropTypeId,
     });
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 
-  Future<List<DropdownItem>> getHarvestFrequencies() async {
+  Future<List<AppDropdownItem>> getHarvestFrequencies() async {
     final response = await _httpService.get('/harvesting_types');
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 
@@ -67,10 +67,10 @@ class CropService extends GetxService {
     return response;
   }
 
-  Future<DropdownItem> addNewCropName(Map<String, dynamic> request) async {
+  Future<AppDropdownItem> addNewCropName(Map<String, dynamic> request) async {
     final response = await _httpService.post('/add_cropname', request);
     final jsonData = json.decode(response.body);
-    return DropdownItem.fromJson(jsonData[0]);
+    return AppDropdownItem.fromJson(jsonData[0]);
   }
 
   /// 🔹 Correct crop details API

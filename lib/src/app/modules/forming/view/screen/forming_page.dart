@@ -81,7 +81,9 @@ class FormingView extends GetView<FormingController> {
           PackageUsage? package = findLimit();
 
           if (package!.landBalance > 0) {
-            Get.toNamed(Routes.addLand);
+            Get.toNamed(Routes.addLand)?.then((result){
+              controller.fetchLands();
+            });
           } else {
             showDefaultGetXDialog("Land");
           }

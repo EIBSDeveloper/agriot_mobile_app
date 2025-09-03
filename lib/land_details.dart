@@ -139,19 +139,19 @@ class LandRepository {
     }
   }
 
-  Future<List<DropdownItem>> getLandUnits() async {
+  Future<List<AppDropdownItem>> getLandUnits() async {
     try {
       final response = await _httpService.get('/get_land_units');
-      return (response as List).map((e) => DropdownItem.fromJson(e)).toList();
+      return (response as List).map((e) => AppDropdownItem.fromJson(e)).toList();
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<DropdownItem>> getSoilTypes() async {
+  Future<List<AppDropdownItem>> getSoilTypes() async {
     try {
       final response = await _httpService.get('/get_soil_types');
-      return (response as List).map((e) => DropdownItem.fromJson(e)).toList();
+      return (response as List).map((e) => AppDropdownItem.fromJson(e)).toList();
     } catch (e) {
       rethrow;
     }
@@ -160,23 +160,23 @@ class LandRepository {
 
 class InventoryCommonController extends GetxController {
   // Inventory Type List
-  final RxList<DropdownItem> inventoryTypes = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> inventoryTypes = <AppDropdownItem>[].obs;
   final RxBool isLoadingInventoryTypes = false.obs;
 
   // Inventory Category
-  final RxList<DropdownItem> inventoryCategories = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> inventoryCategories = <AppDropdownItem>[].obs;
   final RxBool isLoadingInventoryCategories = false.obs;
 
   // Inventory Items
-  final RxList<DropdownItem> inventoryItems = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> inventoryItems = <AppDropdownItem>[].obs;
   final RxBool isLoadingInventoryItems = false.obs;
 
   // Documents types
-  final RxList<DropdownItem> documentTypes = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> documentTypes = <AppDropdownItem>[].obs;
   final RxBool isLoadingDocumentTypes = false.obs;
 
   // Vendor List
-  final RxList<DropdownItem> vendorList = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> vendorList = <AppDropdownItem>[].obs;
   final RxBool isLoadingVendorList = false.obs;
 
   @override
@@ -253,14 +253,14 @@ class LandEditController extends GetxController {
   final locationController = TextEditingController();
 
   // Dropdown values
-  final RxList<DropdownItem> landUnits = <DropdownItem>[].obs;
-  final RxList<DropdownItem> soilTypes = <DropdownItem>[].obs;
-  final RxList<DropdownItem> areaUnits = <DropdownItem>[].obs;
-  RxList<DropdownItem> get documentTypes => _commonController.documentTypes;
+  final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> soilTypes = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> areaUnits = <AppDropdownItem>[].obs;
+  RxList<AppDropdownItem> get documentTypes => _commonController.documentTypes;
 
   // Selected values
-  final Rx<DropdownItem?> selectedLandUnit = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedSoilType = Rx<DropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
 
   // Location
   final RxDouble latitude = 0.0.obs;
@@ -570,7 +570,7 @@ class LandEditView extends GetView<LandEditController> {
                     SizedBox(width: 16),
                     Expanded(
                       flex: 2,
-                      child: SearchableDropdown<DropdownItem>(
+                      child: SearchableDropdown<AppDropdownItem>(
                         label: '${'unit'.tr} *',
                         items: controller.landUnits,
                         displayItem: (value) => value.name.toString(),
@@ -584,7 +584,7 @@ class LandEditView extends GetView<LandEditController> {
                   ],
                 ),
                 SizedBox(height: 14),
-                SearchableDropdown<DropdownItem>(
+                SearchableDropdown<AppDropdownItem>(
                   label: '${'soil_type'.tr} *',
                   items: controller.soilTypes,
                   selectedItem: controller.selectedSoilType.value,

@@ -29,7 +29,7 @@ class PurchasesAddController extends GetxController {
   var inventoryItems = <InventoryItemModel>[].obs;
   final machineryType = 'Fuel'.obs;
   final fuelCapacityController = TextEditingController();
-  final purchaseAmountController = TextEditingController();
+  // final purchaseAmountController = TextEditingController();
   final warrantyStartDateController = TextEditingController();
   final warrantyEndDateController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -232,7 +232,7 @@ class PurchasesAddController extends GetxController {
         fuelCapacity: fuelCapacityController.text,
         warrantyStartDate: warrantyStartDateController.text,
         warrantyEndDate: warrantyEndDateController.text,
-        purchaseAmount: purchaseAmountController.text,
+        purchaseAmount: purchaseAmount.value,
         paidAmount: paidAmount.value,
         description: descriptionController.text,
         // documents: documents,
@@ -420,16 +420,16 @@ class PurchasesAddController extends GetxController {
   }
 
   Future<void> submitVehicleForm() async {
-    if (!validateVehicleForm()) {
-      Fluttertoast.showToast(
-        msg: "Please fix the errors in the form",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-      return;
-    }
+    // if (!validateVehicleForm()) {
+    //   Fluttertoast.showToast(
+    //     msg: "Please fix the errors in the form",
+    //     toastLength: Toast.LENGTH_LONG,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: Colors.red,
+    //     textColor: Colors.white,
+    //   );
+    //   return;
+    // }
 
     isLoading.value = true;
 
@@ -467,7 +467,7 @@ class PurchasesAddController extends GetxController {
         averageMileage: averageMileageController.text.isNotEmpty
             ? double.parse(averageMileageController.text)
             : null,
-        purchaseAmount: double.parse(purchaseAmountController.text),
+        purchaseAmount: double.parse(purchaseAmount.value),
         insurance: showInsuranceDetails.value,
         companyName: showInsuranceDetails.value
             ? companyNameController.text
@@ -542,9 +542,9 @@ class PurchasesAddController extends GetxController {
         // quantityController.text.isNotEmpty &&
         // double.tryParse(quantityController.text) != null &&
         // double.parse(quantityController.text) > 0 &&
-        purchaseAmountController.text.isNotEmpty &&
-        double.tryParse(purchaseAmountController.text) != null &&
-        double.parse(purchaseAmountController.text) > 0;
+        purchaseAmount.value.isNotEmpty &&
+        double.tryParse(purchaseAmount.value) != null &&
+        double.parse(purchaseAmount.value) > 0;
   }
 
   Future<void> submitFertilizerForm() async {
@@ -563,7 +563,7 @@ class PurchasesAddController extends GetxController {
         quantity: litre.value,
         quantityUnit: 1,
         paidAmount: paidAmount.value,
-        purchaseAmount: purchaseAmountController.text,
+        purchaseAmount:purchaseAmount.value,
         description: descriptionController.text.isNotEmpty
             ? descriptionController.text
             : null,
@@ -834,7 +834,7 @@ class PurchasesAddController extends GetxController {
   void onClose() {
     // dateController.dispose();
     fuelCapacityController.dispose();
-    purchaseAmountController.dispose();
+    // purchaseAmountController.dispose();
     warrantyStartDateController.dispose();
     warrantyEndDateController.dispose();
     descriptionController.dispose();

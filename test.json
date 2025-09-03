@@ -1,63 +1,35 @@
 {
-    "vehicle_purchase": [
-        {
-            "id": 5,
-            "farmer": {
-                "id": 2,
-                "name": "Raja"
-            },
-            "vendor": {
-                "id": 10,
-                "name": "Vinoth"
-            },
-            "inventory_type": {
-                "id": 1,
-                "name": "Vehicle"
-            },
-            "inventory_category": {
-                "id": 1,
-                "name": "new Vehicle"
-            },
-            "inventory_items": {
-                "id": 1,
-                "name": "Department of Agriculture"
-            },
-            "register_number": "65198FDG",
-            "owner_name": "CHFGH",
-            "date_of_registration": "2025-03-04",
-            "engine_number": "435154984435",
-            "chasis_number": "GDFG345345",
-            "running_kilometer": "20.00",
-            "fuel_capacity": "10.00",
-            "average_mileage": "56.00",
-            "purchase_amount": "2000.00",
-            "insurance": false,
-            "company_name": "Unknown",
-            "insurance_no": "Unknown",
-            "insurance_amount": "0.00",
-            "insurance_start_date": "Unknown",
-            "insurance_end_date": "Unknown",
-            "insurance_renewal_date": "Unknown",
-            "description": "N/A",
-            "status": 0,
-            "created_at": "2025-03-28 06:26:30.073937+00:00",
-            "updated_at": "2025-03-28 06:26:32.291401+00:00"
-        }
-    ],
-    "vehicle_consumption": [
-        {
-            "id": 5,
-            "available_quans": "Unknown",
-            "date_of_consumption": "2025-03-28",
-            "description": "N/A",
-            "status": 0,
-            "created_at": "2025-03-28 06:26:30.073937+00:00",
-            "updated_at": "2025-03-28 06:26:32.291401+00:00",
-            "farmer": {
-                "id": 2,
-                "name": "Raja"
-            },
-            "documents": {}
-        }
-    ]
+    "message": "Existing Farmer",
+    "user": false,
+    "details": false,
+    "land": false,
+    "land_details": null,
+    "crop": false,
+    "farmer": {
+        "id": 368,
+        "name": "",
+        "phone": "1756902576",
+        "email": "anandsekar2025@gmail.com",
+        "google_login": true,
+        "door_no": null,
+        "pincode": 0,
+        "description": null,
+        "img": null,
+        "company_name": null,
+        "tax_no": null,
+        "username": "1756902576",
+        "subscription_package": {
+            "id": 1,
+            "name": "Free Trial"
+        },
+        "subscription_start_date": "2025-09-03",
+        "subscription_end_date": "2025-09-10",
+        "remaining_days": 7,
+        "amounts": 0,
+        "status": 7,
+        "language": {
+            "default": "en"
+        },
+        "otp": ""
+    }
 }

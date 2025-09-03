@@ -75,20 +75,21 @@ class CropViewPage extends GetView<CropController> {
               }),
               SizedBox(height: 16),
               _buildMeasurementSection(),
-              _buildTextField(
-                controller: controller.descriptionController,
-                label: 'Description',
-                maxLines: 4,
-                // validator: (value) => value!.isEmpty ? 'Required field' : null,
-              ),
-              SizedBox(height: 16),
+              
               _buildTextField(
                 controller: controller.locationController,
                 label: 'Location Coordinates *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
                 readOnly: true,
                 onTap: controller.pickLocation,
+              ),  SizedBox(height: 16),
+              _buildTextField(
+                controller: controller.descriptionController,
+                label: 'Description',
+                maxLines: 4,
+                // validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
+            
               SizedBox(height: 32),
               _buildSubmitButton(),
             ],
@@ -131,7 +132,7 @@ class CropViewPage extends GetView<CropController> {
       if (controller.isLoadingCropTypes.value) {
         return _buildLoadingDropdown('Loading crop types...');
       }
-      return SearchableDropdown<DropdownItem>(
+      return SearchableDropdown<AppDropdownItem>(
         label: 'Crop Type *',
         items: controller.cropTypes,
         displayItem: (country) => country.name.toString(),
@@ -153,7 +154,7 @@ class CropViewPage extends GetView<CropController> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchableDropdown<DropdownItem>(
+          SearchableDropdown<AppDropdownItem>(
             displayItem: (country) => country.name.toString(),
             label: 'Crop *',
             items: controller.crops,
@@ -186,7 +187,7 @@ class CropViewPage extends GetView<CropController> {
       if (controller.isLoadingHarvestFrequencies.value) {
         return _buildLoadingDropdown('Loading harvest frequencies...');
       }
-      return SearchableDropdown<DropdownItem>(
+      return SearchableDropdown<AppDropdownItem>(
         label: 'Harvest Frequency *',
         items: controller.harvestFrequencies,
         displayItem: (country) => country.name.toString(),
@@ -255,7 +256,7 @@ class CropViewPage extends GetView<CropController> {
               flex: 2,
               child: Obx(() {
                 return InputCardStyle(
-                  child: DropdownButtonFormField<DropdownItem>(
+                  child: DropdownButtonFormField<AppDropdownItem>(
                     value: controller.selectedMeasurementUnit.value,
                     decoration: InputDecoration(
                       hintText: 'Unit *',
@@ -265,7 +266,7 @@ class CropViewPage extends GetView<CropController> {
                     items: controller.landUnits.isNotEmpty
                         ? [
                             ...controller.landUnits.map((unit) {
-                              return DropdownMenuItem<DropdownItem>(
+                              return DropdownMenuItem<AppDropdownItem>(
                                 value: unit,
                                 child: FittedBox(child: Text(unit.name)),
                               );

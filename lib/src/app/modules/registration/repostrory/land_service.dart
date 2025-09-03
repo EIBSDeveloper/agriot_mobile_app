@@ -20,11 +20,11 @@ class LandService extends GetxService {
     return LandList.fromJson(json.decode(response.body));
   }
 
-  Future<List<DropdownItem>> getLandUnits() async {
+  Future<List<AppDropdownItem>> getLandUnits() async {
     final response = await _httpService.get('/land_units');
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 
@@ -59,19 +59,19 @@ class LandService extends GetxService {
     }
   }
 
-  Future<List<DropdownItem>> getSoilTypes() async {
+  Future<List<AppDropdownItem>> getSoilTypes() async {
     final response = await _httpService.get('/soil_types');
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 
-  Future<List<DropdownItem>> getAreaUnits() async {
+  Future<List<AppDropdownItem>> getAreaUnits() async {
     final response = await _httpService.get('/area_units');
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
   // Future<Map<String, dynamic>> editLand({
@@ -107,13 +107,13 @@ class LandService extends GetxService {
   //   return json.decode(response.body);
   // }
 
-  Future<List<DropdownItem>> getDocumentTypes(int docType) async {
+  Future<List<AppDropdownItem>> getDocumentTypes(int docType) async {
     final response = await _httpService.get(
       '/document_categories?doctype=$docType',
     );
     final jsonData = json.decode(response.body);
     return (jsonData['data'] as List)
-        .map((item) => DropdownItem.fromJson(item))
+        .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
 

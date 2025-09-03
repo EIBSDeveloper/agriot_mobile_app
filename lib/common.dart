@@ -1,5 +1,3 @@
-// lib/modules/inventory/fuel/models/common_models.dart
-
 import 'dart:convert';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -126,8 +124,6 @@ class Document {
   }
 }
 
-// lib/modules/inventory/fuel/controllers/common_controllers.dart
-
 class CommonControllers extends GetxController {
   final HttpService httpService = Get.find();
 
@@ -136,8 +132,8 @@ class CommonControllers extends GetxController {
   var inventoryTypes = <InventoryType>[].obs;
   var isLoadingInventoryTypes = false.obs;
 
-  Future<void> fetchInventoryTypes( ) async {
-        final farmerId = appDeta.userId;
+  Future<void> fetchInventoryTypes() async {
+    final farmerId = appDeta.userId;
     try {
       isLoadingInventoryTypes(true);
       final response = await httpService.get('/purchase_list/$farmerId/');
@@ -195,7 +191,7 @@ class CommonControllers extends GetxController {
       inventoryCategories.value = (response as List)
           .map((item) => InventoryCategory.fromJson(item))
           .toList();
-        } catch (e) {
+    } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to load categories: $e');
     } finally {
       isLoadingInventoryCategories(false);
@@ -215,7 +211,7 @@ class CommonControllers extends GetxController {
       inventoryItems.value = (response as List)
           .map((item) => InventoryItem.fromJson(item))
           .toList();
-        } catch (e) {
+    } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to load items: $e');
     } finally {
       isLoadingInventoryItems(false);
@@ -226,14 +222,15 @@ class CommonControllers extends GetxController {
   var vendors = <Vendor>[].obs;
   var isLoadingVendors = false.obs;
 
-  Future<void> fetchVendors() async {   final farmerId = appDeta.userId;
+  Future<void> fetchVendors() async {
+    final farmerId = appDeta.userId;
     try {
       isLoadingVendors(true);
       final response = await httpService.get('/get_vendor/$farmerId/');
       vendors.value = (response as List)
           .map((item) => Vendor.fromJson(item))
           .toList();
-        } catch (e) {
+    } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to load vendors: $e');
     } finally {
       isLoadingVendors(false);

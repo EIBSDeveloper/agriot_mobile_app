@@ -3,7 +3,7 @@ import './dropdown_item.dart';
 
 class DocumentItem {
   final int? id;
-  final DropdownItem? type;
+  final AppDropdownItem? type;
   final PlatformFile? file;
 
   DocumentItem({
@@ -13,7 +13,7 @@ class DocumentItem {
   });
 
   DocumentItem copyWith({
-    DropdownItem? type,
+    AppDropdownItem? type,
     PlatformFile? file,
   }) {
     return DocumentItem(

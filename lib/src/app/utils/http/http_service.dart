@@ -19,7 +19,7 @@ class HttpService extends GetxService {
   final AppDataController appData = Get.put(AppDataController());
 
   late final String baseUrl = appData.baseUrl.value;
-  late final String baseUrlIWithodAPi = appData.baseUrlIWithodAPi.value;
+  late final String baseUrlIWithodAPi = appData.baseUrlWithoutAPi.value;
   final int timeoutSeconds = 30;
 
   /// GET Request

@@ -23,7 +23,11 @@ class LandDetailView extends GetView<LandDetailController> {
             IconButton(
               onPressed: () {
                 final landId = Get.arguments as int;
-                Get.toNamed('/add-land', arguments: {'landId': landId});
+                Get.toNamed('/add-land', arguments: {'landId': landId})?.then((
+                  result,
+                ) {
+                  controller.loadData();
+                });
               },
               icon: Icon(Icons.edit),
             ),
@@ -37,7 +41,7 @@ class LandDetailView extends GetView<LandDetailController> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            controller.fetchLandDetails(Get.arguments as int);
+            controller.loadData();
             return;
           },
           child: _buildBody(),
@@ -70,6 +74,7 @@ class LandDetailView extends GetView<LandDetailController> {
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 16),
+      physics: AlwaysScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,38 +88,6 @@ class LandDetailView extends GetView<LandDetailController> {
           SizedBox(height: 8),
 
           Divider(), SizedBox(height: 8),
-          // SfRadialGauge(
-          //   axes: <RadialAxis>[
-          //     RadialAxis(
-          //       minimum: 0,
-          //       maximum: 100,
-          //       showLabels: false,
-          //       showTicks: false,
-          //       axisLineStyle: AxisLineStyle(
-          //         thickness: 0.2,
-          //         cornerStyle: CornerStyle.bothCurve,
-          //         color: Color.fromARGB(30, 0, 169, 181),
-          //         thicknessUnit: GaugeSizeUnit.factor,
-          //       ),
-          //       pointers: <GaugePointer>[
-          //         RangePointer(
-          //           value: 20,
-          //           cornerStyle: CornerStyle.bothCurve,
-          //           width: 0.2,
-          //           sizeUnit: GaugeSizeUnit.factor,
-          //         ),
-          //       ],
-          //       annotations: <GaugeAnnotation>[
-          //         GaugeAnnotation(
-          //           positionFactor: 0.1,
-          //           angle: 90,
-          //           widget: Text("23 / 100", style: TextStyle(fontSize: 11)),
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
-
           // Crops
           _buildCropsSection(),
           SizedBox(height: 8),
@@ -260,7 +233,9 @@ class LandDetailView extends GetView<LandDetailController> {
                   'landId': controller.landDetails['id'],
                   'cropId': crop.id,
                 },
-              );
+              )?.then((result) {
+                controller.loadData();
+              });
             },
             child: CropCard(crop: crop),
           ),

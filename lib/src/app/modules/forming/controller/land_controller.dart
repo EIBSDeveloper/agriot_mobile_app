@@ -12,6 +12,7 @@ import '../../registration/model/document_model.dart';
 import '../../registration/model/dropdown_item.dart';
 import '../../registration/model/land_model.dart';
 import '../../registration/model/survey_model.dart';
+import '../../registration/repostrory/address_service.dart';
 import '../../registration/repostrory/crop_service.dart';
 import '../../registration/repostrory/land_service.dart';
 import '../../registration/view/screen/location_picker_view.dart';
@@ -31,14 +32,14 @@ class LandController extends GetxController {
       TextEditingController(); // Added for description
 
   // Dropdown values
-  final RxList<DropdownItem> landUnits = <DropdownItem>[].obs;
-  final RxList<DropdownItem> soilTypes = <DropdownItem>[].obs;
-  final RxList<DropdownItem> documentTypes = <DropdownItem>[].obs;
+  final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> soilTypes = <AppDropdownItem>[].obs;
+  final RxList<AppDropdownItem> documentTypes = <AppDropdownItem>[].obs;
 
   // Selected values
-  final Rx<DropdownItem?> selectedLandUnit = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedSoilType = Rx<DropdownItem?>(null);
-  final Rx<DropdownItem?> selectedDocType = Rx<DropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedDocType = Rx<AppDropdownItem?>(null);
 
   // Location
   final RxDouble latitude = 0.0.obs;
@@ -122,14 +123,14 @@ class LandController extends GetxController {
     descriptionController.text = landDetail.value.description ?? '';
 
     // Set selected dropdown values
-    selectedLandUnit.value = DropdownItem(
+    selectedLandUnit.value = AppDropdownItem(
       id: landDetail.value.measurementUnit.id,
       name: landDetail.value.measurementUnit.name,
     );
 
     if (landDetail.value.soilType != null &&
         landDetail.value.soilType!.id != null) {
-      selectedSoilType.value = DropdownItem(
+      selectedSoilType.value = AppDropdownItem(
         id: landDetail.value.soilType!.id!,
         name: landDetail.value.soilType!.name!,
       );
@@ -160,7 +161,7 @@ class LandController extends GetxController {
     for (var doc in landDetail.value.documents) {
       documentItems.add(
         DocumentItem(
-          type: DropdownItem(
+          type: AppDropdownItem(
             id: doc.documentCategory.id,
             name: doc.documentCategory.name,
           ),
@@ -263,23 +264,12 @@ class LandController extends GetxController {
 
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
-    // if (surveyItems.isEmpty) {
-    //   showError('Please add at least one survey detail');
-    //   return;
-    // }
+
 
     try {
       isSubmitting(true);
 
-      // Prepare survey details
-      // final surveyDetails = surveyItems.map((item) {
-      //   return {
-      //     if (item.id != null) "id": item.id,
-      //     "survey_no": item.surveyNo,
-      //     "survey_measurement_value": double.parse(item.measurement),
-      //     "survey_measurement_unit": item.unit?.id,
-      //   };
-      // }).toList();
+
       final surveyDetails = surveyItems.asMap().map((index, item) {
         return MapEntry(
           'survey_details_${index + 1}',
@@ -288,19 +278,6 @@ class LandController extends GetxController {
               'survey_measurement_unit_id:${item.unit?.id}',
         );
       });
-
-      // Prepare documents
-      // final documents = documentItems
-      //     .where((item) => item.file != null || item.filePath != null)
-      //     .map((item) {
-      //       return {
-      //         if (item.id != null) "id": item.id,
-      //         "document_category": item.type?.id,
-      //         if (item.file != null) "upload_document": item.file,
-      //         if (item.filePath != null) "upload_document": item.filePath,
-      //       };
-      //     })
-      //     .toList();
 
       // Create request based on whether we're creating or editing
       final request = {
@@ -317,9 +294,8 @@ class LandController extends GetxController {
         "taluk": Get.find<KycController>().selectedTaluk.value?.id,
         "village": Get.find<KycController>().selectedVillage.value?.id,
         "door_no": Get.find<KycController>().doorNoController.text.trim(),
-        "locations": "${latitude.value} , ${longitude.value} ",
-        "latitude": latitude.value,
-        "longitude": longitude.value,
+        "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
+
         "l_status": 0,
         "geo_marks": convertLatLngListToMap(landCoordinates),
         if (pattaNoController.text.isNotEmpty)

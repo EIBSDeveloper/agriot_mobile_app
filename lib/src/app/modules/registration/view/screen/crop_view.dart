@@ -104,7 +104,7 @@ class CropView extends GetView<RegCropController> {
       if (controller.isLoadingCropTypes.value) {
         return _buildLoadingDropdown('Loading crop types...');
       }
-      return SearchableDropdown<DropdownItem>(
+      return SearchableDropdown<AppDropdownItem>(
         label: 'Crop Type *',
         items: controller.cropTypes,
         displayItem: (country) => country.name.toString(),
@@ -126,7 +126,7 @@ class CropView extends GetView<RegCropController> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchableDropdown<DropdownItem>(
+          SearchableDropdown<AppDropdownItem>(
             displayItem: (country) => country.name.toString(),
             label: 'Crop *',
             items: controller.crops,
@@ -152,7 +152,7 @@ class CropView extends GetView<RegCropController> {
       if (controller.isLoadingHarvestFrequencies.value) {
         return _buildLoadingDropdown('Loading harvest frequencies...');
       }
-      return SearchableDropdown<DropdownItem>(
+      return SearchableDropdown<AppDropdownItem>(
         label: 'Harvest Frequency *',
         items: controller.harvestFrequencies,
         displayItem: (country) => country.name.toString(),
@@ -235,7 +235,7 @@ class CropView extends GetView<RegCropController> {
                     horizontal: 10,
                     vertical: 5,
                   ),
-                  child: DropdownButtonFormField<DropdownItem>(
+                  child: DropdownButtonFormField<AppDropdownItem>(
                     value: controller.selectedMeasurementUnit.value,
                     decoration: InputDecoration(
                       labelText: 'Unit *',
@@ -244,7 +244,7 @@ class CropView extends GetView<RegCropController> {
                     items: controller.landUnits.isNotEmpty
                         ? [
                             ...controller.landUnits.map((unit) {
-                              return DropdownMenuItem<DropdownItem>(
+                              return DropdownMenuItem<AppDropdownItem>(
                                 value: unit,
                                 child: FittedBox(child: Text(unit.name)),
                               );

@@ -22,7 +22,6 @@ class CropOverviewScreen extends StatefulWidget {
 
 class _CropOverviewScreenState extends State<CropOverviewScreen> {
   final CropDetailsController controller = Get.find();
-  final CropDetailsController cropDetailsController = Get.find();
   final int landId = Get.arguments['landId'];
 
   final int cropId = Get.arguments['cropId'];
@@ -34,7 +33,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     controller.cropId.value = cropId;
     controller.fetchCropOverview();
     controller.loadTasks();
-    cropDetailsController.fetchCropDetails(landId, cropId);
+    controller.fetchCropDetails(landId, cropId);
   }
 
   @override
@@ -75,28 +74,27 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
   Widget _buildCropInfoSection() {
     return Obx(() {
-      if (cropDetailsController.isDetailsLoading.value) {
+      if (controller.isDetailsLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
-      if (cropDetailsController.details.value == null) {
+      if (controller.details.value == null) {
         return Center(child: Text('No crop details available'));
       }
 
-      final crop = cropDetailsController.details.value;
+      final crop = controller.details.value;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Crop Info Section
           _buildCropInfo(crop),
-         
-          // Crop Details
-          _buildCropDetailsSection(crop),
-          
-          // Survey Details
-          _buildSurveyDetailsSection(crop),
-         
-          // Location
-          // _buildLocationSection(crop),
+          if (controller.isCropExpended.value)
+            Column(
+              children: [
+                _buildCropDetailsSection(crop),
+
+                _buildSurveyDetailsSection(crop),
+              ],
+            ),
         ],
       );
     });
@@ -124,7 +122,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${details.crop!.name} (Day - ${cropDetailsController.getDaysSincePlantation(details.plantationDate)})',
+                      '${details.crop!.name} (Day - ${controller.getDaysSincePlantation(details.plantationDate)})',
                       style: Get.textTheme.titleLarge,
                     ),
                     Text(details.land!.name!),
@@ -135,8 +133,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           ),
         ),
         Positioned(
-          top: 8,
-          right: 8,
+          top: 5,
+          right: 5,
           child: IconButton(
             icon: Icon(Icons.edit),
             onPressed: () =>
@@ -144,8 +142,25 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                   Routes.addCrop,
                   arguments: {'landId': landId, 'cropId': cropId},
                 )?.then((rturn) {
-                  cropDetailsController.fetchCropDetails(landId, cropId);
+                  controller.fetchCropDetails(landId, cropId);
                 }),
+          ),
+        ),
+        Positioned(
+          bottom: 5,
+          right: 5,
+          child: IconButton(
+            onPressed: () {
+              controller.isCropExpended.value =
+                  !controller.isCropExpended.value;
+            },
+            icon: Obx(() {
+              return Icon(
+                !controller.isCropExpended.value
+                    ? Icons.keyboard_arrow_down_rounded
+                    : Icons.keyboard_arrow_up_outlined,
+              );
+            }),
           ),
         ),
       ],

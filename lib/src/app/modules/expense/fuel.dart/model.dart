@@ -1,5 +1,5 @@
-
 import '../../task/view/screens/screen.dart';
+
 class Machinery {
   final String dateOfConsumption;
   final int vendor;
@@ -158,16 +158,19 @@ class VehicleModel {
       'purchase_amount': purchaseAmount,
       "paid_amount": paidAmount,
       'insurance': insurance,
-      'company_name': companyName,
-      'insurance_no': insuranceNo,
-      'insurance_amount': insuranceAmount,
-      'insurance_start_date': insuranceStartDate?.toIso8601String().split(
-        'T',
-      )[0],
-      'insurance_end_date': insuranceEndDate?.toIso8601String().split('T')[0],
-      'insurance_renewal_date': insuranceRenewalDate?.toIso8601String().split(
-        'T',
-      )[0],
+      if (insurance) 'company_name': companyName,
+      if (insurance) 'insurance_no': insuranceNo,
+      if (insurance) 'insurance_amount': insuranceAmount,
+      if (insurance)
+        'insurance_start_date': insuranceStartDate?.toIso8601String().split(
+          'T',
+        )[0],
+      if (insurance)
+        'insurance_end_date': insuranceEndDate?.toIso8601String().split('T')[0],
+      if (insurance)
+        'insurance_renewal_date': insuranceRenewalDate?.toIso8601String().split(
+          'T',
+        )[0],
       'description': description,
       'documents': documents?.map((x) => x.toJson()).toList(),
     };
@@ -285,8 +288,6 @@ class FertilizerResponse {
   }
 }
 
-
-
 class InventoryCategory {
   final int id;
   final String name;
@@ -387,10 +388,3 @@ class InventoryData {
     required this.purchaseRecords,
   });
 }
-
-
-
-
-
-
-

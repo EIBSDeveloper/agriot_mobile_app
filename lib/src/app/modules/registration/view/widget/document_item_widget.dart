@@ -7,7 +7,7 @@ import '../../model/dropdown_item.dart';
 class DocumentItemWidget extends StatelessWidget {
   final int index;
   final DocumentItem item;
-  final List<DropdownItem> documentTypes;
+  final List<AppDropdownItem> documentTypes;
   final VoidCallback onRemove;
   final Function(DocumentItem) onChanged;
   final VoidCallback onPickDocument;
@@ -53,7 +53,7 @@ class DocumentItemWidget extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               height: 55,
-              child: DropdownButtonFormField<DropdownItem>(
+              child: DropdownButtonFormField<AppDropdownItem>(
                 value: item.type,
                 decoration: InputDecoration(
                   labelText: 'Document Type',
@@ -61,7 +61,7 @@ class DocumentItemWidget extends StatelessWidget {
                   isDense: true,
                 ),
                 items: documentTypes.map((type) {
-                  return DropdownMenuItem<DropdownItem>(
+                  return DropdownMenuItem<AppDropdownItem>(
                     value: type,
                     child: Text(type.name),
                   );

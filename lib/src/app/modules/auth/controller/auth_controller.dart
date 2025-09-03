@@ -69,45 +69,66 @@ class AuthController extends GetxController {
     }
   }
 
-Future<void> signInWithGoogle() async {
-  try {
-    final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
 
-    if (signIn == null) {
-      debugPrint('⚠️ User cancelled Google Sign-In');
-      return;
-    }
+      if (signIn == null) {
+        debugPrint('⚠️ User cancelled Google Sign-In');
+        return;
+      }
 
-    final GoogleSignInAuthentication account = await signIn.authentication;
+      final GoogleSignInAuthentication account = await signIn.authentication;
 
-    final credential = GoogleAuthProvider.credential(
-      idToken: account.idToken,
-      accessToken: account.accessToken,
-    );
-
-    final userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    final user = userCredential.user;
-
-    if (user != null) {
-      debugPrint('✅ Signed in as ${user.email}');
-
-      final response = await _authRepository.loginWithMobile(
-        user.email!,
-        true,
-        isGoogleLogin: true,
+      final credential = GoogleAuthProvider.credential(
+        idToken: account.idToken,
+        accessToken: account.accessToken,
       );
 
-      if (response.user != null) {
-        // Proceed to app
-      } else {
-        throw Exception(response.message ?? 'Invalid OTP');
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+      final user = userCredential.user;
+
+      if (user != null) {
+        debugPrint('✅ Signed in as ${user.email}');
+
+        final response = await _authRepository.loginWithMobile(
+          user.email!,
+          true,
+          isGoogleLogin: true,
+        );
+
+        if (response.userId != null) {
+          AppDataController appData = Get.put(AppDataController());
+          appData.loginState.value = response;
+          await authWrapper(response.userId);
+        } else {
+          throw Exception(response.message ?? 'Invalid OTP');
+        }
       }
+    } catch (e) {
+      debugPrint('🔥 Sign-in failed: $e');
     }
-  } catch (e) {
-    debugPrint('🔥 Sign-in failed: $e');
   }
-}
+
+  Future<void> signOutFromGoogle() async {
+    try {
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      // Disconnect and sign out from Google
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.disconnect(); // Optional: removes account
+        await googleSignIn.signOut();
+      }
+
+      debugPrint('✅ Successfully signed out from Google and Firebase');
+    } catch (e) {
+      debugPrint('🔥 Sign-out failed: $e');
+    }
+  }
 
   Future<void> verifyOtp() async {
     try {

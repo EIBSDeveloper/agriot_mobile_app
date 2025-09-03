@@ -55,7 +55,7 @@ class LandViewPage extends GetView<LandController> {
                   SizedBox(width: 16),
                   Expanded(
                     flex: 2,
-                    child: SearchableDropdown<DropdownItem>(
+                    child: SearchableDropdown<AppDropdownItem>(
                       label: 'Unit *',
                       items: controller.landUnits,
                       displayItem: (value) => value.name.toString(),
@@ -69,7 +69,7 @@ class LandViewPage extends GetView<LandController> {
                 ],
               ),
               gap,
-              SearchableDropdown<DropdownItem>(
+              SearchableDropdown<AppDropdownItem>(
                 label: 'Soil Type ',
                 items: controller.soilTypes,
                 selectedItem: controller.selectedSoilType.value,
@@ -79,16 +79,6 @@ class LandViewPage extends GetView<LandController> {
               ),
 
               gap,
-              // _buildCountryDropdown(),
-              // gap,
-              // _buildStateDropdown(),
-              // gap,
-              // _buildCityDropdown(),
-              // gap,
-              // _buildTalukDropdown(),
-              // gap,
-              // _buildVillageDropdown(),
-              // gap,
               _buildTextField(
                 controller: controller.locationListController,
                 label: 'Location Coordinates *',
@@ -99,14 +89,6 @@ class LandViewPage extends GetView<LandController> {
               gap,
               _buildSurveyDetailsSection(),
               gap,
-              // // _buildTextField(
-              // //   controller: controller.locationController,
-              // //   label: 'Location Coordinates *',
-              // //   validator: (value) => value!.isEmpty ? 'Required field' : null,
-              // //   readOnly: true,
-              // //   onTap: controller.listpickLocation,
-              // // ),
-              // gap,
               _buildDocumentsSection(),
               gap,
               _buildSubmitButton(),

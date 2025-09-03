@@ -1,6 +1,5 @@
 import 'package:argiot/src/app/modules/inventory/model/inventory_model.dart';
 import 'package:argiot/src/app/modules/inventory/repostory/inventory_repository.dart';
-import 'package:argiot/src/app/widgets/location_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 

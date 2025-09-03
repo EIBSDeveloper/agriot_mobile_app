@@ -285,3 +285,112 @@ class FertilizerResponse {
   }
 }
 
+
+
+class InventoryCategory {
+  final int id;
+  final String name;
+  final String type;
+
+  InventoryCategory({required this.id, required this.name, required this.type});
+
+  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
+    return InventoryCategory(
+      id: json['id'],
+      name: json['name'],
+      type: json['inventory_type']?['name'] ?? '',
+    );
+  }
+}
+
+class InventoryItem {
+  final int id;
+  final String name;
+
+  InventoryItem({required this.id, required this.name});
+
+  factory InventoryItem.fromJson(Map<String, dynamic> json) {
+    return InventoryItem(id: json['id'], name: json['name']);
+  }
+}
+
+class ConsumptionRecord {
+  final int id;
+  final double quantityUtilized;
+  final DateTime dateOfConsumption;
+  final String description;
+  final String crop;
+  final double availableQuantity;
+
+  ConsumptionRecord({
+    required this.id,
+    required this.quantityUtilized,
+    required this.dateOfConsumption,
+    required this.description,
+    required this.crop,
+    required this.availableQuantity,
+  });
+
+  factory ConsumptionRecord.fromJson(Map<String, dynamic> json) {
+    return ConsumptionRecord(
+      id: json['id'],
+      crop: json['crop_name'],
+      quantityUtilized:
+          double.tryParse(json['quantity_utilized']?.toString() ?? '0') ?? 0,
+      dateOfConsumption: DateTime.parse(json['date_of_consumption']),
+      description: json['description'] ?? '',
+      availableQuantity:
+          double.tryParse(json['available_quans']?.toString() ?? '0') ?? 0,
+    );
+  }
+}
+
+class PurchaseRecord {
+  final int id;
+  final String vendorName;
+  final double quantity;
+  final String quantityUnit;
+  final double purchaseAmount;
+  final DateTime date;
+  final String description;
+
+  PurchaseRecord({
+    required this.id,
+    required this.vendorName,
+    required this.quantity,
+    required this.quantityUnit,
+    required this.purchaseAmount,
+    required this.date,
+    required this.description,
+  });
+
+  factory PurchaseRecord.fromJson(Map<String, dynamic> json) {
+    return PurchaseRecord(
+      id: json['id'],
+      vendorName: json['vendor']?['name'] ?? 'Unknown',
+      quantity: double.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
+      quantityUnit: json['quantity_unit'] ?? '',
+      purchaseAmount:
+          double.tryParse(json['purchase_amount']?.toString() ?? '0') ?? 0,
+      date: DateTime.parse(json['created_at']),
+      description: json['description'] ?? '',
+    );
+  }
+}
+
+class InventoryData {
+  final List<ConsumptionRecord> consumptionRecords;
+  final List<PurchaseRecord> purchaseRecords;
+
+  InventoryData({
+    required this.consumptionRecords,
+    required this.purchaseRecords,
+  });
+}
+
+
+
+
+
+
+

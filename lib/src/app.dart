@@ -78,7 +78,7 @@ class _AppState extends State<App> {
       fallbackLocale: const Locale('en', 'US'),
       initialBinding: AppBinding(),
       // home: SignInDemo(),
-      initialRoute: Routes.home,
+      initialRoute: Routes.splash,
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     );

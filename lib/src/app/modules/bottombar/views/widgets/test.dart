@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../../../core/app_images.dart';
 import '../../../../../routes/app_routes.dart';
 import '../../../../../utils.dart';
+import '../../../notification/controller/notification_controller.dart';
 import '../../contoller/user_profile_controller.dart';
 
 class ProfileAppBar extends GetView<UserProfileController>
@@ -25,14 +26,11 @@ class ProfileAppBar extends GetView<UserProfileController>
           onPressed: showLanguageDialog,
           icon: Icon(Icons.translate, color: Get.theme.primaryColor),
         ),
-        IconButton(
+       IconButton(
           onPressed: () {
             Get.toNamed(Routes.notification);
           },
-          icon: Icon(
-            Icons.notifications_none,
-            color: Get.theme.colorScheme.primary,
-          ),
+          icon: NotificationIconButton(),
         ),
         IconButton(
           onPressed: () {
@@ -96,3 +94,50 @@ class ProfileAppBar extends GetView<UserProfileController>
     );
   }
 }
+class NotificationIconButton extends StatelessWidget {
+  final NotificationController controller = Get.put(NotificationController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final unread = controller.unread_notifications.value;
+
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            onPressed: () {
+              Get.toNamed(Routes.notification);
+            },
+            icon: Icon(
+              Icons.notifications_none,
+              color: Get.theme.colorScheme.primary,
+            ),
+          ),
+          if (unread > 0)
+            Positioned(
+              right: 7,
+              top: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                child: Center(
+                  child: Text(
+                    unread > 99 ? '99+' : '$unread',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      );
+    });
+  }}

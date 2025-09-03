@@ -1,45 +1,160 @@
-// repository/customer_vendor_repository.dart
-
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+import '../../model/customer_history/customer_sales_history.dart';
 import '../../model/customer_vendor_model/customer_vendor_model.dart';
 
 class CustomerVendorRepository {
   final String baseUrl = "http://147.93.19.253:5000/Api";
 
-  Future<CustomerVendorResponse<PayablesData>> fetchPayables(int id) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/customer_vendor_payables_list/$id'),
-    );
+  /// Fetch payables list for a given user ID
+  Future<VendorCustomerResponse> fetchPayables(int userId) async {
+    final url = Uri.parse('$baseUrl/customer_vendor_payables_list/$userId');
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return CustomerVendorResponse.fromJson(
-        jsonData,
-        (data) => PayablesData.fromJson(data),
-      );
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      return VendorCustomerResponse.fromJson(jsonData);
     } else {
-      throw Exception('Failed to load payables');
+      throw Exception(
+        'Failed to fetch payables (status: ${response.statusCode})',
+      );
     }
   }
 
-  Future<CustomerVendorResponse<ReceivablesData>> fetchReceivables(
-    int id,
-  ) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/customer_vendor_receivables_list/$id'),
-    );
+  /// Fetch receivables list for a given user ID
+  Future<VendorCustomerResponse> fetchReceivables(int userId) async {
+    final url = Uri.parse('$baseUrl/customer_vendor_receivables_list/$userId');
+    final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return CustomerVendorResponse.fromJson(
-        jsonData,
-        (data) => ReceivablesData.fromJson(data),
-      );
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      return VendorCustomerResponse.fromJson(jsonData);
     } else {
-      throw Exception('Failed to load receivables');
+      throw Exception(
+        'Failed to fetch receivables (status: ${response.statusCode})',
+      );
+    }
+  }
+
+  /// Fetch full receivable history for a sale
+  Future<List<ReceivableHistorymodel>> fetchReceivableHistory(
+    int farmerId,
+    int customerId,
+    int saleId,
+  ) async {
+    final url = Uri.parse(
+      "$baseUrl/get_farmer_both_receivables_outstanding_history/$farmerId/"
+      "?customer_id=$customerId&sale_id=$saleId",
+    );
+    print("📡 Fetching history: $url");
+
+    final response = await http.get(url);
+    print("🔵 Response status: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      if (body['data'] is List) {
+        final List data = body['data'];
+        return data.map((e) => ReceivableHistorymodel.fromJson(e)).toList();
+      } else {
+        print("⚠️ Unexpected data format: ${body['data']}");
+        return [];
+      }
+    } else {
+      throw Exception(
+        "Failed to load receivable history (status: ${response.statusCode})",
+      );
+    }
+  }
+
+  /// Fetch single receivable history record
+  Future<ReceivableHistorymodel> fetchReceivableSingleHistory(
+    int farmerId,
+    int customerId,
+    int saleId,
+    int outstandingId,
+  ) async {
+    final url = Uri.parse(
+      "$baseUrl/get_farmer_both_receivables_outstanding_history/$farmerId/"
+      "?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      final List data = body['data'];
+      if (data.isNotEmpty) {
+        return ReceivableHistorymodel.fromJson(data.first);
+      } else {
+        throw Exception("No history found for this outstanding ID");
+      }
+    } else {
+      throw Exception(
+        "Failed to fetch single history (status: ${response.statusCode})",
+      );
+    }
+  }
+
+  /// Fetch full payable history for a sale
+  Future<List<PayableHistorymodel>> fetchpayablehistory(
+    int farmerId,
+    int customerId,
+    int saleId,
+  ) async {
+    final url = Uri.parse(
+      "$baseUrl/get_farmer_both_payables_outstanding_history/$farmerId/"
+      "?customer_id=$customerId&sale_id=$saleId",
+    );
+    print("📡 Fetching history: $url");
+
+    final response = await http.get(url);
+    print("🔵 Response status: ${response.statusCode}");
+
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      if (body['data'] is List) {
+        final List data = body['data'];
+        return data.map((e) => PayableHistorymodel.fromJson(e)).toList();
+      } else {
+        print("⚠️ Unexpected data format: ${body['data']}");
+        return [];
+      }
+    } else {
+      throw Exception(
+        "Failed to load receivable history (status: ${response.statusCode})",
+      );
+    }
+  }
+
+  /// Fetch single payable history record
+  Future<PayableHistorymodel> fetchpayablesinglehistory(
+    int farmerId,
+    int customerId,
+    int saleId,
+    int outstandingId,
+  ) async {
+    final url = Uri.parse(
+      "$baseUrl/get_farmer_both_payables_outstanding_history/$farmerId/"
+      "?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final body = json.decode(response.body);
+      final List data = body['data'];
+      if (data.isNotEmpty) {
+        return PayableHistorymodel.fromJson(data.first);
+      } else {
+        throw Exception("No history found for this outstanding ID");
+      }
+    } else {
+      throw Exception(
+        "Failed to fetch single history (status: ${response.statusCode})",
+      );
     }
   }
 }

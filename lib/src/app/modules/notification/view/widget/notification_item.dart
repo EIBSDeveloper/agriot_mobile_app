@@ -24,7 +24,7 @@ class NotificationItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  notification.title,
+                  notification.name,
                   style: AppTextStyles.subtitle1.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -36,7 +36,7 @@ class NotificationItemWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(notification.description, style: AppTextStyles.bodyText1),
+            Text(notification.message, style: AppTextStyles.bodyText1),
           ],
         ),
       ),

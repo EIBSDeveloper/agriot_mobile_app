@@ -146,6 +146,8 @@ class RegLandController extends GetxController {
         longitude.value = location[0][1];
 
         locationListController.text = location.toString();
+
+        !formKey.currentState!.validate();
       }
     update();
     } catch (e) {

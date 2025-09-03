@@ -5,7 +5,7 @@ import '../modules/auth/model/auth_model.dart';
 class AppDataController extends GetxController {
 
   
-  RxString userId = '358'.obs;
+  RxString userId = ''.obs;
   RxString apikey = 'eb0d8580a7a6e8a3a5f25a2d6b1366b8'.obs;
   RxString baseUrl = 'http://147.93.19.253:5000/Api'.obs;
   RxString baseUrlIWithodAPi = 'http://147.93.19.253:5000'.obs;

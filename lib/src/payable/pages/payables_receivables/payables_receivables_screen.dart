@@ -1,3 +1,4 @@
+/*
 // lib/pages/payables_receivables/payables_receivables_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,12 +7,9 @@ import '../../controller/payables_receivables_controller/payables_receivables_co
 import '../../repository/payables_receivables_repository/payables_receivables_repository.dart';
 import '../../widgets/payable_receivableswidget/payablesListWidget.dart';
 import '../../widgets/payable_receivableswidget/receivablesListWidget.dart';
-import '../../widgets/payable_receivableswidget/togglebuttonWidget.dart';
 
 class PayablesReceivablesPage extends StatefulWidget {
-  
-
-  const PayablesReceivablesPage({super.key, });
+  const PayablesReceivablesPage({super.key});
 
   @override
   _PayablesReceivablesPageState createState() =>
@@ -61,36 +59,47 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
             const SizedBox(height: 16),
 
             /// TOP TOGGLE: Customer / Vendor / Both
-            TopToggleButtons(
-              selectedTopToggle: selectedTopToggle,
-              onToggle: (index) {
+            // TopToggleButtons(
+            //   selectedTopToggle: selectedTopToggle,
+            //   onToggle: ,
+            // ),
+            ToggleButtons(
+              isSelected: List.generate(
+                3,
+                (index) => index == selectedTopToggle.value,
+              ),
+              onPressed: (index) {
                 selectedTopToggle.value = index;
                 tabController.index = 0; // reset to first tab
               },
+              borderRadius: BorderRadius.circular(8),
+              selectedColor: Colors.white,
+              fillColor: Theme.of(context).primaryColor,
+              color: Colors.black,
+              constraints: const BoxConstraints(minHeight: 40, minWidth: 120),
+              children: const [Text('Customer'), Text('Vendor'), Text('Both')],
             ),
+            // const SizedBox(height: 16),
 
-            const SizedBox(height: 16),
-
-            /// SUB TOGGLE (only visible if "Both" is selected)
-            if (selectedTopToggle.value == 2)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ChoiceChip(
-                    label: const Text("Customer"),
-                    selected: selectedSubToggle.value == 0,
-                    onSelected: (_) => selectedSubToggle.value = 0,
-                  ),
-                  const SizedBox(width: 12),
-                  ChoiceChip(
-                    label: const Text("Vendor"),
-                    selected: selectedSubToggle.value == 1,
-                    onSelected: (_) => selectedSubToggle.value = 1,
-                  ),
-                ],
-              ),
-
-            const SizedBox(height: 16),
+            // /// SUB TOGGLE (only visible if "Both" is selected)
+            // if (selectedTopToggle.value == 2)
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       ChoiceChip(
+            //         label: const Text("Customer"),
+            //         selected: selectedSubToggle.value == 0,
+            //         onSelected: (_) => selectedSubToggle.value = 0,
+            //       ),
+            //       const SizedBox(width: 12),
+            //       ChoiceChip(
+            //         label: const Text("Vendor"),
+            //         selected: selectedSubToggle.value == 1,
+            //         onSelected: (_) => selectedSubToggle.value = 1,
+            //       ),
+            //     ],
+            //   ),
+            // const SizedBox(height: 16),
 
             /// TAB BAR for Payables / Receivables
             TabBar(
@@ -169,13 +178,11 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
 
     if (currentToggle == 0) {
       return ReceivablesList(
-        
         selectedTopToggle: 0,
         customerReceivables: data.customerReceivables,
       );
     } else if (currentToggle == 1) {
       return ReceivablesList(
-       
         selectedTopToggle: 1,
         vendorReceivables: data.vendorReceivables,
       );
@@ -196,6 +203,424 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
             data.bothCustomerVendorReceivables
                 ?.where((e) => e.vendorName != null && e.vendorName!.isNotEmpty)
                 .toList(),
+      );
+    }
+    return const SizedBox();
+  }
+}
+*/
+// lib/pages/payables_receivables/payables_receivables_page.dart
+/*import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../controller/payables_receivables_controller/payables_receivables_controller.dart';
+import '../../repository/payables_receivables_repository/payables_receivables_repository.dart';
+import '../../widgets/payable_receivableswidget/payablesListWidget.dart';
+import '../../widgets/payable_receivableswidget/receivablesListWidget.dart';
+
+class PayablesReceivablesPage extends StatefulWidget {
+  const PayablesReceivablesPage({super.key});
+
+  @override
+  _PayablesReceivablesPageState createState() =>
+      _PayablesReceivablesPageState();
+}
+
+class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
+    with SingleTickerProviderStateMixin {
+  final RxInt selectedTopToggle = 0.obs; // 0 = Customer, 1 = Vendor, 2 = Both
+  final RxInt selectedSubToggle = 0.obs; // for Both: 0 = Customer, 1 = Vendor
+
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    final controller = Get.put(
+      PayablesReceivablesController(
+        repository: PayablesReceivablesRepository(),
+      ),
+    );
+    controller.fetchData();
+
+    tabController = TabController(length: 2, vsync: this);
+  }
+
+  Future<void> _refreshData() async {
+    final controller = Get.find<PayablesReceivablesController>();
+    await controller.fetchData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<PayablesReceivablesController>();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Payables & Receivables')),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.errorMessage.isNotEmpty) {
+          return Center(child: Text('Error: ${controller.errorMessage.value}'));
+        }
+        final data = controller.data.value;
+        if (data == null) {
+          return const Center(child: Text('No data found'));
+        }
+
+        return Column(
+          children: [
+            const SizedBox(height: 16),
+
+            /// TOP TOGGLE: Customer / Vendor / Both
+            ToggleButtons(
+              isSelected: List.generate(
+                3,
+                (index) => index == selectedTopToggle.value,
+              ),
+              onPressed: (index) {
+                selectedTopToggle.value = index;
+                tabController.index = 0; // reset to first tab
+              },
+              borderRadius: BorderRadius.circular(8),
+              selectedColor: Colors.white,
+              fillColor: Theme.of(context).primaryColor,
+              color: Colors.black,
+              constraints: const BoxConstraints(minHeight: 40, minWidth: 120),
+              children: const [Text('Customer'), Text('Vendor'), Text('Both')],
+            ),
+
+            /// TAB BAR for Payables / Receivables
+            TabBar(
+              controller: tabController,
+              tabs: const [Tab(text: 'Payables'), Tab(text: 'Receivables')],
+              labelColor: Theme.of(context).primaryColor,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Theme.of(context).primaryColor,
+            ),
+
+            Expanded(
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  /// PAYABLES TAB
+                  RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      child: Obx(() => buildPayablesTab(data)),
+                    ),
+                  ),
+
+                  /// RECEIVABLES TAB
+                  RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      child: Obx(() => buildReceivablesTab(data)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  /// PAYABLES based on selected top/sub toggle
+  Widget buildPayablesTab(data) {
+    int currentToggle = selectedTopToggle.value;
+    int subToggle = selectedSubToggle.value;
+
+    if (currentToggle == 0) {
+      return PayablesList(
+        selectedTopToggle: 0,
+        customerPayables: data.customerPayables,
+      );
+    } else if (currentToggle == 1) {
+      return PayablesList(
+        selectedTopToggle: 1,
+        vendorPayables: data.vendorPayables,
+      );
+    } else if (currentToggle == 2 && subToggle == 0) {
+      return PayablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorPayables:
+            data.bothCustomerVendorPayables
+                ?.where(
+                  (e) => e.customerName != null && e.customerName!.isNotEmpty,
+                )
+                .toList(),
+      );
+    } else if (currentToggle == 2 && subToggle == 1) {
+      return PayablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorPayables:
+            data.bothCustomerVendorPayables
+                ?.where((e) => e.vendorName != null && e.vendorName!.isNotEmpty)
+                .toList(),
+      );
+    }
+    return const SizedBox();
+  }
+
+  /// RECEIVABLES based on selected top/sub toggle
+  Widget buildReceivablesTab(data) {
+    int currentToggle = selectedTopToggle.value;
+    int subToggle = selectedSubToggle.value;
+
+    if (currentToggle == 0) {
+      return ReceivablesList(
+        selectedTopToggle: 0,
+        customerReceivables: data.customerReceivables,
+      );
+    } else if (currentToggle == 1) {
+      return ReceivablesList(
+        selectedTopToggle: 1,
+        vendorReceivables: data.vendorReceivables,
+      );
+    } else if (currentToggle == 2 && subToggle == 0) {
+      return ReceivablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorReceivables:
+            data.bothCustomerVendorReceivables
+                ?.where(
+                  (e) => e.customerName != null && e.customerName!.isNotEmpty,
+                )
+                .toList(),
+      );
+    } else if (currentToggle == 2 && subToggle == 1) {
+      return ReceivablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorReceivables:
+            data.bothCustomerVendorReceivables
+                ?.where((e) => e.vendorName != null && e.vendorName!.isNotEmpty)
+                .toList(),
+      );
+    }
+    return const SizedBox();
+  }
+}*/
+// lib/pages/payables_receivables/payables_receivables_page.dart
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../controller/payables_receivables_controller/payables_receivables_controller.dart';
+import '../../repository/payables_receivables_repository/payables_receivables_repository.dart';
+import '../../widgets/payable_receivableswidget/payablesListWidget.dart';
+import '../../widgets/payable_receivableswidget/receivablesListWidget.dart';
+
+class PayablesReceivablesPage extends StatefulWidget {
+  final int initialTab;
+  final int initialsubtab;
+  const PayablesReceivablesPage({
+    super.key,
+    this.initialTab = 0,
+    this.initialsubtab = 0,
+  });
+
+  @override
+  _PayablesReceivablesPageState createState() =>
+      _PayablesReceivablesPageState();
+}
+
+class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
+    with SingleTickerProviderStateMixin {
+  final RxInt selectedTopToggle = 0.obs; // 0 = Customer, 1 = Vendor, 2 = Both
+  final RxInt selectedSubToggle = 0.obs; // for Both: 0 = Customer, 1 = Vendor
+
+  late TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Clear old controller if it exists
+    if (Get.isRegistered<PayablesReceivablesController>()) {
+      Get.delete<PayablesReceivablesController>();
+    }
+
+    final controller = Get.put(
+      PayablesReceivablesController(
+        repository: PayablesReceivablesRepository(),
+      ),
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchData();
+    });
+
+    // Open requested tab
+    selectedTopToggle.value = widget.initialTab; // Customer / Vendor
+    tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.initialsubtab,
+    );
+  }
+
+  Future<void> _refreshData() async {
+    final controller = Get.find<PayablesReceivablesController>();
+    await controller.fetchData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<PayablesReceivablesController>();
+
+    return Scaffold(
+      appBar: AppBar(title: Text('payables_receivables'.tr)),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.errorMessage.isNotEmpty) {
+          return Center(
+            child: Text('${'error'.tr}: ${controller.errorMessage.value}'),
+          );
+        }
+        final data = controller.data.value;
+        if (data == null) {
+          return Center(child: Text('no_data'.tr));
+        }
+
+        return Column(
+          children: [
+            const SizedBox(height: 16),
+
+            /// TOP TOGGLE: Customer / Vendor / Both
+            ToggleButtons(
+              isSelected: List.generate(
+                3,
+                (index) => index == selectedTopToggle.value,
+              ),
+              onPressed: (index) {
+                selectedTopToggle.value = index;
+                tabController.index = 0; // reset to first tab
+              },
+              borderRadius: BorderRadius.circular(8),
+              selectedColor: Colors.white,
+              fillColor: Theme.of(context).primaryColor,
+              color: Colors.black,
+              constraints: const BoxConstraints(minHeight: 40, minWidth: 120),
+              children: [
+                Text('customer'.tr),
+                Text('vendor'.tr),
+                Text('both'.tr),
+              ],
+            ),
+
+            /// TAB BAR for Payables / Receivables
+            TabBar(
+              controller: tabController,
+              tabs: [
+                Tab(text: 'payables'.tr),
+                Tab(text: 'receivables'.tr),
+              ],
+              labelColor: Theme.of(context).primaryColor,
+              unselectedLabelColor: Colors.grey,
+              indicatorColor: Theme.of(context).primaryColor,
+            ),
+
+            Expanded(
+              child: TabBarView(
+                controller: tabController,
+                children: [
+                  /// PAYABLES TAB
+                  RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      child: Obx(() => buildPayablesTab(data)),
+                    ),
+                  ),
+
+                  /// RECEIVABLES TAB
+                  RefreshIndicator(
+                    onRefresh: _refreshData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      child: Obx(() => buildReceivablesTab(data)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  /// PAYABLES based on selected top/sub toggle
+  Widget buildPayablesTab(data) {
+    int currentToggle = selectedTopToggle.value;
+    int subToggle = selectedSubToggle.value;
+
+    if (currentToggle == 0) {
+      return PayablesList(
+        selectedTopToggle: 0,
+        customerPayables: data.customerPayables,
+      );
+    } else if (currentToggle == 1) {
+      return PayablesList(
+        selectedTopToggle: 1,
+        vendorPayables: data.vendorPayables,
+      );
+    } else if (currentToggle == 2 && subToggle == 0) {
+      return PayablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorPayables: data.bothCustomerVendorPayables
+            ?.where((e) => e.customerName != null && e.customerName!.isNotEmpty)
+            .toList(),
+      );
+    } else if (currentToggle == 2 && subToggle == 1) {
+      return PayablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorPayables: data.bothCustomerVendorPayables
+            ?.where((e) => e.vendorName != null && e.vendorName!.isNotEmpty)
+            .toList(),
+      );
+    }
+    return const SizedBox();
+  }
+
+  /// RECEIVABLES based on selected top/sub toggle
+  Widget buildReceivablesTab(data) {
+    int currentToggle = selectedTopToggle.value;
+    int subToggle = selectedSubToggle.value;
+
+    if (currentToggle == 0) {
+      return ReceivablesList(
+        selectedTopToggle: 0,
+        customerReceivables: data.customerReceivables,
+      );
+    } else if (currentToggle == 1) {
+      return ReceivablesList(
+        selectedTopToggle: 1,
+        vendorReceivables: data.vendorReceivables,
+      );
+    } else if (currentToggle == 2 && subToggle == 0) {
+      return ReceivablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorReceivables: data.bothCustomerVendorReceivables
+            ?.where((e) => e.customerName != null && e.customerName!.isNotEmpty)
+            .toList(),
+      );
+    } else if (currentToggle == 2 && subToggle == 1) {
+      return ReceivablesList(
+        selectedTopToggle: 2,
+        bothCustomerVendorReceivables: data.bothCustomerVendorReceivables
+            ?.where((e) => e.vendorName != null && e.vendorName!.isNotEmpty)
+            .toList(),
       );
     }
     return const SizedBox();

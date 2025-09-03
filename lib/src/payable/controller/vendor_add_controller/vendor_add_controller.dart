@@ -14,26 +14,27 @@ class VendorAddController extends GetxController {
   var payables = Rxn<dynamic>();
   var receivables = Rxn<dynamic>();
 
-  // Add Vendor Payable
+  /*  // Add Vendor Payable
   Future<void> addVendorPayable({
+
     required int vendorId,
     required int fuelPurchaseId,
     required String date,
     required double amount,
-    required String description,
-    required String type,
+    required String description, required String type,
   }) async {
     isLoading.value = true;
 
     try {
-      await repository.createVendorPayable(
+     await repository.createVendorPayable(
+
         vendorId: vendorId,
         fuelPurchaseId: fuelPurchaseId,
-        date: date,
-        type: type,
+        date: date,    type: type,
         paymentAmount: amount,
         description: description,
       );
+
 
       Get.snackbar(
         "Success",
@@ -57,23 +58,111 @@ class VendorAddController extends GetxController {
 
   // Add Vendor Receivable
   Future<void> addVendorReceivable({
+
     required int vendorId,
     required int fuelPurchaseId,
     required String date,
     required double amount,
-    required String description,
-    required String type,
+    required String description,required String type,
   }) async {
     isLoading.value = true;
 
     try {
       final response = await repository.createVendorReceivable(
+
         vendorId: vendorId,
         fuelPurchaseId: fuelPurchaseId,
-        date: date,
-        type: type,
+        date: date, type: type,
         paymentAmount: amount,
         description: description,
+      );
+
+
+      Get.snackbar(
+        "Success",
+        "Payment Received Successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }*/
+
+  Future<void> addVendorPayable({
+    required int vendorId,
+    required int fuelPurchaseId,
+    required String date, // keep as DD-MM-YYYY
+    required double amount,
+    required String description,
+    required String type,
+  }) async {
+    isLoading.value = true;
+    try {
+      print(
+        "Vendor Payable Data: $vendorId, $fuelPurchaseId, $date, $amount, $type, $description",
+      );
+
+      await repository.createVendorPayable(
+        vendorId: vendorId,
+        fuelPurchaseId: fuelPurchaseId,
+        date: date, // send exactly as DD-MM-YYYY
+        paymentAmount: amount,
+        description: description,
+        type: type,
+      );
+
+      Get.snackbar(
+        "Success",
+        "Payment Created Successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Similarly for addVendorReceivable
+  Future<void> addVendorReceivable({
+    required int vendorId,
+    required int fuelPurchaseId,
+    required String date, // keep as DD-MM-YYYY
+    required double amount,
+    required String description,
+    required String type,
+  }) async {
+    isLoading.value = true;
+    try {
+      print(
+        "Vendor Receivable Data: $vendorId, $fuelPurchaseId, $date, $amount, $type, $description",
+      );
+
+      await repository.createVendorReceivable(
+        vendorId: vendorId,
+        fuelPurchaseId: fuelPurchaseId,
+        date: date, // send as DD-MM-YYYY
+        paymentAmount: amount,
+        description: description,
+        type: type,
       );
 
       Get.snackbar(

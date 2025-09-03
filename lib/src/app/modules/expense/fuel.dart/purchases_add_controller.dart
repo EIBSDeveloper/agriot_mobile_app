@@ -351,69 +351,69 @@ class PurchasesAddController extends GetxController {
     //   errors['vendor'] = 'Vendor is required';
     // }
 
-    if (regNoController.text.isEmpty) {
-      errors['reg_no'] = 'Registration Number is required';
-    }
+    // if (regNoController.text.isEmpty) {
+    //   errors['reg_no'] = 'Registration Number is required';
+    // }
 
-    if (ownerNameController.text.isEmpty) {
-      errors['owner_name'] = 'Owner Name is required';
-    }
+    // if (ownerNameController.text.isEmpty) {
+    //   errors['owner_name'] = 'Owner Name is required';
+    // }
 
-    if (runningKmController.text.isEmpty) {
-      errors['running_km'] = 'Running KM is required';
-    } else {
-      final error = validateNumeric(runningKmController.text, 'Running KM');
-      if (error != null) errors['running_km'] = error;
-    }
+    // if (runningKmController.text.isEmpty) {
+    //   errors['running_km'] = 'Running KM is required';
+    // } else {
+    //   final error = validateNumeric(runningKmController.text, 'Running KM');
+    //   if (error != null) errors['running_km'] = error;
+    // }
 
-    if (purchaseAmountController.text.isEmpty) {
-      errors['purchase_amount'] = 'Purchase Amount is required';
-    } else {
-      final error = validateNumeric(
-        purchaseAmountController.text,
-        'Purchase Amount',
-      );
-      if (error != null) errors['purchase_amount'] = error;
-    }
+    // if (purchaseAmountController.text.isEmpty) {
+    //   errors['purchase_amount'] = 'Purchase Amount is required';
+    // } else {
+    //   final error = validateNumeric(
+    //     purchaseAmountController.text,
+    //     'Purchase Amount',
+    //   );
+    //   if (error != null) errors['purchase_amount'] = error;
+    // }
 
-    // Validate insurance fields if insurance is enabled
-    if (showInsuranceDetails.value) {
-      if (companyNameController.text.isEmpty) {
-        errors['company_name'] = 'Company Name is required';
-      }
+    // // Validate insurance fields if insurance is enabled
+    // if (showInsuranceDetails.value) {
+    //   if (companyNameController.text.isEmpty) {
+    //     errors['company_name'] = 'Company Name is required';
+    //   }
 
-      if (insuranceNoController.text.isEmpty) {
-        errors['insurance_no'] = 'Insurance Number is required';
-      }
+    //   if (insuranceNoController.text.isEmpty) {
+    //     errors['insurance_no'] = 'Insurance Number is required';
+    //   }
 
-      if (insuranceAmountController.text.isEmpty) {
-        errors['insurance_amount'] = 'Insurance Amount is required';
-      } else {
-        final error = validateNumeric(
-          insuranceAmountController.text,
-          'Insurance Amount',
-        );
-        if (error != null) errors['insurance_amount'] = error;
-      }
+    //   if (insuranceAmountController.text.isEmpty) {
+    //     errors['insurance_amount'] = 'Insurance Amount is required';
+    //   } else {
+    //     final error = validateNumeric(
+    //       insuranceAmountController.text,
+    //       'Insurance Amount',
+    //     );
+    //     if (error != null) errors['insurance_amount'] = error;
+    //   }
 
-      if (startDateController.text.isEmpty) {
-        errors['start_date'] = 'Start Date is required';
-      }
+    //   if (startDateController.text.isEmpty) {
+    //     errors['start_date'] = 'Start Date is required';
+    //   }
 
-      if (endDateController.text.isEmpty) {
-        errors['end_date'] = 'End Date is required';
-      } else if (startDateController.text.isNotEmpty) {
-        final startDate = DateTime.parse(startDateController.text);
-        final endDate = DateTime.parse(endDateController.text);
-        if (endDate.isBefore(startDate)) {
-          errors['end_date'] = 'End Date must be after Start Date';
-        }
-      }
+    //   if (endDateController.text.isEmpty) {
+    //     errors['end_date'] = 'End Date is required';
+    //   } else if (startDateController.text.isNotEmpty) {
+    //     final startDate = DateTime.parse(startDateController.text);
+    //     final endDate = DateTime.parse(endDateController.text);
+    //     if (endDate.isBefore(startDate)) {
+    //       errors['end_date'] = 'End Date must be after Start Date';
+    //     }
+    //   }
 
-      if (renewalDateController.text.isEmpty) {
-        errors['renewal_date'] = 'Renewal Date is required';
-      }
-    }
+    //   if (renewalDateController.text.isEmpty) {
+    //     errors['renewal_date'] = 'Renewal Date is required';
+    //   }
+    // }
 
     errors.refresh();
     return errors.isEmpty;
@@ -799,7 +799,7 @@ class PurchasesAddController extends GetxController {
               height: 55,
               child: DropdownButtonFormField<int>(
                 decoration: const InputDecoration(
-                  hintText: 'Vendor',
+                  hintText: 'Vendor*',
                   border: InputBorder.none,
                 ),
                 value: selectedVendor.value,

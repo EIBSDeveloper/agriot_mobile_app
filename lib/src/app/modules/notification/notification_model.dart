@@ -4,10 +4,7 @@ class NotificationModel {
   final String timeStamp;
   final List<NotificationItem> notifications;
 
-  NotificationModel({
-    required this.timeStamp,
-    required this.notifications,
-  });
+  NotificationModel({required this.timeStamp, required this.notifications});
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
@@ -29,30 +26,59 @@ class NotificationModel {
 }
 
 class NotificationItem {
-  final String title;
-  final String description;
-  final String timeStamp;
+  final int id;
+  final String name; // notification title
+  final String type; // e.g. Land, Fuel, Vendor
+  final String message; // description
+  final String createdAt; // ISO timestamp from API
+  bool isRead;
 
   NotificationItem({
-    required this.title,
-    required this.description,
-    required this.timeStamp,
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.message,
+    required this.createdAt,
+    this.isRead = false,
   });
 
   factory NotificationItem.fromJson(Map<String, dynamic> json) {
     return NotificationItem(
-      title: json['title'],
-      description: json['description'],
-      timeStamp: json['timeStamp'],
+      id: json['notification_id'] ?? 0,
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+      message: json['message'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      isRead: json['is_read'] ?? false,
     );
   }
 
   String get formattedTime {
     try {
-      final dateTime = DateTime.parse(timeStamp);
+      final dateTime = DateTime.parse(createdAt);
       return DateFormat('hh:mm a').format(dateTime);
     } catch (e) {
-      return timeStamp;
+      return createdAt;
     }
+  }
+}
+
+class NotificationCount {
+  final int total;
+  final int read;
+  final int unread;
+
+  NotificationCount({
+    required this.total,
+    required this.read,
+    required this.unread,
+  });
+
+  factory NotificationCount.fromJson(Map<String, dynamic> json) {
+    return NotificationCount(
+      total: json['total_notifications'] ?? 0,
+      read: json['read_notifications'] ?? 0,
+      unread: json['unread_notifications'] ?? 0,
+    );
   }
 }

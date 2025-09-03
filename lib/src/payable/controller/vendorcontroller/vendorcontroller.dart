@@ -22,11 +22,11 @@ class VendorPurchaseController extends GetxController {
   var vendorReceivablesHistory = <VendorReceivableHistoryModel>[].obs;
 
   // Load Payables
-  Future<void> loadVendorPayables( int vendorId) async {
+  Future<void> loadVendorPayables(int vendorId) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      final response = await repository.fetchVendorPayables( vendorId);
+      final response = await repository.fetchVendorPayables(vendorId);
       vendorPayables.value = response.vendorInventoryData.payables ?? [];
     } catch (e) {
       errorMessage.value = e.toString();

@@ -1,28 +1,69 @@
 import 'dart:convert';
 
-import 'package:argiot/src/app/modules/expense/fuel.dart/purchases_add_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-import '../../../../../consumption_model.dart';
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
-import '../../../widgets/input_card_style.dart';
 
-class InventoryCategory {
+class FuelInventoryModel {
+  final int fuelId;
+  final double quantity;
+  final double purchaseAmount;
+  final String description;
+  final String date;
+  final Farmer farmer;
+  final InventoryItem inventoryItem;
+  final InventoryType inventoryType;
+  final InventoryCategory inventoryCategory;
+  final Vendor vendor;
+  final List<DocumentCategory> documents;
+
+  FuelInventoryModel({
+    required this.fuelId,
+    required this.quantity,
+    required this.purchaseAmount,
+    required this.description,
+    required this.date,
+    required this.farmer,
+    required this.inventoryItem,
+    required this.inventoryType,
+    required this.inventoryCategory,
+    required this.vendor,
+    required this.documents,
+  });
+
+  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) {
+    return FuelInventoryModel(
+      fuelId: json['fuel_id'] ?? 0,
+      quantity: (json['quantity'] ?? 0.0).toDouble(),
+      purchaseAmount: (json['purchase_amount'] ?? 0.0).toDouble(),
+      description: json['description'] ?? '',
+      date: json['date'] ?? '',
+      farmer: Farmer.fromJson(json['farmer'] ?? {}),
+      inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
+      inventoryType: InventoryType.fromJson(json['inventory_type'] ?? {}),
+      inventoryCategory: InventoryCategory.fromJson(
+        json['inventory_category'] ?? {},
+      ),
+      vendor: Vendor.fromJson(json['vendor'] ?? {}),
+      documents: (json['documents'] as List<dynamic>? ?? [])
+          .map((doc) => DocumentCategory.fromJson(doc))
+          .toList(),
+    );
+  }
+}
+
+class Farmer {
   final int id;
   final String name;
-  final String type;
 
-  InventoryCategory({required this.id, required this.name, required this.type});
+  Farmer({required this.id, required this.name});
 
-  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
-    return InventoryCategory(
-      id: json['id'],
-      name: json['name'],
-      type: json['inventory_type']?['name'] ?? '',
-    );
+  factory Farmer.fromJson(Map<String, dynamic> json) {
+    return Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -33,201 +74,127 @@ class InventoryItem {
   InventoryItem({required this.id, required this.name});
 
   factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(id: json['id'], name: json['name']);
+    return InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
-class ConsumptionRecord {
+class InventoryType {
   final int id;
-  final double quantityUtilized;
-  final DateTime dateOfConsumption;
-  final String description;
-  final String crop;
-  final double availableQuantity;
+  final String name;
 
-  ConsumptionRecord({
-    required this.id,
-    required this.quantityUtilized,
-    required this.dateOfConsumption,
-    required this.description,
-    required this.crop,
-    required this.availableQuantity,
-  });
+  InventoryType({required this.id, required this.name});
 
-  factory ConsumptionRecord.fromJson(Map<String, dynamic> json) {
-    return ConsumptionRecord(
-      id: json['id'],
-      crop: json['crop_name'],
-      quantityUtilized:
-          double.tryParse(json['quantity_utilized']?.toString() ?? '0') ?? 0,
-      dateOfConsumption: DateTime.parse(json['date_of_consumption']),
-      description: json['description'] ?? '',
-      availableQuantity:
-          double.tryParse(json['available_quans']?.toString() ?? '0') ?? 0,
+  factory InventoryType.fromJson(Map<String, dynamic> json) {
+    return InventoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
+  }
+}
+
+class InventoryCategory {
+  final int id;
+  final String name;
+
+  InventoryCategory({required this.id, required this.name});
+
+  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
+    return InventoryCategory(id: json['id'] ?? 0, name: json['name'] ?? '');
+  }
+}
+
+class Vendor {
+  final int id;
+  final String name;
+
+  Vendor({required this.id, required this.name});
+
+  factory Vendor.fromJson(Map<String, dynamic> json) {
+    return Vendor(id: json['id'] ?? 0, name: json['name'] ?? '');
+  }
+}
+
+class DocumentCategory {
+  final int categoryId;
+  final List<Document> documents;
+
+  DocumentCategory({required this.categoryId, required this.documents});
+
+  factory DocumentCategory.fromJson(Map<String, dynamic> json) {
+    return DocumentCategory(
+      categoryId: json['category_id'] ?? 0,
+      documents: (json['documents'] as List<dynamic>? ?? [])
+          .map((doc) => Document.fromJson(doc))
+          .toList(),
     );
   }
 }
 
-class PurchaseRecord {
+class Document {
   final int id;
-  final String vendorName;
-  final double quantity;
-  final String quantityUnit;
-  final double purchaseAmount;
-  final DateTime date;
-  final String description;
-
-  PurchaseRecord({
+  final DocumentCategoryDetail documentCategory;
+  final String uploadDocument;
+  Document({
     required this.id,
-    required this.vendorName,
-    required this.quantity,
-    required this.quantityUnit,
-    required this.purchaseAmount,
-    required this.date,
-    required this.description,
+    required this.documentCategory,
+    required this.uploadDocument,
   });
 
-  factory PurchaseRecord.fromJson(Map<String, dynamic> json) {
-    return PurchaseRecord(
-      id: json['id'],
-      vendorName: json['vendor']?['name'] ?? 'Unknown',
-      quantity: double.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
-      quantityUnit: json['quantity_unit'] ?? '',
-      purchaseAmount:
-          double.tryParse(json['purchase_amount']?.toString() ?? '0') ?? 0,
-      date: DateTime.parse(json['created_at']),
-      description: json['description'] ?? '',
+  factory Document.fromJson(Map<String, dynamic> json) {
+    return Document(
+      id: json['id'] ?? 0,
+      documentCategory: DocumentCategoryDetail.fromJson(
+        json['document_category'] ?? {},
+      ),
+      uploadDocument: json['upload_document'] ?? '',
     );
   }
 }
 
-class InventoryData {
-  final List<ConsumptionRecord> consumptionRecords;
-  final List<PurchaseRecord> purchaseRecords;
+class DocumentCategoryDetail {
+  final int id;
+  final String name;
 
-  InventoryData({
-    required this.consumptionRecords,
-    required this.purchaseRecords,
-  });
+  DocumentCategoryDetail({required this.id, required this.name});
+
+  factory DocumentCategoryDetail.fromJson(Map<String, dynamic> json) {
+    return DocumentCategoryDetail(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+    );
+  }
 }
 
-class ConsumptionPurchaseRepository {
-  final HttpService _httpService = Get.find();
+class FuelInventoryRepository {
+  final HttpService httpService = Get.find<HttpService>();
+
   final AppDataController _appDataController = Get.find();
-  Future<InventoryData> getInventoryData(
-    String inventoryType,
-    int itemId,
-    int type,
-  ) async {
+  Future<FuelInventoryModel> getFuelInventoryDetail(int fuelId) async {
+    final farmerId = _appDataController.userId.value;
     try {
-      String endpoint;
-      switch (inventoryType.toLowerCase()) {
-        case 'fuel':
-          endpoint = '/fuel_inventory_and_consumption';
-          break;
-        case 'pesticides':
-          endpoint = '/pesticides-inventory-details';
-          break;
-        case 'seeds':
-          endpoint = '/seeds-inventory-details';
-          break;
-        case 'fertilizers':
-          endpoint = '/fertilizers-inventory-details';
-          break;
-        case 'tools':
-          endpoint = '/tools-inventory-details';
-          break;
-        case 'vehicle':
-          endpoint = '/vehicle-inventory-details';
-          break;
-        case 'machinery':
-          endpoint = '/machinery-inventory-details';
-          break;
-        default:
-          throw Exception('Unknown inventory type: $inventoryType');
-      }
-
-      // Get farmer ID from storage
-
-      final farmerId = _appDataController.userId.value;
-      final response = await _httpService.get(
-        '$endpoint/$farmerId/$type/$itemId',
-      );
+      final response = await httpService.post('/get_myfuel/$farmerId/', {
+        'my_fuel': fuelId,
+      });
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        List<ConsumptionRecord> consumptionRecords = [];
-        List<PurchaseRecord> purchaseRecords = [];
-
-        // Parse based on inventory type
-        switch (inventoryType.toLowerCase()) {
-          case 'fuel':
-            consumptionRecords = (data['fuel_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['fuel_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          case 'pesticides':
-            consumptionRecords = (data['pesticide_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['pesticide_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          case 'seeds':
-            consumptionRecords = (data['seeds_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['seeds_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          case 'fertilizers':
-            consumptionRecords = (data['fertilizers_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['fertilizers_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          case 'tools':
-            consumptionRecords = (data['tools_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['tools_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          case 'vehicle':
-            consumptionRecords = (data['vehicle_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['vehicle_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          case 'machinery':
-            consumptionRecords = (data['machinery_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
-                .toList();
-            purchaseRecords = (data['machinery_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
-                .toList();
-            break;
-          default:
-            throw Exception('Unknown inventory type: $inventoryType');
-        }
-
-        return InventoryData(
-          consumptionRecords: consumptionRecords,
-          purchaseRecords: purchaseRecords,
+        return FuelInventoryModel.fromJson(
+          json.decode(response.body)['fuel_data'],
         );
       } else {
-        throw Exception('Failed to load inventory data');
+        throw Exception('Failed to load fuel inventory details');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> deleteFuelInventory(int fuelId) async {
+    try {
+      // Assuming there's a delete endpoint
+      final response = await httpService.delete('/delete_myfuel/$fuelId/');
+
+      if (response.statusCode == 200 &&
+          json.decode(response.body)['status'] == true) {
+        return true;
+      } else {
+        throw Exception('Failed to delete fuel inventory');
       }
     } catch (e) {
       rethrow;
@@ -235,514 +202,241 @@ class ConsumptionPurchaseRepository {
   }
 }
 
-class ConsumptionPurchaseController extends GetxController {
-  final ConsumptionPurchaseRepository _repository = Get.find();
-  final PurchasesAddRepository purchasesrepository = PurchasesAddRepository();
-  // Observables
-  var isLoading = false.obs;
-  var selectedInventoryType = Rxn<int>();
-  var selectedInventoryCategory = Rxn<int>();
-  var selectedInventoryItem = Rxn<int>();
-  final selectedInventoryTypeName = 'Fuel'.obs;
-  var consumptionData = <ConsumptionRecord>[].obs;
-  var purchaseData = <PurchaseRecord>[].obs;
-  var currentTabIndex = 0.obs; // 0 = Consumption, 1 = Purchase
-  final RxBool isCategoryLoading = false.obs;
-  final RxBool isinventoryLoading = false.obs;
-  var inventoryCategories = <InventoryCategoryModel>[].obs;
-  var inventoryItems = <InventoryItemModel>[].obs;
+class FuelInventoryController extends GetxController {
+  final FuelInventoryRepository repository = FuelInventoryRepository();
+
+  final RxInt fuelId = 0.obs;
+
+  final isLoading = true.obs;
+  final fuelInventory = Rx<FuelInventoryModel?>(null);
+  final error = RxString('');
+
   @override
   void onInit() {
     super.onInit();
-    var argument = Get.arguments['id'];
-    var type = Get.arguments["type"];
-    selectedInventoryTypeName.value = type;
-    setInventoryType(argument);
-    fetchInventoryCategories(argument);
+    fuelId.value = Get.arguments['id'];
+    loadFuelInventoryDetail();
   }
 
-  void setInventoryType(int typeId) {
-    selectedInventoryType.value = typeId;
-    selectedInventoryCategory.value = null;
-    selectedInventoryItem.value = null;
-  }
-
-  void inventoryCategory(int? value) {
-    setInventoryCategory(value!);
-    fetchInventoryItems(value);
-  }
-
-  void setInventoryCategory(int categoryId) {
-    selectedInventoryCategory.value = categoryId;
-    selectedInventoryItem.value = null;
-  }
-
-  void setInventoryItem(int itemId) {
-    selectedInventoryItem.value = itemId;
-    loadData();
-  }
-
-  Future<void> fetchInventoryCategories(int inventoryTypeId) async {
+  Future<void> loadFuelInventoryDetail() async {
     try {
-      isCategoryLoading(true);
-      final response = await purchasesrepository.fetchInventoryCategories(
-        inventoryTypeId,
-      );
-      inventoryCategories.value = response;
-      if (inventoryCategories.isNotEmpty) {
-        selectedInventoryCategory.value = inventoryCategories.first.id;
-        inventoryCategory(inventoryCategories.first.id);
-      }
+      isLoading.value = true;
+      error.value = '';
+      final result = await repository.getFuelInventoryDetail(fuelId.value);
+      fuelInventory.value = result;
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch inventory categories');
+      error.value = e.toString();
+      Fluttertoast.showToast(
+        msg: 'Failed to load fuel inventory details',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
     } finally {
-      isCategoryLoading(false);
+      isLoading.value = false;
     }
   }
 
-  Future<void> fetchInventoryItems(int inventoryCategoryId) async {
+  Future<void> deleteInventory() async {
     try {
-      isinventoryLoading(true);
-      final response = await purchasesrepository.fetchInventoryItems(
-        inventoryCategoryId,
-      );
-      inventoryItems.value = response;
-      if (response.isNotEmpty) {
-        setInventoryItem(response.first.id);
-      }
-    } finally {
-      isinventoryLoading(false);
-    }
-  }
+      final confirmed = await showDeleteConfirmation();
+      if (!confirmed) return;
 
-  Future<void> loadData() async {
-    if (selectedInventoryItem.value == null) return;
-
-    try {
-      isLoading(true);
-      final inventoryType = selectedInventoryTypeName.value;
-      final inventoryTypeid = selectedInventoryType.value;
-      final itemId = selectedInventoryItem.value!;
-
-      final data = await _repository.getInventoryData(
-        inventoryType,
-        itemId,
-        inventoryTypeid!,
-      );
-
-      var where = data.consumptionRecords.where((e) {
-        return e.quantityUtilized != 0;
-      });
-      consumptionData.assignAll(where);
-      purchaseData.assignAll(data.purchaseRecords);
-
-      if (consumptionData.isEmpty && purchaseData.isEmpty) {
+      final success = await repository.deleteFuelInventory(fuelId.value);
+      if (success) {
         Fluttertoast.showToast(
-          msg: 'no_records_found'.tr,
+          msg: 'Fuel inventory deleted successfully',
           toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
         );
+        Get.back(result: true);
       }
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'failed_to_load_data'.tr,
+        msg: 'Failed to delete fuel inventory',
         toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
       );
-    } finally {
-      isLoading(false);
     }
   }
 
-  void changeTab(int index) {
-    currentTabIndex.value = index;
+  Future<bool> showDeleteConfirmation() async {
+    return await Get.dialog(
+          AlertDialog(
+            title: Text('confirm_delete'.tr),
+            content: Text('delete_fuel_confirmation'.tr),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(result: false),
+                child: Text('cancel'.tr),
+              ),
+              TextButton(
+                onPressed: () => Get.back(result: true),
+                child: Text('delete'.tr),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
+  void navigateToEditScreen() {
+    if (fuelInventory.value != null) {
+      Get.toNamed('/edit_fuel', arguments: fuelInventory.value);
+    }
+  }
+
+  void viewDocument(String documentUrl) {
+    Get.toNamed('/document_viewer', arguments: documentUrl);
   }
 }
 
-class ConsumptionPurchaseBinding extends Bindings {
+class FuelInventoryBinding extends Bindings {
+  FuelInventoryBinding();
+
   @override
   void dependencies() {
-    Get.lazyPut<ConsumptionPurchaseRepository>(
-      () => ConsumptionPurchaseRepository(),
-    );
-    Get.lazyPut<PurchasesAddRepository>(() => PurchasesAddRepository());
-    Get.lazyPut<ConsumptionPurchaseController>(
-      () => ConsumptionPurchaseController(),
-    );
+    Get.lazyPut(() => FuelInventoryRepository());
+    Get.lazyPut(() => FuelInventoryController());
   }
 }
 
-class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
-  const ConsumptionPurchaseView({Key? key}) : super(key: key);
+class FuelInventoryView extends GetView<FuelInventoryController> {
+  const FuelInventoryView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('consumption_purchase_title'.tr)),
-      body: Column(
-        children: [
-          // Filter Section
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
+      appBar: AppBar(),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (controller.error.value.isNotEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                buildInventoryCategoryDropdown(),
-                SizedBox(width: 16),
-                buildInventoryItemDropdown(),
+                Text('error_loading_data'.tr),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: controller.loadFuelInventoryDetail,
+                  child: Text('retry'.tr),
+                ),
               ],
             ),
+          );
+        }
+
+        final fuel = controller.fuelInventory.value;
+        if (fuel == null) {
+          return Center(child: Text('no_data_available'.tr));
+        }
+
+        return _buildFuelDetailContent(fuel);
+      }),
+    );
+  }
+
+  Widget _buildFuelDetailContent(FuelInventoryModel fuel) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(fuel.inventoryItem.name, style: Get.textTheme.headlineSmall),
+            ],
           ),
+          SizedBox(height: 24),
 
-          // Tab Bar
-          Container(
-            color: Get.theme.colorScheme.surface,
-            child: TabBar(
-              controller: TabController(
-                length: 2,
-                initialIndex: controller.currentTabIndex.value,
-                vsync: Navigator.of(context),
-              ),
-              onTap: controller.changeTab,
-              tabs: [
-                Tab(text: 'consumption'.tr),
-                Tab(text: 'purchase'.tr),
-              ],
-            ),
-          ),
+          // Basic Information
+          _buildInfoRow('date'.tr, fuel.date),
+          _buildInfoRow('inventory_type'.tr, fuel.inventoryType.name),
+          _buildInfoRow('inventory_category'.tr, fuel.inventoryCategory.name),
+          _buildInfoRow('vendor'.tr, fuel.vendor.name),
+          _buildInfoRow('purchase_amount'.tr, '${fuel.purchaseAmount} ₹'),
+          _buildInfoRow('quantity'.tr, '${fuel.quantity} L'),
 
-          // Content Area
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
+          Divider(height: 32),
 
-              // if (controller.selectedItem.value == null) {
-              //   return Center(
-              //     child: Text('select_item_to_view_data'.tr),
-              //   );
-              // }
+          // Uploaded Documents
+          Text('uploaded_documents'.tr, style: Get.textTheme.titleMedium),
+          SizedBox(height: 16),
+          _buildDocumentsSection(fuel),
 
-              return IndexedStack(
-                index: controller.currentTabIndex.value,
-                children: [
-                  ConsumptionList(records: controller.consumptionData),
-                  PurchaseList(records: controller.purchaseData),
-                ],
-              );
-            }),
-          ),
+          Divider(height: 32),
+
+          // Description
+          Text('description'.tr, style: Get.textTheme.titleMedium),
+          SizedBox(height: 8),
+          Text(fuel.description, style: Get.textTheme.bodyLarge),
         ],
       ),
     );
   }
 
-  Widget buildInventoryCategoryDropdown() {
-    return Expanded(
-      child: Obx(
-        () => Column(
-          children: [
-            InputCardStyle(
-              child: DropdownButtonFormField<int>(
-                isExpanded: true,
-                decoration: InputDecoration(
-                  hintText: 'Inventory Category'.tr,
-                  border: InputBorder.none,
-                ),
-                value: controller.selectedInventoryCategory.value,
-                items: controller.inventoryCategories
-                    .map(
-                      (category) => DropdownMenuItem<int>(
-                        value: category.id,
-                        child: Text(
-                          category.name,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  controller.inventoryCategory(value);
-                },
-              ),
-            ),
-            //  ErrorText(error: getErrorForField('vendor')),
-          ],
-        ),
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: Get.textTheme.bodySmall),
+          Text(value, style: Get.textTheme.titleMedium),
+        ],
       ),
     );
   }
 
-  Widget buildInventoryItemDropdown() {
-    return Expanded(
-      child: Obx(
-        () => InputCardStyle(
-          child: DropdownButtonFormField<int>(
-            isExpanded: true,
-            decoration: InputDecoration(
-              hintText: 'Inventory Item'.tr,
-              border: InputBorder.none,
-            ),
-            value: controller.selectedInventoryItem.value,
-            items: controller.inventoryItems
-                .map(
-                  (item) => DropdownMenuItem<int>(
-                    value: item.id,
-                    child: Text(
-                      item.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) =>
-                controller.selectedInventoryCategory.value != null
-                ? controller.setInventoryItem(value!)
-                : null,
-          ),
-        ),
-      ),
-    );
-  }
-}
+  Widget _buildDocumentsSection(FuelInventoryModel fuel) {
+    final allDocuments = fuel.documents
+        .expand((category) => category.documents)
+        .toList();
 
-class PurchaseList extends StatelessWidget {
-  final List<PurchaseRecord> records;
-
-  const PurchaseList({Key? key, required this.records}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (records.isEmpty) {
-      return Center(child: Text('no_purchase_records'.tr));
+    if (allDocuments.isEmpty) {
+      return Text('no_documents_available'.tr);
     }
 
-    return ListView.builder(
-      itemCount: records.length,
-      itemBuilder: (context, index) {
-        final record = records[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-
+    return Wrap(
+      spacing: 16,
+      runSpacing: 16,
+      children: allDocuments.map((document) {
+        return GestureDetector(
+          onTap: () => controller.viewDocument(document.uploadDocument),
+          child: Container(
+            width: 100,
+            height: 120,
+            decoration: BoxDecoration(
+              border: Border.all(color: Get.theme.colorScheme.outline),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
               children: [
-                // Leading (Date)
-                _formatDate(record.date),
-
-                const SizedBox(width: 12),
-
-                // Title + Subtitle
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(record.vendorName, style: Get.textTheme.titleMedium),
-                      const SizedBox(height: 4),
-                      Text('${record.quantity} ${record.quantityUnit}'),
-                      // if (record.description.isNotEmpty)
-                      //   Text(record.description),
-                    ],
+                  child: Icon(
+                    Icons.picture_as_pdf,
+                    size: 48,
+                    color: Get.theme.colorScheme.primary,
                   ),
                 ),
-
-                // Trailing (Amount)
-                Text(
-                  '₹ ${record.purchaseAmount.toStringAsFixed(2)}',
-                  style: Get.textTheme.titleMedium?.copyWith(
-                    color: Get.theme.colorScheme.primary,
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    document.documentCategory.name,
+                    style: Get.textTheme.labelSmall,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
         );
-      },
-    );
-  }
-
-  Widget _formatDate(DateTime date) {
-    return Column(
-      children: [
-        Text(
-          _getMonthName(date.month),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          date.day.toString(),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return months[month - 1];
-  }
-}
-
-class ConsumptionList extends StatelessWidget {
-  final List<ConsumptionRecord> records;
-
-  const ConsumptionList({Key? key, required this.records}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if (records.isEmpty) {
-      return Center(child: Text('no_consumption_records'.tr));
-    }
-
-    return ListView.builder(
-      itemCount: records.length,
-      itemBuilder: (context, index) {
-        final record = records[index];
-  return Card(
-  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  child: Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Leading (Date)
-        _formatDate(record.dateOfConsumption),
-
-        const SizedBox(width: 12),
-
-        // Title + Subtitle
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                record.crop,
-                style: Get.textTheme.titleMedium,
-              ),
-              const SizedBox(height: 4),
-              // Text('available: ${record.availableQuantity} units'),
-            ],
-          ),
-        ),
-
-        // Trailing (Quantity Utilized)
-        Text(
-          '${record.quantityUtilized} units',
-          style: Get.textTheme.titleMedium,
-        ),
-      ],
-    ),
-  ),
-);
-
-      },
-    );
-  }
-
-  Widget _formatDate(DateTime date) {
-    return Column(
-      children: [
-        Text(
-          _getMonthName(date.month),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          date.day.toString(),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return months[month - 1];
-  }
-}
-
-class InventoryDropdown<T> extends StatelessWidget {
-  final String label;
-  final String hint;
-  final List<DropdownMenuItem<T>> items;
-  final Function(T?) onChanged;
-  final T? value;
-  final bool enabled;
-
-  const InventoryDropdown({
-    Key? key,
-    required this.label,
-    required this.hint,
-    required this.items,
-    required this.onChanged,
-    this.value,
-    this.enabled = true,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Get.textTheme.bodyMedium),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Get.theme.colorScheme.outline),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<T>(
-              isExpanded: true,
-              hint: Text(hint),
-              items: items,
-              onChanged: enabled ? onChanged : null,
-              value: value,
-            ),
-          ),
-        ),
-      ],
+      }).toList(),
     );
   }
 }

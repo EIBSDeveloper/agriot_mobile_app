@@ -474,7 +474,14 @@ class ProfileEditView extends GetView<ProfileEditController> {
               validator: (value) =>
                   value?.isEmpty ?? true ? 'Required field' : null,
               keyboardType: TextInputType.number,
-            ),
+            ),            const SizedBox(height: 12),
+                 _buildTextField(
+                controller: controller.locationController,
+                label: 'Location Coordinates *',
+                validator: (value) => value!.isEmpty ? 'Required field' : null,
+                readOnly: true,
+                onTap: controller.pickLocation,
+              ),
             const SizedBox(height: 12),
             // _buildCountryDropdown(),
             // const SizedBox(height: 12),
@@ -520,7 +527,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
             _buildTextField(
               controller: controller.descriptionController,
               label: 'Description',
-              maxLines: 3,
+            
               height: 100,
             ),
           ],
@@ -532,10 +539,11 @@ class ProfileEditView extends GetView<ProfileEditController> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
+    double? height,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
-    int maxLines = 1,
-    double? height,
+    bool readOnly = false,
+    VoidCallback? onTap,
   }) {
     return Container(
       decoration: AppStyle.decoration.copyWith(
@@ -543,23 +551,23 @@ class ProfileEditView extends GetView<ProfileEditController> {
         boxShadow: const [],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: maxLines > 1 ? null : 55,
+      height: height ?? 55,
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           hintText: label,
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 14,
-          ),
+          isDense: true,
+          suffixIcon: readOnly ? Icon(Icons.location_on) : null,
         ),
         validator: validator,
         keyboardType: keyboardType,
-        maxLines: maxLines,
+        readOnly: readOnly,
+        onTap: onTap,
       ),
     );
   }
+
 Widget _buildSubmitButton() {
     return Obx(() {
       return SizedBox(

@@ -72,8 +72,8 @@ class VendorCustomerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    var type= Get.arguments?["type"];
-    if(type != null ){
+    var type = Get.arguments?["type"];
+    if (type != null) {
       selectedType.value = type;
     }
     fetchVendorCustomerList();
@@ -349,19 +349,22 @@ class VendorCustomerController extends GetxController {
         mobileNo: mobileController.text,
         email: emailController.text,
         doorNo: doorNoController.text,
-        countryId: selectedCountry.value?.id??1,
-        stateId: selectedState.value?.id??1,
-        cityId: selectedCity.value?.id??1,
-        talukId: selectedTaluk.value?.id??1,
-        villageId: selectedVillage.value?.id??1,
+        countryId: selectedCountry.value?.id ?? 1,
+        stateId: selectedState.value?.id ?? 1,
+        cityId: selectedCity.value?.id ?? 1,
+        talukId: selectedTaluk.value?.id ?? 1,
+        villageId: selectedVillage.value?.id ?? 1,
         gstNo: gstNoController.text,
         taxNo: taxNoController.text,
         postCode: int.tryParse(pincodeController.text) ?? 0,
         isCredit: isCredit.value,
         openingBalance: double.tryParse(openingBalanceController.text) ?? 0,
         description: descriptionController.text,
-        marketIds: [selectedMarket.value!.id],
-        inventoryTypeIds: selectedType.value == 'vendor'||selectedType.value == 'both'
+        marketIds: selectedMarket.value?.id != null
+            ? [selectedMarket.value!.id]
+            : [],
+        inventoryTypeIds:
+            selectedType.value == 'vendor' || selectedType.value == 'both'
             ? (purchaseModel.value != null)
                   ? selectedKeys
                         .where(

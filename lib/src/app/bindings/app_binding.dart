@@ -265,6 +265,7 @@ class WalkthroughBinding implements Bindings {
 class InventoryBinding implements Bindings {
   @override
   void dependencies() {
+    
     Get.lazyPut<InventoryController>(() => InventoryController(), fenix: true);
   }
 }

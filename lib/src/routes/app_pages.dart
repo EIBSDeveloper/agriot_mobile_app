@@ -1,5 +1,7 @@
 import 'package:argiot/consumption_view.dart';
 import 'package:argiot/land_details.dart';
+import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_purchase_binding.dart';
+import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_purchase_view.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/fertilizer_screen.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/machinery_entry_screen.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/vehicle_view.dart';
@@ -36,6 +38,7 @@ import '../app/modules/auth/view/screens/otp_screen.dart';
 import '../app/modules/expense/fuel.dart/fuel_entry_binding.dart';
 import '../app/modules/expense/fuel.dart/fuel_entry_view.dart';
 import '../app/modules/expense/fuel.dart/test.dart';
+import '../app/modules/expense/fuel.dart/test_new.dart';
 import '../app/modules/forming/controller/location_viewer_view.dart';
 import '../app/modules/forming/view/screen/document_viewer_view.dart';
 import '../app/modules/forming/view/screen/land_details_page.dart';
@@ -350,6 +353,16 @@ class AppPages {
       binding: ConsumptionPurchaseBinding(),
       // Add middleware for auth if needed
       // middlewares: [AuthMiddleware()],
+    ),
+    GetPage(
+      name: '/fuel_inventory',
+      page: () => FuelInventoryView(),
+      binding: FuelInventoryBinding(),
+    ),
+    GetPage(
+      name: '/inventory/:type/:id',
+      page: () => InventoryView(),
+      binding: InventoryDetailBinding(),
     ),
   ];
 }

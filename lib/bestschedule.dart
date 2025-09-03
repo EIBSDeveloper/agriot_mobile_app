@@ -250,14 +250,14 @@ class ScheduleController extends GetxController {
       final taskRequest = TaskRequest(
         farmerId: farmerId,
         myCrop: selectedSchedule.value.myCropId,
-        scheduleActivityType: selectedActivityType.value.id,
+        scheduleActivityType: selectedSchedule.value.activityTypeId,
         startDate: scheduleDate.value,
         endDate: isRecurring.value ? scheduleEndDate.value : null,
         scheduleChoice: isRecurring.value ? recurrenceType.value : 0,
         scheduleWeekly: isRecurring.value && recurrenceType.value == 1
             ? selectedDays
             : null,
-        scheduleStatus: 0,
+        scheduleStatus: 1,
         schedule: description.value,
       );
 

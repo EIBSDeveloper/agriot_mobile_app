@@ -1,7 +1,6 @@
 // lib/repository/vendor_purchase_repository.dart
 import 'dart:convert';
 
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,13 +8,11 @@ import '../../../app/controller/app_controller.dart';
 import '../../model/vendor/vendor_history_model.dart';
 import '../../model/vendor/vendor_purchase_model.dart';
 
-  final AppDataController appDeta = Get.put(AppDataController());
+final AppDataController appDeta = Get.put(AppDataController());
+
 class VendorPurchaseRepository {
   final farmerId = appDeta.userId;
-  Future<VendorPurchaseResponse> fetchVendorPayables(
-  
-    int vendorId,
-  ) async {
+  Future<VendorPurchaseResponse> fetchVendorPayables(int vendorId) async {
     final url =
         'http://147.93.19.253:5000/Api/vendor_purchase_payables_list/$farmerId?vendor_id=$vendorId';
 
@@ -28,10 +25,7 @@ class VendorPurchaseRepository {
     }
   }
 
-  Future<VendorPurchaseResponse> fetchVendorReceivables(
-  
-    int vendorId,
-  ) async {
+  Future<VendorPurchaseResponse> fetchVendorReceivables(int vendorId) async {
     final url =
         'http://147.93.19.253:5000/Api/vendor_purchase_receivables_list/$farmerId?vendor_id=$vendorId';
 
@@ -46,7 +40,6 @@ class VendorPurchaseRepository {
 
   // Payables History
   Future<List<VendorPayableHistoryModel>?> fetchVendorPayablesHistory({
-   
     required int vendorId,
     required int fuelId,
     required String type,
@@ -71,7 +64,6 @@ class VendorPurchaseRepository {
 
   //Receivables History
   Future<List<VendorReceivableHistoryModel>?> fetchVendorReceivablesHistory({
-   
     required int vendorId,
     required int fuelId,
     required String type,
@@ -79,7 +71,7 @@ class VendorPurchaseRepository {
     final url = Uri.parse(
       'http://147.93.19.253:5000/Api/vendor_purchase_receivables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
     );
-    
+
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

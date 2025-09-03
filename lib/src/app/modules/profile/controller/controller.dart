@@ -12,9 +12,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../utils.dart';
+import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
 import '../../registration/model/address_model.dart';
+import '../../registration/view/screen/landpicker.dart';
 import '../model/model.dart';
 
 class ProfileRepository {
@@ -106,6 +108,9 @@ class ProfileEditController extends GetxController {
   final doorNoController = TextEditingController();
   final pincodeController = TextEditingController();
   final descriptionController = TextEditingController();
+ final locationController = TextEditingController();
+    final RxDouble latitude = 0.0.obs;
+  final RxDouble longitude = 0.0.obs;
 
   // Form key
   final formKey = GlobalKey<FormState>();
@@ -284,7 +289,21 @@ class ProfileEditController extends GetxController {
       villages.clear();
     }
   }
-
+ Future<void> pickLocation() async {
+    try {
+      final location = await Get.to(
+        LocationPickerView(),
+        binding: LocationViewerBinding(),
+      );
+      if (location != null) {
+        latitude.value = location['latitude'];
+        longitude.value = location['longitude'];
+        locationController.text = '${latitude.value}, ${longitude.value}';
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to pick location');
+    }
+  }
   void _onStateChanged() {
     selectedCity.value = null;
     selectedTaluk.value = null;

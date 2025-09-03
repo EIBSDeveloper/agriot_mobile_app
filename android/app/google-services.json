@@ -1,26 +1,43 @@
 {
   "project_info": {
-    "project_number": "498296743350",
-    "project_id": "tes21-d2190",
-    "storage_bucket": "tes21-d2190.firebasestorage.app"
+    "project_number": "383219851219",
+    "project_id": "newform-a2f42",
+    "storage_bucket": "newform-a2f42.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:498296743350:android:9902113b00d4c37f014d17",
+        "mobilesdk_app_id": "1:383219851219:android:d13fe5baba61ae326b9926",
         "android_client_info": {
           "package_name": "com.example.argiot"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "383219851219-u9utelrd0d9maoer43im9ckkfom21409.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAFhajRJEWrHyL4ChMiOYQqNDD6XkPXOlE"
+          "current_key": "AIzaSyASCFWakKndLDU_z0ttAzH0BZh-1TLYN7U"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "383219851219-u9utelrd0d9maoer43im9ckkfom21409.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "383219851219-9fd79t8vtso38r7rst2tvkr23c2ks08v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.argiot"
+              }
+            }
+          ]
         }
       }
     }

@@ -1,9 +1,10 @@
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/notification_controller.dart';
 import '../../notification_model.dart';
 
@@ -13,16 +14,16 @@ class NotificationView extends GetView<NotificationController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: "Notifications",showBackButton:true),
+      appBar: CustomAppBar(title: "Notifications", showBackButton: true),
       body: Obx(() {
         if (controller.isLoading.value) {
           return _buildShimmerLoading();
         }
-        
+
         if (controller.error.isNotEmpty) {
           return Center(child: Text(controller.error.value));
         }
-        
+
         return RefreshIndicator(
           onRefresh: controller.refreshNotifications,
           child: ListView.builder(
@@ -36,8 +37,9 @@ class NotificationView extends GetView<NotificationController> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
                     child: Text(
-                      DateFormat('dd MMMM yyyy').format(
-                        DateTime.parse(notificationGroup.timeStamp)),
+                      DateFormat(
+                        'dd MMMM yyyy',
+                      ).format(DateTime.parse(notificationGroup.timeStamp)),
                       style: TextStyle(
                         // fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -80,43 +82,404 @@ class NotificationView extends GetView<NotificationController> {
   }
 
   Widget _buildNotificationCard(NotificationItem notification) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 10),
-      // shape: RoundedRectangleBorder(
-      //   borderRadius: BorderRadius.circular(12),
-      // ),
-       color: Colors.grey.withAlpha(30), //rgb(226,237,201)
-              elevation: 0,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  notification.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+    return InkWell(
+      onTap: () {
+        if (notification.isRead) {
+          Fluttertoast.showToast(
+            msg: "This notification is already read.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Get.theme.primaryColor, // primary color
+            textColor: Colors.white, // white text
+            fontSize: 14.0,
+          );
+          return; // Stop further execution
+        }
+
+        // Not read, show details dialog
+        controller.fetchNotificationById(notification.id).then((_) {
+          final notif = controller.selectedNotification.value;
+          if (notif != null) {
+            Get.dialog(
+              Dialog(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications,
+                            color: Get.theme.primaryColor,
+                            size: 28,
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              notif.name,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.mark_as_unread),
+                            onPressed: () async {
+                              await controller.markNotificationAsRead(notif);
+                              Get.back(); // Close dialog immediately
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'Type: ${notif.type}',
+                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      ),
+                      SizedBox(height: 12),
+                      Text(notif.message, style: TextStyle(fontSize: 16)),
+                      SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                          notif.formattedTime,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Get.theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  notification.formattedTime,
-                  style: TextStyle(
-                    color: Get.theme.primaryColor,
-                    fontSize: 12,
+              ),
+            );
+          }
+        });
+      },
+      child: Card(
+        margin: EdgeInsets.only(bottom: 10),
+        color: notification.isRead ? Colors.grey.withAlpha(50) : Colors.white,
+        elevation: 0,
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color:
+                      notification.isRead
+                          ? Colors.grey.withAlpha(50)
+                          : Get.theme.primaryColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.notifications,
+                  color:
+                      notification.isRead
+                          ? Colors.grey
+                          : Get.theme.primaryColor,
+                  size: 24,
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          notification.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: notification.isRead ? Colors.grey : null,
+                          ),
+                        ),
+                        Text(
+                          notification.formattedTime,
+                          style: TextStyle(
+                            color: Get.theme.primaryColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      notification.type,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: notification.isRead ? Colors.grey : null,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      notification.message,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: notification.isRead ? Colors.grey : null,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}*/
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../near_me/views/widget/widgets.dart';
+import '../../controller/notification_controller.dart';
+import '../../notification_model.dart';
+
+class NotificationView extends GetView<NotificationController> {
+  const NotificationView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: "notifications".tr, // Localized
+        showBackButton: true,
+      ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return _buildShimmerLoading();
+        }
+
+        if (controller.error.isNotEmpty) {
+          return Center(child: Text(controller.error.value));
+        }
+
+        return RefreshIndicator(
+          onRefresh: controller.refreshNotifications,
+          child: ListView.builder(
+            padding: const EdgeInsets.all(10),
+            itemCount: controller.notifications.length,
+            itemBuilder: (context, index) {
+              final notificationGroup = controller.notifications[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      DateFormat(
+                        'dd MMMM yyyy',
+                      ).format(DateTime.parse(notificationGroup.timeStamp)),
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  ...notificationGroup.notifications.map((notification) {
+                    return _buildNotificationCard(notification);
+                  }),
+                ],
+              );
+            },
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNotificationCard(NotificationItem notification) {
+    return InkWell(
+      onTap: () {
+        if (notification.isRead) {
+          Fluttertoast.showToast(
+            msg: "this_notification_is_already_read".tr,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Get.theme.primaryColor,
+            textColor: Colors.white,
+            fontSize: 14.0,
+          );
+          return;
+        }
+
+        controller.fetchNotificationById(notification.id).then((_) {
+          final notif = controller.selectedNotification.value;
+          if (notif != null) {
+            Get.dialog(
+              Dialog(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications,
+                            color: Get.theme.primaryColor,
+                            size: 28,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              notif.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.mark_as_unread),
+                            onPressed: () async {
+                              await controller.markNotificationAsRead(notif);
+                              Get.back(); // Close dialog immediately
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '${"type".tr}: ${notif.type}', // Localized
+                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(notif.message, style: const TextStyle(fontSize: 16)),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                          notif.formattedTime,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Get.theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Text(
-              notification.description,
-              style: TextStyle(fontSize: 14),
-            ),
-          ],
+              ),
+            );
+          }
+        });
+      },
+      child: Card(
+        // margin: const EdgeInsets.only(bottom: 10),
+        color: notification.isRead ? Colors.grey.withAlpha(50) : Colors.white,
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color:
+                      notification.isRead
+                          ? Colors.grey.withAlpha(50)
+                          : Get.theme.primaryColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.notifications,
+                  color:
+                      notification.isRead
+                          ? Colors.grey
+                          : Get.theme.primaryColor,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          notification.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: notification.isRead ? Colors.grey : null,
+                          ),
+                        ),
+                        Text(
+                          notification.formattedTime,
+                          style: TextStyle(
+                            color: Get.theme.primaryColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      notification.type,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: notification.isRead ? Colors.grey : null,
+                      ),
+                    ),
+                   
+                    // Text(
+                    //   notification.message,
+                    //   style: TextStyle(
+                    //     fontSize: 14,
+                    //     color: notification.isRead ? Colors.grey : null,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -80,6 +80,7 @@ import 'src/app/modules/registration/repostrory/crop_service.dart';
 import 'src/app/utils/http/http_service.dart';
 import 'src/app/widgets/title_text.dart';
 import 'src/core/app_style.dart';
+import 'src/routes/app_routes.dart';
 
 class LandMapViewBinding extends Bindings {
   @override
@@ -103,6 +104,23 @@ class LandMapViewRepository {
       if (response.statusCode == 200) {
         final List<dynamic> landsJson = json.decode(response.body)['lands'];
         return landsJson.map((json) => ScheduleLand.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load lands and crops');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<CropDetails> fetcCropDetails(int land, int crop) async {
+    final farmerId = appDeta.userId;
+    try {
+      final response = await _httpService.get(
+        '/crop_summary/$farmerId/$land/$crop',
+      );
+
+      if (response.statusCode == 200) {
+        return CropDetails.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to load lands and crops');
       }
@@ -145,6 +163,7 @@ class LandMapViewController extends GetxController {
   var isLoading = true.obs;
   final AppDataController appDataController = Get.find();
   var lands = <ScheduleLand>[].obs;
+  final Rx<CropDetails?> cropDetails = Rx<CropDetails?>(null);
   var selectedLand = Rxn<ScheduleLand>();
   var selectedCrop = Rxn<ScheduleCrop>();
   final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);
@@ -218,6 +237,20 @@ class LandMapViewController extends GetxController {
     } finally {
       isLoading(false);
     }
+  }
+
+  Future<void> fetchLandsAndCropsDetails(cropId) async {
+    try {
+      // isLoading(true);
+      final result = await _repository.fetcCropDetails(
+        selectedLand.value!.id,
+        cropId,
+      );
+      cropDetails.value = result;
+    } finally {
+      // isLoading(false);
+    }
+    return;
   }
 
   Future<Set<Marker>> buildCropMarkers(List<CropMapData> crops) async {
@@ -507,7 +540,7 @@ class _LandMapViewState extends State<LandMapView> {
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: ExpandableFab(
         distance: 80,
-        
+
         type: ExpandableFabType.fan,
         pos: ExpandableFabPos.left,
         children: [
@@ -537,7 +570,19 @@ class _LandMapViewState extends State<LandMapView> {
     );
   }
 
-  void cropDetails(CropMapData crop) {
+  void cropDetails(CropMapData crop) async {
+    Get.dialog(
+      Dialog(
+        child: SizedBox(
+          height: 100,
+          width: 100,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 6)),
+        ),
+      ),
+    );
+
+    await controller.fetchLandsAndCropsDetails(crop.cropId);
+    Get.back();
     Get.bottomSheet(
       isScrollControlled: true,
       Container(
@@ -563,8 +608,8 @@ class _LandMapViewState extends State<LandMapView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Type: ${crop.cropType ?? ""}"),
-                    Text('Expense:  ₹00'),
-                    Text('Sales:  ₹00'),
+                    Text('Expense:  ₹${controller.cropDetails.value!.expense}'),
+                    Text('Sales:  ₹${controller.cropDetails.value!.sales}'),
                   ],
                 ),
               ],
@@ -602,30 +647,24 @@ class _LandMapViewState extends State<LandMapView> {
               ],
             ),
             TitleText("Today task"),
-            _buildTaskCard(
-              Task(
-                id: 0,
-                cropType: "cropType",
-                cropImage: "cropImage",
-                description: "description",
-              ),
-            ),
-            _buildTaskCard(
-              Task(
-                id: 0,
-                cropType: "cropType",
-                cropImage: "cropImage",
-                description: "description",
-              ),
-            ),
-            _buildTaskCard(
-              Task(
-                id: 0,
-                cropType: "TaskType",
-                cropImage: "cropImage",
-                description: "description",
-              ),
-            ),
+            Obx(() {
+              return Column(
+                children: [
+                  ...controller.cropDetails.value!.tasks.map((task) {
+                    return _buildTaskCard(
+                      Task(
+                        id: task.id,
+                        cropType: task.activityType,
+                        cropImage: "cropImage",
+                        description: task.description,
+                        status: task.scheduleStatusName,
+                      ),
+                      crop.cropId,
+                    );
+                  }),
+                ],
+              );
+            }),
             SizedBox(height: 60),
           ],
         ),
@@ -633,11 +672,15 @@ class _LandMapViewState extends State<LandMapView> {
     );
   }
 
-  Widget _buildTaskCard(Task tas) {
+  Widget _buildTaskCard(Task tas, id) {
     Task task = tas;
     return InkWell(
       onTap: () {
-        // Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
+        Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id})?.then((
+          result,
+        ) {
+          controller.fetchLandsAndCropsDetails(id);
+        });
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -645,10 +688,20 @@ class _LandMapViewState extends State<LandMapView> {
         elevation: 0,
         child: ListTile(
           title: Text(task.cropType),
-          subtitle: Text(
-            task.description,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                task.status ?? "",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                task.description,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -745,4 +798,102 @@ Future<Uint8List> _getBytesFromUrl(String url, {int width = 100}) async {
     format: ImageByteFormat.png,
   );
   return byteData!.buffer.asUint8List();
+}
+
+class CropDetails {
+  final int id;
+  final String crop;
+  final String type;
+  final String soilType;
+  final DateTime plantationDate;
+  final String harvestingType;
+  final double measurementValue;
+  final String measurementUnit;
+  final double expense;
+  final double sales;
+  final List<CropTask> tasks;
+
+  CropDetails({
+    required this.id,
+    required this.crop,
+    required this.type,
+    required this.soilType,
+    required this.plantationDate,
+    required this.harvestingType,
+    required this.measurementValue,
+    required this.measurementUnit,
+    required this.expense,
+    required this.sales,
+    required this.tasks,
+  });
+
+  factory CropDetails.fromJson(Map<String, dynamic> json) {
+    return CropDetails(
+      id: json['id'] ?? 0,
+      crop: json['crop'] ?? '',
+      type: json['type'] ?? '',
+      soilType: json['soil_type'] ?? '',
+      plantationDate: DateTime.parse(json['plantation_date'] ?? '2025-01-01'),
+      harvestingType: json['harvesting_type'] ?? '',
+      measurementValue: (json['measurement_value'] ?? 0).toDouble(),
+      measurementUnit: json['measurement_unit'] ?? '',
+      expense: (json['expense'] ?? 0).toDouble(),
+      sales: (json['sales'] ?? 0).toDouble(),
+      tasks: (json['task'] as List<dynamic>? ?? [])
+          .map((taskJson) => CropTask.fromJson(taskJson))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'crop': crop,
+      'type': type,
+      'soil_type': soilType,
+      'plantation_date': plantationDate.toIso8601String().split('T')[0],
+      'harvesting_type': harvestingType,
+      'measurement_value': measurementValue,
+      'measurement_unit': measurementUnit,
+      'expense': expense,
+      'sales': sales,
+      'task': tasks.map((task) => task.toJson()).toList(),
+    };
+  }
+}
+
+class CropTask {
+  final int id;
+  final String activityType;
+  final String description;
+  final int scheduleStatus;
+  final String scheduleStatusName;
+
+  CropTask({
+    required this.id,
+    required this.activityType,
+    required this.description,
+    required this.scheduleStatus,
+    required this.scheduleStatusName,
+  });
+
+  factory CropTask.fromJson(Map<String, dynamic> json) {
+    return CropTask(
+      id: json['id'] ?? 0,
+      activityType: json['activity_type'] ?? '',
+      description: json['description'] ?? '',
+      scheduleStatus: json['schedule_status'] ?? 0,
+      scheduleStatusName: json['schedule_status_name'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'activity_type': activityType,
+      'description': description,
+      'schedule_status': scheduleStatus,
+      'schedule_status_name': scheduleStatusName,
+    };
+  }
 }

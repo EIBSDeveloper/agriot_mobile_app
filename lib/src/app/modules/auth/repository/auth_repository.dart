@@ -9,12 +9,16 @@ import '../model/otp.dart';
 class AuthRepository {
   final HttpService _httpService = Get.find();
 
-  Future<GetOtp> loginWithMobile(String mobileNumber, bool value) async {
+  Future<GetOtp> loginWithMobile(
+    String mobileNumber,
+    bool value, {
+    isGoogleLogin = false,
+  }) async {
     var body = {
       if (!value) 'mobile_number': mobileNumber,
       if (value) 'email': mobileNumber,
       'name': 'user',
-   if (value)   "google_login":false
+      if (value) "google_login": isGoogleLogin,
     };
     final response = await _httpService.post('/get_otp', body);
 
@@ -25,7 +29,7 @@ class AuthRepository {
 
   Future verifyOtp(String mobileNumber, String otp, bool value) async {
     final response = await _httpService.post("/verify-otp/", {
-    if (!value) 'mobile_number': mobileNumber,
+      if (!value) 'mobile_number': mobileNumber,
       if (value) 'email': mobileNumber,
       'otp': int.parse(otp),
     });

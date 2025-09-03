@@ -56,12 +56,11 @@ class TaskDetailView extends GetView<TaskDetailsController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // _buildSectionHeader('Land Information'),
-             
-              // const SizedBox(height: 16),
 
+              // const SizedBox(height: 16),
               _buildSectionHeader('Crop Information'),
               _buildDetailItem('Crop Name', task.myCrop.name),
-               _buildDetailItem('Land Name', task.myLand.name),
+              _buildDetailItem('Land Name', task.myLand.name),
               if (task.myCrop.cropImg.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -73,7 +72,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               _buildDetailItem('Activity Type', task.scheduleActivityType.name),
               // _buildDetailItem('Start Date', task.startDate),
               _buildDetailItem('Date', task.endDate),
-              _buildDetailItem('Status', task.scheduleStatus.name),
+              // _buildDetailItem('Status', task.scheduleStatus.name),
+              _buildStatus('Status'),
               _buildDetailItem('Description', task.description),
               if (task.comment.isNotEmpty)
                 _buildDetailItem('Comment', task.comment),
@@ -90,10 +90,21 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         );
       }),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Get.theme.primaryColor,
-        onPressed: _showEditTaskSheet,
-        child: const Icon(Icons.edit),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: _showEditTaskSheet,
+            child: const Icon(Icons.message),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: _showEditTaskSheet,
+            child: const Icon(Icons.edit),
+          ),
+        ],
       ),
     );
   }
@@ -159,6 +170,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                 // Schedule Date
                 Obx(
                   () => InputCardStyle(
+                    noHeight: true,
                     child: ListTile(
                       title: const Text('Schedule Date*'),
                       subtitle: Text(
@@ -259,37 +271,62 @@ class TaskDetailView extends GetView<TaskDetailsController> {
     );
   }
 
+  Widget _buildStatus(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: Get.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: InputCardStyle(
+              child: DropdownButtonFormField<int>(
+                value: controller.selectedValue.value,
+                decoration: const InputDecoration(
+                  hintText: "Status",
+                  border: InputBorder.none
+                ),
+                items: controller.statusList.map((item) {
+                  return DropdownMenuItem<int>(
+                    value: item["value"],
+                    child: Text(item["name"]),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  controller.selectedValue.value = value!;
+                  // setState(() {
+                  //   selectedValue = value;
+                  // });
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildActionButtons() {
     return Column(
       children: [
-        if (controller.task.value?.status == 0)
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _showAddCommentDialog(),
-              child: const Text('Add Comment'),
-            ),
-          ),
-        const SizedBox(height: 10),
-        DropdownButtonFormField<int>(
-          value: controller.selectedValue?.value,
-          decoration: const InputDecoration(
-            labelText: "Status",
-            border: OutlineInputBorder(),
-          ),
-          items: controller.statusList.map((item) {
-            return DropdownMenuItem<int>(
-              value: item["value"],
-              child: Text(item["name"]),
-            );
-          }).toList(),
-          onChanged: (value) {
-            controller.selectedValue.value= value!;
-            // setState(() {
-            //   selectedValue = value;
-            // });
-          },
-        ),
+        // if (controller.task.value?.status == 0)
+        //   SizedBox(
+        //     width: double.infinity,
+        //     child: ElevatedButton(
+        //       onPressed: () => _showAddCommentDialog(),
+        //       child: const Text('Add Comment'),
+        //     ),
+        //   ),
+        // const SizedBox(height: 10),
         const SizedBox(height: 10),
         Obx(() {
           return (controller.task.value?.scheduleStatus.id !=
@@ -402,4 +439,4 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       ),
     );
   }
-} // lib/app/modules/task/controllers/task_controller.dart
+}

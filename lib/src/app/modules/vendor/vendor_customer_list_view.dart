@@ -362,7 +362,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        if (controller.selectedType.value != 'both') _buildMarketTypeSection(),
+        _buildMarketTypeSection(),
       ],
     );
   }
@@ -378,7 +378,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             controller: controller.doorNoController,
             maxLines: 3,
             decoration: InputDecoration(
-              hintText: 'door_no_street'.tr,
+              hintText: 'address'.tr,
               border: InputBorder.none,
             ),
           ),
@@ -400,21 +400,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
         const SizedBox(height: 12),
-        // //Country dropdown (reuse from KYC)
-        // _buildCountryDropdown(),
-        // const SizedBox(height: 12),
-        // // State dropdown (reuse from KYC)
-        // _buildStateDropdown(),
-        // const SizedBox(height: 12),
-        // // City dropdown (reuse from KYC)
-        // _buildCityDropdown(),
-        // const SizedBox(height: 12),
-        // // Taluk dropdown (reuse from KYC)
-        // _buildTalukDropdown(),
-        // const SizedBox(height: 12),
-        // // Village dropdown (reuse from KYC)
-        // _buildVillageDropdown(),
-        // const SizedBox(height: 16),
       ],
     );
   }
@@ -454,73 +439,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
 
-        // const SizedBox(height: 12),
-        // Container(
-        //   decoration: AppStyle.decoration.copyWith(
-        //     color: const Color.fromARGB(137, 221, 234, 234),
-        //     boxShadow: const [],
-        //   ),
-        //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        //   height: 55,
-        //   child: TextFormField(
-        //     controller: controller.taxNoController,
-        //     decoration: InputDecoration(
-        //       hintText: 'tax_number'.tr,
-        //       border: InputBorder.none,
-        //     ),
-        //   ),
-        // ),
-        // const SizedBox(height: 12),
-        // Row(
-        //   children: [
-        //     Obx(() {
-        //       return Container(
-        //         decoration: AppStyle.decoration.copyWith(
-        //           color: const Color.fromARGB(137, 221, 234, 234),
-        //           boxShadow: const [],
-        //         ),
-        //         padding: const EdgeInsets.symmetric(
-        //           horizontal: 10,
-        //           vertical: 5,
-        //         ),
-        //         height: 55,
-        //         child: DropdownButton<bool>(
-        //           underline: SizedBox(),
-        //           value: controller.isCredit.value,
-        //           items: [
-        //             DropdownMenuItem(value: true, child: Text("Credit")),
-        //             DropdownMenuItem(value: false, child: Text("Debit")),
-        //           ],
-        //           onChanged: (value) {
-        //             controller.isCredit.value = value!;
-        //           },
-        //         ),
-        //       );
-        //     }),
-        //     SizedBox(width: 10),
-        //     Expanded(
-        //       child: Container(
-        //         decoration: AppStyle.decoration.copyWith(
-        //           color: const Color.fromARGB(137, 221, 234, 234),
-        //           boxShadow: const [],
-        //         ),
-        //         padding: const EdgeInsets.symmetric(
-        //           horizontal: 10,
-        //           vertical: 5,
-        //         ),
-        //         height: 55,
-        //         child: TextFormField(
-        //           controller: controller.openingBalanceController,
-        //           decoration: InputDecoration(
-        //             hintText: 'opening_balance'.tr,
-        //             border: InputBorder.none,
-        //           ),
-        //           keyboardType: TextInputType.number,
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
         const SizedBox(height: 12),
         Container(
           decoration: AppStyle.decoration.copyWith(
@@ -648,7 +566,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         if (item.doorNo != null)
           _buildDetailRow(
             'address'.tr,
-            "${item.doorNo!}, ${item.village!}, ${item.city!}, ${item.postCode}.",
+            item.doorNo!,
           ),
         // if (item.country != null) _buildDetailRow('country'.tr, item.country!),
         // if (item.state != null) _buildDetailRow('state'.tr, item.state!),

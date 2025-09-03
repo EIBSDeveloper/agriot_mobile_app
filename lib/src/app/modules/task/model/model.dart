@@ -5,12 +5,14 @@ class Task {
   final String cropType;
   final String cropImage;
   final String description;
+  final String? status;
 
   Task({
     required this.id,
     required this.cropType,
     required this.cropImage,
     required this.description,
+     this.status,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class Task {
       cropType: json['crop_type'],
       cropImage: json['crop_image'],
       description: json['description'] ?? " ",
+      status: json['schedule_status_name'] ,
     );
   }
 

@@ -11,8 +11,8 @@ class PurchasesAddRepository {
   final HttpService _httpService = Get.find<HttpService>();
   final AppDataController _appDataController = Get.find();
   Future<Map<String, dynamic>> addFuelEntry(FuelEntryModel fuelEntry) async {
-   final farmerId = _appDataController.userId.value;
-     try {
+    final farmerId = _appDataController.userId.value;
+    try {
       final response = await _httpService.post(
         '/add_fuel/$farmerId',
         fuelEntry.toJson(),
@@ -61,7 +61,8 @@ class PurchasesAddRepository {
       return [];
     }
   }
-    Future<List<Customer>> getVendorList() async {
+
+  Future<List<Customer>> getVendorList() async {
     try {
       final farmerId = _appDataController.userId;
       final response = await _httpService.get('/get_vendor/$farmerId');
@@ -136,12 +137,8 @@ class PurchasesAddRepository {
   Future<FertilizerResponse> addFertilizer(FertilizerModel fertilizer) async {
     final farmerId = _appDataController.userId.value;
     try {
-      
       var endpoint = '/add_fertilizer/$farmerId/';
-      final response = await _httpService.post(
-        endpoint,
-        fertilizer.toJson(),
-      );
+      final response = await _httpService.post(endpoint, fertilizer.toJson());
 
       if (response.statusCode == 200) {
         return FertilizerResponse.fromJson(json.decode(response.body));

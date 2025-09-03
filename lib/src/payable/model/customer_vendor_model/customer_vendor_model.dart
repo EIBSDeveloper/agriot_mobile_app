@@ -1,98 +1,55 @@
-// models/customer_vendor_model.dart
+// lib/model/vendor_customer_model.dart
 
-class CustomerVendorResponse<T> {
+class VendorCustomerResponse {
   final String detail;
-  final T data;
+  final VendorCustomerData data;
 
-  CustomerVendorResponse({required this.detail, required this.data});
+  VendorCustomerResponse({required this.detail, required this.data});
 
-  factory CustomerVendorResponse.fromJson(
-    Map<String, dynamic> json,
-    T Function(Map<String, dynamic>) fromJsonT,
-  ) {
-    return CustomerVendorResponse(
-      detail: json['detail'],
-      data: fromJsonT(json['data']),
+  factory VendorCustomerResponse.fromJson(Map<String, dynamic> json) {
+    return VendorCustomerResponse(
+      detail: json['detail'] ?? '',
+      data: VendorCustomerData.fromJson(json['data'] ?? {}),
     );
   }
 }
 
-class PayablesData {
-  final List<VendorPayable> vendorPayables;
-  final List<CustomerPayable> customerPayables;
-
-  PayablesData({required this.vendorPayables, required this.customerPayables});
-
-  factory PayablesData.fromJson(Map<String, dynamic> json) {
-    return PayablesData(
-      vendorPayables:
-          (json['vendor_payables'] as List)
-              .map((e) => VendorPayable.fromJson(e))
-              .toList(),
-      customerPayables:
-          (json['customer_payables'] as List)
-              .map((e) => CustomerPayable.fromJson(e))
-              .toList(),
-    );
-  }
-}
-
-class ReceivablesData {
+class VendorCustomerData {
   final List<VendorReceivable> vendorReceivables;
   final List<CustomerReceivable> customerReceivables;
 
-  ReceivablesData({
+  VendorCustomerData({
     required this.vendorReceivables,
     required this.customerReceivables,
   });
 
-  factory ReceivablesData.fromJson(Map<String, dynamic> json) {
-    return ReceivablesData(
+  factory VendorCustomerData.fromJson(Map<String, dynamic> json) {
+    return VendorCustomerData(
       vendorReceivables:
-          (json['vendor_receivables'] as List)
-              .map((e) => VendorReceivable.fromJson(e))
+          (json['vendor_receivables'] ?? json['vendor_payables'] ?? [])
+              .map<VendorReceivable>((e) => VendorReceivable.fromJson(e))
               .toList(),
       customerReceivables:
-          (json['customer_receivables'] as List)
-              .map((e) => CustomerReceivable.fromJson(e))
+          (json['customer_receivables'] ?? json['customer_payables'] ?? [])
+              .map<CustomerReceivable>((e) => CustomerReceivable.fromJson(e))
               .toList(),
     );
   }
 }
 
-// Vendor Payable and Customer Payable - Assuming empty list so simple classes
-class VendorPayable {
-  // Define fields if any, here empty list in example so simple
-  VendorPayable();
-
-  factory VendorPayable.fromJson(Map<String, dynamic> json) {
-    // Add parsing here if fields exist
-    return VendorPayable();
-  }
-}
-
-class CustomerPayable {
-  CustomerPayable();
-
-  factory CustomerPayable.fromJson(Map<String, dynamic> json) {
-    return CustomerPayable();
-  }
-}
-
-// Vendor Receivable & Customer Receivable with nested lists
-
+// ================== VENDOR ==================
 class VendorReceivable {
   final int vendorId;
   final String vendorName;
   final String businessName;
   final String vendorImage;
   final List<FuelReceivable> fuelReceivables;
-  final List<dynamic> seedReceivables;
-  final List<dynamic> pesticideReceivables;
-  final List<dynamic> fertilizerReceivables;
-  final List<dynamic> vehicleReceivables;
-  final List<dynamic> machineryReceivables;
-  final List<dynamic> toolReceivables;
+  final List<SeedReceivable> seedReceivables;
+  final List<PesticideReceivable> pesticideReceivables;
+  final List<FertilizerReceivable> fertilizerReceivables;
+  final List<VehicleReceivable> vehicleReceivables;
+  final List<MachineryReceivable> machineryReceivables;
+  final List<ToolReceivable> toolReceivables;
 
   VendorReceivable({
     required this.vendorId,
@@ -110,24 +67,45 @@ class VendorReceivable {
 
   factory VendorReceivable.fromJson(Map<String, dynamic> json) {
     return VendorReceivable(
-      vendorId: json['vendor_id'],
-      vendorName: json['vendor_name'],
-      businessName: json['business_name'],
-      vendorImage: json['vendor_image'],
+      vendorId: json['vendor_id'] ?? 0,
+      vendorName: json['vendor_name'] ?? '',
+      businessName: json['business_name'] ?? '',
+      vendorImage: json['vendor_image'] ?? '',
       fuelReceivables:
-          (json['fuel_receivables'] as List)
-              .map((e) => FuelReceivable.fromJson(e))
+          (json['fuel_receivables'] ?? json['fuel_payables'] ?? [])
+              .map<FuelReceivable>((e) => FuelReceivable.fromJson(e))
               .toList(),
-      seedReceivables: json['seed_receivables'] ?? [],
-      pesticideReceivables: json['pesticide_receivables'] ?? [],
-      fertilizerReceivables: json['fertilizer_receivables'] ?? [],
-      vehicleReceivables: json['vehicle_receivables'] ?? [],
-      machineryReceivables: json['machinery_receivables'] ?? [],
-      toolReceivables: json['tool_receivables'] ?? [],
+      seedReceivables:
+          (json['seed_receivables'] ?? json['seed_payables'] ?? [])
+              .map<SeedReceivable>((e) => SeedReceivable.fromJson(e))
+              .toList(),
+      pesticideReceivables:
+          (json['pesticide_receivables'] ?? json['pesticide_payables'] ?? [])
+              .map<PesticideReceivable>((e) => PesticideReceivable.fromJson(e))
+              .toList(),
+      fertilizerReceivables:
+          (json['fertilizer_receivables'] ?? json['fertilizer_payables'] ?? [])
+              .map<FertilizerReceivable>(
+                (e) => FertilizerReceivable.fromJson(e),
+              )
+              .toList(),
+      vehicleReceivables:
+          (json['vehicle_receivables'] ?? json['vehicle_payables'] ?? [])
+              .map<VehicleReceivable>((e) => VehicleReceivable.fromJson(e))
+              .toList(),
+      machineryReceivables:
+          (json['machinery_receivables'] ?? json['machinery_payables'] ?? [])
+              .map<MachineryReceivable>((e) => MachineryReceivable.fromJson(e))
+              .toList(),
+      toolReceivables:
+          (json['tool_receivables'] ?? json['tool_payables'] ?? [])
+              .map<ToolReceivable>((e) => ToolReceivable.fromJson(e))
+              .toList(),
     );
   }
 }
 
+// Generic structure for all purchase types
 class FuelReceivable {
   final int fuelPurchaseId;
   final String purchaseDate;
@@ -151,18 +129,229 @@ class FuelReceivable {
 
   factory FuelReceivable.fromJson(Map<String, dynamic> json) {
     return FuelReceivable(
-      fuelPurchaseId: json['fuel_purchase_id'],
-      purchaseDate: json['purchase_date'],
-      inventoryType: json['inventory_type'],
-      inventoryItem: json['inventory_item'],
-      totalPurchaseAmount: (json['total_purchase_amount'] as num).toDouble(),
-      amountPaid: (json['amount_paid'] as num).toDouble(),
-      receivedAmount: (json['received_amount'] as num).toDouble(),
-      toReceiveAmount: (json['toreceive_amount'] as num).toDouble(),
+      fuelPurchaseId: json['fuel_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
   }
 }
 
+class SeedReceivable {
+  final int seedPurchaseId;
+  final String purchaseDate;
+  final String inventoryType;
+  final String inventoryItem;
+  final double totalPurchaseAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toReceiveAmount;
+
+  SeedReceivable({
+    required this.seedPurchaseId,
+    required this.purchaseDate,
+    required this.inventoryType,
+    required this.inventoryItem,
+    required this.totalPurchaseAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toReceiveAmount,
+  });
+
+  factory SeedReceivable.fromJson(Map<String, dynamic> json) {
+    return SeedReceivable(
+      seedPurchaseId: json['seed_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+class PesticideReceivable {
+  final int pesticidePurchaseId;
+  final String purchaseDate;
+  final String inventoryType;
+  final String inventoryItem;
+  final double totalPurchaseAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toReceiveAmount;
+
+  PesticideReceivable({
+    required this.pesticidePurchaseId,
+    required this.purchaseDate,
+    required this.inventoryType,
+    required this.inventoryItem,
+    required this.totalPurchaseAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toReceiveAmount,
+  });
+
+  factory PesticideReceivable.fromJson(Map<String, dynamic> json) {
+    return PesticideReceivable(
+      pesticidePurchaseId: json['pesticide_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+class FertilizerReceivable {
+  final int fertilizerPurchaseId;
+  final String purchaseDate;
+  final String inventoryType;
+  final String inventoryItem;
+  final double totalPurchaseAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toReceiveAmount;
+
+  FertilizerReceivable({
+    required this.fertilizerPurchaseId,
+    required this.purchaseDate,
+    required this.inventoryType,
+    required this.inventoryItem,
+    required this.totalPurchaseAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toReceiveAmount,
+  });
+
+  factory FertilizerReceivable.fromJson(Map<String, dynamic> json) {
+    return FertilizerReceivable(
+      fertilizerPurchaseId: json['fertilizer_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+class VehicleReceivable {
+  final int vehiclePurchaseId;
+  final String purchaseDate;
+  final String inventoryType;
+  final String inventoryItem;
+  final double totalPurchaseAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toReceiveAmount;
+
+  VehicleReceivable({
+    required this.vehiclePurchaseId,
+    required this.purchaseDate,
+    required this.inventoryType,
+    required this.inventoryItem,
+    required this.totalPurchaseAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toReceiveAmount,
+  });
+
+  factory VehicleReceivable.fromJson(Map<String, dynamic> json) {
+    return VehicleReceivable(
+      vehiclePurchaseId: json['vehicle_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+class MachineryReceivable {
+  final int machineryPurchaseId;
+  final String purchaseDate;
+  final String inventoryType;
+  final String inventoryItem;
+  final double totalPurchaseAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toReceiveAmount;
+
+  MachineryReceivable({
+    required this.machineryPurchaseId,
+    required this.purchaseDate,
+    required this.inventoryType,
+    required this.inventoryItem,
+    required this.totalPurchaseAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toReceiveAmount,
+  });
+
+  factory MachineryReceivable.fromJson(Map<String, dynamic> json) {
+    return MachineryReceivable(
+      machineryPurchaseId: json['machinery_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+class ToolReceivable {
+  final int toolPurchaseId;
+  final String purchaseDate;
+  final String inventoryType;
+  final String inventoryItem;
+  final double totalPurchaseAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toReceiveAmount;
+
+  ToolReceivable({
+    required this.toolPurchaseId,
+    required this.purchaseDate,
+    required this.inventoryType,
+    required this.inventoryItem,
+    required this.totalPurchaseAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toReceiveAmount,
+  });
+
+  factory ToolReceivable.fromJson(Map<String, dynamic> json) {
+    return ToolReceivable(
+      toolPurchaseId: json['tool_purchase_id'] ?? 0,
+      purchaseDate: json['purchase_date'] ?? '',
+      inventoryType: json['inventory_type'] ?? '',
+      inventoryItem: json['inventory_item'] ?? '',
+      totalPurchaseAmount: (json['total_purchase_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
+    );
+  }
+}
+
+// ================== CUSTOMER ==================
 class CustomerReceivable {
   final int customerId;
   final String customerName;
@@ -180,11 +369,15 @@ class CustomerReceivable {
 
   factory CustomerReceivable.fromJson(Map<String, dynamic> json) {
     return CustomerReceivable(
-      customerId: json['customer_id'],
-      customerName: json['customer_name'],
-      shopName: json['shop_name'],
-      customerImage: json['customer_image'],
-      sales: (json['sales'] as List).map((e) => Sale.fromJson(e)).toList(),
+      customerId: json['customer_id'] ?? 0,
+      customerName: json['customer_name'] ?? '',
+      shopName: json['shop_name'] ?? '',
+      customerImage: json['customer_image'] ?? '',
+      sales:
+          (json['sales'] as List<dynamic>?)
+              ?.map((e) => Sale.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 }
@@ -212,14 +405,14 @@ class Sale {
 
   factory Sale.fromJson(Map<String, dynamic> json) {
     return Sale(
-      salesId: json['sales_id'],
-      salesDate: json['sales_date'],
-      cropId: json['crop_id'],
-      cropName: json['crop_name'],
-      totalSalesAmount: (json['total_sales_amount'] as num).toDouble(),
-      amountPaid: (json['amount_paid'] as num).toDouble(),
-      receivedAmount: (json['received_amount'] as num).toDouble(),
-      toPayAmount: (json['topay_amount'] as num).toDouble(),
+      salesId: json['sales_id'] ?? 0,
+      salesDate: json['sales_date'] ?? '',
+      cropId: json['crop_id'] ?? 0,
+      cropName: json['crop_name'] ?? '',
+      totalSalesAmount: (json['total_sales_amount'] ?? 0).toDouble(),
+      amountPaid: (json['amount_paid'] ?? 0).toDouble(),
+      receivedAmount: (json['received_amount'] ?? 0).toDouble(),
+      toPayAmount: (json['topay_amount'] ?? 0).toDouble(),
     );
   }
 }

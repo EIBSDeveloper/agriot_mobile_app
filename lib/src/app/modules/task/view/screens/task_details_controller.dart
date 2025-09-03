@@ -31,6 +31,8 @@ class TaskDetailsController extends GetxController {
     {"name": "Waiting Completion", "value": 1},
     {"name": "Completed", "value": 2},
     {"name": "In Progress", "value": 3},
+    {"name": "Pending", "value": 4},
+    {"name": "Cancelled", "value": 5},
   ];
 
   @override
@@ -55,7 +57,7 @@ class TaskDetailsController extends GetxController {
         taskId,
       );
       task(fetchedTask);
-      
+
       selectedValue.value = fetchedTask.scheduleStatus.id;
 
       final activityList = await _taskRepository.getActivityTypes();
@@ -117,8 +119,7 @@ class TaskDetailsController extends GetxController {
         task.value!.myCrop.id,
         task.value!.startDate,
         task.value!.description,
-        selectedValue.value
-
+        selectedValue.value,
       );
       await fetchTaskDetails(); // Refresh task details
     } catch (e) {

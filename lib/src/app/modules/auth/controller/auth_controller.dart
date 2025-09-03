@@ -73,37 +73,41 @@ Future<void> signInWithGoogle() async {
   try {
     final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
 
-    if (signIn != null) {
-      final account = await signIn.authentication;
+    if (signIn == null) {
+      debugPrint('⚠️ User cancelled Google Sign-In');
+      return;
+    }
 
-      final credential = GoogleAuthProvider.credential(
-        idToken: account.idToken,
-        accessToken: account.accessToken,
+    final GoogleSignInAuthentication account = await signIn.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      idToken: account.idToken,
+      accessToken: account.accessToken,
+    );
+
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    final user = userCredential.user;
+
+    if (user != null) {
+      debugPrint('✅ Signed in as ${user.email}');
+
+      final response = await _authRepository.loginWithMobile(
+        user.email!,
+        true,
+        isGoogleLogin: true,
       );
 
-      // Sign in to Firebase
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-
-      User? user = userCredential.user;
-
-      if (user != null) {
-        String? name = user.displayName;
-        String? email = user.email;
-        String? photoUrl = user.photoURL;
-
-        debugPrint('✅ Name: $name');
-        debugPrint('✅ Email: $email');
-        debugPrint('✅ Photo: $photoUrl');
+      if (response.user != null) {
+        // Proceed to app
+      } else {
+        throw Exception(response.message ?? 'Invalid OTP');
       }
-    } else {
-      debugPrint('⚠️ authenticate() is not supported on this platform.');
     }
   } catch (e) {
-    debugPrint('🔥 Unexpected error: $e');
+    debugPrint('🔥 Sign-in failed: $e');
   }
 }
-
 
   Future<void> verifyOtp() async {
     try {
@@ -114,25 +118,7 @@ Future<void> signInWithGoogle() async {
         isEmail.value!,
       );
       if (response.status != null && response.farmerID != null) {
-        AppDataController appData = Get.put(AppDataController());
-
-        appData.userId.value = (response.farmerID ?? "").toString();
-
-        await _storageService.saveUserData(response.farmerID!.toString());
-        Future.delayed(const Duration(milliseconds: 500), () async {
-          await _storageService.updateUser();
-          GetOtp? loginState = appData.loginState.value;
-          if (!(loginState!.details ?? true)) {
-            Get.offAllNamed(Routes.register, arguments: 0);
-          } else if (!(loginState.land ?? true)) {
-            Get.offAllNamed(Routes.register, arguments: 1);
-          } else if (!(loginState.crop ?? true)) {
-            Get.offAllNamed(Routes.register, arguments: 2);
-          } else {
-            await _storageService.updateLoginState(true);
-            Get.offAllNamed(Routes.home);
-          }
-        });
+        await authWrapper(response.farmerID);
       } else {
         throw Exception(response.message ?? 'Invalid OTP');
       }
@@ -146,6 +132,28 @@ Future<void> signInWithGoogle() async {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> authWrapper(farmerID) async {
+    AppDataController appData = Get.put(AppDataController());
+
+    appData.userId.value = (farmerID ?? "").toString();
+
+    await _storageService.saveUserData(farmerID!.toString());
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      await _storageService.updateUser();
+      GetOtp? loginState = appData.loginState.value;
+      if (!(loginState!.details ?? true)) {
+        Get.offAllNamed(Routes.register, arguments: 0);
+      } else if (!(loginState.land ?? true)) {
+        Get.offAllNamed(Routes.register, arguments: 1);
+      } else if (!(loginState.crop ?? true)) {
+        Get.offAllNamed(Routes.register, arguments: 2);
+      } else {
+        await _storageService.updateLoginState(true);
+        Get.offAllNamed(Routes.home);
+      }
+    });
   }
 
   bool isValidMobile(String input) {

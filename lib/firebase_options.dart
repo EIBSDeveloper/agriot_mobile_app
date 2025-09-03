@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAFhajRJEWrHyL4ChMiOYQqNDD6XkPXOlE',
-    appId: '1:498296743350:android:9902113b00d4c37f014d17',
-    messagingSenderId: '498296743350',
-    projectId: 'tes21-d2190',
-    storageBucket: 'tes21-d2190.firebasestorage.app',
+    apiKey: 'AIzaSyASCFWakKndLDU_z0ttAzH0BZh-1TLYN7U',
+    appId: '1:383219851219:android:d13fe5baba61ae326b9926',
+    messagingSenderId: '383219851219',
+    projectId: 'newform-a2f42',
+    storageBucket: 'newform-a2f42.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDx-vv6Q105TE7bX4sj61PquCU5zMlXsOo',
-    appId: '1:498296743350:ios:ed84ab8a2afe967b014d17',
-    messagingSenderId: '498296743350',
-    projectId: 'tes21-d2190',
-    storageBucket: 'tes21-d2190.firebasestorage.app',
+    apiKey: 'AIzaSyAmHaLKH_dAnEEjBDA7VeNj3J8LDDaCvA8',
+    appId: '1:383219851219:ios:a45b679c1fc450826b9926',
+    messagingSenderId: '383219851219',
+    projectId: 'newform-a2f42',
+    storageBucket: 'newform-a2f42.firebasestorage.app',
     iosBundleId: 'com.example.argiot',
   );
 

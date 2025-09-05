@@ -1,12 +1,19 @@
+import 'dart:convert';
+
 import 'package:argiot/consumption_model.dart';
+import 'package:argiot/consumption_view.dart';
 import 'package:argiot/src/app/widgets/error_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../doc.dart';
+import '../../../../../test.dart' show Unit;
 import '../../../../core/app_style.dart';
 import '../../../widgets/input_card_style.dart';
+
+import '../../task/view/screens/screen.dart';
 import 'model.dart';
 import 'purchases_add_repository.dart';
 
@@ -18,6 +25,8 @@ class PurchasesAddController extends GetxController {
   var selectedInventoryCategory = Rxn<int>();
   var selectedInventoryItem = Rxn<int>();
   final RxString selectedDate = ''.obs;
+  final RxString selectedType = ''.obs;
+  final RxList<DocumentAdd> documentItems = <DocumentAdd>[].obs;
 
   final RxString purchaseAmount = ''.obs;
   final RxString paidAmount = ''.obs;
@@ -55,12 +64,15 @@ class PurchasesAddController extends GetxController {
   var selectedVendor = Rx<int?>(null);
   // Validation observables
 
+  final formKey = GlobalKey<FormState>();
   // UI state
   final RxBool isLoading = false.obs;
   final RxBool isFormValid = false.obs;
   final RxBool isTypeLoading = false.obs;
   final RxBool isCategoryLoading = false.obs;
   final RxBool isinventoryLoading = false.obs;
+  final RxList<Unit> unit = <Unit>[].obs;
+  final Rx<Unit> selectedUnit = Unit(id: 0, name: '').obs;
 
   final isFuelCapacityVisible = false.obs;
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
@@ -68,59 +80,35 @@ class PurchasesAddController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    var argument = Get.arguments['id'];
+
+    var arguments = Get.arguments;
+    // if (arguments?["type"] != null) {
+    //   inventoryType.value = arguments?["type"];
+    // }
+    // if (arguments?["category"] != null) {
+    //   // inventoryCategory.value = arguments?["category"];
+    // }
+    // if (arguments?["item"] != null) {
+    //   inventoryItem.value = arguments?["item"];
+    // }
+    selectedType.value = getType(arguments['id']);
     final DateTime picked = DateTime.now();
     selectedDate.value =
         "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
     fetchVendorList();
-    setInventoryType(argument);
-    fetchInventoryCategories(argument);
-    // fetchDocumentTypes();
-    everAll([
-      selectedDate,
-      selectedVendor,
-      purchaseAmount,
-      litre,
-    ], validateForm);
+    fetchUnit();
+    setInventoryType(arguments['id']);
+    fetchInventoryCategories(arguments['id']);
   }
 
-  void validateForm(_) {
-    fieldErrors.clear();
-
-    if (selectedDate.isEmpty) {
-      fieldErrors['date'] = 'date_required'.tr;
-    }
-
-    // if (selectedFuelCategory.isEmpty) {
-    //   fieldErrors['fuelCategory'] = 'fuel_category_required'.tr;
-    // }
-
-    // if (selectedVendor==0) {
-    //   fieldErrors['vendor'] = 'vendor_required'.tr;
-    // }
-
-    if (purchaseAmount.isEmpty) {
-      fieldErrors['purchaseAmount'] = 'purchase_amount_required'.tr;
-    } else if (double.tryParse(purchaseAmount.value) == null ||
-        double.parse(purchaseAmount.value) <= 0) {
-      fieldErrors['purchaseAmount'] = 'purchase_amount_invalid'.tr;
-    }
-
-    if (litre.isEmpty) {
-      fieldErrors['litre'] = selectedInventoryType == 6
-          ? 'litre_required'.tr
-          : 'quantity_required'.tr;
-    } else if (double.tryParse(litre.value) == null ||
-        double.parse(litre.value) <= 0) {
-      fieldErrors['litre'] = 'litre_invalid'.tr;
-    }
-
-    isFormValid.value = fieldErrors.isEmpty;
+  bool get requiresUnit {
+    final typeId = selectedInventoryType.value;
+    return typeId == 4 || typeId == 5 || typeId == 7;
   }
 
   Future<void> submitForm() async {
     // if (!isFormValid.value) return;
-
+    if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
 
     try {
@@ -142,9 +130,13 @@ class PurchasesAddController extends GetxController {
       final response = await _repository.addFuelEntry(fuelEntry);
 
       if (response['success'] == true) {
-        Fluttertoast.showToast(msg: 'fuel_added_success'.tr);
         Get.back();
-        clearForm();
+        Get.toNamed(
+          '/consumption-purchase',
+          arguments: {"id": fuelEntry.inventoryType, 'tab': 1},
+          preventDuplicates: true,
+        );
+        Fluttertoast.showToast(msg: 'fuel_added_success'.tr);
       } else {
         Fluttertoast.showToast(msg: response['message'] ?? 'error_occurred'.tr);
       }
@@ -211,13 +203,7 @@ class PurchasesAddController extends GetxController {
   }
 
   Future<void> submitMachineryForm() async {
-    // if (!isMachineryFormValid) {
-    //   Fluttertoast.showToast(
-    //     msg: 'Please fill all required fields correctly'.tr,
-    //   );
-    //   return;
-    // }
-
+    if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
 
     try {
@@ -229,7 +215,7 @@ class PurchasesAddController extends GetxController {
         inventoryCategory: selectedInventoryCategory.value!,
         inventoryItems: selectedInventoryItem.value!,
         machineryType: machineryType.value == 'Fuel' ? '1' : '2',
-        fuelCapacity: fuelCapacityController.text,
+        fuelCapacity: int.tryParse(fuelCapacityController.text) ?? 0,
         warrantyStartDate: warrantyStartDateController.text,
         warrantyEndDate: warrantyEndDateController.text,
         purchaseAmount: purchaseAmount.value,
@@ -241,8 +227,13 @@ class PurchasesAddController extends GetxController {
       final response = await _repository.addMachinery(machinery);
 
       if (response['success'] == true) {
-        Fluttertoast.showToast(msg: 'Machinery added successfully!'.tr);
         Get.back(result: true);
+        Get.toNamed(
+          '/consumption-purchase',
+          arguments: {"id": selectedInventoryType.value, 'tab': 1},
+          preventDuplicates: true,
+        );
+        Fluttertoast.showToast(msg: 'Machinery added successfully!'.tr);
       } else {
         Fluttertoast.showToast(
           msg: response['message'] ?? 'Failed to add machinery'.tr,
@@ -331,106 +322,8 @@ class PurchasesAddController extends GetxController {
     return null;
   }
 
-  bool validateVehicleForm() {
-    errors.clear();
-
-    // // Validate required fields
-    // if (dateController.text.isEmpty) {
-    //   errors['date'] = 'Date is required';
-    // }
-
-    // if (inventoryCategoryController.text.isEmpty) {
-    //   errors['inventory_category'] = 'Inventory Category is required';
-    // }
-
-    // if (inventoryItemController.text.isEmpty) {
-    //   errors['inventory_item'] = 'Inventory Item is required';
-    // }
-
-    // if (vendorController.text.isEmpty) {
-    //   errors['vendor'] = 'Vendor is required';
-    // }
-
-    // if (regNoController.text.isEmpty) {
-    //   errors['reg_no'] = 'Registration Number is required';
-    // }
-
-    // if (ownerNameController.text.isEmpty) {
-    //   errors['owner_name'] = 'Owner Name is required';
-    // }
-
-    // if (runningKmController.text.isEmpty) {
-    //   errors['running_km'] = 'Running KM is required';
-    // } else {
-    //   final error = validateNumeric(runningKmController.text, 'Running KM');
-    //   if (error != null) errors['running_km'] = error;
-    // }
-
-    // if (purchaseAmountController.text.isEmpty) {
-    //   errors['purchase_amount'] = 'Purchase Amount is required';
-    // } else {
-    //   final error = validateNumeric(
-    //     purchaseAmountController.text,
-    //     'Purchase Amount',
-    //   );
-    //   if (error != null) errors['purchase_amount'] = error;
-    // }
-
-    // // Validate insurance fields if insurance is enabled
-    // if (showInsuranceDetails.value) {
-    //   if (companyNameController.text.isEmpty) {
-    //     errors['company_name'] = 'Company Name is required';
-    //   }
-
-    //   if (insuranceNoController.text.isEmpty) {
-    //     errors['insurance_no'] = 'Insurance Number is required';
-    //   }
-
-    //   if (insuranceAmountController.text.isEmpty) {
-    //     errors['insurance_amount'] = 'Insurance Amount is required';
-    //   } else {
-    //     final error = validateNumeric(
-    //       insuranceAmountController.text,
-    //       'Insurance Amount',
-    //     );
-    //     if (error != null) errors['insurance_amount'] = error;
-    //   }
-
-    //   if (startDateController.text.isEmpty) {
-    //     errors['start_date'] = 'Start Date is required';
-    //   }
-
-    //   if (endDateController.text.isEmpty) {
-    //     errors['end_date'] = 'End Date is required';
-    //   } else if (startDateController.text.isNotEmpty) {
-    //     final startDate = DateTime.parse(startDateController.text);
-    //     final endDate = DateTime.parse(endDateController.text);
-    //     if (endDate.isBefore(startDate)) {
-    //       errors['end_date'] = 'End Date must be after Start Date';
-    //     }
-    //   }
-
-    //   if (renewalDateController.text.isEmpty) {
-    //     errors['renewal_date'] = 'Renewal Date is required';
-    //   }
-    // }
-
-    errors.refresh();
-    return errors.isEmpty;
-  }
-
   Future<void> submitVehicleForm() async {
-    // if (!validateVehicleForm()) {
-    //   Fluttertoast.showToast(
-    //     msg: "Please fix the errors in the form",
-    //     toastLength: Toast.LENGTH_LONG,
-    //     gravity: ToastGravity.BOTTOM,
-    //     backgroundColor: Colors.red,
-    //     textColor: Colors.white,
-    //   );
-    //   return;
-    // }
-
+    if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
 
     try {
@@ -456,22 +349,22 @@ class PurchasesAddController extends GetxController {
         chasisNumber: chasisNoController.text.isNotEmpty
             ? chasisNoController.text
             : null,
-        runningKilometer: double.parse(runningKmController.text),
+        runningKilometer: double.tryParse(runningKmController.text) ?? 0,
         serviceFrequency: serviceFrequencyController.text.isNotEmpty
             ? int.parse(serviceFrequencyController.text)
-            : null,
+            : 0,
         serviceFrequencyUnit: serviceFrequencyUnit.value == 'KM' ? 0 : 1,
         fuelCapacity: fuelCapacityController.text.isNotEmpty
             ? double.parse(fuelCapacityController.text)
-            : null,
+            : 0,
         averageMileage: averageMileageController.text.isNotEmpty
             ? double.parse(averageMileageController.text)
-            : null,
+            : 0,
         purchaseAmount: double.parse(purchaseAmount.value),
         insurance: showInsuranceDetails.value,
         companyName: showInsuranceDetails.value
             ? companyNameController.text
-            : null,
+            : '',
         insuranceNo: showInsuranceDetails.value
             ? insuranceNoController.text
             : null,
@@ -500,9 +393,16 @@ class PurchasesAddController extends GetxController {
 
       final response = await _repository.addVehicle(vehicle);
 
-      if (response.status) {
+      var status = json.decode(response);
+      if (status['success']) {
+        Get.back();
+        Get.toNamed(
+          '/consumption-purchase',
+          arguments: {"id": selectedInventoryType.value, 'tab': 1},
+          preventDuplicates: true,
+        );
         Fluttertoast.showToast(
-          msg: response.message ?? "Vehicle added successfully!",
+          msg: "Vehicle added successfully!",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,
@@ -531,24 +431,8 @@ class PurchasesAddController extends GetxController {
     }
   }
 
-  //vehicle end
-
-  //
-
-  void validateFertilizerForm() {
-    isFormValid.value =
-        // dateController.text.isNotEmpty &&
-        // vendorController.text.isNotEmpty &&
-        // quantityController.text.isNotEmpty &&
-        // double.tryParse(quantityController.text) != null &&
-        // double.parse(quantityController.text) > 0 &&
-        purchaseAmount.value.isNotEmpty &&
-        double.tryParse(purchaseAmount.value) != null &&
-        double.parse(purchaseAmount.value) > 0;
-  }
-
   Future<void> submitFertilizerForm() async {
-    // if (!isFormValid.value) return;
+    if (!formKey.currentState!.validate()) return;
 
     isLoading.value = true;
 
@@ -561,9 +445,9 @@ class PurchasesAddController extends GetxController {
 
         inventoryItems: selectedInventoryItem.value!,
         quantity: litre.value,
-        quantityUnit: 1,
+        quantityUnit: selectedUnit.value.id,
         paidAmount: paidAmount.value,
-        purchaseAmount:purchaseAmount.value,
+        purchaseAmount: purchaseAmount.value,
         description: descriptionController.text.isNotEmpty
             ? descriptionController.text
             : null,
@@ -572,13 +456,19 @@ class PurchasesAddController extends GetxController {
       final response = await _repository.addFertilizer(fertilizer);
 
       if (response.success) {
+        Get.back(result: true);
+
+        Get.toNamed(
+          '/consumption-purchase',
+          arguments: {"id": selectedInventoryType.value, 'tab': 1},
+          preventDuplicates: true,
+        );
         Fluttertoast.showToast(
           msg: 'fertilizer_add_success'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
         );
-        Get.back(result: true);
       } else {
         Fluttertoast.showToast(
           msg: response.message,
@@ -604,70 +494,169 @@ class PurchasesAddController extends GetxController {
   //comomn strt
   Widget buildLitreField() {
     return Obx(
-      () => Column(
+      () => Row(
         children: [
-          InputCardStyle(
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: selectedInventoryType.value == 6
-                    ? 'litre'.tr
-                    : 'quantity'.tr,
-                border: InputBorder.none,
-                // errorText: getErrorForField('litre'),
+          Expanded(
+            child: InputCardStyle(
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: selectedInventoryType.value == 6
+                      ? 'litre'.tr
+                      : 'quantity'.tr,
+                  border: InputBorder.none,
+                  // errorText: getErrorForField('litre'),
+                ),
+                keyboardType: TextInputType.number,
+                initialValue: litre.value,
+                validator: (value) =>
+                    value!.isEmpty ? 'required_field'.tr : null,
+                onChanged: litre.call,
               ),
-              keyboardType: TextInputType.number,
-              initialValue: litre.value,
-              onChanged: litre.call,
             ),
           ),
-          ErrorText(error: getErrorForField('litre')),
+
+          if (requiresUnit) ...[
+            SizedBox(width: 10),
+            Expanded(child: buildUnitDropdown()),
+          ],
         ],
       ),
     );
   }
 
+  Widget buildUnitDropdown() {
+    return Obx(() {
+      return MyDropdown(
+        items: unit,
+        selectedItem: selectedUnit.value,
+        onChanged: (unit) => changeUnit(unit!),
+        label: 'Unit*',
+        // disable: isEditing,
+      );
+    });
+  }
+
+  Future<void> fetchUnit() async {
+    final unitList = await _repository.getUnitList();
+    unit.assignAll(unitList);
+
+    if (unitList.isNotEmpty) {
+      selectedUnit.value = unitList.first;
+    }
+  }
+
+  void changeUnit(Unit crop) {
+    selectedUnit.value = crop;
+  }
+
   Widget buildPurchaseAmountField() {
     return Obx(() {
-      return Column(
-        children: [
-          InputCardStyle(
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: 'purchase_amount'.tr,
-                border: InputBorder.none,
-                // errorText: ,
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: purchaseAmount.call,
-              initialValue: purchaseAmount.value,
-            ),
+      return InputCardStyle(
+        child: TextFormField(
+          validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+          decoration: InputDecoration(
+            hintText: 'purchase_amount'.tr,
+            border: InputBorder.none,
+            // errorText: ,
           ),
-          ErrorText(error: getErrorForField('purchaseAmount')),
-        ],
+          keyboardType: TextInputType.number,
+          onChanged: purchaseAmount.call,
+          initialValue: purchaseAmount.value,
+        ),
       );
     });
   }
 
   Widget buildPaidAmountField() {
     return Obx(() {
-      return Column(
-        children: [
-          InputCardStyle(
-            child: TextFormField(
-              decoration: InputDecoration(
-                hintText: 'paid_amount'.tr,
-                border: InputBorder.none,
-                // errorText: ,
-              ),
-              initialValue: paidAmount.value,
-              keyboardType: TextInputType.number,
-              onChanged: paidAmount.call,
-            ),
+      return InputCardStyle(
+        child: TextFormField(
+          decoration: InputDecoration(
+            hintText: 'paid_amount'.tr,
+            border: InputBorder.none,
+            // errorText: ,
           ),
-          ErrorText(error: getErrorForField('purchaseAmount')),
-        ],
+          validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+          initialValue: paidAmount.value,
+          keyboardType: TextInputType.number,
+          onChanged: paidAmount.call,
+        ),
       );
     });
+  }
+
+  void addDocumentItem() {
+    Get.to(
+      AddDocumentView(),
+      binding: NewDocumentBinding(),
+      arguments: {"id": 0},
+    )?.then((result) {
+      if (result != null && result is DocumentAdd) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
+  }
+
+  void removeDocumentItem(int index) {
+    documentItems.removeAt(index);
+  }
+
+  Widget buildDocumentsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Land Documents',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.add),
+                onPressed: addDocumentItem,
+                tooltip: 'Add Document',
+              ),
+            ),
+          ],
+        ),
+        Obx(() {
+          if (documentItems.isEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'No documents added',
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          }
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: documentItems.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "${index + 1}, ${documentItems[index].newFileType!}",
+                      ),
+                      Icon(Icons.attach_file),
+                    ],
+                  ),
+                  SizedBox(height: 5),
+                ],
+              );
+            },
+          );
+        }),
+      ],
+    );
   }
 
   Widget buildDescriptionField() {
@@ -719,7 +708,6 @@ class PurchasesAddController extends GetxController {
               ),
             ),
           ),
-          ErrorText(error: getErrorForField('date')),
         ],
       ),
     );
@@ -764,11 +752,13 @@ class PurchasesAddController extends GetxController {
     return Obx(
       () => InputCardStyle(
         child: DropdownButtonFormField<int>(
+          validator: (value) => value == null ? 'required_field'.tr : null,
           decoration: InputDecoration(
             hintText: 'Inventory Item'.tr,
             border: InputBorder.none,
           ),
           value: selectedInventoryItem.value,
+
           items: inventoryItems
               .map(
                 (item) => DropdownMenuItem<int>(
@@ -790,14 +780,10 @@ class PurchasesAddController extends GetxController {
       children: [
         Expanded(
           child: Obx(() {
-            return Container(
-              decoration: AppStyle.decoration.copyWith(
-                color: const Color.fromARGB(137, 221, 234, 234),
-                boxShadow: const [],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              height: 55,
+            return InputCardStyle(
               child: DropdownButtonFormField<int>(
+                validator: (value) =>
+                    value == null ? 'required_field'.tr : null,
                 decoration: const InputDecoration(
                   hintText: 'Vendor*',
                   border: InputBorder.none,
@@ -814,16 +800,20 @@ class PurchasesAddController extends GetxController {
             );
           }),
         ),
-        IconButton(
-          onPressed: () {
-            Get.toNamed(
-              '/add-vendor-customer',
-              arguments: {"type": 'vendor'},
-            )?.then((result) {
-              fetchVendorList();
-            });
-          },
-          icon: Icon(Icons.add),
+        Card(
+          color: Get.theme.primaryColor,
+          child: IconButton(
+            color: Colors.white,
+            onPressed: () {
+              Get.toNamed(
+                '/add-vendor-customer',
+                arguments: {"type": 'vendor'},
+              )?.then((result) {
+                fetchVendorList();
+              });
+            },
+            icon: Icon(Icons.add),
+          ),
         ),
       ],
     );

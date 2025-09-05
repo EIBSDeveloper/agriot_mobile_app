@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../widgets/input_card_style.dart';
 
@@ -25,7 +26,7 @@ class DatePickerField extends StatelessWidget {
           labelText: labelText,
           border: InputBorder.none,
           suffixIcon: IconButton(
-            icon: const Icon(Icons.calendar_today),
+            icon:  Icon(Icons.calendar_today,color: Get.theme.primaryColor,),
             onPressed: () => _selectDate(context),
           ),
         ),

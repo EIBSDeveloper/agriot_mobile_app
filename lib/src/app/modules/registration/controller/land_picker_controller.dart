@@ -12,6 +12,7 @@ class LandPickerController extends GetxController {
   var selectedLocation = Rxn<LatLng>();
   var address = ''.obs;
   var landPolylin = <LatLng>[].obs;
+    final RxList<List<LatLng>?> priviesCropCoordinates = <List<LatLng>?>[].obs;
   var zoom = false.obs;
   var croppolyiline = <LatLng>[].obs;
   var polylinePoints = <LatLng>[].obs;
@@ -41,11 +42,9 @@ class LandPickerController extends GetxController {
   }
 
   void onMapTap(LatLng tappedPoint) {
-    if (landPolylin.isEmpty) {
-      return;
-    }
+  
     // Check if tapped point is inside the main polygon
-    if (_isPointInPolygon(tappedPoint, landPolylin)) {
+    if (landPolylin.isEmpty||_isPointInPolygon(tappedPoint, landPolylin)) {
       selectedLocation.value = tappedPoint;
       polylinePoints.add(tappedPoint);
       update();

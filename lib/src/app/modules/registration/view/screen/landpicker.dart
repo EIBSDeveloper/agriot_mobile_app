@@ -49,13 +49,13 @@ class LocationPickerView extends GetView<LocationPickerController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Selected Location',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      // Text(
+                      //   'Selected Location',
+                      //   style: TextStyle(fontWeight: FontWeight.bold),
+                      // ),
+                      // SizedBox(height: 8),
+                      // Obx(() => Text(controller.address.value)),
                       SizedBox(height: 8),
-                      Obx(() => Text(controller.address.value)),
-                      SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(

@@ -501,12 +501,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(title),
       // centerTitle: true,
       actions: actions,
-      leading: showBackButton
-          ? IconButton(
+      leading:  IconButton(
               icon: Icon(Icons.arrow_back_ios_new),
               onPressed: () => Navigator.of(context).pop(),
             )
-          : null,
+          ,
     );
   }
 

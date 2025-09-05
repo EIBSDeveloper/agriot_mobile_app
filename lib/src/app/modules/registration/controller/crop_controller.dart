@@ -168,7 +168,8 @@ class RegCropController extends GetxController {
     surveyList.value = data[0];
     landCoordinates.value = data[1];
     if (data.isNotEmpty) {
-      selectedSurvey.value = data.first;
+      var first = data.first;
+      selectedSurvey.value = first;
     }
   }
 

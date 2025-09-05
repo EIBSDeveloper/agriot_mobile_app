@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/registration/controller/land_picker_contr
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 LatLng calculateCenter(List<LatLng> points) {
   if (points.isEmpty) {
     throw ArgumentError('Points list cannot be empty');
@@ -17,6 +18,7 @@ LatLng calculateCenter(List<LatLng> points) {
 
   return LatLng(sumLat / points.length, sumLng / points.length);
 }
+
 class LandPickerView extends StatefulWidget {
   const LandPickerView({super.key});
 
@@ -35,6 +37,9 @@ class _LandPickerViewState extends State<LandPickerView> {
     }
     if (args != null && args['crop'] != null) {
       controller.croppolyiline.value = Get.arguments['crop'];
+    }
+    if (args != null && args['priviese_crop'] != null) {
+      controller.priviesCropCoordinates.value = Get.arguments['priviese_crop'];
     }
     if (args != null && args['zoom'] != null) {
       controller.zoom.value = Get.arguments['zoom'];
@@ -80,10 +85,21 @@ class _LandPickerViewState extends State<LandPickerView> {
                     points: controller.landPolylin,
                     fillColor: Colors.green.withAlpha(50),
                     strokeColor: Colors.green,
-
                     geodesic: true,
                     strokeWidth: 4,
                   ),
+                if (controller.priviesCropCoordinates.isNotEmpty)
+                  ...controller.priviesCropCoordinates.map((polygon) {
+                    return Polygon(
+                      consumeTapEvents: false,
+                      polygonId: PolygonId("crop"),
+                      points: polygon!,
+                      fillColor: Colors.orange.withAlpha(50),
+                      strokeColor: Colors.orange,
+                      geodesic: true,
+                      strokeWidth: 4,
+                    );
+                  }),
               },
               polylines: {
                 Polyline(
@@ -111,7 +127,7 @@ class _LandPickerViewState extends State<LandPickerView> {
             Positioned(
               bottom: 20,
               left: 20,
-              right: 20,
+              right: 60,
               child: Card(
                 elevation: 8,
                 shape: RoundedRectangleBorder(

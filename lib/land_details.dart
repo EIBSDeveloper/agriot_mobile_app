@@ -17,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import 'src/app/modules/near_me/views/widget/widgets.dart';
+
 class LandDetails {
   final int id;
   final String farmer;
@@ -523,12 +525,9 @@ class LandEditView extends GetView<LandEditController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: Text('land_details'.tr),
+      appBar: CustomAppBar(
+      
+        title: 'land_details'.tr,
       ),
       body: Obx(() {
         if (controller.isLoadingLandDetails.value) {

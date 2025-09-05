@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
@@ -76,13 +77,7 @@ class CropView extends GetView<RegCropController> {
     bool readOnly = false,
     VoidCallback? onTap,
   }) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
@@ -236,6 +231,7 @@ class CropView extends GetView<RegCropController> {
                     vertical: 5,
                   ),
                   child: DropdownButtonFormField<AppDropdownItem>(
+                    isExpanded: true,
                     value: controller.selectedMeasurementUnit.value,
                     decoration: InputDecoration(
                       labelText: 'Unit *',
@@ -293,7 +289,9 @@ class CropView extends GetView<RegCropController> {
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
       ),
-      height: 55,
+       constraints: const BoxConstraints(
+      minHeight: 55, // minimum height for all fields
+    ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: InputDecorator(
         decoration: InputDecoration(
@@ -322,7 +320,9 @@ class CropView extends GetView<RegCropController> {
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
       ),
-      height: 55,
+     constraints: const BoxConstraints(
+      minHeight: 55, // minimum height for all fields
+    ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: InputDecorator(
         decoration: InputDecoration(

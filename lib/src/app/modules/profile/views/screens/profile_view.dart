@@ -2,9 +2,12 @@
 
 import 'dart:io';
 
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/app/widgets/my_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../../../core/app_style.dart';
 import '../../../../../routes/app_routes.dart';
@@ -95,6 +98,7 @@ class ProfileView extends GetView<ProfileController> {
       ),
     );
   }
+
 
   Widget _buildProfileCard(ProfileModel profile, BuildContext context) {
     return Card(
@@ -545,13 +549,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
     bool readOnly = false,
     VoidCallback? onTap,
   }) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: height ?? 55,
+    return InputCardStyle(
+      
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(

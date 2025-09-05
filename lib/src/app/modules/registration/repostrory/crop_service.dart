@@ -32,10 +32,17 @@ class CropService extends GetxService {
       final List<LatLng?> landGeoMark = parseLatLngMapFromString(
         data?[0]?['geo_marks'] ?? [],
       );
+      List<List<LatLng>?> cropList = [];
+      var data2 = data?[0]["crops"];
+      if (data2 is List) {
+        for (int i = 0; data2.length > i; i++) {
+          cropList.add(parseLatLngMapFromString(data?[0]["crops"][i]?['geo_marks'] ?? []));
+        }
+      }
 
       var list = [
         surveyJson.map((e) => CropSurveyDetail.fromJson(e)).toList(),
-        landGeoMark,
+        landGeoMark,cropList
       ];
       return list;
     } catch (e) {
@@ -119,6 +126,23 @@ List<LatLng> parseLatLngListFromString(List<dynamic> data) {
     List<LatLng> latLngList = data.map((item) {
       if (item is List && item.length == 2) {
         return LatLng(item[0], item[1]);
+      } else {
+        throw FormatException("Invalid LatLng format");
+      }
+    }).toList();
+
+    return latLngList;
+  } catch (e) {
+    print("Error parsing LatLng list: $e");
+    return [];
+  }
+}
+
+List<LatLng> parseLngListFromString(List<dynamic> data) {
+  try {
+    List<LatLng> latLngList = data.map((item) {
+      if (item is Map && item.length == 2) {
+        return LatLng(item['lat'], item['lng']);
       } else {
         throw FormatException("Invalid LatLng format");
       }

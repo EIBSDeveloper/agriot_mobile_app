@@ -39,14 +39,13 @@ class InventoryController extends GetxController {
 
   void navigateToAddInventory() {
     Get.toNamed(Routes.fuelConsumption)?.then((res) {
-      loadInventory();
+      if (res) {
+        loadInventory();
+      }
     });
   }
 
-  void navigateToCategoryDetail(String category, int id) {
-    Get.toNamed(
-      '/consumption-purchase',
-      arguments: {"id": id, "type": category},
-    );
+  void navigateToCategoryDetail(String category, int id, {int tab = 0}) {
+    Get.toNamed('/consumption-purchase', arguments: {"id": id, 'tab': tab});
   }
 }

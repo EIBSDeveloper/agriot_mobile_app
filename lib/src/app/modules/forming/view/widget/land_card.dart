@@ -12,6 +12,7 @@ class LandCard extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback onExpand;
   final VoidCallback onTap;
+  final VoidCallback refresh;
 
   const LandCard({
     super.key,
@@ -19,6 +20,7 @@ class LandCard extends StatelessWidget {
     required this.isExpanded,
     required this.onExpand,
     required this.onTap,
+    required this.refresh,
   });
 
   @override
@@ -129,13 +131,15 @@ class LandCard extends StatelessWidget {
                           onPressed: () {
                             PackageUsage? package = findLimit();
                             if (package!.cropBalance > 0) {
-                              Get.toNamed(Routes.addCrop, arguments: land.id);
+                              Get.toNamed(Routes.addCrop, arguments: land.id)?.then((result){
+refresh;
+                              });
                             } else {
                               showDefaultGetXDialog("Crop");
                             }
                           },
                           child: Text(
-                            "Add  New Crop",
+                            "Add New Crop",
                             style: TextStyle(
                               color: Get.theme.primaryColor,
                               fontWeight: FontWeight.bold,

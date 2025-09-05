@@ -41,9 +41,14 @@ class CropController extends GetxController {
   final Rx<DateTime?> plantationDate = Rx<DateTime?>(null);
   final Rx<AppDropdownItem?> selectedCropType = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedCrop = Rx<AppDropdownItem?>(null);
-  final Rx<AppDropdownItem?> selectedHarvestFrequency = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> parameterCrop = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedHarvestFrequency = Rx<AppDropdownItem?>(
+    null,
+  );
   final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
-  final Rx<AppDropdownItem?> selectedMeasurementUnit = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedMeasurementUnit = Rx<AppDropdownItem?>(
+    null,
+  );
 
   final RxBool isLoadingCropTypes = false.obs;
   final RxBool isLoadingCrops = false.obs;
@@ -52,6 +57,8 @@ class CropController extends GetxController {
   final RxBool isSubmitting = false.obs;
 
   final RxList<LatLng?> landCoordinates = <LatLng>[].obs;
+  final RxList<List<LatLng>?> priviesCropCoordinates = <List<LatLng>?>[].obs;
+
   final RxList<LatLng?> cropCoordinates = <LatLng>[].obs;
   final RxList geoMarks = [].obs;
   final formKey = GlobalKey<FormState>();
@@ -86,12 +93,13 @@ class CropController extends GetxController {
       measurementController.text = data["measurement_value"].toString();
       descriptionController.text = data["description"] ?? "";
 
+      parameterCrop.value = AppDropdownItem(
+        id: data["crop"]["id"],
+        name: data["crop"]["name"],
+      );
+
       selectedCropType.value = cropTypes.firstWhereOrNull(
         (e) => e.id == data["crop_type"]["id"],
-      );
-      await _loadCrops();
-      selectedCrop.value = crops.firstWhereOrNull(
-        (e) => e.id == data["crop"]["id"],
       );
       selectedHarvestFrequency.value = harvestFrequencies.firstWhereOrNull(
         (e) => e.id == data["harvesting_type"]["id"],
@@ -137,7 +145,13 @@ class CropController extends GetxController {
     if (selectedCropType.value == null) return;
     isLoadingCrops(true);
     crops.assignAll(await _cropService.getCrops(selectedCropType.value!.id));
-    selectedCrop.value = null;
+    if (parameterCrop.value != null) {
+      selectedCrop.value = crops.firstWhere((e) {
+        return parameterCrop.value!.id == e.id;
+      });
+    } else {
+      selectedCrop.value = null;
+    }
     isLoadingCrops(false);
   }
 
@@ -168,7 +182,7 @@ class CropController extends GetxController {
     List land = await _cropService.getSurveyDetails(landId: landId);
     surveyList.value = land[0];
     landCoordinates.value = land[1];
-
+    priviesCropCoordinates.value = land[2];
     if (surveyList.isNotEmpty) selectedSurvey.value = surveyList.first;
   }
 
@@ -188,6 +202,7 @@ class CropController extends GetxController {
         LandPickerView(),
         arguments: {
           'land': landCoordinates,
+          'priviese_crop': priviesCropCoordinates,
           if (cropCoordinates.isNotEmpty) 'crop': cropCoordinates,
         },
         binding: LandPickerViewerBinding(),
@@ -248,7 +263,7 @@ class CropController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         FormingController landController = Get.find();
         landController.fetchLands();
-        Get.back();
+        Get.back(result: true);
         showSuccess('Success');
       } else {
         showError(json.decode(response.body)["message"]);

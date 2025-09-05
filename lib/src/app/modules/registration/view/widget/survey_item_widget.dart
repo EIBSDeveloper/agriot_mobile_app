@@ -51,7 +51,9 @@ class SurveyItemWidget extends StatelessWidget {
                 boxShadow: const [],
               ),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              height: 55,
+              constraints: const BoxConstraints(
+                minHeight: 55, // minimum height for all fields
+              ),
               child: TextFormField(
                 initialValue: item.surveyNo,
                 decoration: InputDecoration(
@@ -93,7 +95,7 @@ class SurveyItemWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 16),
-                
+
                 Expanded(
                   flex: 2,
                   child: SearchableDropdown<AppDropdownItem>(

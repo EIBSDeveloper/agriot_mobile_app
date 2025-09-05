@@ -1,35 +1,33 @@
 {
-    "message": "Existing Farmer",
-    "user": false,
-    "details": false,
-    "land": false,
-    "land_details": null,
-    "crop": false,
-    "farmer": {
-        "id": 368,
-        "name": "",
-        "phone": "1756902576",
-        "email": "anandsekar2025@gmail.com",
-        "google_login": true,
-        "door_no": null,
-        "pincode": 0,
-        "description": null,
-        "img": null,
-        "company_name": null,
-        "tax_no": null,
-        "username": "1756902576",
-        "subscription_package": {
-            "id": 1,
-            "name": "Free Trial"
-        },
-        "subscription_start_date": "2025-09-03",
-        "subscription_end_date": "2025-09-10",
-        "remaining_days": 7,
-        "amounts": 0,
-        "status": 7,
-        "language": {
-            "default": "en"
-        },
-        "otp": ""
+    "fuel": {
+        "id": 6,
+        "total_quantity": "20.0"
+    },
+    "vehicle": {
+        "id": 1,
+        "total_fuel_capacity": "0"
+    },
+    "machinery": {
+        "id": 2,
+        "total_fuel_capacity": "0"
+    },
+    "tools": {
+        "id": 3,
+        "total_quantity": "0"
+    },
+    "pesticides": {
+        "id": 4,
+        "total_quantity": "0"
+    },
+    "fertilizers": {
+        "id": 5,
+        "total_quantity": "0"
+    },
+    "seeds": {
+        "id": 7,
+        "total_quantity": "0"
+    },
+    "language": {
+        "default": "en"
     }
 }

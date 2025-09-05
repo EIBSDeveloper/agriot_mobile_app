@@ -1,4 +1,3 @@
-
 import 'package:argiot/consumption_controller.dart';
 
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
@@ -21,38 +20,82 @@ class ConsumptionView extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildDatePicker(),
-              SizedBox(height: 16),
-              _buildCropDropdown(),
-              
-              SizedBox(height: 16),
-              _buildInventoryTypeDropdown(),
-              SizedBox(height: 16),
-              _buildInventoryCategoryDropdown(),
-              SizedBox(height: 16),
-              _buildInventoryItemDropdown(),
-              SizedBox(height: 16),
-              _buildQuantityField(),
-              SizedBox(height: 16),
-              // Conditional fields based on inventory type
-              Obx(() => _controller.requiresUsageHours ? _buildUsageHoursField() : SizedBox.shrink()),
-              Obx(() => _controller.requiresUsageHours ? SizedBox(height: 16) : SizedBox.shrink()),
-              
-              Obx(() => _controller.requiresKilometerFields ? _buildStartKilometerField() : SizedBox.shrink()),
-              Obx(() => _controller.requiresKilometerFields ? SizedBox(height: 16) : SizedBox.shrink()),
-              
-              Obx(() => _controller.requiresKilometerFields ? _buildEndKilometerField() : SizedBox.shrink()),
-              Obx(() => _controller.requiresKilometerFields ? SizedBox(height: 16) : SizedBox.shrink()),
-              
-              Obx(() => _controller.requiresToolItems ? _buildToolItemsField() : SizedBox.shrink()),
-              Obx(() => _controller.requiresToolItems ? SizedBox(height: 16) : SizedBox.shrink()),
-              
-              _buildDescriptionField(),
-              SizedBox(height: 24),
-              _buildSaveButton(),
-            ],
+          child: Form(
+            key: _controller.formKey,
+            child: Column(
+              children: [
+                _buildDatePicker(),
+                SizedBox(height: 16),
+                _buildCropDropdown(),
+
+                SizedBox(height: 16),
+                _buildInventoryTypeDropdown(),
+                SizedBox(height: 16),
+                _buildInventoryCategoryDropdown(),
+                SizedBox(height: 16),
+                _buildInventoryItemDropdown(),
+                SizedBox(height: 16),
+                Obx(
+                  () => !_controller.requiresUsageHours
+                      ? _buildQuantityField()
+                      : SizedBox.shrink(),
+                ),
+                Obx(
+                  () => !_controller.requiresUsageHours
+                      ? SizedBox(height: 16)
+                      : SizedBox.shrink(),
+                ),
+
+                // Conditional fields based on inventory type
+                Obx(
+                  () => _controller.requiresUsageHours
+                      ? _buildUsageHoursField()
+                      : SizedBox.shrink(),
+                ),
+                Obx(
+                  () => _controller.requiresUsageHours
+                      ? SizedBox(height: 16)
+                      : SizedBox.shrink(),
+                ),
+
+                Obx(
+                  () => _controller.requiresKilometerFields
+                      ? _buildStartKilometerField()
+                      : SizedBox.shrink(),
+                ),
+                Obx(
+                  () => _controller.requiresKilometerFields
+                      ? SizedBox(height: 16)
+                      : SizedBox.shrink(),
+                ),
+
+                Obx(
+                  () => _controller.requiresKilometerFields
+                      ? _buildEndKilometerField()
+                      : SizedBox.shrink(),
+                ),
+                Obx(
+                  () => _controller.requiresKilometerFields
+                      ? SizedBox(height: 16)
+                      : SizedBox.shrink(),
+                ),
+
+                Obx(
+                  () => _controller.requiresToolItems
+                      ? _buildToolItemsField()
+                      : SizedBox.shrink(),
+                ),
+                Obx(
+                  () => _controller.requiresToolItems
+                      ? SizedBox(height: 16)
+                      : SizedBox.shrink(),
+                ),
+
+                _buildDescriptionField(),
+                SizedBox(height: 24),
+                _buildSaveButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -70,7 +113,9 @@ class ConsumptionView extends StatelessWidget {
           ),
           readOnly: true,
           controller: TextEditingController(
-            text: _controller.selectedDate.value.toLocal().toString().split(' ')[0],
+            text: _controller.selectedDate.value.toLocal().toString().split(
+              ' ',
+            )[0],
           ),
           onTap: () async {
             final DateTime? picked = await showDatePicker(
@@ -107,6 +152,7 @@ class ConsumptionView extends StatelessWidget {
             hintText: 'Inventory Type'.tr,
             border: InputBorder.none,
           ),
+          validator: (value) => value == null ? 'required_field'.tr : null,
           value: _controller.selectedInventoryType.value,
           items: _controller.inventoryTypes
               .map(
@@ -118,7 +164,7 @@ class ConsumptionView extends StatelessWidget {
               .toList(),
           onChanged: (value) {
             _controller.setInventoryType(value!);
-            _controller.fetchInventoryCategories(value);
+            
           },
         ),
       ),
@@ -133,6 +179,7 @@ class ConsumptionView extends StatelessWidget {
             hintText: 'Inventory Category'.tr,
             border: InputBorder.none,
           ),
+          validator: (value) => value == null ? 'required_field'.tr : null,
           value: _controller.selectedInventoryCategory.value,
           items: _controller.inventoryCategories
               .map(
@@ -145,7 +192,7 @@ class ConsumptionView extends StatelessWidget {
           onChanged: _controller.selectedInventoryType.value != null
               ? (value) {
                   _controller.setInventoryCategory(value!);
-                  _controller.fetchInventoryItems(value);
+                 
                 }
               : null,
         ),
@@ -161,6 +208,7 @@ class ConsumptionView extends StatelessWidget {
             hintText: 'Inventory Item'.tr,
             border: InputBorder.none,
           ),
+          validator: (value) => value == null ? 'required_field'.tr : null,
           value: _controller.selectedInventoryItem.value,
           items: _controller.inventoryItems
               .map(
@@ -180,15 +228,28 @@ class ConsumptionView extends StatelessWidget {
   }
 
   Widget _buildQuantityField() {
-    return InputCardStyle(
-      child: TextFormField(
-        decoration: InputDecoration(
-          hintText: 'Quantity'.tr,
-          border: InputBorder.none,
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: InputCardStyle(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: 'Quantity'.tr,
+                border: InputBorder.none,
+              ),
+          
+              keyboardType: TextInputType.number,
+              validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+              onChanged: _controller.setQuantity,
+            ),
+          ),
+ 
         ),
-        keyboardType: TextInputType.number,
-        onChanged: _controller.setQuantity,
-      ),
+  //              if(  _controller.requiresUnit) Expanded(
+  // flex:2,
+  //               child: child)
+      ],
     );
   }
 
@@ -212,6 +273,7 @@ class ConsumptionView extends StatelessWidget {
           hintText: 'Start Kilometer'.tr,
           border: InputBorder.none,
         ),
+        validator: (value) => value == null ? 'required_field'.tr : null,
         keyboardType: TextInputType.number,
         onChanged: _controller.setStartKilometer,
       ),
@@ -225,6 +287,7 @@ class ConsumptionView extends StatelessWidget {
           hintText: 'End Kilometer'.tr,
           border: InputBorder.none,
         ),
+        validator: (value) => value == null ? 'required_field'.tr : null,
         keyboardType: TextInputType.number,
         onChanged: _controller.setEndKilometer,
       ),
@@ -238,6 +301,7 @@ class ConsumptionView extends StatelessWidget {
           hintText: 'Tool Items'.tr,
           border: InputBorder.none,
         ),
+        validator: (value) => value == null ? 'required_field'.tr : null,
         onChanged: _controller.setToolItems,
       ),
     );
@@ -266,6 +330,13 @@ class ConsumptionView extends StatelessWidget {
                 final success = await _controller.submitConsumption();
                 if (success) {
                   Get.back();
+                  Get.toNamed(
+                    '/consumption-purchase',
+                    arguments: {
+                      "id": _controller.selectedInventoryType.value,
+                    },
+                    preventDuplicates: true,
+                  );
                 }
               },
         style: ElevatedButton.styleFrom(minimumSize: Size(double.infinity, 50)),
@@ -275,4 +346,23 @@ class ConsumptionView extends StatelessWidget {
       ),
     );
   }
+}
+
+String getType(int id) {
+  if (id == 6) {
+    return 'fuel';
+  } else if (id == 1) {
+    return 'vehicle';
+  } else if (id == 2) {
+    return 'machinery';
+  } else if (id == 3) {
+    return 'tools';
+  } else if (id == 4) {
+    return 'Pesticides';
+  } else if (id == 5) {
+    return 'fertilizers';
+  } else if (id == 7) {
+    return 'seeds';
+  }
+  return 'fuel';
 }

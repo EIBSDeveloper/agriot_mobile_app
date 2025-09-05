@@ -36,7 +36,7 @@ class SalesListView extends GetView<SalesController> {
                           children: [
                             FittedBox(
                               child: Text(
-                                "Total Expenses ",
+                                "Total Sales ",
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontSize: 14,
@@ -142,6 +142,7 @@ class SalesListView extends GetView<SalesController> {
                                 horizontal: 8,
                                 vertical: 4,
                               ),
+                              elevation: 1,
                               child: ListTile(
                                 title: Text(
                                   sale.myCustomer.name,
@@ -153,7 +154,7 @@ class SalesListView extends GetView<SalesController> {
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Village: ${sale.myCustomer.village}'),
+                                    Text('Sale Quantity : ${sale.salesQuantity}'),
                                   ],
                                 ),
                                 trailing: Text(
@@ -184,7 +185,7 @@ class SalesListView extends GetView<SalesController> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Get.theme.primaryColor,
         child: const Icon(Icons.add),
-        onPressed: () => Get.toNamed(Routes.NEW_SALES)?.then((yy) {
+        onPressed: () => Get.toNamed(Routes.NEW_SALES,arguments: {"new":true})?.then((yy) {
           controller.fetchSalesList();
         }),
       ),

@@ -230,6 +230,7 @@ class ScheduleController extends GetxController {
   void onInit() {
     super.onInit();
     fetchLandsAndCrops();
+
     debounce(
       searchQuery,
       (_) => filterSchedules(),
@@ -237,9 +238,9 @@ class ScheduleController extends GetxController {
     );
   }
 
-  void changeCrop(ScheduleCrop crop) {
-    selectedCropType.value = crop;
-  }
+  // void changeCrop(ScheduleCrop crop) {
+  //   selectedCropType.value = crop;
+  // }
 
   Future<void> addTask() async {
     if (!formKey.currentState!.validate()) return;
@@ -263,7 +264,8 @@ class ScheduleController extends GetxController {
 
       await _repository.addTask(taskRequest);
 
-      Get.back();
+      Get.back(result: true);
+      Get.back(result: true);
       showSuccess('Task added successfully');
     } catch (e) {
       showError('Failed to add task: ${e.toString()}');
@@ -282,12 +284,9 @@ class ScheduleController extends GetxController {
       final result = await _repository.fetchLandsAndCrops();
       lands.assignAll(result);
 
-      selectedLand.value = result.first;
+      selectLand(result.first);
       final activityList = await _repository.getActivityTypes();
       activity.assignAll(activityList);
-      if (result.first.crops.isNotEmpty) {
-        selectedCrop.value = result.first.crops.first;
-      }
     } catch (e) {
       print('Error fetching lands and crops: $e');
     } finally {
@@ -611,7 +610,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: CustomAppBar(title: 'schedule_details'.tr),
+      appBar: CustomAppBar(title: 'schedule_details'.tr),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());

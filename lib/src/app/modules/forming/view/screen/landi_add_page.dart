@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
 import '../../../registration/controller/kyc_controller.dart';
 import '../../../registration/model/dropdown_item.dart';
-import '../../../registration/view/widget/document_item_widget.dart';
 import '../../../registration/view/widget/searchable_dropdown.dart';
 import '../../../registration/view/widget/survey_item_widget.dart';
 import '../../controller/land_controller.dart';
@@ -87,10 +86,13 @@ class LandViewPage extends GetView<LandController> {
                 onTap: controller.listpickLocation,
               ),
               gap,
+              Divider(),
               _buildSurveyDetailsSection(),
               gap,
+              Divider(),
               _buildDocumentsSection(),
               gap,
+              Divider(),
               _buildSubmitButton(),
             ],
           ),
@@ -105,15 +107,20 @@ class LandViewPage extends GetView<LandController> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               'Survey Details',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: controller.addSurveyItem,
-              tooltip: 'Add Survey Detail',
+              Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.add),
+                onPressed: controller.addSurveyItem,
+                tooltip: 'Add Survey Detail',
+              ),
             ),
           ],
         ),
@@ -147,53 +154,57 @@ class LandViewPage extends GetView<LandController> {
   }
 
   Widget _buildDocumentsSection() {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Land Documents',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              IconButton(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Land Documents',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
                 icon: Icon(Icons.add),
                 onPressed: controller.addDocumentItem,
                 tooltip: 'Add Document',
               ),
-            ],
-          ),
-          Obx(() {
-            if (controller.documentItems.isEmpty) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'No documents added',
-                  style: TextStyle(color: Colors.grey),
-                ),
-              );
-            }
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: controller.documentItems.length,
-              itemBuilder: (context, index) {
-                return DocumentItemWidget(
-                  index: index,
-                  item: controller.documentItems[index],
-                  documentTypes: controller.documentTypes,
-                  onRemove: () => controller.removeDocumentItem(index),
-                  onChanged: (item) => controller.documentItems[index] = item,
-                  onPickDocument: () => controller.pickDocument(index),
-                );
-              },
+            ),
+          ],
+        ),
+        Obx(() {
+          if (controller.documentItems.isEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'No documents added',
+                style: TextStyle(color: Colors.grey),
+              ),
             );
-          }),
-        ],
-      ),
+          }
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: controller.documentItems.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Text("${index+1}, ${controller.documentItems[index].newFileType!}"),
+                      Icon(Icons.attach_file)
+                    ],
+                  ),
+                  SizedBox(height: 5,)
+                ],
+              );
+            },
+          );
+        }),
+      ],
     );
   }
 
@@ -232,7 +243,9 @@ class LandViewPage extends GetView<LandController> {
         boxShadow: const [],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+      constraints: const BoxConstraints(
+        minHeight: 55, // minimum height for all fields
+      ),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(

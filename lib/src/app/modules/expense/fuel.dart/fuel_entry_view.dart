@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,11 +10,7 @@ class FuelEntryView extends GetView<PurchasesAddController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('fuel_entry'.tr),
-        backgroundColor: Get.theme.appBarTheme.backgroundColor,
-        elevation: Get.theme.appBarTheme.elevation,
-      ),
+      appBar: CustomAppBar(title: 'fuel_entry'.tr),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: FuelEntryForm(),
@@ -25,12 +22,12 @@ class FuelEntryView extends GetView<PurchasesAddController> {
 class FuelEntryForm extends GetView<PurchasesAddController> {
   FuelEntryForm({super.key});
 
-  final _formKey = GlobalKey<FormState>();
+ 
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: controller.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -45,7 +42,7 @@ class FuelEntryForm extends GetView<PurchasesAddController> {
           // Vendor Dropdown
           controller.buildVendorDropdown(),
           const SizedBox(height: 16),
-// Litre Field
+          // Litre Field
           controller.buildLitreField(),
           const SizedBox(height: 16),
           // Purchase Amount Field
@@ -54,13 +51,9 @@ class FuelEntryForm extends GetView<PurchasesAddController> {
           controller.buildPaidAmountField(),
           const SizedBox(height: 16),
 
-          
+          controller.buildDocumentsSection(),
+          const SizedBox(height: 24),
 
-          // Document Upload (simplified)
-          // _buildDocumentUpload(),
-          // const SizedBox(height: 16),
-
-          // Description Field
           controller.buildDescriptionField(),
           const SizedBox(height: 24),
 

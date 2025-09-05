@@ -27,7 +27,7 @@ class KycView extends GetView<KycController> {
               gap,
               _buildTextField(
                 controller: controller.emailController,
-                label: 'Email',
+                label: 'Email *',
                 validator: (value) =>
                     !GetUtils.isEmail(value!) ? 'Enter valid email' : null,
                 keyboardType: TextInputType.emailAddress,
@@ -57,9 +57,12 @@ class KycView extends GetView<KycController> {
               _buildTextField(
                 controller: controller.pincodeController,
                 label: 'Pincode *',
-                validator: (value) => value!.isEmpty ? 'Required field' : null,
+                validator: (value) => (value!.isEmpty)
+                    ? ('Required field')
+                    : (value.length != 6 ? "Ender 6 digit Pincode" : null),
                 keyboardType: TextInputType.number,
-              ),gap,
+              ),
+              gap,
               _buildTextField(
                 controller: controller.locationController,
                 label: 'Location Coordinates *',
@@ -103,7 +106,10 @@ class KycView extends GetView<KycController> {
         boxShadow: const [],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: height ?? 55,
+      // height: height ?? 55,
+      constraints: const BoxConstraints(
+        minHeight: 55, // minimum height for all fields
+      ),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(

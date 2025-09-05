@@ -118,7 +118,7 @@ class LandService extends GetxService {
   }
 
   Future<Map<String, dynamic>> addLand({
-    required Map<String, dynamic> request,
+    required Map<dynamic, dynamic> request,
     required List<DocumentItem> documents,
   }) async {
     // Convert all request values to strings
@@ -144,7 +144,7 @@ class LandService extends GetxService {
   }
 
   Future<Map<String, dynamic>> editLand({
-    required Map<String, dynamic> request,
+    required Map<dynamic, dynamic> request,
     required List<DocumentItem> documents,
   }) async {
     final farmerId = appDeta.userId;

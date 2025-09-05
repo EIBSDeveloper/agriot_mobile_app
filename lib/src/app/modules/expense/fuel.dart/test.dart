@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
@@ -301,7 +300,7 @@ class FuelInventoryBinding extends Bindings {
 }
 
 class FuelInventoryView extends GetView<FuelInventoryController> {
-  const FuelInventoryView({Key? key}) : super(key: key);
+  const FuelInventoryView({super.key});
 
   @override
   Widget build(BuildContext context) {

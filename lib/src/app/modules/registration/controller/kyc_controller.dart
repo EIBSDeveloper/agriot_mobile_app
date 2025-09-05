@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../utils.dart';
 import '../../../bindings/app_binding.dart';
+import '../../../controller/app_controller.dart';
 import '../model/address_model.dart';
 import '../repostrory/address_service.dart';
 import '../view/screen/landpicker.dart';
@@ -50,6 +51,7 @@ class KycController extends GetxController {
   void onInit() {
     super.onInit();
     loadCountries();
+
     setupDropdownListeners();
   }
 
@@ -104,6 +106,9 @@ class KycController extends GetxController {
   }
 
   Future<void> loadCountries() async {
+    AppDataController appData = Get.put(AppDataController());
+    emailController.text = appData.emailId.value;
+    nameController.text = appData.username.value;
     try {
       isLoadingCountries(true);
       final result = await _addressService.getCountries();

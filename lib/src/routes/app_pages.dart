@@ -127,15 +127,15 @@ class AppPages {
 
     GetPage(
       name: Routes.guidelines,
-      page: () => const GuidelinesView(),
+      page: () =>  GuidelinesView(),
       binding: GuidelineBinding(),
     ),
 
-    GetPage(
-      name: "/myEdit",
-      page: () => SalesFormScreen(),
-      binding: SalesBindings(),
-    ),
+    // GetPage(
+    //   name: "/myEdit",
+    //   page: () => SalesFormScreen(),
+    //   binding: SalesBindings(),
+    // ),
     GetPage(
       name: Routes.SALES_DETAILS,
       page: () => NewSalesDetailsView(),
@@ -146,11 +146,7 @@ class AppPages {
       page: () => NewSalesView(),
       binding: NewSalesBinding(),
     ),
-    GetPage(
-      name: Routes.EDIT_SALES,
-      page: () => NewEditSalesView(salesId: 2),
-      binding: NewSalesBinding(),
-    ),
+
     GetPage(
       name: Routes.ADD_DEDUCTION,
       page: () => AddDeductionView(),
@@ -351,8 +347,6 @@ class AppPages {
       name: '/consumption-purchase',
       page: () => const ConsumptionPurchaseView(),
       binding: ConsumptionPurchaseBinding(),
-      // Add middleware for auth if needed
-      // middlewares: [AuthMiddleware()],
     ),
     GetPage(
       name: '/fuel_inventory',

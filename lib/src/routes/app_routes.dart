@@ -22,12 +22,10 @@ abstract class Routes {
   // Sales
    static const sales = '/sales';
   static const String salesDetails = '/fuel/sales-details';
-  static const String newSales = '/fuel/new-sales';
-  static const String editSales = '/fuel/edit-sales';
+
   //temp
   static const SALES_DETAILS = '/sales-details';
   static const NEW_SALES = '/new-sales';
-  static const EDIT_SALES = '/edit-sales';
   static const ADD_DEDUCTION = '/add-deduction';
 
 

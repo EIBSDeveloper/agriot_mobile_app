@@ -70,6 +70,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> signInWithGoogle() async {
+  await  signOutFromGoogle();
     try {
       final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
 
@@ -102,6 +103,8 @@ class AuthController extends GetxController {
         if (response.userId != null) {
           AppDataController appData = Get.put(AppDataController());
           appData.loginState.value = response;
+          appData.emailId.value = user.email??'';
+          appData.username.value = user.displayName??'';
           await authWrapper(response.userId);
         } else {
           throw Exception(response.message ?? 'Invalid OTP');
@@ -111,7 +114,6 @@ class AuthController extends GetxController {
       debugPrint('🔥 Sign-in failed: $e');
     }
   }
-
   Future<void> signOutFromGoogle() async {
     try {
       // Sign out from Firebase
@@ -129,6 +131,7 @@ class AuthController extends GetxController {
       debugPrint('🔥 Sign-out failed: $e');
     }
   }
+
 
   Future<void> verifyOtp() async {
     try {

@@ -33,6 +33,7 @@ class TaskController extends GetxController {
   final Rx<DateTime?> scheduleEndDate = Rx<DateTime?>(null);
   final RxString description = ''.obs;
   final RxBool isRecurring = false.obs;
+  final RxBool endDate = true.obs;
   final RxInt recurrenceType = 0.obs; // 0: daily, 1: weekly, 2: monthly
   final RxList<int> selectedDays = <int>[].obs;
 
@@ -302,12 +303,13 @@ class TaskController extends GetxController {
         return tasks.where((task) => task.statusId == 2).toList();
       case 'waiting':
         return tasks.where((task) => task.statusId == 1).toList();
-      // case 'cancelled':
-      //   return tasks.where((task) => task.status == 'Cancelled').toList();
-      // case 'pending':
-      //   return tasks.where((task) => task.status == 'Pending').toList();
-      // case 'in_progress':
-      //   return tasks.where((task) => task.status == 'InProgress').toList();
+
+      case 'in_progress':
+        return tasks.where((task) => task.statusId == 3).toList();
+      case 'pending':
+        return tasks.where((task) => task.statusId == 4).toList();
+      case 'cancelled':
+        return tasks.where((task) => task.statusId == 5).toList();
       default:
         return tasks;
     }
@@ -355,10 +357,10 @@ class TaskController extends GetxController {
 
   void _showError(String message) {
     errorMessage(message);
-    showError( message,);
+    showError(message);
   }
 
   void _showSuccess(String message) {
-     showSuccess(message, );
+    showSuccess(message);
   }
 }

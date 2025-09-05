@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/expense/fuel.dart/purchases_add_controller.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,65 +11,65 @@ class VehicleView extends GetView<PurchasesAddController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('vehicle_screen_title'.tr),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      appBar: CustomAppBar(title: 'vehicle_screen_title'.tr),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            controller.buildDateField(),
-            SizedBox(height: 16),
-            controller.buildInventoryCategoryDropdown(),
-            SizedBox(height: 16),
-            controller.buildInventoryItemDropdown(),
-            const SizedBox(height: 16),
-            // Vendor Dropdown
-            controller.buildVendorDropdown(),
-            const SizedBox(height: 16),
-            _buildRegNoField(),
-            const SizedBox(height: 16),
-            _buildOwnerNameField(),
-            const SizedBox(height: 16),
-            _buildDateOfRegField(context),
-            const SizedBox(height: 16),
-            _buildRegValidTillField(context),
-            const SizedBox(height: 16),
-            _buildEngineNoField(),
-            const SizedBox(height: 16),
-            _buildChasisNoField(),
-            const SizedBox(height: 16),
-            _buildRunningKmField(),
-            const SizedBox(height: 16),
-            _buildServiceFrequencyRow(),
-            const SizedBox(height: 16),
-            _buildFuelCapacityField(),
-            const SizedBox(height: 16),
-            _buildAverageMileageField(),
-            const SizedBox(height: 16),
+        child: Form(
+          key: controller.formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              controller.buildDateField(),
+              SizedBox(height: 16),
+              controller.buildInventoryCategoryDropdown(),
+              SizedBox(height: 16),
+              controller.buildInventoryItemDropdown(),
+              const SizedBox(height: 16),
+              // Vendor Dropdown
+              controller.buildVendorDropdown(),
+              const SizedBox(height: 16),
+              _buildRegNoField(),
+              const SizedBox(height: 16),
+              _buildOwnerNameField(),
+              const SizedBox(height: 16),
+              _buildDateOfRegField(context),
+              const SizedBox(height: 16),
+              _buildRegValidTillField(context),
+              const SizedBox(height: 16),
+              _buildEngineNoField(),
+              const SizedBox(height: 16),
+              _buildChasisNoField(),
+              const SizedBox(height: 16),
+              _buildRunningKmField(),
+              const SizedBox(height: 16),
+              _buildServiceFrequencyRow(),
+              const SizedBox(height: 16),
+              _buildFuelCapacityField(),
+              const SizedBox(height: 16),
+              _buildAverageMileageField(),
+              const SizedBox(height: 16),
+              controller.buildPurchaseAmountField(),
+              const SizedBox(height: 16),
               controller.buildPaidAmountField(),
-          const SizedBox(height: 16),
-            controller.buildPurchaseAmountField(),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            controller.buildDescriptionField(),
+              controller.buildDocumentsSection(),
+              const SizedBox(height: 24),
 
-            const SizedBox(height: 16),
-            _buildInsuranceCheckbox(),
-            Obx(
-              () => controller.showInsuranceDetails.value
-                  ? _buildInsuranceSection(context)
-                  : const SizedBox.shrink(),
-            ),
-            const SizedBox(height: 24),
-            _buildSubmitButton(),
-            const SizedBox(height: 24),
-          ],
+              controller.buildDescriptionField(),
+
+              const SizedBox(height: 16),
+              _buildInsuranceCheckbox(),
+              Obx(
+                () => controller.showInsuranceDetails.value
+                    ? _buildInsuranceSection(context)
+                    : const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 24),
+              _buildSubmitButton(),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
@@ -104,14 +105,14 @@ class VehicleView extends GetView<PurchasesAddController> {
     return InputCardStyle(
       child: TextFormField(
         controller: controller.dateOfRegController,
+        onTap: () {
+          controller.selectDate(controller.dateOfRegController, context);
+        },
+        validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         decoration: InputDecoration(
           hintText: 'date_of_reg_label'.tr,
           border: InputBorder.none,
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () =>
-                controller.selectDate(controller.dateOfRegController, context),
-          ),
+          suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         ),
         readOnly: true,
       ),
@@ -122,16 +123,14 @@ class VehicleView extends GetView<PurchasesAddController> {
     return InputCardStyle(
       child: TextFormField(
         controller: controller.regValidTillController,
+        validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+        onTap: () =>
+            controller.selectDate(controller.regValidTillController, context),
         decoration: InputDecoration(
           hintText: 'reg_valid_till_label'.tr,
+
           border: InputBorder.none,
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () => controller.selectDate(
-              controller.regValidTillController,
-              context,
-            ),
-          ),
+          suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         ),
         readOnly: true,
       ),
@@ -167,7 +166,8 @@ class VehicleView extends GetView<PurchasesAddController> {
       child: TextFormField(
         controller: controller.runningKmController,
         decoration: InputDecoration(
-          hintText: 'running_km_label'.tr,border:  InputBorder.none,
+          hintText: 'running_km_label'.tr,
+          border: InputBorder.none,
           errorText: controller.errors['running_km'],
         ),
         keyboardType: TextInputType.number,
@@ -197,7 +197,7 @@ class VehicleView extends GetView<PurchasesAddController> {
           child: InputCardStyle(
             child: DropdownButtonFormField<String>(
               value: controller.serviceFrequencyUnit.value,
-              items: ['KM', 'Miles']
+              items: ['KM', 'Days']
                   .map(
                     (unit) => DropdownMenuItem(value: unit, child: Text(unit)),
                   )
@@ -321,14 +321,12 @@ class VehicleView extends GetView<PurchasesAddController> {
     return InputCardStyle(
       child: TextFormField(
         controller: controller.startDateController,
+        onTap: () =>
+            controller.selectDate(controller.startDateController, context),
         decoration: InputDecoration(
           hintText: 'start_date_label'.tr,
           border: InputBorder.none,
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () =>
-                controller.selectDate(controller.startDateController, context),
-          ),
+          suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
           errorText: controller.errors['start_date'],
         ),
         readOnly: true,
@@ -340,14 +338,13 @@ class VehicleView extends GetView<PurchasesAddController> {
     return InputCardStyle(
       child: TextFormField(
         controller: controller.endDateController,
+        onTap: () =>
+            controller.selectDate(controller.endDateController, context),
         decoration: InputDecoration(
           hintText: 'end_date_label'.tr,
+
           border: InputBorder.none,
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () =>
-                controller.selectDate(controller.endDateController, context),
-          ),
+          suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
           errorText: controller.errors['end_date'],
         ),
         readOnly: true,
@@ -359,16 +356,12 @@ class VehicleView extends GetView<PurchasesAddController> {
     return InputCardStyle(
       child: TextFormField(
         controller: controller.renewalDateController,
+        onTap: () =>
+            controller.selectDate(controller.renewalDateController, context),
         decoration: InputDecoration(
           hintText: 'renewal_date_label'.tr,
           border: InputBorder.none,
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.calendar_today),
-            onPressed: () => controller.selectDate(
-              controller.renewalDateController,
-              context,
-            ),
-          ),
+          suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
           errorText: controller.errors['renewal_date'],
         ),
         readOnly: true,

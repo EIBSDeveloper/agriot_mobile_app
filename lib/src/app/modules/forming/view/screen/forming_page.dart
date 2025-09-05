@@ -65,6 +65,9 @@ class FormingView extends GetView<FormingController> {
                         isExpanded: controller.expandedLandId.value == land.id,
                         onExpand: () => controller.toggleExpandLand(land.id),
                         onTap: () => controller.navigateToLandDetail(land.id),
+                        refresh: (){
+                          controller.fetchLands();
+                        },
                       ),
                     );
                   },

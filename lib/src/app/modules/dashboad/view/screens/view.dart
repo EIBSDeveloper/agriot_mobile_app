@@ -27,7 +27,7 @@ class DashboardView extends GetView<DashboardController> {
 
       return RefreshIndicator(
         onRefresh: () {
-          return controller.loadData();
+          return controller.fetchLands();
         },
         child: SingleChildScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -554,29 +554,23 @@ class DashboardView extends GetView<DashboardController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          guideline.guidelinestype.tr,
-                          style: Get.textTheme.titleMedium?.copyWith(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                        guideline.guidelinestype.tr,
+                        style: Get.textTheme.titleMedium?.copyWith(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          guideline.description.tr,
-                          style: Get.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                        guideline.description.tr,
+                        style: Get.textTheme.bodySmall?.copyWith(
+                          color: Colors.grey,
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

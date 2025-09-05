@@ -142,7 +142,9 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                   Routes.addCrop,
                   arguments: {'landId': landId, 'cropId': cropId},
                 )?.then((rturn) {
-                  controller.fetchCropDetails(landId, cropId);
+                  if (rturn) {
+                    controller.fetchCropDetails(landId, cropId);
+                  }
                 }),
           ),
         ),

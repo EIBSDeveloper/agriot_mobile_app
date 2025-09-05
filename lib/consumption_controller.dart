@@ -3,6 +3,7 @@ import 'package:argiot/consumption_model.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/model.dart';
 import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 // consumption_repository.dart
@@ -14,34 +15,33 @@ import 'package:get/get.dart';
 //   Future<bool> submitConsumption(Map<String, dynamic> consumptionData);
 // }
 
-class ConsumptionRepositoryImpl  {
+class ConsumptionRepositoryImpl {
   final HttpService _httpService = Get.find<HttpService>();
-
-
 
   Future<List<InventoryTypeModel>> fetchInventoryTypes(String farmerId) async {
     final response = await _httpService.get('/purchase_list/$farmerId/');
-    
+
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final types = <InventoryTypeModel>[];
-      
+
       data.forEach((key, value) {
         if (key != 'language' && value is Map<String, dynamic>) {
           types.add(InventoryTypeModel.fromJson(key, value));
         }
       });
-      
+
       return types;
     } else {
       throw Exception('Failed to fetch inventory types');
     }
   }
 
-
-  Future<List<InventoryCategoryModel>> fetchInventoryCategories(int typeId) async {
+  Future<List<InventoryCategoryModel>> fetchInventoryCategories(
+    int typeId,
+  ) async {
     final response = await _httpService.get('/get_inventory_category/$typeId');
-    
+
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       return data.map((json) => InventoryCategoryModel.fromJson(json)).toList();
@@ -50,10 +50,9 @@ class ConsumptionRepositoryImpl  {
     }
   }
 
-
   Future<List<InventoryItemModel>> fetchInventoryItems(int categoryId) async {
     final response = await _httpService.get('/get_inventory_items/$categoryId');
-    
+
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
       return data.map((json) => InventoryItemModel.fromJson(json)).toList();
@@ -62,10 +61,9 @@ class ConsumptionRepositoryImpl  {
     }
   }
 
-
   Future<List<DocumentTypeModel>> fetchDocumentTypes() async {
     final response = await _httpService.get('/document_categories');
-    
+
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['data'];
       return data.map((json) => DocumentTypeModel.fromJson(json)).toList();
@@ -74,10 +72,12 @@ class ConsumptionRepositoryImpl  {
     }
   }
 
-
   Future<bool> submitConsumption(Map<String, dynamic> consumptionData) async {
-    final response = await _httpService.post('/create_consumption/', consumptionData);
-    
+    final response = await _httpService.post(
+      '/create_consumption/',
+      consumptionData,
+    );
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
@@ -88,9 +88,10 @@ class ConsumptionRepositoryImpl  {
 
 // consumption_controller.dart
 class ConsumptionController extends GetxController {
-  final ConsumptionRepositoryImpl _repository= ConsumptionRepositoryImpl();
+  final ConsumptionRepositoryImpl _repository = ConsumptionRepositoryImpl();
   final AppDataController _appDataController = Get.find();
-  
+
+  final formKey = GlobalKey<FormState>();
   // Observable variables
   var inventoryTypes = <InventoryTypeModel>[].obs;
   var inventoryCategories = <InventoryCategoryModel>[].obs;
@@ -100,13 +101,14 @@ class ConsumptionController extends GetxController {
   var isTypeLoading = false.obs;
   var isinventoryLoading = false.obs;
   var isdocumentTypesLoading = false.obs;
-  
+
   // Form fields
   var selectedDate = DateTime.now().obs;
   final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;
   final RxList<CropModel> crop = <CropModel>[].obs;
-  
+
   var selectedInventoryType = Rxn<int>();
+  var selectedInventoryTypeName = Rxn<String>();
   var selectedInventoryCategory = Rxn<int>();
   var selectedInventoryItem = Rxn<int>();
   var quantity = ''.obs;
@@ -116,20 +118,32 @@ class ConsumptionController extends GetxController {
   var endKilometer = ''.obs;
   var toolItems = ''.obs;
   var documents = <Document>[].obs;
-  
-  ConsumptionController();
+
+  var inventoryType = Rxn<int>();
+  var inventoryCategory = Rxn<int>();
+  var inventoryItem = Rxn<int>();
 
   // Getter to check if current inventory type requires usage hours
   bool get requiresUsageHours {
     final typeId = selectedInventoryType.value;
-    return typeId == 2 || typeId == 3 || typeId == 4 || typeId == 7;
+    return typeId == 2 || typeId == 3 || typeId == 1;
   }
-  
+
+  bool get requiresQuantity {
+    final typeId = selectedInventoryType.value;
+    return typeId == 7 || typeId == 5 || typeId == 4 || typeId == 3;
+  }
+
+  bool get requiresUnit {
+    final typeId = selectedInventoryType.value;
+    return typeId == 4 || typeId == 5 || typeId == 7;
+  }
+
   // Getter to check if current inventory type requires kilometer fields
   bool get requiresKilometerFields {
     return selectedInventoryType.value == 1;
   }
-  
+
   // Getter to check if current inventory type requires tool items
   bool get requiresToolItems {
     return selectedInventoryType.value == 3;
@@ -139,6 +153,16 @@ class ConsumptionController extends GetxController {
   void onInit() {
     super.onInit();
     getCropList();
+    var arguments = Get.arguments;
+    if (arguments?["type"] != null) {
+      inventoryType.value = arguments?["type"];
+    }
+    if (arguments?["category"] != null) {
+      inventoryCategory.value = arguments?["category"];
+    }
+    if (arguments?["item"] != null) {
+      inventoryItem.value = arguments?["item"];
+    }
     fetchInventoryTypes();
     fetchDocumentTypes();
   }
@@ -153,22 +177,29 @@ class ConsumptionController extends GetxController {
     inventoryCategories.clear();
     selectedInventoryItem.value = null;
     inventoryItems.clear();
-    
+
     // Clear conditional fields when type changes
     usageHours.value = '';
     startKilometer.value = '';
     endKilometer.value = '';
     toolItems.value = '';
+    fetchInventoryCategories(typeId);
   }
 
   void setInventoryCategory(int categoryId) {
     selectedInventoryCategory.value = categoryId;
     selectedInventoryItem.value = null;
     inventoryItems.clear();
+    fetchInventoryItems(categoryId);
   }
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
+    if (inventoryItem.value != null) {
+      inventoryCategory.value = null;
+      inventoryType.value = null;
+      inventoryItem.value = null;
+    }
   }
 
   void setQuantity(String value) {
@@ -213,6 +244,9 @@ class ConsumptionController extends GetxController {
       isTypeLoading(true);
       final types = await _repository.fetchInventoryTypes(farmerId);
       inventoryTypes.assignAll(types);
+      if (inventoryType.value != null) {
+        setInventoryType(inventoryType.value!);
+      }
     } catch (e) {
       Get.snackbar('Error'.tr, 'Failed to fetch inventory types'.tr);
     } finally {
@@ -247,8 +281,13 @@ class ConsumptionController extends GetxController {
   Future<void> fetchInventoryCategories(int inventoryTypeId) async {
     try {
       isCategoryLoading(true);
-      final categories = await _repository.fetchInventoryCategories(inventoryTypeId);
+      final categories = await _repository.fetchInventoryCategories(
+        inventoryTypeId,
+      );
       inventoryCategories.assignAll(categories);
+      if (inventoryCategories.isNotEmpty && inventoryCategory.value != null) {
+        setInventoryCategory(inventoryCategory.value!);
+      }
     } catch (e) {
       Get.snackbar('Error'.tr, 'Failed to fetch inventory categories'.tr);
     } finally {
@@ -261,6 +300,9 @@ class ConsumptionController extends GetxController {
       isinventoryLoading(true);
       final items = await _repository.fetchInventoryItems(inventoryCategoryId);
       inventoryItems.assignAll(items);
+      if (inventoryItem.value != null) {
+        setInventoryItem(inventoryItem.value!);
+      }
     } catch (e) {
       Get.snackbar('Error'.tr, 'Failed to fetch inventory items'.tr);
     } finally {
@@ -281,46 +323,50 @@ class ConsumptionController extends GetxController {
   }
 
   Future<bool> submitConsumption() async {
-    if (!isFormValid) {
-      Fluttertoast.showToast(msg: 'Please fill all required fields'.tr);
-      return false;
-    }
+    if (!formKey.currentState!.validate()) return false;
+    // if (!isFormValid) {
+    //   Fluttertoast.showToast(msg: 'Please fill all required fields'.tr);
+    //   return false;
+    // }
 
-    // Additional validation for conditional fields
-    if (requiresUsageHours && usageHours.value.isEmpty) {
-      Fluttertoast.showToast(msg: 'Usage hours is required'.tr);
-      return false;
-    }
+    // // Additional validation for conditional fields
+    // if (requiresUsageHours && usageHours.value.isEmpty) {
+    //   Fluttertoast.showToast(msg: 'Usage hours is required'.tr);
+    //   return false;
+    // }
 
-    if (requiresKilometerFields && (startKilometer.value.isEmpty || endKilometer.value.isEmpty)) {
-      Fluttertoast.showToast(msg: 'Start and end kilometer are required'.tr);
-      return false;
-    }
+    // if (requiresKilometerFields && (startKilometer.value.isEmpty || endKilometer.value.isEmpty)) {
+    //   Fluttertoast.showToast(msg: 'Start and end kilometer are required'.tr);
+    //   return false;
+    // }
 
-    if (requiresKilometerFields && double.parse(startKilometer.value) >= double.parse(endKilometer.value)) {
-      Fluttertoast.showToast(msg: 'End kilometer must be greater than start kilometer'.tr);
-      return false;
-    }
+    // if (requiresKilometerFields && double.parse(startKilometer.value) >= double.parse(endKilometer.value)) {
+    //   Fluttertoast.showToast(msg: 'End kilometer must be greater than start kilometer'.tr);
+    //   return false;
+    // }
 
-    if (requiresToolItems && toolItems.value.isEmpty) {
-      Fluttertoast.showToast(msg: 'Tool items are required'.tr);
-      return false;
-    }
+    // if (requiresToolItems && toolItems.value.isEmpty) {
+    //   Fluttertoast.showToast(msg: 'Tool items are required'.tr);
+    //   return false;
+    // }
 
     final String farmerId = _appDataController.userId.value;
     try {
       isLoading(true);
-      
+
       // Prepare the request body based on inventory type
+      var s = requiresUsageHours ? usageHours.value : quantity.value;
       final Map<String, dynamic> requestBody = {
-        "date_of_consumption": selectedDate.value.toIso8601String().split('T')[0],
+        "date_of_consumption": selectedDate.value.toIso8601String().split(
+          'T',
+        )[0],
         "crop": selectedCropType.value.id,
         "inventory_type": selectedInventoryType.value.toString(),
         "inventory_category": selectedInventoryCategory.value!,
         "inventory_items": selectedInventoryItem.value!,
         "description": description.value,
         "farmer": farmerId,
-        "quantity_utilized": quantity.value,
+        "quantity_utilized": s,
       };
 
       // Add conditional fields
@@ -339,14 +385,16 @@ class ConsumptionController extends GetxController {
 
       // Add documents if any
       if (documents.isNotEmpty) {
-        requestBody["documents"] = documents.map((doc) => doc.toJson()).toList();
+        requestBody["documents"] = documents
+            .map((doc) => doc.toJson())
+            .toList();
       }
 
       final success = await _repository.submitConsumption(requestBody);
 
       if (success) {
         Fluttertoast.showToast(msg: 'Consumption recorded successfully'.tr);
-        clearForm();
+        // clearForm();
         return true;
       } else {
         Fluttertoast.showToast(msg: 'Failed to record consumption'.tr);
@@ -362,7 +410,9 @@ class ConsumptionController extends GetxController {
 
   void clearForm() {
     selectedDate.value = DateTime.now();
-    selectedCropType.value = crop.isNotEmpty ? crop.first : CropModel(id: 0, name: '');
+    selectedCropType.value = crop.isNotEmpty
+        ? crop.first
+        : CropModel(id: 0, name: '');
     selectedInventoryType.value = null;
     selectedInventoryCategory.value = null;
     selectedInventoryItem.value = null;
@@ -376,19 +426,22 @@ class ConsumptionController extends GetxController {
   }
 
   bool get isFormValid {
-    bool basicValid = selectedInventoryType.value != null &&
+    bool basicValid =
+        selectedInventoryType.value != null &&
         selectedInventoryCategory.value != null &&
         selectedInventoryItem.value != null &&
         quantity.value.isNotEmpty &&
         selectedCropType.value.id != 0;
 
-    // Add conditional validation
     if (requiresUsageHours) {
       basicValid = basicValid && usageHours.value.isNotEmpty;
     }
 
     if (requiresKilometerFields) {
-      basicValid = basicValid && startKilometer.value.isNotEmpty && endKilometer.value.isNotEmpty;
+      basicValid =
+          basicValid &&
+          startKilometer.value.isNotEmpty &&
+          endKilometer.value.isNotEmpty;
     }
 
     if (requiresToolItems) {

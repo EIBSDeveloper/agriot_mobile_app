@@ -11,7 +11,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Add New Expenses'.tr),
+      appBar: CustomAppBar(title: 'Add New Purchase'.tr),
       body: RefreshIndicator(
         onRefresh: () async {
           controller.loadInventory();
@@ -35,12 +35,19 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
             children: [
               _buildInventoryItem(
                 'fuel'.tr,
-                '${inventory.fuel.totalQuantity} Ltr',
+                '${inventory.fuel.totalQuantity.round()} Ltr',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'fuel',
+                    inventory.fuel.id,
+                    tab: 1
+                  );
+                },
                 onTap: () {
                   // Get.toNamed(Routes.fuelList);
                   Get.toNamed(
                     '/fuel-expenses-entry',
-                    arguments: {"id": inventory.fuel.id},
+                    arguments: {"id": inventory.fuel.id, "type": 'machinery'},
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -49,11 +56,20 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'vehicle'.tr,
-                '${inventory.vehicle.totalFuelCapacity}',
+                '${inventory.vehicle.totalFuelCapacity.round()}',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'vehicle',
+                    inventory.vehicle.id,  tab: 1
+                  );
+                },
                 onTap: () {
                   Get.toNamed(
                     '/vehicle_entry',
-                    arguments: {"id": inventory.vehicle.id},
+                    arguments: {
+                      "id": inventory.vehicle.id,
+                      "type": 'machinery',
+                    },
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -62,11 +78,20 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'machinery'.tr,
-                '${inventory.machinery.totalFuelCapacity}',
+                '${inventory.machinery.totalFuelCapacity.round()}',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'machinery',
+                    inventory.machinery.id,  tab: 1
+                  );
+                },
                 onTap: () {
                   Get.toNamed(
                     '/machinery_entry',
-                    arguments: {"id": inventory.machinery.id},
+                    arguments: {
+                      "id": inventory.machinery.id,
+                      "type": 'machinery',
+                    },
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -75,11 +100,17 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'tools'.tr,
-                '${inventory.tools.totalQuantity}',
+                '${inventory.tools.totalQuantity.round()}',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'tools',
+                    inventory.tools.id,  tab: 1
+                  );
+                },
                 onTap: () {
                   Get.toNamed(
                     '/fertilizer_entry',
-                    arguments: {"id": inventory.tools.id},
+                    arguments: {"id": inventory.tools.id, "type": 'tools'},
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -88,11 +119,20 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'pesticides'.tr,
-                '${inventory.pesticides.totalQuantity} kg',
+                '${inventory.pesticides.totalQuantity.round()} kg',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'pesticides',
+                    inventory.pesticides.id,  tab: 1
+                  );
+                },
                 onTap: () {
                   Get.toNamed(
                     '/fertilizer_entry',
-                    arguments: {"id": inventory.pesticides.id},
+                    arguments: {
+                      "id": inventory.pesticides.id,
+                      "type": 'pesticides',
+                    },
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -101,11 +141,20 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'fertilizers'.tr,
-                '${inventory.fertilizers.totalQuantity} kg',
+                '${inventory.fertilizers.totalQuantity.round()} kg',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'fertilizers',
+                    inventory.fertilizers.id,  tab: 1
+                  );
+                },
                 onTap: () {
                   Get.toNamed(
                     '/fertilizer_entry',
-                    arguments: {"id": inventory.fertilizers.id},
+                    arguments: {
+                      "id": inventory.fertilizers.id,
+                      "type": 'fertilizers',
+                    },
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -114,11 +163,17 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'seeds'.tr,
-                '${inventory.seeds.totalQuantity}',
+                '${inventory.seeds.totalQuantity.round()} kg',
+                open: () {
+                  controller.navigateToCategoryDetail(
+                    'seeds',
+                    inventory.seeds.id,  tab: 1
+                  );
+                },
                 onTap: () {
                   Get.toNamed(
                     '/fertilizer_entry',
-                    arguments: {"id": inventory.seeds.id},
+                    arguments: {"id": inventory.seeds.id, "type": 'seeds'},
                   )?.then((res) {
                     controller.loadInventory();
                   });
@@ -135,11 +190,55 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
     String title,
     String quantity, {
     Function()? onTap,
+    Function()? open,
   }) {
-    return ListTile(
-      title: Text(title),
-      trailing: Text('($quantity)'),
+    return InkWell(
       onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Title Text
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
+            // Quantity with tap handler (open)
+            InkWell(
+              onTap: open,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      '($quantity)  ',
+                      style: TextStyle(
+                        color: Colors.green.shade700,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Icon(Icons.open_in_new, color: Colors.green.shade700),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

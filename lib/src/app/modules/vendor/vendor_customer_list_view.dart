@@ -4,8 +4,10 @@ import 'package:argiot/src/app/modules/vendor/vendor_customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/app_style.dart';
+import '../../../utils.dart';
 import '../../widgets/input_card_style.dart';
 import '../../widgets/title_text.dart';
 
@@ -15,7 +17,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('vendor_customer'.tr), centerTitle: true),
+      appBar: CustomAppBar(title: 'vendor_customer'.tr),
       body: RefreshIndicator(
         onRefresh: () {
           return controller.fetchVendorCustomerList();
@@ -105,7 +107,12 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
             if (item.inventoryType != null) Text(item.inventoryType!),
           ],
         ),
-        trailing: Text(item.mobileNo, style: TextStyle(fontSize: 14)),
+        trailing: IconButton(
+          onPressed: () {
+            makePhoneCall(item.mobileNo);
+          },
+          icon: Icon(Icons.call, color: Get.theme.primaryColor),
+        ),
         onTap: () =>
             Get.toNamed('/vendor-customer-details', arguments: {'id': item.id}),
       ),
@@ -179,14 +186,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('add_${controller.selectedType}'.tr),
-        actions: [
-          // IconButton(
-          //   icon: const Icon(Icons.clear),
-          //   onPressed: controller.clearForm,
-          // ),
-        ],
+      appBar: CustomAppBar(
+        title: 'add_${controller.selectedType}'.tr,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -222,7 +223,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
               isExpanded: true,
               value: controller.selectedMarket.value,
               decoration: InputDecoration(
-                hintText: 'select_market'.tr,
+                hintText: "${'select_market'.tr}*",
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 16,
@@ -250,7 +251,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('inventory_type'.tr, style: Get.textTheme.titleSmall),
+        Text("${'inventory_type'.tr} *", style: Get.textTheme.titleSmall),
         const SizedBox(height: 8),
         Obx(() {
           if (controller.isinveroryLoading.value) {
@@ -306,9 +307,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             controller: controller.nameController,
             decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: controller.selectedType.value == 'customer'
-                  ? 'customer_name'.tr
-                  : 'vendor_name'.tr,
+              hintText:
+                  "${controller.selectedType.value == 'customer' ? 'customer_name'.tr : 'vendor_name'.tr}*",
             ),
             validator: (value) =>
                 value?.isEmpty ?? true ? 'required_field'.tr : null,
@@ -319,7 +319,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           child: TextFormField(
             controller: controller.mobileController,
             decoration: InputDecoration(
-              hintText: 'mobile_number'.tr,
+              hintText: "${'mobile_number'.tr} *",
               border: InputBorder.none,
             ),
             keyboardType: TextInputType.phone,
@@ -388,7 +388,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           child: TextFormField(
             controller: controller.pincodeController,
             decoration: InputDecoration(
-              hintText: 'pincode'.tr,
+              hintText: "${'pincode'.tr}*",
               border: InputBorder.none,
             ),
             keyboardType: TextInputType.number,
@@ -522,7 +522,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Get.theme.primaryColor,
-        onPressed: () => _makePhoneCall(item.mobileNo),
+        onPressed: () => makePhoneCall(item.mobileNo),
         child: const Icon(Icons.call),
       ),
     );
@@ -563,11 +563,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
       children: [
         _buildDetailRow('mobile_number'.tr, item.mobileNo),
         if (item.email != null) _buildDetailRow('email'.tr, item.email!),
-        if (item.doorNo != null)
-          _buildDetailRow(
-            'address'.tr,
-            item.doorNo!,
-          ),
+        if (item.doorNo != null) _buildDetailRow('address'.tr, item.doorNo!),
         // if (item.country != null) _buildDetailRow('country'.tr, item.country!),
         // if (item.state != null) _buildDetailRow('state'.tr, item.state!),
         // if (item.city != null) _buildDetailRow('city'.tr, item.city!),
@@ -638,11 +634,6 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         ),
       ],
     );
-  }
-
-  void _makePhoneCall(String phoneNumber) {
-    // Implement phone call functionality
-    Get.snackbar('call'.tr, 'calling_number'.trParams({'number': phoneNumber}));
   }
 
   void _navigateToEdit(VendorCustomer item) {

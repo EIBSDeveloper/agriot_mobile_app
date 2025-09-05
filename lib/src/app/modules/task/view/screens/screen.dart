@@ -1,4 +1,5 @@
 // lib/app/modules/task/views/task_view.dart
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -42,7 +43,11 @@ class TaskView extends GetView<TaskController> {
                       backgroundColor: Get.theme.primaryColor,
                     ),
                     onPressed: () {
-                      Get.toNamed('/schedules');
+                      Get.toNamed('/schedules')?.then((reslut) {
+                        if (reslut != null) {
+                          controller.loadTasks();
+                        }
+                      });
                     },
                     child: Text("Best schedule"),
                   ),
@@ -166,7 +171,10 @@ class TaskView extends GetView<TaskController> {
                                       ),
                                     ),
                                     ...group.tasks.map(
-                                      (task) => _buildTaskCard(task),
+                                      (task) {
+                                        int u=0;
+                                        return _buildTaskCard(task);
+                                      },
                                     ),
                                   ],
                                 );
@@ -389,39 +397,57 @@ class TaskView extends GetView<TaskController> {
 
                             // End date picker
                             Obx(
-                              () => Container(
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(
-                                    137,
-                                    221,
-                                    234,
-                                    234,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: ListTile(
-                                  title: const Text('Schedule End Date*'),
-                                  subtitle: Text(
-                                    controller.scheduleEndDate.value == null
-                                        ? 'Not selected'
-                                        : '${controller.scheduleEndDate.value!.day}/${controller.scheduleEndDate.value!.month}/${controller.scheduleEndDate.value!.year}',
-                                  ),
-                                  trailing: const Icon(Icons.calendar_today),
-                                  onTap: () async {
-                                    final date = await showDatePicker(
-                                      context: Get.context!,
-                                      initialDate: controller.scheduleDate.value
-                                          .add(const Duration(days: 7)),
-                                      firstDate: controller.scheduleDate.value,
-                                      lastDate: DateTime.now().add(
-                                        const Duration(days: 365 * 2),
+                              () => Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                        137,
+                                        221,
+                                        234,
+                                        234,
                                       ),
-                                    );
-                                    if (date != null) {
-                                      controller.scheduleEndDate.value = date;
-                                    }
-                                  },
-                                ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: ListTile(
+                                      title: const Text('Schedule End Date*'),
+                                      subtitle: Text(
+                                        controller.scheduleEndDate.value == null
+                                            ? 'Not selected'
+                                            : '${controller.scheduleEndDate.value!.day}/${controller.scheduleEndDate.value!.month}/${controller.scheduleEndDate.value!.year}',
+                                      ),
+                                      trailing: const Icon(
+                                        Icons.calendar_today,
+                                      ),
+                                      onTap: () async {
+                                        final date = await showDatePicker(
+                                          context: Get.context!,
+                                          initialDate: controller
+                                              .scheduleDate
+                                              .value
+                                              .add(const Duration(days: 7)),
+                                          firstDate:
+                                              controller.scheduleDate.value,
+                                          lastDate: DateTime.now().add(
+                                            const Duration(days: 365 * 2),
+                                          ),
+                                        );
+                                        if (date != null) {
+                                          controller.scheduleEndDate.value =
+                                              date;
+                                          controller.endDate.value == true;
+                                        }
+                                      },
+                                    ),
+                                  ),
+
+                                  (!controller.endDate.value)
+                                      ? Text(
+                                          "Please add End Date",
+                                          style: TextStyle(color: Colors.red),
+                                        )
+                                      : SizedBox(),
+                                ],
                               ),
                             ),
                           ],
@@ -443,14 +469,14 @@ class TaskView extends GetView<TaskController> {
                   ),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      labelText: 'Description*',
+                      labelText: 'Description',
                       border: InputBorder.none,
                     ),
                     maxLines: 2,
                     onChanged: (value) => controller.description.value = value,
-                    validator: (value) => value?.isEmpty ?? true
-                        ? 'Please enter description'
-                        : null,
+                    // validator: (value) => value?.isEmpty ?? true
+                    //     ? 'Please enter description'
+                    //     : null,
                   ),
                 ),
 
@@ -460,6 +486,15 @@ class TaskView extends GetView<TaskController> {
                     onPressed: controller.isLoading.value
                         ? null
                         : () {
+                            if (controller.isRecurring.value) {
+                              controller.endDate.value =
+                                  (controller.scheduleEndDate.value == null)
+                                  ? false
+                                  : true;
+                              if (!controller.endDate.value) {
+                                return;
+                              }
+                            }
                             if (isEditing) {
                               controller.editTask(taskId!);
                             } else {
@@ -535,24 +570,31 @@ class TaskView extends GetView<TaskController> {
             return controller.getEventsForDay(day);
           },
           calendarBuilders: CalendarBuilders(
-            markerBuilder: (context, date, events) {
+            markerBuilder: (context, date, List<Event> events) {
               if (events.isEmpty) return const SizedBox.shrink();
+
               return Positioned(
                 right: 1,
                 bottom: 1,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: Get.theme.primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    '${events.length}',
-                    style: Get.textTheme.bodyMedium?.copyWith(
-                      color: Get.theme.scaffoldBackgroundColor,
-                      fontSize: 10,
-                    ),
-                  ),
+                child: Row(
+                  children: [
+                    ...events.map((e) {
+                      return Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Get.theme.primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${events[0].tasks.length}',
+                          style: Get.textTheme.bodyMedium?.copyWith(
+                            color: Get.theme.scaffoldBackgroundColor,
+                            fontSize: 10,
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
                 ),
               );
             },
@@ -561,6 +603,8 @@ class TaskView extends GetView<TaskController> {
       }),
     );
   }
+
+  
 
   Widget _buildFilterSection() {
     return Padding(
@@ -667,13 +711,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       // padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<T>(
         key: key,
@@ -681,7 +719,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
         decoration: InputDecoration(
           hintText: label,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         hint: hintText != null ? Text(hintText!) : null,
         items: items.map((T item) {
@@ -696,7 +734,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
         }).toList(),
         onChanged: disabled ? null : onChanged,
         isExpanded: true,
-        icon: Icon(Icons.arrow_drop_down),
+        icon: Icon(Icons.keyboard_arrow_down),
         style: Theme.of(
           context,
         ).textTheme.titleMedium?.copyWith(color: disabled ? Colors.grey : null),

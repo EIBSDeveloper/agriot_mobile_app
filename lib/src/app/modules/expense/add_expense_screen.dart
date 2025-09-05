@@ -121,7 +121,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       hintText: 'Amount*'.tr,
-                      prefixText: ' ₹ ',
+                      // prefixText: ' ₹ ',
                       border: InputBorder.none,
                     ),
                     onChanged: (value) =>

@@ -35,6 +35,7 @@ class InventoryModel {
 class InventoryFuel {
   final double totalQuantity;
   final int id;
+  // final String name ;
 
   InventoryFuel({required this.totalQuantity,required this.id});
 

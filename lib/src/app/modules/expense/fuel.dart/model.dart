@@ -7,7 +7,7 @@ class Machinery {
   final int inventoryCategory;
   final int inventoryItems;
   final String machineryType;
-  final String fuelCapacity;
+  final int fuelCapacity;
   final String warrantyStartDate;
   final String warrantyEndDate;
   final String purchaseAmount;
@@ -40,8 +40,9 @@ class Machinery {
       'inventory_items': inventoryItems,
       'machinery_type': machineryType,
       'fuel_capacity': fuelCapacity,
-      'warranty_start_date': warrantyStartDate,
-      'warranty_end_date': warrantyEndDate,
+      if (warrantyStartDate.isNotEmpty)
+        'warranty_start_date': warrantyStartDate,
+      if (warrantyEndDate.isNotEmpty) 'warranty_end_date': warrantyEndDate,
       "paid_amount": paidAmount,
       'purchase_amount': purchaseAmount,
       'description': description,
@@ -153,8 +154,8 @@ class VehicleModel {
       'running_kilometer': runningKilometer,
       'service_frequency': serviceFrequency,
       'service_frequency_unit': serviceFrequencyUnit,
-      'fuel_capacity': fuelCapacity,
-      'average_mileage': averageMileage,
+      'fuel_capacity': fuelCapacity ?? 0,
+      'average_mileage': averageMileage ?? 0,
       'purchase_amount': purchaseAmount,
       "paid_amount": paidAmount,
       'insurance': insurance,
@@ -317,10 +318,10 @@ class InventoryItem {
 
 class ConsumptionRecord {
   final int id;
-  final double quantityUtilized;
+  final double? quantityUtilized;
   final DateTime dateOfConsumption;
   final String description;
-  final String crop;
+  final String? crop;
   final double availableQuantity;
 
   ConsumptionRecord({
@@ -336,8 +337,9 @@ class ConsumptionRecord {
     return ConsumptionRecord(
       id: json['id'],
       crop: json['crop_name'],
-      quantityUtilized:
-          double.tryParse(json['quantity_utilized']?.toString() ?? '0') ?? 0,
+      quantityUtilized: double.tryParse(
+        json['quantity_utilized']?.toString() ?? '',
+      ),
       dateOfConsumption: DateTime.parse(json['date_of_consumption']),
       description: json['description'] ?? '',
       availableQuantity:

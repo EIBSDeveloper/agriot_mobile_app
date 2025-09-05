@@ -90,7 +90,9 @@ class LandView extends GetView<RegLandController> {
               boxShadow: const [],
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            height: 55,
+            constraints: const BoxConstraints(
+      minHeight: 55, // minimum height for all fields
+    ),
             child: TextFormField(
               controller: controller.locationListController,
               decoration: InputDecoration(
@@ -317,7 +319,9 @@ class CustomTextField extends StatelessWidget {
         boxShadow: const [],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+   constraints: const BoxConstraints(
+      minHeight: 55, // minimum height for all fields
+    ),
       child: TextFormField(
         controller: controller,
         onChanged: onChanged,

@@ -1,14 +1,13 @@
 import 'package:argiot/src/app/modules/registration/controller/kyc_controller.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../../doc.dart';
 import '../../../../utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
-import '../../registration/model/document_model.dart';
 import '../../registration/model/dropdown_item.dart';
 import '../../registration/model/land_model.dart';
 import '../../registration/model/survey_model.dart';
@@ -47,7 +46,7 @@ class LandController extends GetxController {
 
   // Dynamic lists
   final RxList<SurveyItem> surveyItems = <SurveyItem>[].obs;
-  final RxList<DocumentItem> documentItems = <DocumentItem>[].obs;
+  final RxList<DocumentAdd> documentItems = <DocumentAdd>[].obs;
 
   // Loading states
   final RxBool isLoadingLandUnits = false.obs;
@@ -135,9 +134,8 @@ class LandController extends GetxController {
         name: landDetail.value.soilType!.name!,
       );
     }
-    landCoordinates.value = parseLatLngListFromString(
-      landDetail.value.geoMarks,
-    ).toList();
+    var list = parseLngListFromString(landDetail.value.geoMarks).toList();
+    landCoordinates.value = list;
     geoMarks.value = landDetail.value.geoMarks;
     locationListController.text = landDetail.value.geoMarks.toString();
     // Set location data
@@ -159,16 +157,16 @@ class LandController extends GetxController {
     // Populate document items
     documentItems.clear();
     for (var doc in landDetail.value.documents) {
-      documentItems.add(
-        DocumentItem(
-          type: AppDropdownItem(
-            id: doc.documentCategory.id,
-            name: doc.documentCategory.name,
-          ),
+      // documentItems.add(
+      //   DocumentItem(
+      //     type: AppDropdownItem(
+      //       id: doc.documentCategory.id,
+      //       name: doc.documentCategory.name,
+      //     ),
 
-          file: null, // Existing file, not a new one
-        ),
-      );
+      //     file: null, // Existing file, not a new one
+      //   ),
+      // );
     }
   }
 
@@ -177,6 +175,9 @@ class LandController extends GetxController {
       isLoadingLandUnits(true);
       final result = await _landService.getLandUnits();
       landUnits.assignAll(result);
+      if (result.isNotEmpty) {
+        selectedLandUnit.value = result.first;
+      }
     } finally {
       isLoadingLandUnits(false);
     }
@@ -214,9 +215,16 @@ class LandController extends GetxController {
   }
 
   void addDocumentItem() {
-    documentItems.add(
-      DocumentItem(type: documentTypes.firstOrNull, file: null),
-    );
+    Get.to(
+      AddDocumentView(),
+      binding: NewDocumentBinding(),
+      arguments: {"id": 0},
+    )?.then((result) {
+      if (result != null && result is DocumentAdd) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
   }
 
   void removeDocumentItem(int index) {
@@ -245,39 +253,39 @@ class LandController extends GetxController {
     }
   }
 
-  Future<void> pickDocument(int index) async {
-    try {
-      final file = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
-      );
-
-      if (file != null) {
-        documentItems[index] = documentItems[index].copyWith(
-          file: file.files.single,
-        );
-      }
-    } catch (e) {
-      showError('Failed to pick document');
-    }
-  }
-
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
-
 
     try {
       isSubmitting(true);
 
+      final dynamic  surveyDetails;
+      if (landId.value != 0) {
+       surveyDetails = surveyItems.map((survey) {
+          Map map = {
+            if (survey.id != null) "id": survey.id,
+            "survey_no": survey.surveyNo,
+            "survey_measurement_value": survey.measurement,
+            "survey_measurement_unit": survey.unit,
+          };
+          return map;
+        }).toList();
+       
+      } else {
+        surveyDetails = surveyItems.asMap().map((index, item) {
+          return MapEntry(
+            'survey_details_${index + 1}',
+            'survey_no:${item.surveyNo},'
+                'survey_measurement_value:${item.measurement},'
+                'survey_measurement_unit_id:${item.unit?.id}',
+          );
+        });
+      }
 
-      final surveyDetails = surveyItems.asMap().map((index, item) {
-        return MapEntry(
-          'survey_details_${index + 1}',
-          'survey_no:${item.surveyNo},'
-              'survey_measurement_value:${item.measurement},'
-              'survey_measurement_unit_id:${item.unit?.id}',
-        );
-      });
+      final documentItemsList = documentItems.map((doc) {
+        var json = doc.toJson();
+        return json;
+      }).toList();
 
       // Create request based on whether we're creating or editing
       final request = {
@@ -302,8 +310,9 @@ class LandController extends GetxController {
           "patta_number": pattaNoController.text.trim(),
         if (descriptionController.text.isNotEmpty)
           "description": descriptionController.text.trim(),
-        if (newSurveyItems.value) ...surveyDetails,
-        // "documents": documents,
+        if (newSurveyItems.value &&landId.value == 0) ...surveyDetails ,
+        if(landId.value == 0)"surveyDetails":surveyDetails,
+        "documents": documentItemsList,
       };
 
       // Call appropriate API based on whether we're creating or editing

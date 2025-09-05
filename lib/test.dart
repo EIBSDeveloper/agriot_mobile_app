@@ -1,6 +1,7 @@
 // models/sales_model.dart
 import 'dart:convert';
 
+import 'package:argiot/doc.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -231,18 +232,16 @@ class Crop {
       img: json['img'] ?? '',
     );
   }
-}class Land {
+}
+
+class Land {
   final int id;
   final String name;
 
   Land({required this.id, required this.name});
 
   factory Land.fromJson(Map<String, dynamic> json) {
-    return Land(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-     
-    );
+    return Land(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -623,11 +622,12 @@ class NewSalesController extends GetxController {
   final RxList<CropModel> crop = <CropModel>[].obs;
   final RxList<Unit> unit = <Unit>[].obs;
   // Form variables
+  final RxList<DocumentAdd> documentItems = <DocumentAdd>[].obs;
 
   final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;
-  final Rx<Reason> selectedResion = Reason(id: 0, name: '').obs;
+  final Rx<Reason> selectedReason = Reason(id: 0, name: '').obs;
   final Rx<Unit> selectedUnit = Unit(id: 0, name: '').obs;
-  RxBool isNewResion = false.obs;
+  RxBool isNewReason = false.obs;
   var selectedCustomer = Rx<int?>(null);
   Rx<DateTime> selectedDate = DateTime.now().obs;
   var salesQuantity = Rx<int?>(0);
@@ -644,11 +644,23 @@ class NewSalesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchReasons();
-    fetchRupees();
-    fetchCrop();
-    fetchUnit();
-    fetchCustomerList();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    var id = Get.arguments?["id"];
+    var isNew = Get.arguments?["new"];
+    if (id == null) {
+      return;
+    }
+    if (isNew != null) {
+      await fetchReasons();
+      await fetchRupees();
+      await fetchCrop();
+      await fetchUnit();
+      await fetchCustomerList();
+    }
+    await fetchSalesDetails(id);
   }
 
   Future<void> fetchSalesByCrop(int cropId, String type) async {
@@ -686,6 +698,15 @@ class NewSalesController extends GetxController {
       isLoading(true);
       final response = await _salesRepository.getSalesDetails(salesId);
       salesDetail(response);
+      selectedCropType.value = CropModel(
+        id: response.myCrop.id,
+        name: response.myCrop.name,
+      );
+      salesQuantity.value = response.salesQuantity;
+      amountPaid.value = response.amountPaid.toString();
+      selectedCustomer.value = response.myCustomer.id;
+      quantityAmount.value = response.quantityAmount;
+      selectedDate.value = DateTime.parse(response.createdAt);
     } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to fetch sales details: $e');
     } finally {
@@ -698,7 +719,7 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.getReasons();
       reasonsList.assignAll(response);
       if (reasonsList.isNotEmpty) {
-        selectedResion.value = reasonsList.first;
+        selectedReason.value = reasonsList.first;
       }
     } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to fetch reasons: $e');
@@ -723,10 +744,30 @@ class NewSalesController extends GetxController {
     }
   }
 
+  void addDocumentItem() {
+    Get.to(
+      AddDocumentView(),
+      binding: NewDocumentBinding(),
+      arguments: {"id": 0},
+    )?.then((result) {
+      if (result != null && result is DocumentAdd) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
+  }
+
+  void removeDocumentItem(int index) {
+    documentItems.removeAt(index);
+  }
+
   Future<bool> addSales() async {
     try {
       isLoading(true);
-
+      final documentItemsList = documentItems.map((doc) {
+        var json = doc.toJson();
+        return json;
+      }).toList();
       final request = SalesAddRequest(
         datesOfSales: selectedDate.value.toIso8601String().split('T')[0],
         myCrop: selectedCropType.value.id,
@@ -739,7 +780,7 @@ class NewSalesController extends GetxController {
         description: description.value,
         amountPaid: amountPaid.value,
         deductions: deductions.value,
-        fileData: documents,
+        fileData: documentItemsList,
       );
 
       final response = await _salesRepository.addSales(request);
@@ -834,7 +875,7 @@ class NewSalesController extends GetxController {
   }
 
   void changeResion(Reason crop) {
-    selectedResion.value = crop;
+    selectedReason.value = crop;
   }
 
   void addDeduction(Map<String, dynamic> deduction) {
@@ -942,15 +983,6 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   final NewSalesController controller = Get.find<NewSalesController>();
 
   @override
-  void initState() {
-    super.initState();
-    // Load sales details when view is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchSalesDetails(Get.arguments["id"]);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
@@ -961,8 +993,11 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
             icon: const Icon(Icons.edit),
             onPressed: () {
               Get.toNamed(
-                Routes.EDIT_SALES,
-                arguments: controller.salesDetail.value?.salesId,
+                Routes.NEW_SALES,
+                arguments: {
+                  "id": controller.salesDetail.value?.salesId,
+                  "new": true,
+                },
               );
             },
           ),
@@ -1024,7 +1059,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(salesDetail.myCrop.name, style: Get.textTheme.headlineSmall),
-            Text(salesDetail.myLand.name, ),
+            Text(salesDetail.myLand.name),
           ],
         ),
       ],
@@ -1071,6 +1106,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         const SizedBox(height: 8),
         ...salesDetail.deductions.map(
           (deduction) => Card(
+            elevation: 1,
             child: ListTile(
               title: Text(deduction.reason.name),
               subtitle: Text('${deduction.charges} ${deduction.rupee.name}'),
@@ -1094,26 +1130,36 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
               .expand((category) => category.documents)
               .map(
                 (document) => GestureDetector(
-                  onTap: () {
-                    // Handle document preview
-                  },
-                  child: CachedNetworkImage(
-                    imageUrl: document.fileUpload,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      width: 80,
-                      height: 80,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.document_scanner),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      width: 80,
-                      height: 80,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.error),
-                    ),
+                  onTap: () {},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(document.documentCategory.name),
+                      CachedNetworkImage(
+                        imageUrl: document.fileUpload,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          width: 80,
+                          height: 80,
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.document_scanner),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          width: 80,
+                          height: 80,
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.error),
+                        ),
+                      ),
+                      //  Positioned(
+                      //   bottom: 2,
+                      //   right: 2,
+                      //   child: SizedBox(width: 76,child: InputCardStyle(
+                      //     noHeight: true,
+                      //     child: Text(document.documentCategory.name)),)),
+                    ],
                   ),
                 ),
               )
@@ -1135,11 +1181,24 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   }
 }
 
-class NewSalesView extends StatelessWidget {
+class NewSalesView extends StatefulWidget {
+  NewSalesView({super.key});
+
+  @override
+  State<NewSalesView> createState() => _NewSalesViewState();
+}
+
+class _NewSalesViewState extends State<NewSalesView> {
   final NewSalesController controller = Get.find<NewSalesController>();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  NewSalesView({super.key});
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.loadData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1147,6 +1206,9 @@ class NewSalesView extends StatelessWidget {
       appBar: CustomAppBar(title: 'New Sales', showBackButton: true),
 
       body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Form(
@@ -1194,11 +1256,14 @@ class NewSalesView extends StatelessWidget {
                 // // Sales Amount
                 // _buildSalesAmountField(),
                 const SizedBox(height: 16),
+                Divider(), const SizedBox(height: 16),
 
                 // Deductions Section
                 _buildDeductionsSection(),
-                const SizedBox(height: 16),
 
+                const SizedBox(height: 16),
+                Divider(),
+                const SizedBox(height: 16),
                 // Amount Paid
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1214,7 +1279,7 @@ class NewSalesView extends StatelessWidget {
                 const SizedBox(height: 16),
                 _buildAmountPaidField(),
                 const SizedBox(height: 16),
-
+                _buildDocumentsSection(), const SizedBox(height: 16),
                 // Description
                 _buildDescriptionField(),
                 const SizedBox(height: 16),
@@ -1226,6 +1291,63 @@ class NewSalesView extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildDocumentsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Land Documents',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.add),
+                onPressed: controller.addDocumentItem,
+                tooltip: 'Add Document',
+              ),
+            ),
+          ],
+        ),
+        Obx(() {
+          if (controller.documentItems.isEmpty) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'No documents added',
+                style: TextStyle(color: Colors.grey),
+              ),
+            );
+          }
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: controller.documentItems.length,
+            itemBuilder: (context, index) {
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
+                      ),
+                      Icon(Icons.attach_file),
+                    ],
+                  ),
+                  SizedBox(height: 5),
+                ],
+              );
+            },
+          );
+        }),
+      ],
     );
   }
 
@@ -1246,16 +1368,12 @@ class NewSalesView extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            decoration: AppStyle.decoration.copyWith(
-              color: const Color.fromARGB(137, 221, 234, 234),
-              boxShadow: const [],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            height: 55,
+          child: InputCardStyle(
             child: DropdownButtonFormField<int>(
+              icon: Icon(Icons.keyboard_arrow_down),
               decoration: const InputDecoration(
-                hintText: 'Customer',
+                hintText: 'Customer * ',
+
                 border: InputBorder.none,
               ),
               value: controller.selectedCustomer.value,
@@ -1266,33 +1384,32 @@ class NewSalesView extends StatelessWidget {
                   child: Text(customer.name),
                 );
               }).toList(),
-              // validator: (value) => value == null ? 'Please select a customer' : null,
+              validator: (value) =>
+                  value == null ? 'Please select a customer' : null,
             ),
           ),
         ),
-        IconButton(
-          onPressed: () {
-            Get.toNamed(
-              '/add-vendor-customer',
-              // arguments: {"type": 'vendor'},
-            )?.then((result) {
-              controller.fetchCustomerList();
-            });
-          },
-          icon: Icon(Icons.add),
+        Card(
+          color: Get.theme.primaryColor,
+          child: IconButton(
+            color: Colors.white,
+            onPressed: () {
+              Get.toNamed(
+                '/add-vendor-customer',
+                // arguments: {"type": 'vendor'},
+              )?.then((result) {
+                controller.fetchCustomerList();
+              });
+            },
+            icon: Icon(Icons.add),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildDatePicker() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       child: InkWell(
         onTap: () async {
           final selected = await showDatePicker(
@@ -1325,19 +1442,14 @@ class NewSalesView extends StatelessWidget {
   }
 
   Widget _buildSalesQuantityField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       child: TextFormField(
         decoration: const InputDecoration(
-          labelText: 'Sales Quantity',
+          hintText: 'Sales Quantity',
           border: InputBorder.none,
         ),
         keyboardType: TextInputType.number,
+        initialValue: controller.salesQuantity.value.toString(),
         onChanged: (value) {
           controller.salesQuantity.value = int.tryParse(value);
           controller.salesAmount.value =
@@ -1363,19 +1475,14 @@ class NewSalesView extends StatelessWidget {
   }
 
   Widget _buildQuantityAmountField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       child: TextFormField(
         decoration: const InputDecoration(
-          labelText: 'Amount per unit*',
+          hintText: 'Amount per unit*',
           border: InputBorder.none,
         ),
         keyboardType: TextInputType.number,
+        initialValue: controller.quantityAmount.value.toString(),
         onChanged: (value) {
           controller.quantityAmount.value = int.tryParse(value)!;
           controller.salesAmount.value =
@@ -1395,10 +1502,17 @@ class NewSalesView extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Deductions', style: Get.textTheme.titleMedium),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () => Get.toNamed(Routes.ADD_DEDUCTION),
+            Text(
+              'Deductions',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
+                icon: const Icon(Icons.add),
+                onPressed: () => Get.toNamed(Routes.ADD_DEDUCTION),
+              ),
             ),
           ],
         ),
@@ -1407,7 +1521,10 @@ class NewSalesView extends StatelessWidget {
             children: controller.deductions
                 .map(
                   (deduction) => ListTile(
-                    title: Text(deduction['reason']?.toString() ?? ''),
+                    title: Text(
+                      (deduction['new_reason'] ?? deduction['reason_name']) ??
+                          '',
+                    ),
                     subtitle: Text(
                       '${deduction['charges']} ${deduction['rupee'] == '1' ? '₹' : '%'}',
                     ),
@@ -1423,6 +1540,9 @@ class NewSalesView extends StatelessWidget {
                 .toList(),
           ),
         ),
+        const SizedBox(height: 16),
+        Divider(),
+        const SizedBox(height: 16),
         Obx(
           () => Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1440,18 +1560,13 @@ class NewSalesView extends StatelessWidget {
   }
 
   Widget _buildAmountPaidField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+    return InputCardStyle(
       child: TextFormField(
         decoration: const InputDecoration(
-          hintText: 'Amount Paid',
+          hintText: 'Amount Paid*',
           border: InputBorder.none,
         ),
+        initialValue: controller.amountPaid.value,
         keyboardType: TextInputType.number,
         onChanged: (value) => controller.amountPaid.value = value,
         validator: (value) =>
@@ -1499,400 +1614,405 @@ class NewSalesView extends StatelessWidget {
 
 // views/sales/edit_sales_view.dart
 
-class NewEditSalesView extends StatefulWidget {
-  final int salesId;
+// class NewEditSalesView extends StatefulWidget {
+//   const NewEditSalesView({super.key});
 
-  const NewEditSalesView({super.key, required this.salesId});
+//   @override
+//   State<NewEditSalesView> createState() => _NewEditSalesViewState();
+// }
 
-  @override
-  State<NewEditSalesView> createState() => _NewEditSalesViewState();
-}
+// class _NewEditSalesViewState extends State<NewEditSalesView> {
+//   final NewSalesController controller = Get.find<NewSalesController>();
 
-class _NewEditSalesViewState extends State<NewEditSalesView> {
-  final NewSalesController controller = Get.find<NewSalesController>();
+//   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+//   @override
+//   void initState() {
+//     super.initState();
+//     // Load sales details when view is initialized
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       controller.fetchSalesDetails(Get.arguments["id"]);
+//     });
+//   }
 
-  @override
-  void initState() {
-    super.initState();
-    // Load sales details when view is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchSalesDetails(widget.salesId);
-    });
-  }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: CustomAppBar(
+//         title: (Get.arguments?["id"] == null) ? 'New Sales' : 'Edit Sales',
+//         showBackButton: true,
+//       ),
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'New Sales', showBackButton: true),
+//       body: Obx(() {
+//         return SingleChildScrollView(
+//           padding: const EdgeInsets.all(16),
+//           child: Form(
+//             key: _formKey,
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Date Picker
+//                 _buildDatePicker(),
+//                 const SizedBox(height: 16),
+//                 // Product Dropdown
+//                 _buildProductDropdown(),
+//                 const SizedBox(height: 16),
 
-      body: Obx(() {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Date Picker
-                _buildDatePicker(),
-                const SizedBox(height: 16),
-                // Product Dropdown
-                _buildProductDropdown(),
-                const SizedBox(height: 16),
+//                 // Customer Dropdown
+//                 _buildCustomerDropdown(),
+//                 const SizedBox(height: 16),
 
-                // Customer Dropdown
-                _buildCustomerDropdown(),
-                const SizedBox(height: 16),
+//                 // Sales Quantity
+//                 Row(
+//                   children: [
+//                     Expanded(child: _buildSalesQuantityField()),
+//                     const SizedBox(width: 16),
 
-                // Sales Quantity
-                Row(
-                  children: [
-                    Expanded(child: _buildSalesQuantityField()),
-                    const SizedBox(width: 16),
+//                     // Unit Dropdown
+//                     Expanded(child: _buildUnitDropdown()),
+//                   ],
+//                 ),
+//                 const SizedBox(height: 16),
 
-                    // Unit Dropdown
-                    Expanded(child: _buildUnitDropdown()),
-                  ],
-                ),
-                const SizedBox(height: 16),
+//                 // Quantity Amount
+//                 _buildQuantityAmountField(),
+//                 const SizedBox(height: 16),
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Text('Total', style: Get.textTheme.bodyLarge),
 
-                // Quantity Amount
-                _buildQuantityAmountField(),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Total', style: Get.textTheme.bodyLarge),
+//                     Text(
+//                       "${controller.salesAmount.value}",
+//                       style: Get.textTheme.bodyLarge,
+//                     ),
+//                   ],
+//                 ),
+//                 // // Sales Amount
+//                 // _buildSalesAmountField(),
+//                 const SizedBox(height: 16),
 
-                    Text(
-                      "${controller.salesAmount.value}",
-                      style: Get.textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
-                // // Sales Amount
-                // _buildSalesAmountField(),
-                const SizedBox(height: 16),
+//                 // Deductions Section
+//                 _buildDeductionsSection(),
+//                 const SizedBox(height: 16),
 
-                // Deductions Section
-                _buildDeductionsSection(),
-                const SizedBox(height: 16),
+//                 // Amount Paid
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Text('Net sale', style: Get.textTheme.bodyLarge),
 
-                // Amount Paid
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Net sale', style: Get.textTheme.bodyLarge),
+//                     Text(
+//                       "${controller.salesAmount.value - controller.deductionAmount.value}",
+//                       style: Get.textTheme.bodyLarge,
+//                     ),
+//                   ],
+//                 ),
+//                 const SizedBox(height: 16),
+//                 _buildAmountPaidField(),
+//                 const SizedBox(height: 16),
 
-                    Text(
-                      "${controller.salesAmount.value - controller.deductionAmount.value}",
-                      style: Get.textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                _buildAmountPaidField(),
-                const SizedBox(height: 16),
+//                 // Description
+//                 _buildDescriptionField(),
+//                 const SizedBox(height: 16),
 
-                // Description
-                _buildDescriptionField(),
-                const SizedBox(height: 16),
+//                 // Submit Button
+//                 _buildUpdateButton(),
+//               ],
+//             ),
+//           ),
+//         );
+//       }),
+//     );
+//   }
 
-                // Submit Button
-                _buildUpdateButton(),
-              ],
-            ),
-          ),
-        );
-      }),
-    );
-  }
+//   // All the form field methods are similar to NewSalesView
+//   // Widget _buildProductDropdown() {
+//   //   return DropdownButtonFormField<int>(
+//   //     decoration: const InputDecoration(
+//   //       labelText: 'Product',
+//   //       border: OutlineInputBorder(),
+//   //     ),
+//   //     value: controller.selectedCrop.value,
+//   //     onChanged: (value) => controller.selectedCrop.value = value,
+//   //     items: const [
+//   //       DropdownMenuItem(value: 1, child: Text('Tomato')),
+//   //       DropdownMenuItem(value: 2, child: Text('Coffee')),
+//   //     ],
+//   //     validator: (value) => value == null ? 'Please select a product' : null,
+//   //   );
+//   // }
+//   Widget _buildProductDropdown() {
+//     return // Crop Type Dropdown
+//     Obx(() {
+//       return MyDropdown(
+//         items: controller.crop,
+//         selectedItem: controller.selectedCropType.value,
+//         onChanged: (land) => controller.changeCrop(land!),
+//         label: 'Crop*',
+//         // disable: isEditing,
+//       );
+//     });
+//   }
 
-  // All the form field methods are similar to NewSalesView
-  // Widget _buildProductDropdown() {
-  //   return DropdownButtonFormField<int>(
-  //     decoration: const InputDecoration(
-  //       labelText: 'Product',
-  //       border: OutlineInputBorder(),
-  //     ),
-  //     value: controller.selectedCrop.value,
-  //     onChanged: (value) => controller.selectedCrop.value = value,
-  //     items: const [
-  //       DropdownMenuItem(value: 1, child: Text('Tomato')),
-  //       DropdownMenuItem(value: 2, child: Text('Coffee')),
-  //     ],
-  //     validator: (value) => value == null ? 'Please select a product' : null,
-  //   );
-  // }
-  Widget _buildProductDropdown() {
-    return // Crop Type Dropdown
-    Obx(() {
-      return MyDropdown(
-        items: controller.crop,
-        selectedItem: controller.selectedCropType.value,
-        onChanged: (land) => controller.changeCrop(land!),
-        label: 'Crop*',
-        // disable: isEditing,
-      );
-    });
-  }
+//   Widget _buildCustomerDropdown() {
+//     return Row(
+//       children: [
+//         Expanded(
+//           child: Container(
+//             decoration: AppStyle.decoration.copyWith(
+//               color: const Color.fromARGB(137, 221, 234, 234),
+//               boxShadow: const [],
+//             ),
+//             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//             height: 55,
+//             child: DropdownButtonFormField<int>(
+//               decoration: const InputDecoration(
+//                 hintText: 'Customer',
+//                 border: InputBorder.none,
+//               ),
+//               value: controller.selectedCustomer.value,
+//               onChanged: (value) => controller.selectedCustomer.value = value,
+//               items: controller.customerList.map((customer) {
+//                 return DropdownMenuItem<int>(
+//                   value: customer.id,
+//                   child: Text(customer.name),
+//                 );
+//               }).toList(),
+//               // validator: (value) => value == null ? 'Please select a customer' : null,
+//             ),
+//           ),
+//         ),
+//         Card(
+//           color: Get.theme.primaryColor,
+//           child: IconButton(
+//             color: Colors.white,
+//             onPressed: () {
+//               Get.toNamed(
+//                 '/add-vendor-customer',
+//                 // arguments: {"type": 'vendor'},
+//               )?.then((result) {
+//                 controller.fetchCustomerList();
+//               });
+//             },
+//             icon: Icon(Icons.add),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
 
-  Widget _buildCustomerDropdown() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: AppStyle.decoration.copyWith(
-              color: const Color.fromARGB(137, 221, 234, 234),
-              boxShadow: const [],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            height: 55,
-            child: DropdownButtonFormField<int>(
-              decoration: const InputDecoration(
-                hintText: 'Customer',
-                border: InputBorder.none,
-              ),
-              value: controller.selectedCustomer.value,
-              onChanged: (value) => controller.selectedCustomer.value = value,
-              items: controller.customerList.map((customer) {
-                return DropdownMenuItem<int>(
-                  value: customer.id,
-                  child: Text(customer.name),
-                );
-              }).toList(),
-              // validator: (value) => value == null ? 'Please select a customer' : null,
-            ),
-          ),
-        ),
-        IconButton(
-          onPressed: () {
-            Get.toNamed(
-              '/add-vendor-customer',
-              // arguments: {"type": 'vendor'},
-            )?.then((result) {
-              controller.fetchCustomerList();
-            });
-          },
-          icon: Icon(Icons.add),
-        ),
-      ],
-    );
-  }
+//   Widget _buildDatePicker() {
+//     return Container(
+//       decoration: AppStyle.decoration.copyWith(
+//         color: const Color.fromARGB(137, 221, 234, 234),
+//         boxShadow: const [],
+//       ),
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//       height: 55,
+//       child: InkWell(
+//         onTap: () async {
+//           final selected = await showDatePicker(
+//             context: Get.context!,
+//             initialDate: controller.selectedDate.value,
+//             firstDate: DateTime(2000),
+//             lastDate: DateTime.now(),
+//           );
+//           if (selected != null) {
+//             controller.selectedDate.value = selected;
+//           }
+//         },
+//         child: InputDecorator(
+//           decoration: const InputDecoration(
+//             hintText: 'Date',
+//             border: InputBorder.none,
+//           ),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Text(
+//                 '${controller.selectedDate.value.day}/${controller.selectedDate.value.month}/${controller.selectedDate.value.year}',
+//               ),
+//               const Icon(Icons.calendar_today),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-  Widget _buildDatePicker() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
-      child: InkWell(
-        onTap: () async {
-          final selected = await showDatePicker(
-            context: Get.context!,
-            initialDate: controller.selectedDate.value,
-            firstDate: DateTime(2000),
-            lastDate: DateTime.now(),
-          );
-          if (selected != null) {
-            controller.selectedDate.value = selected;
-          }
-        },
-        child: InputDecorator(
-          decoration: const InputDecoration(
-            hintText: 'Date',
-            border: InputBorder.none,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '${controller.selectedDate.value.day}/${controller.selectedDate.value.month}/${controller.selectedDate.value.year}',
-              ),
-              const Icon(Icons.calendar_today),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+//   Widget _buildSalesQuantityField() {
+//     return Container(
+//       decoration: AppStyle.decoration.copyWith(
+//         color: const Color.fromARGB(137, 221, 234, 234),
+//         boxShadow: const [],
+//       ),
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//       height: 55,
+//       child: TextFormField(
+//         decoration: const InputDecoration(
+//           labelText: 'Sales Quantity',
+//           border: InputBorder.none,
+//         ),
+//         keyboardType: TextInputType.number,
+//         onChanged: (value) {
+//           controller.salesQuantity.value = int.tryParse(value);
+//           controller.salesAmount.value =
+//               (controller.quantityAmount.value *
+//               controller.salesQuantity.value!);
+//         },
+//         validator: (value) =>
+//             value == null || value.isEmpty ? 'Please enter quantity' : null,
+//       ),
+//     );
+//   }
 
-  Widget _buildSalesQuantityField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
-      child: TextFormField(
-        decoration: const InputDecoration(
-          labelText: 'Sales Quantity',
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) {
-          controller.salesQuantity.value = int.tryParse(value);
-          controller.salesAmount.value =
-              (controller.quantityAmount.value *
-              controller.salesQuantity.value!);
-        },
-        validator: (value) =>
-            value == null || value.isEmpty ? 'Please enter quantity' : null,
-      ),
-    );
-  }
+//   Widget _buildUnitDropdown() {
+//     return Obx(() {
+//       return MyDropdown(
+//         items: controller.unit,
+//         selectedItem: controller.selectedUnit.value,
+//         onChanged: (unit) => controller.changeUnit(unit!),
+//         label: 'Unit*',
+//         // disable: isEditing,
+//       );
+//     });
+//   }
 
-  Widget _buildUnitDropdown() {
-    return Obx(() {
-      return MyDropdown(
-        items: controller.unit,
-        selectedItem: controller.selectedUnit.value,
-        onChanged: (unit) => controller.changeUnit(unit!),
-        label: 'Unit*',
-        // disable: isEditing,
-      );
-    });
-  }
+//   Widget _buildQuantityAmountField() {
+//     return Container(
+//       decoration: AppStyle.decoration.copyWith(
+//         color: const Color.fromARGB(137, 221, 234, 234),
+//         boxShadow: const [],
+//       ),
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//       height: 55,
+//       child: TextFormField(
+//         decoration: const InputDecoration(
+//           labelText: 'Amount per unit*',
+//           border: InputBorder.none,
+//         ),
+//         keyboardType: TextInputType.number,
+//         onChanged: (value) {
+//           controller.quantityAmount.value = int.tryParse(value)!;
+//           controller.salesAmount.value =
+//               (controller.quantityAmount.value *
+//               controller.salesQuantity.value!);
+//         },
+//         validator: (value) =>
+//             value == null || value.isEmpty ? 'Please enter amount' : null,
+//       ),
+//     );
+//   }
 
-  Widget _buildQuantityAmountField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
-      child: TextFormField(
-        decoration: const InputDecoration(
-          labelText: 'Amount per unit*',
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) {
-          controller.quantityAmount.value = int.tryParse(value)!;
-          controller.salesAmount.value =
-              (controller.quantityAmount.value *
-              controller.salesQuantity.value!);
-        },
-        validator: (value) =>
-            value == null || value.isEmpty ? 'Please enter amount' : null,
-      ),
-    );
-  }
+//   Widget _buildDeductionsSection() {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             Text('Deductions', style: Get.textTheme.titleMedium),
+//             IconButton(
+//               icon: const Icon(Icons.add),
+//               onPressed: () => Get.toNamed(Routes.ADD_DEDUCTION),
+//             ),
+//           ],
+//         ),
+//         Obx(
+//           () => Column(
+//             children: controller.deductions
+//                 .map(
+//                   (deduction) => ListTile(
+//                     title: Text(deduction['reason']?.toString() ?? ''),
+//                     subtitle: Text(
+//                       '${deduction['charges']} ${deduction['rupee'] == '1' ? '₹' : '%'}',
+//                     ),
+//                     trailing: IconButton(
+//                       icon: const Icon(Icons.delete),
+//                       onPressed: () {
+//                         final index = controller.deductions.indexOf(deduction);
+//                         controller.removeDeduction(index);
+//                       },
+//                     ),
+//                   ),
+//                 )
+//                 .toList(),
+//           ),
+//         ),
+//         Obx(
+//           () => Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Text('Total Deduction:', style: Get.textTheme.bodyLarge),
+//               Text(
+//                 controller.deductionAmount.value.toString(),
+//                 style: Get.textTheme.bodyLarge,
+//               ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     );
+//   }
 
-  Widget _buildDeductionsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Deductions', style: Get.textTheme.titleMedium),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () => Get.toNamed(Routes.ADD_DEDUCTION),
-            ),
-          ],
-        ),
-        Obx(
-          () => Column(
-            children: controller.deductions
-                .map(
-                  (deduction) => ListTile(
-                    title: Text(deduction['reason']?.toString() ?? ''),
-                    subtitle: Text(
-                      '${deduction['charges']} ${deduction['rupee'] == '1' ? '₹' : '%'}',
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        final index = controller.deductions.indexOf(deduction);
-                        controller.removeDeduction(index);
-                      },
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-        Obx(
-          () => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Total Deduction:', style: Get.textTheme.bodyLarge),
-              Text(
-                controller.deductionAmount.value.toString(),
-                style: Get.textTheme.bodyLarge,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+//   Widget _buildAmountPaidField() {
+//     return Container(
+//       decoration: AppStyle.decoration.copyWith(
+//         color: const Color.fromARGB(137, 221, 234, 234),
+//         boxShadow: const [],
+//       ),
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//       height: 55,
+//       child: TextFormField(
+//         decoration: const InputDecoration(
+//           hintText: 'Amount Paid',
+//           border: InputBorder.none,
+//         ),
+//         keyboardType: TextInputType.number,
+//         onChanged: (value) => controller.amountPaid.value = value,
+//         validator: (value) =>
+//             value == null || value.isEmpty ? 'Please enter amount paid' : null,
+//       ),
+//     );
+//   }
 
-  Widget _buildAmountPaidField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
-      child: TextFormField(
-        decoration: const InputDecoration(
-          hintText: 'Amount Paid',
-          border: InputBorder.none,
-        ),
-        keyboardType: TextInputType.number,
-        onChanged: (value) => controller.amountPaid.value = value,
-        validator: (value) =>
-            value == null || value.isEmpty ? 'Please enter amount paid' : null,
-      ),
-    );
-  }
+//   Widget _buildDescriptionField() {
+//     return Container(
+//       decoration: AppStyle.decoration.copyWith(
+//         color: const Color.fromARGB(137, 221, 234, 234),
+//         boxShadow: const [],
+//       ),
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
 
-  Widget _buildDescriptionField() {
-    return Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//       child: TextFormField(
+//         decoration: const InputDecoration(
+//           hintText: 'Description',
+//           border: InputBorder.none,
+//         ),
+//         maxLines: 3,
+//         onChanged: (value) => controller.description.value = value,
+//       ),
+//     );
+//   }
 
-      child: TextFormField(
-        decoration: const InputDecoration(
-          hintText: 'Description',
-          border: InputBorder.none,
-        ),
-        maxLines: 3,
-        onChanged: (value) => controller.description.value = value,
-      ),
-    );
-  }
-
-  Widget _buildUpdateButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            final success = await controller.updateSales(widget.salesId);
-            if (success) {
-              Get.back();
-            }
-          }
-        },
-        child: const Text('Update'),
-      ),
-    );
-  }
-}
+//   Widget _buildUpdateButton() {
+//     return SizedBox(
+//       width: double.infinity,
+//       child: ElevatedButton(
+//         onPressed: () async {
+//           if (_formKey.currentState!.validate()) {
+//             final success = await controller.updateSales(Get.arguments["id"]);
+//             if (success) {
+//               Get.back();
+//             }
+//           }
+//         },
+//         child: const Text('Update'),
+//       ),
+//     );
+//   }
+// }
 
 // views/sales/add_deduction_view.dart
 
@@ -1947,17 +2067,17 @@ class AddDeductionView extends StatelessWidget {
     return Obx(() {
       return Row(
         children: [
-          if (!controller.isNewResion.value)
+          if (!controller.isNewReason.value)
             Expanded(
               child: MyDropdown(
                 items: controller.reasonsList,
-                selectedItem: controller.selectedResion.value,
+                selectedItem: controller.selectedReason.value,
                 onChanged: (land) => controller.changeResion(land!),
                 label: 'Reason*',
                 // disable: isEditing,
               ),
             ),
-          if (controller.isNewResion.value)
+          if (controller.isNewReason.value)
             Expanded(
               child: Container(
                 decoration: AppStyle.decoration.copyWith(
@@ -1983,7 +2103,7 @@ class AddDeductionView extends StatelessWidget {
             ),
           IconButton.filled(
             onPressed: () {
-              controller.isNewResion.value = !controller.isNewResion.value;
+              controller.isNewReason.value = !controller.isNewReason.value;
             },
             icon: Icon(Icons.add),
           ),
@@ -2081,9 +2201,11 @@ class AddDeductionView extends StatelessWidget {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             final deduction = {
-              if (!controller.isNewResion.value)
-                'reason': controller.selectedResion.value.id,
-              if (controller.isNewResion.value)
+              if (!controller.isNewReason.value)
+                'reason': controller.selectedReason.value.id,
+              if (!controller.isNewReason.value)
+                'reason_name': controller.selectedReason.value.name,
+              if (controller.isNewReason.value)
                 'new_reason': _reasonController.text,
               'charges': _chargesController.text,
               'rupee': _selectedType.value,
@@ -2118,7 +2240,10 @@ class AddDocumentController extends GetxController {
   Rx<DocumentAdd?> documents = Rx<DocumentAdd?>(null);
   RxBool isNewResion = false.obs;
   var docTypeList = <AppDropdownItem>[].obs;
-  final Rx<AppDropdownItem> selectedResion = AppDropdownItem(id: 0, name: '').obs;
+  final Rx<AppDropdownItem> selectedResion = AppDropdownItem(
+    id: 0,
+    name: '',
+  ).obs;
   Future<void> fetchReasons() async {
     try {
       final response = await _salesRepository.getDocumentTypes();
@@ -2134,140 +2259,4 @@ class AddDocumentController extends GetxController {
   void changeResion(AppDropdownItem crop) {
     selectedResion.value = crop;
   }
-}
-
-class AddDocumentView extends StatefulWidget {
-  const AddDocumentView({super.key});
-
-  @override
-  State<AddDocumentView> createState() => _AddDocumentViewState();
-}
-
-class _AddDocumentViewState extends State<AddDocumentView> {
-  final AddDocumentController controller = Get.find<AddDocumentController>();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _textController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text('Add Deduction'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Reason Input
-              _buildReasonInput(),
-              const SizedBox(height: 16),
-              // Add Button
-              _buildAddButton(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReasonInput() {
-    return Obx(() {
-      return Row(
-        children: [
-          if (!controller.isNewResion.value)
-            Expanded(
-              child: MyDropdown(
-                items: controller.docTypeList,
-                selectedItem: controller.selectedResion.value,
-                onChanged: (land) => controller.changeResion(land!),
-                label: 'Reason*',
-                // disable: isEditing,
-              ),
-            ),
-          if (controller.isNewResion.value)
-            Expanded(
-              child: Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                height: 55,
-                child: TextFormField(
-                  controller: _textController,
-                  decoration: const InputDecoration(
-                    hintText: 'Reason for Deduction',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Please enter a reason'
-                      : null,
-                ),
-              ),
-            ),
-          IconButton.filled(
-            onPressed: () {
-              controller.isNewResion.value = !controller.isNewResion.value;
-            },
-            icon: Icon(Icons.add),
-          ),
-        ],
-      );
-    });
-  }
-
-  Widget _buildAddButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            final documents = DocumentAdd(
-              documents: [],
-              fileType: controller.selectedResion.value.id,
-              isNew: controller.isNewResion.value,
-              newFileType: _textController.text,
-            );
-
-            Get.back(result: documents.toJson());
-          }
-        },
-        child: const Text('Add Deduction'),
-      ),
-    );
-  }
-}
-
-class DocumentAdd {
-  final int? fileType;
-  final bool isNew;
-  final String? newFileType;
-  final List? documents;
-
-  DocumentAdd({
-    this.fileType,
-    this.isNew = false,
-    this.newFileType,
-    this.documents,
-  });
-
-  Map<String, dynamic> toJson() => {
-    if (isNew) "file_type": fileType,
-    if (isNew) "new_file_type": newFileType,
-    "documents": documents ?? [],
-  };
 }

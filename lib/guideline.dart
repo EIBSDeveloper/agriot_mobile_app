@@ -3,7 +3,10 @@ import 'package:argiot/src/app/utils/http/http_service.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import 'src/app/controller/app_controller.dart';
+import 'src/app/modules/near_me/views/widget/widgets.dart';
 import 'src/app/widgets/input_card_style.dart';
 import 'src/utils.dart';
 
@@ -77,8 +80,8 @@ class GuidelineCategory {
 }
 
 class Crop {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   Crop({required this.id, required this.name});
 
@@ -257,20 +260,15 @@ class GuidelineController extends GetxController {
 // lib/app/modules/guidelines/views/guidelines_view.dart
 
 class GuidelinesView extends GetView<GuidelineController> {
-  const GuidelinesView({super.key});
-
+  GuidelinesView({super.key});
+  final AppDataController appData = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        title: Text('guidelines_title'.tr),
-        // actions: [
-        //   IconButton(icon: const Icon(Icons.notifications), onPressed: () {}),
-        // ],
+      appBar: CustomAppBar(
+       
+        title: 'guidelines_title'.tr,
+        
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -307,8 +305,7 @@ class GuidelinesView extends GetView<GuidelineController> {
   }
 
   Widget _buildSearchField() {
-    return   InputCardStyle(
-         
+    return InputCardStyle(
       child: TextField(
         decoration: InputDecoration(
           hintText: 'search_placeholder'.tr,
@@ -325,16 +322,13 @@ class GuidelinesView extends GetView<GuidelineController> {
     return Row(
       children: [
         // Expanded(child: Obx(() => _buildCropDropdown())),
-     
         Expanded(child: Obx(() => _buildCategoryDropdown())),
       ],
     );
   }
 
-
   Widget _buildCategoryDropdown() {
-    return   InputCardStyle(
-         
+    return InputCardStyle(
       child: DropdownButtonFormField2<GuidelineCategory>(
         isExpanded: true,
         decoration: const InputDecoration(
@@ -416,6 +410,9 @@ class GuidelinesView extends GetView<GuidelineController> {
   }
 
   Widget _buildThumbnail(Guideline guideline) {
+    String? youtubeThumbnailUrl = getYoutubeThumbnailUrl(
+      getYoutubeVideoId(guideline.videoUrl),
+    );
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -428,22 +425,65 @@ class GuidelinesView extends GetView<GuidelineController> {
           ),
           child: guideline.mediaType == 'video'
               ? const Icon(Icons.videocam, size: 40, color: Colors.grey)
-              : const Icon(
-                  Icons.insert_drive_file,
-                  size: 40,
-                  color: Colors.grey,
+              : Image.network(
+                  "${appData.baseUrlWithoutAPi.value}${guideline.document}",
+                  fit: BoxFit.cover,
+                  height: 60,
+                  width: 60,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.insert_drive_file,
+                    size: 40,
+                    color: Colors.grey,
+                  ),
                 ),
         ),
-        if (guideline.mediaType == 'video')
+        if (guideline.mediaType == 'video' && youtubeThumbnailUrl == null)
           const Icon(Icons.play_circle_fill, size: 40, color: Colors.white),
+        if (youtubeThumbnailUrl != null && guideline.mediaType == 'video')
+          Image.network(
+            youtubeThumbnailUrl,
+            fit: BoxFit.cover,
+            height: 60,
+            width: 60,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const Center(child: CircularProgressIndicator());
+            },
+            errorBuilder: (context, error, stackTrace) =>
+                const Text("Thumbnail not found"),
+          ),
       ],
     );
+  }
+
+  String? getYoutubeVideoId(String? url) {
+    if (url == null) {
+      return null;
+    }
+    final RegExp regExp = RegExp(r"(?:v=|\/)([0-9A-Za-z_-]{11})(?:\?|\&|$)");
+    final match = regExp.firstMatch(url);
+    return match != null ? match.group(1) : null;
+  }
+
+  String? getYoutubeThumbnailUrl(
+    String? videoId, {
+    String quality = 'hqdefault',
+  }) {
+    if (videoId == null) {
+      return null;
+    }
+    return 'https://img.youtube.com/vi/$videoId/$quality.jpg';
   }
 
   void _handleGuidelineTap(Guideline guideline) {
     if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
       // Open video player
-      Get.toNamed('/video-player', arguments: guideline.videoUrl);
+      // Get.toNamed('/video-player', arguments: guideline.videoUrl);
+      _launchUrl(Uri.parse(guideline.videoUrl!));
     } else if (guideline.mediaType == 'document' &&
         guideline.document != null) {
       // Open document viewer
@@ -451,6 +491,12 @@ class GuidelinesView extends GetView<GuidelineController> {
     } else {
       showError('Unable to open guideline content');
     }
+  }
+}
+
+Future<void> _launchUrl(url) async {
+  if (!await launchUrl(url)) {
+    throw Exception('Could not launch $url');
   }
 }
 

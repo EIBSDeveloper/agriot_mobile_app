@@ -1,5 +1,6 @@
 import 'package:argiot/src/app/modules/expense/fuel.dart/date_picker_field.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/purchases_add_controller.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,55 +12,51 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('title'.tr),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
-        ),
-        actions: [
-          IconButton(icon: const Icon(Icons.notifications), onPressed: () {}),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'title'.tr),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            controller.buildDateField(),
-            SizedBox(height: 16),
-            controller.buildInventoryCategoryDropdown(),
-            SizedBox(height: 16),
-            controller.buildInventoryItemDropdown(),
-            const SizedBox(height: 16),
+        child: Form(
+          key: controller.formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              controller.buildDateField(),
+              SizedBox(height: 16),
+              controller.buildInventoryCategoryDropdown(),
+              SizedBox(height: 16),
+              controller.buildInventoryItemDropdown(),
+              const SizedBox(height: 16),
 
-            // Vendor Dropdown
-            controller.buildVendorDropdown(),
-            const SizedBox(height: 16),
+              // Vendor Dropdown
+              controller.buildVendorDropdown(),
+              const SizedBox(height: 16),
 
-            _buildMachineryTypeRadio(),
-            const SizedBox(height: 16),
-            Obx(
-              () => controller.machineryType.value == "Fuel"
-                  ? _buildFuelCapacityField()
-                  : const SizedBox.shrink(),
-            ),
-            const SizedBox(height: 16),  controller.buildPaidAmountField(),
-          const SizedBox(height: 16),
-             controller.buildPurchaseAmountField(),
-            const SizedBox(height: 16),
-            _buildWarrantyStartDateField(),
-            const SizedBox(height: 16),
-            _buildWarrantyEndDateField(),
-            const SizedBox(height: 16),
-            // _buildDocumentUpload(),
-            // const SizedBox(height: 16),
-            // Description Field
-            controller.buildDescriptionField(),
+              _buildMachineryTypeRadio(),
+              const SizedBox(height: 16),
+              Obx(
+                () => controller.machineryType.value == "Fuel"
+                    ? _buildFuelCapacityField()
+                    : const SizedBox.shrink(),
+              ),
+              const SizedBox(height: 16), controller.buildPaidAmountField(),
+              const SizedBox(height: 16),
+              controller.buildPurchaseAmountField(),
+              const SizedBox(height: 16),
+              _buildWarrantyStartDateField(),
+              const SizedBox(height: 16),
+              _buildWarrantyEndDateField(),
+              const SizedBox(height: 16),
+               const SizedBox(height: 16),
 
-            const SizedBox(height: 24),
-            _buildSubmitButton(),
-          ],
+          controller.buildDocumentsSection(),
+          const SizedBox(height: 24),
+              // Description Field
+              controller.buildDescriptionField(),
+
+              const SizedBox(height: 24),
+              _buildSubmitButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -93,19 +90,19 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
   }
 
   Widget _buildFuelCapacityField() {
-    return  InputCardStyle(
+    return InputCardStyle(
       child: TextFormField(
         controller: controller.fuelCapacityController,
         decoration: InputDecoration(
-          labelText: 'fuel_capacity'.tr,
+          hintText: 'fuel_capacity'.tr,
           border: InputBorder.none,
         ),
+         validator: (value) =>
+                      value!.isEmpty ? 'required_field'.tr : null,
         keyboardType: TextInputType.number,
       ),
     );
   }
-
-
 
   Widget _buildWarrantyStartDateField() {
     return DatePickerField(
@@ -139,7 +136,6 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
   //     onDocumentsAdded: controller.addDocument,
   //   );
   // }
-
 
   Widget _buildSubmitButton() {
     return Obx(

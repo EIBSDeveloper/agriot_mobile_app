@@ -1,65 +1,3 @@
-//   1. Get Otp(Post Method)
-//             http://147.93.19.253:5000/Api/get_otp/
-//             Payload:
-//                 {
-//                 "email": "testing@eibsglobal.com",
-//                 "name": "Testing"
-//                 }
-//                 or
-//                 {
-//                 "mobile_number": "9876543210",
-//                 "name": "Testing"
-//                 }
-
-//        2.  Verify Otp(POST Method)
-//             http://147.93.19.253:5000/Api/verify-otp/
-//             Payload:
-//                 {
-//                 "email": "testing@eibsglobal.com",
-//                 "otp": "7145"
-//                 }
-//                 or
-//                 {
-//                 "mobile_number": "9876543210",
-//                 "otp": "7145"
-//                 }
-
-//     Land (New Requirements From Mobile Team)
-//     3. Land View(Get Method) - http://147.93.19.253:5000/Api/land_view/<farmer_id>/<land_id>
-
-//     Crop (New API Requirements From Mobile Team)
-//     4. Crop View(Get Method) - http://147.93.19.253:5000/Api/crop_view/<farmer_id>/<land_id>/<crop_id>
-
-//     5. Schedule Events (Calendar) for Crop with Month (Get Method)
-//     http://147.93.19.253:5000/Api/tasks/for-month-and-crop/<farmer_id>?land_id=0&crop_id=0&month=0&year=0000
-
-//     6. Schedule List for Crop with Month(Get Method)
-//     http://147.93.19.253:5000/Api/tasks_list/for-month-and-crop/<farmer_id>/?land_id=0&crop_id=0&month=0&year=0000
-//     Agriot Project Completion Status
-// Completed Tasks:
-//     (20-08-2025)
-//     1. Get Otp
-//     2. Verify Otp
-//     3. Land View
-//     4. Crop View
-//     5. Schedule Events (Calendar) for Crop with Month
-//     6. Schedule List for Crop with Month
-//     7. Bar Chart Land vs Crop
-
-//     (21-08-2025)
-//     8. Land & Crop Measurements Validation
-//     9. Best Practice Schedule - Get Method
-//       http://147.93.19.253:5000/Api/best_practice_schedule/<farmer_id>/<land_id>/<crop_id>/
-//       http://147.93.19.253:5000/Api/best_practice_schedule/<farmer_id>/<land_id>/<crop_id>/<schedule_id>
-//     10. Land Unit Conversion Calculator(New) - Post Method
-//       http://147.93.19.253:5000/Api/convert-land-unit/
-
-//     Payload:
-//         {
-//             "from_unit_id": 1,
-//             "to_unit_id": 2,
-//             "value": 2
-//         }
 
 import 'dart:convert';
 import 'dart:ui';
@@ -76,6 +14,7 @@ import 'package:http/http.dart' as http;
 
 import 'src/app/controller/app_controller.dart';
 import 'src/app/modules/dashboad/model/model.dart' hide Task;
+import 'src/app/modules/near_me/views/widget/widgets.dart';
 import 'src/app/modules/registration/repostrory/crop_service.dart';
 import 'src/app/utils/http/http_service.dart';
 import 'src/app/widgets/title_text.dart';
@@ -346,7 +285,7 @@ class _LandMapViewState extends State<LandMapView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Land Details')),
+      appBar: CustomAppBar(title: 'Land Details'),
       body: Obx(() {
         if (controller.isLoading.value) {
           return Center(child: CircularProgressIndicator());

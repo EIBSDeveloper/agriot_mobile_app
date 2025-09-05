@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'app/controller/user_limit.dart';
 import 'app/modules/subscription/package_model.dart';
@@ -15,6 +16,20 @@ void showError(String message) {
     textColor: Colors.white,
   );
 }
+String capitalizeFirstLetter(String input) {
+  if (input.isEmpty) return input;
+  return input[0].toUpperCase() + input.substring(1);
+}
+
+
+  Future<void> makePhoneCall(String phoneNumber) async {
+    final Uri uri = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $uri';
+    }
+  }
 
 void showSuccess(String message) {
   Fluttertoast.showToast(

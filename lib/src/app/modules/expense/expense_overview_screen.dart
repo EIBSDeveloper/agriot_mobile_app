@@ -85,9 +85,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               onTap: () {
                 Get.back();
 
-                Get.toNamed("/addExpense")?.then((res){
-                    controller.loadExpenseData();
-                  });
+                Get.toNamed("/addExpense")?.then((res) {
+                  controller.loadExpenseData();
+                });
               },
             ),
             ListTile(
@@ -101,9 +101,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               onTap: () {
                 Get.back();
 
-                Get.toNamed("/purchaseItems")?.then((res){
-                     controller.loadExpenseData();
-                  });
+                Get.toNamed("/purchaseItems")?.then((res) {
+                  controller.loadExpenseData();
+                });
               },
             ),
             SizedBox(height: 100),
@@ -251,7 +251,6 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
     });
   }
 
-
   Widget _buildTabBar() {
     return Row(
       children: [
@@ -314,9 +313,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             elevation: 1,
             margin: EdgeInsets.symmetric(vertical: 4),
             child: ListTile(
-              title: Text(
-                '${item.createdDay} - ${item.typeExpenses.name}',
-              ),
+              title: Text('${item.createdDay} - ${item.typeExpenses.name}'),
               subtitle: Text(item.myCrop.name),
               trailing: Text(
                 '₹${item.amount.toStringAsFixed(2)}',
@@ -334,7 +331,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               title: Text(
                 '${item.dateOfConsumption} - ${item.inventoryItems.name}',
               ),
-              subtitle: Text('Quantity: ${item.availableQuans}'),
+              subtitle: (item.availableQuans != null && item.inventorytype.id!= 1  && item.inventorytype.id!= 2 )
+                  ? Text('Quantity: ${item.availableQuans}')
+                  : null,
               trailing: Text(
                 '₹${item.purchaseAmount}',
                 style: Get.textTheme.titleMedium?.copyWith(

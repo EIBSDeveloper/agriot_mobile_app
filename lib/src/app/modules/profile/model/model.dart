@@ -21,6 +21,7 @@ class ProfileModel {
   final String? companyName; 
   final String? taxNo;     
   final String address;
+  final String? location;
   final String? imgUrl;     
   final List<Subscription> subscriptions;
 
@@ -41,6 +42,7 @@ class ProfileModel {
     required this.villageName,
     required this.doorNo,
     required this.pincode,
+    required this.location,
     this.description,
     this.companyName,
     this.taxNo,
@@ -65,6 +67,7 @@ class ProfileModel {
       talukName: json['taluk_name'] ?? '',
       villageId: json['village_id'] ?? 0,
       villageName: json['village_name'] ?? '',
+      location: json['locations'] ?? '',
       doorNo: json['door_no'] ?? '',
       pincode: json['pincode'] ?? 0,
       description: json['description'], // can be null

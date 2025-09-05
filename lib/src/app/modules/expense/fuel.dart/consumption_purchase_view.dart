@@ -1,9 +1,14 @@
 import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_list.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_purchase_controller.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/purchase_list.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
+import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../routes/app_routes.dart';
+import '../../../../utils.dart';
 
 class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   const ConsumptionPurchaseView({super.key});
@@ -11,7 +16,11 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('consumption_purchase_title'.tr)),
+      appBar: CustomAppBar(
+        title: capitalizeFirstLetter(
+          controller.selectedInventoryTypeName.value,
+        ),
+      ),
       body: Column(
         children: [
           // Filter Section
@@ -27,21 +36,29 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
           ),
 
           // Tab Bar
-          Container(
-            color: Get.theme.colorScheme.surface,
-            child: TabBar(
-              controller: TabController(
-                length: 2,
-                initialIndex: controller.currentTabIndex.value,
-                vsync: Navigator.of(context),
+          Obx(() {
+            return Container(
+              color: Get.theme.colorScheme.surface,
+              child: TabBar(
+                controller: TabController(
+                  length: 2,
+                  initialIndex: controller.currentTabIndex.value,
+                  vsync: Navigator.of(context),
+                ),
+                onTap: controller.changeTab,
+                tabs: [
+                  Tab(
+                    text:
+                        "${'consumption'.tr} (${controller.consumptionData.length})",
+                  ),
+                  Tab(
+                    text:
+                        "${'purchase'.tr} (${controller.purchaseData.length})",
+                  ),
+                ],
               ),
-              onTap: controller.changeTab,
-              tabs: [
-                Tab(text: 'consumption'.tr),
-                Tab(text: 'purchase'.tr),
-              ],
-            ),
-          ),
+            );
+          }),
 
           // Content Area
           Expanded(
@@ -49,12 +66,6 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               }
-
-              // if (controller.selectedItem.value == null) {
-              //   return Center(
-              //     child: Text('select_item_to_view_data'.tr),
-              //   );
-              // }
 
               return IndexedStack(
                 index: controller.currentTabIndex.value,
@@ -65,7 +76,65 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               );
             }),
           ),
+          Obx(() {
+            return Container(
+              height: 60,
+              width: double.infinity,
+              decoration: AppStyle.inputDecoration!.copyWith(
+                color: Get.theme.primaryColor.withAlpha(100),
+              ),
+              padding: const EdgeInsets.only(right: 80, left: 8),
+              margin: const EdgeInsets.only(right: 8, bottom: 15, left: 10),
+              child: Center(
+                child: FittedBox(
+                  child: Text(
+                    " Available ${controller.selectedInventoryItemName} : 00",
+                    style: Get.theme.textTheme.headlineMedium,
+                  ),
+                ),
+              ),
+            );
+          }),
         ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Get.theme.primaryColor, 
+        onPressed: () {
+          if (controller.currentTabIndex.value == 0) {
+            Get.toNamed(
+              Routes.fuelConsumption,
+              arguments: {
+                "type": controller.selectedInventoryType.value,
+                "category": controller.selectedInventoryCategory.value,
+                "item": controller.selectedInventoryItem.value,
+              },
+            )?.then((res) {});
+          } else {
+            if (controller.selectedInventoryType.value == 7) {
+              Get.toNamed(
+                '/fuel-expenses-entry',
+                arguments: {"id": controller.selectedInventoryType.value},
+              );
+            } else if (controller.selectedInventoryType.value == 1) {
+              Get.toNamed(
+                '/vehicle_entry',
+                arguments: {"id": controller.selectedInventoryType.value},
+              );
+            } else if (controller.selectedInventoryType.value == 2) {
+              Get.toNamed(
+                '/machinery_entry',
+                arguments: {"id": controller.selectedInventoryType.value},
+              );
+            } else {
+              Get.toNamed(
+                '/fertilizer_entry',
+                arguments: {"id": controller.selectedInventoryType.value},
+              );
+            }
+          }
+        },
+        child: Icon(Icons.add),
       ),
     );
   }

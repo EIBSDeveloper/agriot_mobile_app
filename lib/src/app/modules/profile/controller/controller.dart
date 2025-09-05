@@ -5,10 +5,12 @@ import 'dart:convert';
 
 import 'package:argiot/src/routes/app_routes.dart';
 import 'package:argiot/src/sercis/address_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../utils.dart';
@@ -62,6 +64,7 @@ class ProfileController extends GetxController {
 
       // if (response.success) {
       // Clear storage and navigate to login
+      signOutFromGoogle();
       await GetStorage().erase();
 
       Get.offAllNamed(Routes.login);
@@ -79,7 +82,23 @@ class ProfileController extends GetxController {
       isLoading.value = false;
     }
   }
+  Future<void> signOutFromGoogle() async {
+    try {
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
 
+      // Disconnect and sign out from Google
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.disconnect(); // Optional: removes account
+        await googleSignIn.signOut();
+      }
+
+      debugPrint('✅ Successfully signed out from Google and Firebase');
+    } catch (e) {
+      debugPrint('🔥 Sign-out failed: $e');
+    }
+  }
   Future<void> fetchProfile() async {
     try {
       isLoading(true);
@@ -108,8 +127,8 @@ class ProfileEditController extends GetxController {
   final doorNoController = TextEditingController();
   final pincodeController = TextEditingController();
   final descriptionController = TextEditingController();
- final locationController = TextEditingController();
-    final RxDouble latitude = 0.0.obs;
+  final locationController = TextEditingController();
+  final RxDouble latitude = 0.0.obs;
   final RxDouble longitude = 0.0.obs;
 
   // Form key
@@ -209,7 +228,7 @@ class ProfileEditController extends GetxController {
     // Address fields
     doorNoController.text = profile.doorNo;
     pincodeController.text = profile.pincode.toString();
-
+    locationController.text = profile.location.toString();
     // Set dropdown values if they exist
     _setInitialAddressValues(
       countryId: profile.countryId,
@@ -289,7 +308,8 @@ class ProfileEditController extends GetxController {
       villages.clear();
     }
   }
- Future<void> pickLocation() async {
+
+  Future<void> pickLocation() async {
     try {
       final location = await Get.to(
         LocationPickerView(),
@@ -304,6 +324,7 @@ class ProfileEditController extends GetxController {
       Get.snackbar('Error', 'Failed to pick location');
     }
   }
+
   void _onStateChanged() {
     selectedCity.value = null;
     selectedTaluk.value = null;

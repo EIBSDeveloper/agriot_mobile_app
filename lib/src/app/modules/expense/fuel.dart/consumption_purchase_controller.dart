@@ -1,4 +1,5 @@
 import 'package:argiot/consumption_model.dart';
+import 'package:argiot/consumption_view.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_purchase_repository.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/purchases_add_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,8 +27,16 @@ class ConsumptionPurchaseController extends GetxController {
   void onInit() {
     super.onInit();
     var argument = Get.arguments['id'];
-    var type = Get.arguments["type"];
-    selectedInventoryTypeName.value = type;
+    var type =getType(argument);
+    var tab = Get.arguments["tab"];
+    if (tab != null) {
+      currentTabIndex.value = tab;
+    }
+    if (type != null) {
+      selectedInventoryTypeName.value = type;
+    } else {
+      selectedInventoryTypeName.value = '';
+    }
     setInventoryType(argument);
     fetchInventoryCategories(argument);
   }
@@ -50,6 +59,7 @@ class ConsumptionPurchaseController extends GetxController {
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
+
     loadData();
   }
 
@@ -69,6 +79,18 @@ class ConsumptionPurchaseController extends GetxController {
     } finally {
       isCategoryLoading(false);
     }
+  }
+
+  String? get selectedInventoryItemName {
+   try {
+      final selectedId = selectedInventoryItem.value;
+    final String item = inventoryItems.isNotEmpty
+        ? inventoryItems.firstWhere((element) => element.id == selectedId).name
+        : '';
+    return item;
+   } catch (e) {
+     return '';
+   }
   }
 
   Future<void> fetchInventoryItems(int inventoryCategoryId) async {
@@ -91,6 +113,8 @@ class ConsumptionPurchaseController extends GetxController {
 
     try {
       isLoading(true);
+      consumptionData.clear();
+      purchaseData.clear();
       final inventoryType = selectedInventoryTypeName.value;
       final inventoryTypeid = selectedInventoryType.value;
       final itemId = selectedInventoryItem.value!;

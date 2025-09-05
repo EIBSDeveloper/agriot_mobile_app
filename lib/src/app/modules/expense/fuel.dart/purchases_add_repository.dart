@@ -5,6 +5,7 @@ import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/utils/http/http_service.dart';
 import 'package:get/get.dart';
 
+import '../../../../../test.dart' show Unit;
 import 'model.dart';
 
 class PurchasesAddRepository {
@@ -22,7 +23,21 @@ class PurchasesAddRepository {
       rethrow;
     }
   }
+  Future<List<Unit>> getUnitList() async {
+    try {
+      final response = await _httpService.get('/area_units');
+      final lands = json.decode(response.body)["data"] as List;
 
+      final allCrops = lands
+          .map((crop) => Unit.fromJson(crop))
+          .toSet()
+          .toList();
+
+      return allCrops;
+    } catch (e) {
+      throw Exception('Failed to load crops: ${e.toString()}');
+    }
+  }
   Future<Map<String, dynamic>> addMachinery(Machinery machinery) async {
     final farmerId = _appDataController.userId.value;
     try {
@@ -136,11 +151,22 @@ class PurchasesAddRepository {
 
   Future<FertilizerResponse> addFertilizer(FertilizerModel fertilizer) async {
     final farmerId = _appDataController.userId.value;
+
     try {
       var endpoint = '/add_fertilizer/$farmerId/';
+
+      if (fertilizer.inventoryType == 3) {
+        endpoint = '/add_tools/$farmerId';
+      } else if (fertilizer.inventoryType == 4) {
+        endpoint = '/add_pesticides/$farmerId';
+      } else if (fertilizer.inventoryType == 5) {
+        endpoint = '/add_fertilizer/$farmerId';
+      } else {
+        endpoint = '/add_seeds/$farmerId';
+      }
       final response = await _httpService.post(endpoint, fertilizer.toJson());
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return FertilizerResponse.fromJson(json.decode(response.body));
       } else {
         throw Exception('Failed to add fertilizer: ${response.statusCode}');

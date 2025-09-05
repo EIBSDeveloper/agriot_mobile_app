@@ -75,8 +75,8 @@ class ExpenseRepository {
 
   Future<List<ExpenseType>> getExpenseTypes() async {
     try {
-      final response = await _httpService.get('/expenses_categories');
-      var decode = json.decode(response.body)['data'];
+      final response = await _httpService.get('/expenses');
+      var decode = json.decode(response.body);
       return List<ExpenseType>.from(decode.map((x) => ExpenseType.fromJson(x)));
     } catch (e) {
       throw Exception('Failed to load expense types: $e');

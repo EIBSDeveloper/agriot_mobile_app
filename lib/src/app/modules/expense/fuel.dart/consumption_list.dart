@@ -18,43 +18,40 @@ class ConsumptionList extends StatelessWidget {
       itemCount: records.length,
       itemBuilder: (context, index) {
         final record = records[index];
-  return Card(
-  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  child: Padding(
-    padding: const EdgeInsets.all(12.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Leading (Date)
-        _formatDate(record.dateOfConsumption),
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Leading (Date)
+                _formatDate(record.dateOfConsumption),
 
-        const SizedBox(width: 12),
+                const SizedBox(width: 12),
 
-        // Title + Subtitle
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                record.crop,
-                style: Get.textTheme.titleMedium,
-              ),
-              const SizedBox(height: 4),
-              // Text('available: ${record.availableQuantity} units'),
-            ],
+                // Title + Subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (record.crop != null)
+                        Text(record.crop!, style: Get.textTheme.titleMedium),
+                      const SizedBox(height: 4),
+                      // Text('available: ${record.availableQuantity} units'),
+                    ],
+                  ),
+                ),
+
+                // Trailing (Quantity Utilized)
+                Text(
+                  '${record.quantityUtilized} ',
+                  style: Get.textTheme.titleMedium,
+                ),
+              ],
+            ),
           ),
-        ),
-
-        // Trailing (Quantity Utilized)
-        Text(
-          '${record.quantityUtilized} units',
-          style: Get.textTheme.titleMedium,
-        ),
-      ],
-    ),
-  ),
-);
-
+        );
       },
     );
   }

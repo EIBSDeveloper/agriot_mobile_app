@@ -707,7 +707,7 @@ class InventoryDetailController extends GetxController {
 }
 
 class InventoryView extends GetView<InventoryDetailController> {
-  const InventoryView({Key? key}) : super(key: key);
+  const InventoryView({super.key});
 
   @override
   Widget build(BuildContext context) {

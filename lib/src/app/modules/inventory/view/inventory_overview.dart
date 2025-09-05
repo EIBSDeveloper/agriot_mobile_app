@@ -13,23 +13,23 @@ class InventoryOverview extends GetView<InventoryController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: ()async{
-          controller. loadInventory();
+        onRefresh: () async {
+          controller.loadInventory();
         },
         child: Obx(() {
           if (controller.isLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
-        
+
           if (controller.errorMessage.value.isNotEmpty) {
             return Center(child: Text(controller.errorMessage.value));
           }
-        
+
           final inventory = controller.inventory.value;
           if (inventory == null) {
             return Center(child: Text('no_inventory_data'.tr));
           }
-        
+
           return ListView(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             children: [
@@ -59,25 +59,25 @@ class InventoryOverview extends GetView<InventoryController> {
               _buildInventoryItem(
                 'tools'.tr,
                 '${inventory.tools.totalQuantity.round()}',
-                inventory.tools.id
+                inventory.tools.id,
               ),
               const Divider(),
               _buildInventoryItem(
                 'pesticides'.tr,
                 '${inventory.pesticides.totalQuantity.round()} kg',
-                inventory.pesticides.id
+                inventory.pesticides.id,
               ),
               const Divider(),
               _buildInventoryItem(
                 'fertilizers'.tr,
                 '${inventory.fertilizers.totalQuantity.round()} kg',
-                inventory.fertilizers.id
+                inventory.fertilizers.id,
               ),
               const Divider(),
               _buildInventoryItem(
                 'seeds'.tr,
-                '${inventory.seeds.totalQuantity.round()}',
-                inventory.seeds.id
+                '${inventory.seeds.totalQuantity.round()} kg',
+                inventory.seeds.id,
               ),
             ],
           );
@@ -92,13 +92,42 @@ class InventoryOverview extends GetView<InventoryController> {
   }
 
   Widget _buildInventoryItem(String title, String quantity, int id) {
-    return ListTile(
-      title: Text(title),
-      trailing: Text(
-        '$quantity ',
-        style: TextStyle(color: Get.theme.colorScheme.primary),
-      ),
+    return InkWell(
       onTap: () => controller.navigateToCategoryDetail(title.toLowerCase(), id),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              child: Text(
+                "$quantity ",
+                style: TextStyle(
+                  color: Get.theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

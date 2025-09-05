@@ -75,21 +75,22 @@ class CropViewPage extends GetView<CropController> {
               }),
               SizedBox(height: 16),
               _buildMeasurementSection(),
-              
+
               _buildTextField(
                 controller: controller.locationController,
                 label: 'Location Coordinates *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
                 readOnly: true,
                 onTap: controller.pickLocation,
-              ),  SizedBox(height: 16),
+              ),
+              SizedBox(height: 16),
               _buildTextField(
                 controller: controller.descriptionController,
                 label: 'Description',
                 maxLines: 4,
                 // validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
-            
+
               SizedBox(height: 32),
               _buildSubmitButton(),
             ],
@@ -262,7 +263,7 @@ class CropViewPage extends GetView<CropController> {
                       hintText: 'Unit *',
                       border: InputBorder.none,
                     ),
-                    isExpanded : true,
+                    isExpanded: true,
                     items: controller.landUnits.isNotEmpty
                         ? [
                             ...controller.landUnits.map((unit) {

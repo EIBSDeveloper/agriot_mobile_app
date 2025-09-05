@@ -1,4 +1,4 @@
-import 'package:argiot/src/app/modules/expense/fuel.dart/test.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +7,7 @@ import 'model.dart';
 class PurchaseList extends StatelessWidget {
   final List<PurchaseRecord> records;
 
-  const PurchaseList({Key? key, required this.records}) : super(key: key);
+  const PurchaseList({super.key, required this.records});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class PurchaseList extends StatelessWidget {
                       children: [
                         Text(record.vendorName, style: Get.textTheme.titleMedium),
                         const SizedBox(height: 4),
-                        Text('${record.quantity} ${record.quantityUnit}'),
+                        Text('${record.quantity.round()} ${record.quantityUnit}'),
                         // if (record.description.isNotEmpty)
                         //   Text(record.description),
                       ],

@@ -24,8 +24,7 @@ class PayableHistorymodel {
     required this.createdAt,
   });
 
-  factory PayableHistorymodel.fromJson(Map<String, dynamic> json) {
-    return PayableHistorymodel(
+  factory PayableHistorymodel.fromJson(Map<String, dynamic> json) => PayableHistorymodel(
       id: json['id'] ?? 0,
       balance: (json['balance'] ?? 0).toDouble(),
       paid: (json['paid'] ?? 0).toDouble(),
@@ -37,7 +36,6 @@ class PayableHistorymodel {
       status: json['status'] ?? 0,
       createdAt: json['created_at'] ?? '',
     );
-  }
 }
 
 // Receivables History
@@ -66,8 +64,7 @@ class ReceivableHistorymodel {
     required this.createdAt,
   });
 
-  factory ReceivableHistorymodel.fromJson(Map<String, dynamic> json) {
-    return ReceivableHistorymodel(
+  factory ReceivableHistorymodel.fromJson(Map<String, dynamic> json) => ReceivableHistorymodel(
       id: json['id'] ?? 0,
       balance: (json['balance'] ?? 0).toDouble(),
       received: (json['received'] ?? 0).toDouble(),
@@ -79,5 +76,4 @@ class ReceivableHistorymodel {
       status: json['status'] ?? 0,
       createdAt: json['created_at'] ?? '',
     );
-  }
 }

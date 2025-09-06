@@ -10,8 +10,7 @@ class InventoryOverview extends GetView<InventoryController> {
   const InventoryOverview({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
           controller.loadInventory();
@@ -37,7 +36,7 @@ class InventoryOverview extends GetView<InventoryController> {
                 padding: const EdgeInsets.all(8.0),
                 child: TitleText("inventory".tr, fit: BoxFit.none),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildInventoryItem(
                 'fuel'.tr,
                 '${inventory.fuel.totalQuantity.round()} Ltr',
@@ -89,10 +88,8 @@ class InventoryOverview extends GetView<InventoryController> {
         child: const Icon(Icons.add),
       ),
     );
-  }
 
-  Widget _buildInventoryItem(String title, String quantity, int id) {
-    return InkWell(
+  Widget _buildInventoryItem(String title, String quantity, int id) => InkWell(
       onTap: () => controller.navigateToCategoryDetail(title.toLowerCase(), id),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -129,5 +126,4 @@ class InventoryOverview extends GetView<InventoryController> {
         ),
       ),
     );
-  }
 }

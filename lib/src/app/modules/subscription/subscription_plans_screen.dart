@@ -49,69 +49,35 @@ class SubscriptionPlansScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              ...packages.packages.map((package) {
-                return _buildPackageCard(
+              ...packages.packages.map((package) => _buildPackageCard(
                   package,
                   isSelected:
                       package.id == controller.selectedPackage.value?.id,
                   onSelect: () => controller.selectPackage(package),
-                );
-              }),
+                )),
               const SizedBox(height: 16),
             ],
           ),
         );
       }),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Obx(() {
-          return ElevatedButton(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Obx(() => ElevatedButton(
             onPressed: controller.selectedPackage.value != null
                 ? () => Get.toNamed(Routes.subscriptionPayment)
                 : null,
             child: Text('proceed_to_payment'.tr),
-          );
-        }),
+          )),
       ),
     );
   }
 
-  Widget _buildCurrentPlanCard(SubscriptionController controller) {
-    final currentPackage = controller.usage.value?.packageDetails;
-    if (currentPackage == null) return const SizedBox();
-
-    return Card(
-      color: Get.theme.colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'your_current_plan'.tr,
-              style: Get.textTheme.titleLarge?.copyWith(
-                color: Get.theme.colorScheme.onPrimaryContainer,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              currentPackage.name,
-              style: Get.textTheme.titleMedium?.copyWith(
-                color: Get.theme.colorScheme.onPrimaryContainer,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _buildPackageCard(
     Package package, {
     bool isSelected = false,
     VoidCallback? onSelect,
-  }) {
-    return Card(
+  }) => Card(
       margin: const EdgeInsets.only(bottom: 16),
 
       color: isSelected ? Get.theme.colorScheme.primary : null,
@@ -152,7 +118,6 @@ class SubscriptionPlansScreen extends StatelessWidget {
         ),
       ),
     );
-  }
   // {
 
   List<Widget> _buildFeatureList(Package package, bool isSelected) {
@@ -257,8 +222,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
     int limit,
     bool isAvailable,
     Color? textColor,
-  ) {
-    return Padding(
+  ) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
@@ -274,5 +238,4 @@ class SubscriptionPlansScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 }

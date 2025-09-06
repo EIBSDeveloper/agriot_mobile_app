@@ -9,10 +9,9 @@ class DocumentViewerView extends GetView<DocumentViewerController> {
   const DocumentViewerView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: Text('Document Viewer'),
+        title: const Text('Document Viewer'),
         actions: [
           // IconButton(
           //   icon: Icon(Icons.download),
@@ -22,7 +21,7 @@ class DocumentViewerView extends GetView<DocumentViewerController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         
         if (controller.error.isNotEmpty) {
@@ -31,10 +30,10 @@ class DocumentViewerView extends GetView<DocumentViewerController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(controller.error.value),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => Get.back(),
-                  child: Text('Go Back'),
+                  child: const Text('Go Back'),
                 ),
               ],
             ),
@@ -55,5 +54,4 @@ class DocumentViewerView extends GetView<DocumentViewerController> {
         );
       }),
     );
-  }
 }

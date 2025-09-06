@@ -9,7 +9,7 @@ class KycView extends GetView<KycController> {
 
   @override
   Widget build(BuildContext context) {
-    var gap = SizedBox(height: 14);
+    var gap = const SizedBox(height: 14);
     return Form(
       key: controller.formKey,
       child: Column(
@@ -18,7 +18,7 @@ class KycView extends GetView<KycController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               _buildTextField(
                 controller: controller.nameController,
                 label: 'Your Name *',
@@ -70,22 +70,12 @@ class KycView extends GetView<KycController> {
                 readOnly: true,
                 onTap: controller.pickLocation,
               ),
-              // gap,
-              // _buildCountryDropdown(),
-              // gap,
-              // _buildStateDropdown(),
-              // gap,
-              // _buildCityDropdown(),
-              // gap,
-              // _buildTalukDropdown(),
-              // gap,
-              // _buildVillageDropdown(),
             ],
           ),
 
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           _buildSubmitButton(),
-          SizedBox(height: 60),
+          const SizedBox(height: 60),
         ],
       ),
     );
@@ -94,13 +84,12 @@ class KycView extends GetView<KycController> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-    double? height,
+
     String? Function(String?)? validator,
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) {
-    return Container(
+  }) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -116,7 +105,7 @@ class KycView extends GetView<KycController> {
           hintText: label,
           border: InputBorder.none,
           isDense: true,
-          suffixIcon: readOnly ? Icon(Icons.location_on) : null,
+          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
         ),
         validator: validator,
         keyboardType: keyboardType,
@@ -124,18 +113,15 @@ class KycView extends GetView<KycController> {
         onTap: onTap,
       ),
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return Obx(() {
-      return ElevatedButton(
+  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
         onPressed: controller.isSubmitting.value ? null : controller.submitForm,
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           backgroundColor: const Color.fromARGB(255, 100, 120, 31),
         ),
         child: controller.isSubmitting.value
-            ? SizedBox(
+            ? const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -143,8 +129,6 @@ class KycView extends GetView<KycController> {
                   color: Colors.white,
                 ),
               )
-            : Text('Save & Continue'),
-      );
-    });
-  }
+            : const Text('Save & Continue'),
+      ));
 }

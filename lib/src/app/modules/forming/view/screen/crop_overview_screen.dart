@@ -37,32 +37,31 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Crop Details', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Crop Details', showBackButton: true),
       body: Obx(() {
         if (controller.isOverviewLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (controller.overview.value == null) {
-          return Center(child: Text('No crop data available'));
+          return const Center(child: Text('No crop data available'));
         }
         final overview = controller.overview.value!;
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Crop Info Section
               _buildCropInfoSection(),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Statistics Section
               _buildStatisticsSection(overview),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Guidelines Section
               _buildGuidelinesSection(overview),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Tasks Section
               _buildTasksSection(overview),
             ],
@@ -70,15 +69,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         );
       }),
     );
-  }
 
-  Widget _buildCropInfoSection() {
-    return Obx(() {
+  Widget _buildCropInfoSection() => Obx(() {
       if (controller.isDetailsLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       }
       if (controller.details.value == null) {
-        return Center(child: Text('No crop details available'));
+        return const Center(child: Text('No crop details available'));
       }
 
       final crop = controller.details.value;
@@ -98,15 +95,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ],
       );
     });
-  }
 
-  Widget _buildCropInfo(MyCropDetails? details) {
-    return Stack(
+  Widget _buildCropInfo(MyCropDetails? details) => Stack(
       children: [
         Card(
           elevation: 1,
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 CircleAvatar(
@@ -114,10 +109,10 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
                   backgroundImage: NetworkImage(details!.imageUrl!),
                   child: details.imageUrl!.isEmpty
-                      ? Icon(Icons.agriculture, size: 30)
+                      ? const Icon(Icons.agriculture, size: 30)
                       : null,
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -136,7 +131,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           top: 5,
           right: 5,
           child: IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () =>
                 Get.toNamed(
                   Routes.addCrop,
@@ -156,29 +151,25 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
               controller.isCropExpended.value =
                   !controller.isCropExpended.value;
             },
-            icon: Obx(() {
-              return Icon(
+            icon: Obx(() => Icon(
                 !controller.isCropExpended.value
                     ? Icons.keyboard_arrow_down_rounded
                     : Icons.keyboard_arrow_up_outlined,
-              );
-            }),
+              )),
           ),
         ),
       ],
     );
-  }
 
-  Widget _buildCropDetailsSection(MyCropDetails? details) {
-    return Card(
+  Widget _buildCropDetailsSection(MyCropDetails? details) => Card(
       elevation: 1,
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Crop Details', style: Get.textTheme.titleLarge),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildDetailRow('Crop Type', details!.cropType!.name!),
             _buildDetailRow('Harvest Frequency', details.harvestingType!.name!),
             _buildDetailRow(
@@ -194,11 +185,9 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ),
       ),
     );
-  }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+  Widget _buildDetailRow(String label, String value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Expanded(
@@ -214,10 +203,9 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ],
       ),
     );
-  }
 
   Widget _buildSurveyDetailsSection(MyCropDetails? details) {
-    if (details!.surveyDetails!.isEmpty) return SizedBox();
+    if (details!.surveyDetails!.isEmpty) return const SizedBox();
 
     return Card(
       elevation: 1,
@@ -228,14 +216,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           title: Text('Survey Details (${details.surveyDetails!.length})'),
           children: [
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: DataTable(
                 columns: [
-                  DataColumn(label: Text('Survey No')),
-                  DataColumn(label: Text('Area')),
+                  const DataColumn(label: Text('Survey No')),
+                  const DataColumn(label: Text('Area')),
                 ],
-                rows: details.surveyDetails!.map((survey) {
-                  return DataRow(
+                rows: details.surveyDetails!.map((survey) => DataRow(
                     cells: [
                       DataCell(Text(survey.surveyNo!)),
                       DataCell(
@@ -244,8 +231,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                         ),
                       ),
                     ],
-                  );
-                }).toList(),
+                  )).toList(),
               ),
             ),
           ],
@@ -254,11 +240,10 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     );
   }
 
-  Widget _buildStatisticsSection(CropOverview overview) {
-    return Card(
+  Widget _buildStatisticsSection(CropOverview overview) => Card(
       elevation: 1,
       child: Padding(
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         child: Row(
           children: [
             Expanded(
@@ -320,17 +305,16 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ),
       ),
     );
-  }
 
   Widget _buildGuidelinesSection(CropOverview overview) {
-    if (overview.guidelines.isEmpty) return SizedBox();
+    if (overview.guidelines.isEmpty) return const SizedBox();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TitleText('guidelines'.tr),
 
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         SizedBox(
           height: 80,
           child: ListView.builder(
@@ -366,14 +350,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     }
   }
 
-  Widget _buildThumbnail(Guideline guideline) {
-    return Stack(
+  Widget _buildThumbnail(Guideline guideline) => Stack(
       alignment: Alignment.center,
       children: [
         Container(
           width: 50,
           height: 50,
-          margin: EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: const Color.fromARGB(0, 238, 238, 238),
             borderRadius: BorderRadius.circular(8),
@@ -390,10 +373,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           const Icon(Icons.play_circle_fill, size: 40, color: Colors.white),
       ],
     );
-  }
 
-  Widget _buildGuidelineCard(Guideline guideline) {
-    return SizedBox(
+  Widget _buildGuidelineCard(Guideline guideline) => SizedBox(
       width: 300,
       child: Card(
         color: const Color.fromARGB(255, 242, 240, 232), //rgb(242,240,232)
@@ -439,10 +420,9 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ),
       ),
     );
-  }
 
   Widget _buildTasksSection(CropOverview overview) {
-    if (overview.schedules.isEmpty) return SizedBox();
+    if (overview.schedules.isEmpty) return const SizedBox();
 
     // Group schedules by date
     final schedulesByDate = <String, List<Schedule>>{};
@@ -471,15 +451,14 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                   border: Border.all(color: Colors.grey, width: 1),
                 ),
 
-                child: Obx(() {
-                  return Row(
+                child: Obx(() => Row(
                     children: [
                       Container(
                         decoration: BoxDecoration(
                           color: !(controller.isList.value)
                               ? Get.theme.primaryColor
                               : Colors.transparent,
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
                           ),
@@ -501,7 +480,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                           color: (controller.isList.value)
                               ? Get.theme.primaryColor
                               : Colors.transparent,
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(10),
                             bottomRight: Radius.circular(10),
                           ),
@@ -520,8 +499,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                         ),
                       ),
                     ],
-                  );
-                }),
+                  )),
               ),
             ],
           ),
@@ -536,14 +514,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                 ? Column(
                     children: [
                       if (controller.errorMessage.value.isNotEmpty)
-                        Center(
+                        const Center(
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 100),
+                            padding: EdgeInsets.only(top: 100),
                             child: Text("No data found"),
                           ),
                         ),
-                      ...controller.taskGroups.map((group) {
-                        return Column(
+                      ...controller.taskGroups.map((group) => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
@@ -561,8 +538,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                             ),
                             ...group.tasks.map((task) => _buildTaskCard(task)),
                           ],
-                        );
-                      }),
+                        )),
                     ],
                   )
                 : Column(
@@ -574,7 +550,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                     ],
                   );
           }),
-          SizedBox(height: 180),
+          const SizedBox(height: 180),
           // ...schedulesByDate.entries.map((entry) {
           //   return Column(
           //     crossAxisAlignment: CrossAxisAlignment.start,
@@ -602,8 +578,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     );
   }
 
-  Widget _buildTaskCard(Task task) {
-    return InkWell(
+  Widget _buildTaskCard(Task task) => InkWell(
       onTap: () {
         Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
       },
@@ -626,7 +601,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: Row(
+          trailing: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               // IconButton(
@@ -646,16 +621,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ),
       ),
     );
-  }
 
-  Widget _buildCalendarSection() {
-    return Card(
+  Widget _buildCalendarSection() => Card(
       // margin: const EdgeInsets.all(8),
       elevation: 0,
       color: Get.theme.primaryColor.withAlpha(40),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Obx(() {
-        return TableCalendar(
+      child: Obx(() => TableCalendar(
           firstDay: DateTime.utc(2020, 1, 1),
           lastDay: DateTime.utc(2036, 12, 31),
           focusedDay: controller.focusedDay.value,
@@ -666,9 +638,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             controller.refreshData(month: focusedDay);
           },
           // Instead of selectedDay, use selectedDayPredicate:
-          selectedDayPredicate: (day) {
-            return isSameDay(day, controller.selectedDay.value);
-          },
+          selectedDayPredicate: (day) => isSameDay(day, controller.selectedDay.value),
 
           headerStyle: HeaderStyle(
             titleCentered: true,
@@ -699,9 +669,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             controller.selectedDay.value = selectedDay;
             controller.focusedDay.value = focusedDay;
           },
-          eventLoader: (day) {
-            return controller.getEventsForDay(day);
-          },
+          eventLoader: (day) => controller.getEventsForDay(day),
           calendarBuilders: CalendarBuilders(
             markerBuilder: (context, date, events) {
               if (events.isEmpty) return const SizedBox.shrink();
@@ -725,13 +693,10 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
               );
             },
           ),
-        );
-      }),
+        )),
     );
-  }
 
-  Widget _buildFilterSection() {
-    return Padding(
+  Widget _buildFilterSection() => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -747,10 +712,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ),
       ),
     );
-  }
 
-  Widget _buildFilterChip(String label, String value) {
-    return Obx(() {
+  Widget _buildFilterChip(String label, String value) => Obx(() {
       final isSelected = controller.selectedFilter.value == value;
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -768,10 +731,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ),
       );
     });
-  }
 
-  Widget _buildTaskListSection() {
-    return Obx(() {
+  Widget _buildTaskListSection() => Obx(() {
       final selectedDate = controller.selectedDay.value;
       final tasks = controller.getTasksForDay(selectedDate);
 
@@ -800,5 +761,4 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         ],
       );
     });
-  }
 }

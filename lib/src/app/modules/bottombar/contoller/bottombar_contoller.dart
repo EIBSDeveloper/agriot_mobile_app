@@ -10,9 +10,9 @@ import '../../task/view/screens/screen.dart';
 
 class BottomBarContoller extends GetxController {
   final RxList<Widget> pages = <Widget>[
-    DashboardView(),
-    FormingView(),ExpenseOverviewScreen(),InventoryOverview(),
-    TaskView()
+    const DashboardView(),
+    const FormingView(),const ExpenseOverviewScreen(),const InventoryOverview(),
+    const TaskView()
   ].obs;
 
   final List<String> icons = [

@@ -9,8 +9,7 @@ class VehicleView extends GetView<PurchasesAddController> {
   const VehicleView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: 'vehicle_screen_title'.tr),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -20,9 +19,9 @@ class VehicleView extends GetView<PurchasesAddController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               controller.buildDateField(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               controller.buildInventoryCategoryDropdown(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               controller.buildInventoryItemDropdown(),
               const SizedBox(height: 16),
               // Vendor Dropdown
@@ -73,10 +72,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildRegNoField() {
-    return InputCardStyle(
+  Widget _buildRegNoField() => InputCardStyle(
       child: TextFormField(
         controller: controller.regNoController,
         decoration: InputDecoration(
@@ -86,10 +83,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildOwnerNameField() {
-    return InputCardStyle(
+  Widget _buildOwnerNameField() => InputCardStyle(
       child: TextFormField(
         controller: controller.ownerNameController,
         decoration: InputDecoration(
@@ -99,10 +94,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildDateOfRegField(BuildContext context) {
-    return InputCardStyle(
+  Widget _buildDateOfRegField(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: controller.dateOfRegController,
         onTap: () {
@@ -117,10 +110,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         readOnly: true,
       ),
     );
-  }
 
-  Widget _buildRegValidTillField(BuildContext context) {
-    return InputCardStyle(
+  Widget _buildRegValidTillField(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: controller.regValidTillController,
         validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
@@ -135,10 +126,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         readOnly: true,
       ),
     );
-  }
 
-  Widget _buildEngineNoField() {
-    return InputCardStyle(
+  Widget _buildEngineNoField() => InputCardStyle(
       child: TextFormField(
         controller: controller.engineNoController,
         decoration: InputDecoration(
@@ -147,10 +136,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildChasisNoField() {
-    return InputCardStyle(
+  Widget _buildChasisNoField() => InputCardStyle(
       child: TextFormField(
         controller: controller.chasisNoController,
         decoration: InputDecoration(
@@ -159,10 +146,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildRunningKmField() {
-    return InputCardStyle(
+  Widget _buildRunningKmField() => InputCardStyle(
       child: TextFormField(
         controller: controller.runningKmController,
         decoration: InputDecoration(
@@ -173,10 +158,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         keyboardType: TextInputType.number,
       ),
     );
-  }
 
-  Widget _buildServiceFrequencyRow() {
-    return Row(
+  Widget _buildServiceFrequencyRow() => Row(
       children: [
         Expanded(
           flex: 3,
@@ -212,10 +195,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ],
     );
-  }
 
-  Widget _buildFuelCapacityField() {
-    return InputCardStyle(
+  Widget _buildFuelCapacityField() => InputCardStyle(
       child: TextFormField(
         controller: controller.fuelCapacityController,
         decoration: InputDecoration(
@@ -225,10 +206,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         keyboardType: TextInputType.number,
       ),
     );
-  }
 
-  Widget _buildAverageMileageField() {
-    return InputCardStyle(
+  Widget _buildAverageMileageField() => InputCardStyle(
       child: TextFormField(
         controller: controller.averageMileageController,
         decoration: InputDecoration(
@@ -238,10 +217,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         keyboardType: TextInputType.number,
       ),
     );
-  }
 
-  Widget _buildInsuranceCheckbox() {
-    return Row(
+  Widget _buildInsuranceCheckbox() => Row(
       children: [
         Obx(
           () => Checkbox(
@@ -252,10 +229,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         Text('insurance_details_label'.tr),
       ],
     );
-  }
 
-  Widget _buildInsuranceSection(BuildContext context) {
-    return Column(
+  Widget _buildInsuranceSection(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // const Divider(),
@@ -274,10 +249,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         _buildRenewalDateField(context),
       ],
     );
-  }
 
-  Widget _buildCompanyNameField() {
-    return InputCardStyle(
+  Widget _buildCompanyNameField() => InputCardStyle(
       child: TextFormField(
         controller: controller.companyNameController,
         decoration: InputDecoration(
@@ -287,10 +260,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildInsuranceNoField() {
-    return InputCardStyle(
+  Widget _buildInsuranceNoField() => InputCardStyle(
       child: TextFormField(
         controller: controller.insuranceNoController,
         decoration: InputDecoration(
@@ -300,10 +271,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildInsuranceAmountField() {
-    return InputCardStyle(
+  Widget _buildInsuranceAmountField() => InputCardStyle(
       child: TextFormField(
         controller: controller.insuranceAmountController,
 
@@ -315,10 +284,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         keyboardType: TextInputType.number,
       ),
     );
-  }
 
-  Widget _buildStartDateField(BuildContext context) {
-    return InputCardStyle(
+  Widget _buildStartDateField(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: controller.startDateController,
         onTap: () =>
@@ -332,10 +299,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         readOnly: true,
       ),
     );
-  }
 
-  Widget _buildEndDateField(BuildContext context) {
-    return InputCardStyle(
+  Widget _buildEndDateField(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: controller.endDateController,
         onTap: () =>
@@ -350,10 +315,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         readOnly: true,
       ),
     );
-  }
 
-  Widget _buildRenewalDateField(BuildContext context) {
-    return InputCardStyle(
+  Widget _buildRenewalDateField(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: controller.renewalDateController,
         onTap: () =>
@@ -367,10 +330,8 @@ class VehicleView extends GetView<PurchasesAddController> {
         readOnly: true,
       ),
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return Obx(
+  Widget _buildSubmitButton() => Obx(
       () => SizedBox(
         width: double.infinity,
         child: ElevatedButton(
@@ -383,5 +344,4 @@ class VehicleView extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 }

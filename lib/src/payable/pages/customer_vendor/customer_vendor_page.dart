@@ -789,7 +789,7 @@ class CustomerVendorDetailsPage extends StatefulWidget {
   final int id;
   final DetailsType? detailsType;
 
-  CustomerVendorDetailsPage({
+const  CustomerVendorDetailsPage({
     super.key,
     required this.id,
     required this.detailsType,
@@ -813,12 +813,11 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: Text('Customer & Vendor Details'.tr)),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (controller.error.isNotEmpty) {
           return Center(
@@ -830,7 +829,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
         final customerReceivables = controller.customerReceivables;
 
         return SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -839,25 +838,23 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
                 if (vendorReceivables.isNotEmpty) ...[
                   Text(
                     'Vendor Receivables'.tr,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  ...vendorReceivables
-                      .map((vendor) => buildVendorReceivables(vendor))
-                      .toList(),
+                  ...vendorReceivables.map(
+                    (vendor) => buildVendorReceivables(vendor),
+                  ),
                 ],
                 if (customerReceivables.isNotEmpty) ...[
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     'Customer Receivables'.tr,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  ...customerReceivables.map((customer) {
-                    return buildSalesreceivableList(
+                  ...customerReceivables.map((customer) => buildSalesreceivableList(
                       customer.sales,
                       customer.customerId,
                       customer.customerName,
-                    );
-                  }).toList(),
+                    )),
                 ],
               ],
 
@@ -866,25 +863,23 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
                 if (vendorReceivables.isNotEmpty) ...[
                   Text(
                     "Vendor Payables".tr,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   ...vendorReceivables
                       .map((vendor) => buildVendorPayables(vendor))
-                      .toList(),
+                      ,
                 ],
                 if (customerReceivables.isNotEmpty) ...[
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     "Customer Payables".tr,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  ...customerReceivables.map((customer) {
-                    return buildSalesPayableList(
+                  ...customerReceivables.map((customer) => buildSalesPayableList(
                       customer.sales,
                       customer.customerId,
                       customer.customerName,
-                    );
-                  }).toList(),
+                    )),
                 ],
               ],
             ],
@@ -892,12 +887,10 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
         );
       }),
     );
-  }
 
-  Widget buildPremiumCard({required Widget child}) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      margin: EdgeInsets.symmetric(vertical: 8),
+  Widget buildPremiumCard({required Widget child}) => Container(
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -906,13 +899,12 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
             color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 8,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: child,
     );
-  }
 
   Widget buildVendorReceivables(VendorReceivable vendor) {
     final vendorAddController = Get.put(
@@ -926,31 +918,31 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
           children: [
             vendor.vendorImage.isNotEmpty
                 ? Image.network(
-                  vendor.vendorImage,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                )
+                    vendor.vendorImage,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  )
                 : Container(
-                  width: 60,
-                  height: 60,
-                  color: Colors.grey.shade300,
-                  child: Icon(Icons.person, size: 40),
-                ),
-            SizedBox(width: 12),
+                    width: 60,
+                    height: 60,
+                    color: Colors.grey.shade300,
+                    child: const Icon(Icons.person, size: 40),
+                  ),
+            const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   vendor.vendorName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 Text(vendor.businessName),
               ],
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
 
         // Fuel
         ...vendor.fuelReceivables.map(
@@ -1232,31 +1224,31 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
           children: [
             vendor.vendorImage.isNotEmpty
                 ? Image.network(
-                  vendor.vendorImage,
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                )
+                    vendor.vendorImage,
+                    width: 60,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  )
                 : Container(
-                  width: 60,
-                  height: 60,
-                  color: Colors.grey.shade300,
-                  child: Icon(Icons.person, size: 40),
-                ),
-            SizedBox(width: 12),
+                    width: 60,
+                    height: 60,
+                    color: Colors.grey.shade300,
+                    child: const Icon(Icons.person, size: 40),
+                  ),
+            const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   vendor.vendorName,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 Text(vendor.businessName),
               ],
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
 
         ...vendor.fuelReceivables.map(
           (f) => buildReceivableCard(
@@ -1501,8 +1493,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
     required double toReceive,
     required VoidCallback? onAddPayment,
     required VoidCallback? onHistory,
-  }) {
-    return buildPremiumCard(
+  }) => buildPremiumCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1510,157 +1501,153 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("$title:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("$title:", style: const TextStyle(fontWeight: FontWeight.bold)),
               Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.add, color: Colors.red),
+                    icon: const Icon(Icons.add, color: Colors.red),
                     onPressed: onAddPayment,
                   ),
                   IconButton(
-                    icon: Icon(Icons.history, color: Colors.grey),
+                    icon: const Icon(Icons.history, color: Colors.grey),
                     onPressed: onHistory,
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(inventoryItem),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
             "${'Inventory:'.tr} $inventoryItem ($inventoryType)",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "${'Total:'.tr} ₹$total",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(
                 "${'Paid:'.tr} ₹$paid",
-                style: TextStyle(color: Colors.green),
+                style: const TextStyle(color: Colors.green),
               ),
             ],
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "${'Received:'.tr} ₹$received",
-                style: TextStyle(color: Colors.blue),
+                style: const TextStyle(color: Colors.blue),
               ),
               Text(
                 "${'To Receive:'.tr} ₹$toReceive",
-                style: TextStyle(color: Colors.redAccent),
+                style: const TextStyle(color: Colors.redAccent),
               ),
             ],
           ),
         ],
       ),
     );
-  }
 
   Widget buildSalesreceivableList(
     List<Sale> sales,
     int customerId,
     String customerName,
   ) {
-    if (sales.isEmpty) return SizedBox.shrink();
+    if (sales.isEmpty) return const SizedBox.shrink();
     final customerAddController = Get.put(
       CustomerAddController(repository: CustomerAddRepository()),
     );
 
     return Column(
-      children:
-          sales.map((sale) {
-            return buildPremiumCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      children: sales.map((sale) => buildPremiumCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Sales Date:".tr,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.add, color: Colors.blue),
-                            onPressed: () {
-                              showAddcustomerBottomSheet(
-                                isPayable: false,
-                                controller: customerAddController,
-                                customerId: customerId,
-                                customerName: customerName,
-                                currentAmount: sale.totalSalesAmount,
-                                salesId: sale.salesId,
-                                context: Get.context!,
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.history, color: Colors.grey),
-                            onPressed: () {
-                              Get.to(
-                                () => HistoryDetailsPage(
-                                  farmerId: 339,
-                                  customerId: customerId,
-                                  saleId: sale.salesId,
-                                  isPayable: false,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Text(sale.salesDate),
-                  SizedBox(height: 8),
                   Text(
-                    "${'Crop:'.tr} ${sale.cropName}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    "Sales Date:".tr,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 12),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${'Total:'.tr} ₹${sale.totalSalesAmount}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      IconButton(
+                        icon: const Icon(Icons.add, color: Colors.blue),
+                        onPressed: () {
+                          showAddcustomerBottomSheet(
+                            isPayable: false,
+                            controller: customerAddController,
+                            customerId: customerId,
+                            customerName: customerName,
+                            currentAmount: sale.totalSalesAmount,
+                            salesId: sale.salesId,
+                            context: Get.context!,
+                          );
+                        },
                       ),
-                      Text(
-                        "${'Paid:'.tr} ₹${sale.amountPaid}",
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${'Received:'.tr} ₹${sale.receivedAmount}",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                      Text(
-                        "${'To Pay:'.tr} ₹${sale.toPayAmount}",
-                        style: TextStyle(color: Colors.redAccent),
+                      IconButton(
+                        icon: const Icon(Icons.history, color: Colors.grey),
+                        onPressed: () {
+                          Get.to(
+                            () => HistoryDetailsPage(
+                              farmerId: 339,
+                              customerId: customerId,
+                              saleId: sale.salesId,
+                              isPayable: false,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
                 ],
               ),
-            );
-          }).toList(),
+              const SizedBox(height: 4),
+              Text(sale.salesDate),
+              const SizedBox(height: 8),
+              Text(
+                "${'Crop:'.tr} ${sale.cropName}",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${'Total:'.tr} ₹${sale.totalSalesAmount}",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "${'Paid:'.tr} ₹${sale.amountPaid}",
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${'Received:'.tr} ₹${sale.receivedAmount}",
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                  Text(
+                    "${'To Pay:'.tr} ₹${sale.toPayAmount}",
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )).toList(),
     );
   }
 
@@ -1669,97 +1656,94 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
     int customerId,
     String customerName,
   ) {
-    if (sales.isEmpty) return SizedBox.shrink();
+    if (sales.isEmpty) return const SizedBox.shrink();
     final customerAddController = Get.put(
       CustomerAddController(repository: CustomerAddRepository()),
     );
 
     return Column(
-      children:
-          sales.map((sale) {
-            return buildPremiumCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      children: sales.map((sale) => buildPremiumCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Sales Date:".tr,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.add, color: Colors.red),
-                            onPressed: () {
-                              showAddcustomerBottomSheet(
-                                isPayable: true,
-                                controller: customerAddController,
-                                customerId: customerId,
-                                customerName: customerName,
-                                currentAmount: sale.totalSalesAmount,
-                                salesId: sale.salesId,
-                                context: Get.context!,
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.history, color: Colors.grey),
-                            onPressed: () {
-                              Get.to(
-                                () => HistoryDetailsPage(
-                                  farmerId: 339,
-                                  customerId: customerId,
-                                  saleId: sale.salesId,
-                                  isPayable: true,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 4),
-                  Text(sale.salesDate),
-                  SizedBox(height: 8),
                   Text(
-                    "${'Crop:'.tr} ${sale.cropName}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    "Sales Date:".tr,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 12),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${'Total:'.tr} ₹${sale.totalSalesAmount}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      IconButton(
+                        icon: const Icon(Icons.add, color: Colors.red),
+                        onPressed: () {
+                          showAddcustomerBottomSheet(
+                            isPayable: true,
+                            controller: customerAddController,
+                            customerId: customerId,
+                            customerName: customerName,
+                            currentAmount: sale.totalSalesAmount,
+                            salesId: sale.salesId,
+                            context: Get.context!,
+                          );
+                        },
                       ),
-                      Text(
-                        "${'Paid:'.tr} ₹${sale.amountPaid}",
-                        style: TextStyle(color: Colors.green),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${'Received:'.tr} ₹${sale.receivedAmount}",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                      Text(
-                        "${'To Pay:'.tr} ₹${sale.toPayAmount}",
-                        style: TextStyle(color: Colors.redAccent),
+                      IconButton(
+                        icon: const Icon(Icons.history, color: Colors.grey),
+                        onPressed: () {
+                          Get.to(
+                            () => HistoryDetailsPage(
+                              farmerId: 339,
+                              customerId: customerId,
+                              saleId: sale.salesId,
+                              isPayable: true,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
                 ],
               ),
-            );
-          }).toList(),
+              const SizedBox(height: 4),
+              Text(sale.salesDate),
+              const SizedBox(height: 8),
+              Text(
+                "${'Crop:'.tr} ${sale.cropName}",
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${'Total:'.tr} ₹${sale.totalSalesAmount}",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "${'Paid:'.tr} ₹${sale.amountPaid}",
+                    style: const TextStyle(color: Colors.green),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${'Received:'.tr} ₹${sale.receivedAmount}",
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                  Text(
+                    "${'To Pay:'.tr} ₹${sale.toPayAmount}",
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )).toList(),
     );
   }
 }
@@ -2242,8 +2226,7 @@ void showAddVendorPaymentBottomSheet({
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (BuildContext ctx) {
-      return Padding(
+    builder: (BuildContext ctx) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -2404,8 +2387,7 @@ void showAddVendorPaymentBottomSheet({
             ],
           ),
         ),
-      );
-    },
+      ),
   );
 }
 
@@ -2434,8 +2416,7 @@ void showAddcustomerBottomSheet({
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (BuildContext ctx) {
-      return Padding(
+    builder: (BuildContext ctx) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -2459,8 +2440,8 @@ void showAddcustomerBottomSheet({
                 // Header
                 Text(
                   isPayable
-                      ? "Add Payable to".tr + " $customerName"
-                      : "Add Receivable from".tr + " $customerName",
+                      ? "${"Add Payable to".tr} $customerName"
+                      : "${"Add Receivable from".tr} $customerName",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -2472,10 +2453,8 @@ void showAddcustomerBottomSheet({
                 // Current amount info
                 Text(
                   isPayable
-                      ? "Current Payable".tr +
-                          ": ₹${currentAmount.toStringAsFixed(2)}"
-                      : "Current Receivable".tr +
-                          ": ₹${currentAmount.toStringAsFixed(2)}",
+                      ? "${"Current Payable".tr}: ₹${currentAmount.toStringAsFixed(2)}"
+                      : "${"Current Receivable".tr}: ₹${currentAmount.toStringAsFixed(2)}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: isPayable ? Colors.red : Colors.green,
@@ -2507,10 +2486,9 @@ void showAddcustomerBottomSheet({
                       initialDate: DateTime.now(),
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2100),
-                      builder: (context, child) {
-                        return Theme(
+                      builder: (context, child) => Theme(
                           data: Theme.of(context).copyWith(
-                            colorScheme: ColorScheme.light(
+                            colorScheme: const ColorScheme.light(
                               primary: Colors.green,
                               onPrimary: Colors.white,
                               onSurface: Colors.black87,
@@ -2522,8 +2500,7 @@ void showAddcustomerBottomSheet({
                             ),
                           ),
                           child: child!,
-                        );
-                      },
+                        ),
                     );
                     if (pickedDate != null) {
                       dateController.text =
@@ -2583,15 +2560,14 @@ void showAddcustomerBottomSheet({
                   const SizedBox(height: 5),
                   Obx(
                     () => Column(
-                      children:
-                          controller.base64Files
-                              .map(
-                                (f) => ListTile(
-                                  leading: const Icon(Icons.insert_drive_file),
-                                  title: Text(f["fileName"] ?? "Document".tr),
-                                ),
-                              )
-                              .toList(),
+                      children: controller.base64Files
+                          .map(
+                            (f) => ListTile(
+                              leading: const Icon(Icons.insert_drive_file),
+                              title: Text(f["fileName"] ?? "Document".tr),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -2623,7 +2599,7 @@ void showAddcustomerBottomSheet({
                             paymentAmount: amountController.text,
                             description: descController.text,
                           );
-                          Navigator.pop(ctx);
+                         Get.back();
 
                           // Go to Customer → Payables tab
                           Get.to(
@@ -2639,11 +2615,11 @@ void showAddcustomerBottomSheet({
                             saleId: salesId,
                             paymentAmount: amountController.text,
                             description: descController.text,
-                            documents:
-                                controller.base64Files
-                                    .map((e) => e["base64"]!)
-                                    .toList(),
+                            documents: controller.base64Files
+                                .map((e) => e["base64"]!)
+                                .toList(),
                           );
+                          // ignore: use_build_context_synchronously
                           Navigator.pop(ctx);
 
                           // Go to both → Payables tab
@@ -2685,7 +2661,6 @@ void showAddcustomerBottomSheet({
             ),
           ),
         ),
-      );
-    },
+      ),
   );
 }

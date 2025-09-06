@@ -59,14 +59,14 @@ class NotificationController extends GetxController {
     }
   }
 
-  final RxInt unread_notifications = 0.obs;
+  final RxInt unreadNotifications = 0.obs;
 
   Future<void> fetchTotalCount() async {
     try {
       final count = await _repository.getNotificationCount();
-      unread_notifications.value = count.unread; // only total_notifications
+      unreadNotifications.value = count.unread; // only total_notifications
     } catch (e) {
-      unread_notifications.value = 0;
+      unreadNotifications.value = 0;
     }
   }
 

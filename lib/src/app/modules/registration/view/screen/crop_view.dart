@@ -12,27 +12,24 @@ class CropView extends GetView<RegCropController> {
   const CropView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Form(
+  Widget build(BuildContext context) => Form(
       key: controller.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildCropTypeDropdown(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildCropDropdown(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildHarvestFrequencyDropdown(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildPlantationDateField(context),
-          SizedBox(height: 24),
-          Obx(() {
-            return LandDropdown(
+          const SizedBox(height: 24),
+          Obx(() => LandDropdown(
               lands: controller.lands,
               selectedLand: controller.selectedLand.value,
               onChanged: (land) => controller.changeLand(land!),
-            );
-          }),
+            )),
 
           // SearchableDropdown<LandWithSurvey>(
           //   label: 'Land Identification *',
@@ -42,7 +39,7 @@ class CropView extends GetView<RegCropController> {
           //   onChanged: (value) => controller.selectedLand.value = value,
           //   validator: (value) => value == null ? 'Required field' : null,
           // ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Obx(() {
             if (controller.surveyList.isNotEmpty) {
               return SurveyDropdown(
@@ -51,9 +48,9 @@ class CropView extends GetView<RegCropController> {
                 onChanged: (value) => controller.selectedSurvey.value = value,
               );
             }
-            return SizedBox();
+            return const SizedBox();
           }),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildMeasurementSection(),
           _buildTextField(
             controller: controller.locationController,
@@ -62,12 +59,11 @@ class CropView extends GetView<RegCropController> {
             readOnly: true,
             onTap: controller.pickLocation,
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           _buildSubmitButton(),
         ],
       ),
     );
-  }
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -76,15 +72,14 @@ class CropView extends GetView<RegCropController> {
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) {
-    return InputCardStyle(
+  }) => InputCardStyle(
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
           border: InputBorder.none,
           isDense: true,
-          suffixIcon: readOnly ? Icon(Icons.location_on) : null,
+          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
         ),
         validator: validator,
         keyboardType: keyboardType,
@@ -92,10 +87,8 @@ class CropView extends GetView<RegCropController> {
         onTap: onTap,
       ),
     );
-  }
 
-  Widget _buildCropTypeDropdown() {
-    return Obx(() {
+  Widget _buildCropTypeDropdown() => Obx(() {
       if (controller.isLoadingCropTypes.value) {
         return _buildLoadingDropdown('Loading crop types...');
       }
@@ -108,10 +101,8 @@ class CropView extends GetView<RegCropController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
-  Widget _buildCropDropdown() {
-    return Obx(() {
+  Widget _buildCropDropdown() => Obx(() {
       if (controller.selectedCropType.value == null) {
         return _buildDisabledDropdown('Select crop type first');
       }
@@ -130,7 +121,7 @@ class CropView extends GetView<RegCropController> {
             validator: (value) => value == null ? 'Required field' : null,
           ),
           if (controller.crops.isEmpty)
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 8),
               child: Text(
                 'No crops available for selected type',
@@ -140,10 +131,8 @@ class CropView extends GetView<RegCropController> {
         ],
       );
     });
-  }
 
-  Widget _buildHarvestFrequencyDropdown() {
-    return Obx(() {
+  Widget _buildHarvestFrequencyDropdown() => Obx(() {
       if (controller.isLoadingHarvestFrequencies.value) {
         return _buildLoadingDropdown('Loading harvest frequencies...');
       }
@@ -156,11 +145,8 @@ class CropView extends GetView<RegCropController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
-  Widget _buildPlantationDateField(BuildContext context) {
-    return Obx(() {
-      return Container(
+  Widget _buildPlantationDateField(BuildContext context) => Obx(() => Container(
         decoration: BoxDecoration(
           color: const Color.fromARGB(137, 221, 234, 234),
           borderRadius: BorderRadius.circular(8),
@@ -168,7 +154,7 @@ class CropView extends GetView<RegCropController> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: TextFormField(
           readOnly: true,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Plantation Date *',
             border: InputBorder.none,
             suffixIcon: Icon(Icons.calendar_today),
@@ -184,12 +170,9 @@ class CropView extends GetView<RegCropController> {
               controller.plantationDate.value == null ? 'Required field' : null,
           onTap: () => controller.selectPlantationDate(context),
         ),
-      );
-    });
-  }
+      ));
 
-  Widget _buildMeasurementSection() {
-    return Column(
+  Widget _buildMeasurementSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -207,7 +190,7 @@ class CropView extends GetView<RegCropController> {
                 ),
                 child: TextFormField(
                   controller: controller.measurementController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Measurement *',
                     border: InputBorder.none,
                   ),
@@ -217,11 +200,10 @@ class CropView extends GetView<RegCropController> {
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
            Expanded(
               flex: 2,
-              child: Obx(() {
-                return Container(
+              child: Obx(() => Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(137, 221, 234, 234),
                     borderRadius: BorderRadius.circular(8),
@@ -233,44 +215,38 @@ class CropView extends GetView<RegCropController> {
                   child: DropdownButtonFormField<AppDropdownItem>(
                     isExpanded: true,
                     value: controller.selectedMeasurementUnit.value,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Unit *',
                       border: InputBorder.none,
                     ),
                     items: controller.landUnits.isNotEmpty
                         ? [
-                            ...controller.landUnits.map((unit) {
-                              return DropdownMenuItem<AppDropdownItem>(
+                            ...controller.landUnits.map((unit) => DropdownMenuItem<AppDropdownItem>(
                                 value: unit,
                                 child: FittedBox(child: Text(unit.name)),
-                              );
-                            }),
+                              )),
                           ]
                         : [],
                     onChanged: (valu) {
                       controller.selectedMeasurementUnit.value = valu;
                     }, // Disabled as we only have one unit
                   ),
-                );
-              }),
+                )),
              
             ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return Obx(() {
-      return ElevatedButton(
+  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
         onPressed: controller.isSubmitting.value ? null : controller.submitForm,
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
         ),
         child: controller.isSubmitting.value
-            ? SizedBox(
+            ? const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -278,13 +254,10 @@ class CropView extends GetView<RegCropController> {
                   color: Colors.white,
                 ),
               )
-            : Text('Save Crop Details'),
-      );
-    });
-  }
+            : const Text('Save Crop Details'),
+      ));
 
-  Widget _buildLoadingDropdown(String text) {
-    return Container(
+  Widget _buildLoadingDropdown(String text) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -303,7 +276,7 @@ class CropView extends GetView<RegCropController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(text),
-            SizedBox(
+            const SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
@@ -312,10 +285,8 @@ class CropView extends GetView<RegCropController> {
         ),
       ),
     );
-  }
 
-  Widget _buildDisabledDropdown(String text) {
-    return Container(
+  Widget _buildDisabledDropdown(String text) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -334,8 +305,8 @@ class CropView extends GetView<RegCropController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(text),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Icon(
                 Icons.keyboard_arrow_down_outlined,
                 color: Colors.grey,
@@ -345,7 +316,6 @@ class CropView extends GetView<RegCropController> {
         ),
       ),
     );
-  }
 
 }
 
@@ -364,8 +334,7 @@ class SurveyDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -374,14 +343,12 @@ class SurveyDropdown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: DropdownButtonFormField<CropSurveyDetail>(
         value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
-        items: surveys.map((CropSurveyDetail survey) {
-          return DropdownMenuItem(
+        items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
             value: survey,
             child: Text(
               '${survey.surveyNo} (${survey.surveyMeasurementValue} ${survey.surveyMeasurementUnit})',
             ),
-          );
-        }).toList(),
+          )).toList(),
         onChanged: onChanged,
         decoration: InputDecoration(
           labelText: label,
@@ -390,5 +357,4 @@ class SurveyDropdown extends StatelessWidget {
         ),
       ),
     );
-  }
 }

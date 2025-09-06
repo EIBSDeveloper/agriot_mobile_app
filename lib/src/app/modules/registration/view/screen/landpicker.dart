@@ -7,20 +7,19 @@ class LocationPickerView extends GetView<LocationPickerController> {
   const LocationPickerView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: Text('Select Location'),
+        title: const Text('Select Location'),
         actions: [
           IconButton(
-            icon: Icon(Icons.my_location),
+            icon: const Icon(Icons.my_location),
             onPressed: controller.getCurrentLocation,
           ),
         ],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return Stack(
           children: [
@@ -31,7 +30,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
               markers: controller.selectedLocation.value != null
                   ? {
                       Marker(
-                        markerId: MarkerId('selected-location'),
+                        markerId: const MarkerId('selected-location'),
                         position: controller.selectedLocation.value!,
                       ),
                     }
@@ -45,7 +44,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
               right: 20,
               child: Card(
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -55,12 +54,12 @@ class LocationPickerView extends GetView<LocationPickerController> {
                       // ),
                       // SizedBox(height: 8),
                       // Obx(() => Text(controller.address.value)),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: controller.confirmSelection,
-                          child: Text('Confirm Location'),
+                          child: const Text('Confirm Location'),
                         ),
                       ),
                     ],
@@ -74,12 +73,11 @@ class LocationPickerView extends GetView<LocationPickerController> {
               child: FloatingActionButton(
                 onPressed: controller.getCurrentLocation,
                 backgroundColor: Get.theme.primaryColor,
-                child: Icon(Icons.my_location),
+                child: const Icon(Icons.my_location),
               ),
             ),
           ],
         );
       }),
     );
-  }
 }

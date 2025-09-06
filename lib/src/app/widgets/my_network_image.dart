@@ -18,8 +18,7 @@ class MyNetworkImage extends StatelessWidget {
   final double? height;
 
   @override
-  Widget build(BuildContext context) {
-    return CachedNetworkImage(
+  Widget build(BuildContext context) => CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
       height: height,
@@ -37,5 +36,4 @@ class MyNetworkImage extends StatelessWidget {
       errorWidget:
           (context, url, error) => const Icon(Icons.now_wallpaper_outlined),
     );
-  }
 }

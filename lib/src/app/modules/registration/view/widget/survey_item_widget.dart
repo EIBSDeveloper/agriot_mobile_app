@@ -22,12 +22,11 @@ class SurveyItemWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget build(BuildContext context) => Card(
       elevation: 1,
-      margin: EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,15 +35,15 @@ class SurveyItemWidget extends StatelessWidget {
               children: [
                 Text(
                   'Survey Detail #${index + 1}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: onRemove,
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Container(
               decoration: AppStyle.decoration.copyWith(
                 color: const Color.fromARGB(137, 221, 234, 234),
@@ -56,7 +55,7 @@ class SurveyItemWidget extends StatelessWidget {
               ),
               child: TextFormField(
                 initialValue: item.surveyNo,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Survey Number *',
                   border: InputBorder.none,
                   isDense: true,
@@ -65,7 +64,7 @@ class SurveyItemWidget extends StatelessWidget {
                 validator: (value) => value!.isEmpty ? 'Required' : null,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -82,7 +81,7 @@ class SurveyItemWidget extends StatelessWidget {
                     height: 55,
                     child: TextFormField(
                       initialValue: item.measurement,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Measurement *',
                         border: InputBorder.none,
                         isDense: true,
@@ -94,7 +93,7 @@ class SurveyItemWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
 
                 Expanded(
                   flex: 2,
@@ -114,5 +113,4 @@ class SurveyItemWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -67,8 +67,7 @@ class VendorCustomer {
     this.customerImg,
   });
 
-  factory VendorCustomer.fromJson(Map<String, dynamic> json) {
-    return VendorCustomer(
+  factory VendorCustomer.fromJson(Map<String, dynamic> json) => VendorCustomer(
       id: json['id'],
       farmerId: json['farmer_id'] ?? 0,
       farmer: json['farmer'] ?? '',
@@ -104,7 +103,6 @@ class VendorCustomer {
       vendorImage: json['vendor_image'],
       customerImg: json['customer_img'],
     );
-  }
 }
 
 class VendorCustomerFormData {
@@ -115,11 +113,11 @@ class VendorCustomerFormData {
   String mobileNo;
   String? email;
   String? doorNo;
-  int? countryId;
-  int? stateId;
-  int? cityId;
-  int? talukId;
-  int? villageId;
+  // int? countryId;
+  // int? stateId;
+  // int? cityId;
+  // int? talukId;
+  // int? villageId;
   String? gstNo;
   String? taxNo;
   int postCode;
@@ -139,11 +137,11 @@ class VendorCustomerFormData {
     required this.mobileNo,
     this.email,
     this.doorNo,
-    this.countryId,
-    this.stateId,
-    this.cityId,
-    this.talukId,
-    this.villageId,
+    // this.countryId,
+    // this.stateId,
+    // this.cityId,
+    // this.talukId,
+    // this.villageId,
     this.gstNo,
     this.taxNo,
     required this.postCode,
@@ -156,8 +154,7 @@ class VendorCustomerFormData {
     required this.type,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       if (type == 'customer' || type == 'both') 'customer_name': customerName,
       if (type == 'vendor') 'name': vendorName,
       'shop_name': shopName,
@@ -165,11 +162,11 @@ class VendorCustomerFormData {
       'mobile_no': mobileNo,
       'email': email,
       'door_no': doorNo,
-      'country': countryId,
-      'state': stateId,
-      'city': cityId,
-      'taluk': talukId,
-      'village': villageId,
+      // 'country': countryId,
+      // 'state': stateId,
+      // 'city': cityId,
+      // 'taluk': talukId,
+      // 'village': villageId,
       'gst_no': gstNo,
       'tax_no': taxNo,
       if (type == 'customer' || type == 'both') 'post_code': postCode,
@@ -183,7 +180,6 @@ class VendorCustomerFormData {
       // if (type == 'customer') 'customer_img': imageBase64,
       // if (type == 'vendor') 'vendor_img': imageBase64,
     };
-  }
 }
 
 class Market {
@@ -192,9 +188,7 @@ class Market {
 
   Market({required this.id, required this.name});
 
-  factory Market.fromJson(Map<String, dynamic> json) {
-    return Market(id: json['id'], name: json['name']);
-  }
+  factory Market.fromJson(Map<String, dynamic> json) => Market(id: json['id'], name: json['name']);
 
   @override
   String toString() => name; // Important for search functionality

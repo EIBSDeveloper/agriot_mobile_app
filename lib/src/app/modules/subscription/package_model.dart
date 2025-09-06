@@ -6,14 +6,12 @@ class PackageListResponse {
 
   PackageListResponse({required this.success, required this.packages});
 
-  factory PackageListResponse.fromJson(Map<String, dynamic> json) {
-    return PackageListResponse(
+  factory PackageListResponse.fromJson(Map<String, dynamic> json) => PackageListResponse(
       success: json['success'] ?? false,
       packages: (json['packages'] as List)
           .map((package) => Package.fromJson(package['data']))
           .toList(),
     );
-  }
 }
 
 class Package {
@@ -81,8 +79,7 @@ class Package {
     required this.isUsingPackage,
   });
 
-  factory Package.fromJson(Map<String, dynamic> json) {
-    return Package(
+  factory Package.fromJson(Map<String, dynamic> json) => Package(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       code: json['code'],
@@ -114,16 +111,13 @@ class Package {
       isWidget: json['is_widget'] ?? false,
       isUsingPackage: json['is_using_package'] ?? false,
     );
-  }
 
   String get formattedPrice {
     final formatter = NumberFormat.currency(symbol: '₹', decimalDigits: 0);
     return formatter.format(amount);
   }
 
-  String get durationText {
-    return '$packageValidity $packageDuration';
-  }
+  String get durationText => '$packageValidity $packageDuration';
 }
 
 class FarmerUsageResponse {
@@ -132,14 +126,12 @@ class FarmerUsageResponse {
 
   FarmerUsageResponse({required this.name, required this.packageDetails});
 
-  factory FarmerUsageResponse.fromJson(Map<String, dynamic> json) {
-    return FarmerUsageResponse(
+  factory FarmerUsageResponse.fromJson(Map<String, dynamic> json) => FarmerUsageResponse(
       name: json ['name'] ?? '',
       packageDetails: (json ['package_details'] as List)
           .map((detail) => PackageUsage.fromJson(detail))
           .toList().first,
     );
-  }
 }
 
 class PackageUsage {
@@ -209,8 +201,7 @@ class PackageUsage {
     required this.isWidget,
   });
 
-  factory PackageUsage.fromJson(Map<String, dynamic> json) {
-    return PackageUsage(
+  factory PackageUsage.fromJson(Map<String, dynamic> json) => PackageUsage(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       mylandCount: json['myland_count'] ?? 0,
@@ -243,7 +234,6 @@ class PackageUsage {
       employeeCountUsed: json['employee_count_used'] ?? 0,
       isWidget: json['is_widget'] ?? false,
     );
-  }
 
   // Balance Getters
   int get landBalance => _safeBalance(mylandCount, landCountUsed);
@@ -274,12 +264,10 @@ class CreateOrderResponse {
 
   CreateOrderResponse({required this.orderId, required this.keyId});
 
-  factory CreateOrderResponse.fromJson(Map<String, dynamic> json) {
-    return CreateOrderResponse(
+  factory CreateOrderResponse.fromJson(Map<String, dynamic> json) => CreateOrderResponse(
       orderId: json['order_id'] ?? '',
       keyId: json['key_id'] ?? '',
     );
-  }
 }
 
 class VerifyPaymentResponse {
@@ -288,10 +276,8 @@ class VerifyPaymentResponse {
 
   VerifyPaymentResponse({required this.status, required this.message});
 
-  factory VerifyPaymentResponse.fromJson(Map<String, dynamic> json) {
-    return VerifyPaymentResponse(
+  factory VerifyPaymentResponse.fromJson(Map<String, dynamic> json) => VerifyPaymentResponse(
       status: json['status'] ?? '',
       message: json['message'] ?? '',
     );
-  }
 }

@@ -15,8 +15,7 @@ class CropOverview {
     required this.schedules,
   });
 
-  factory CropOverview.fromJson(Map<String, dynamic> json) {
-    return CropOverview(
+  factory CropOverview.fromJson(Map<String, dynamic> json) => CropOverview(
       farmerId: json['farmer_id'],
       land: CropLand.fromJson(json['land']),
       crop: Cropinfo.fromJson(json['crop']),
@@ -27,7 +26,6 @@ class CropOverview {
         json['schedules']?.map((x) => Schedule.fromJson(x)) ?? [],
       ),
     );
-  }
 }
 
 class CropDetails {
@@ -36,14 +34,12 @@ class CropDetails {
 
   CropDetails({required this.land, required this.crops});
 
-  factory CropDetails.fromJson(Map<String, dynamic> json) {
-    return CropDetails(
+  factory CropDetails.fromJson(Map<String, dynamic> json) => CropDetails(
       land: CropLandDetails.fromJson(json),
       crops: List<CropDetail>.from(
         json['crop_details']?.map((x) => CropDetail.fromJson(x)) ?? [],
       ),
     );
-  }
 }
 
 class CropLandDetails {
@@ -69,8 +65,7 @@ class CropLandDetails {
     required this.longitude,
   });
 
-  factory CropLandDetails.fromJson(Map<String, dynamic> json) {
-    return CropLandDetails(
+  factory CropLandDetails.fromJson(Map<String, dynamic> json) => CropLandDetails(
       id: json['id'],
       name: json['name'],
       measurementValue: json['measurement_value']?.toDouble() ?? 0.0,
@@ -83,7 +78,6 @@ class CropLandDetails {
       latitude: json['latitude']?.toDouble() ?? 0.0,
       longitude: json['longitude']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 class CropDetail {
@@ -111,8 +105,7 @@ class CropDetail {
     required this.geoMarks,
   });
 
-  factory CropDetail.fromJson(Map<String, dynamic> json) {
-    return CropDetail(
+  factory CropDetail.fromJson(Map<String, dynamic> json) => CropDetail(
       id: json['id'],
       cropType: Crop.fromJson(json['crop_type']),
       crop: Cropinfo.fromJson(json['crop']),
@@ -129,7 +122,6 @@ class CropDetail {
             [],
       ),
     );
-  }
 }
 
 // Supporting models
@@ -146,14 +138,12 @@ class CropLand {
     required this.measurementUnit,
   });
 
-  factory CropLand.fromJson(Map<String, dynamic> json) {
-    return CropLand(
+  factory CropLand.fromJson(Map<String, dynamic> json) => CropLand(
       id: json['id'],
       name: json['name'],
       measurementValue: json['measurement_value']?.toDouble() ?? 0.0,
       measurementUnit: json['measurement_unit'],
     );
-  }
 }
 
 class Cropinfo {
@@ -175,8 +165,7 @@ class Cropinfo {
     this.totalExpenses,
   });
 
-  factory Cropinfo.fromJson(Map<String, dynamic> json) {
-    return Cropinfo(
+  factory Cropinfo.fromJson(Map<String, dynamic> json) => Cropinfo(
       id: json['id'] ?? json['crop_id'] ?? 0,
       name: json['name'] ?? json['crop'] ?? '',
       cropType: json['crop_type'],
@@ -185,7 +174,6 @@ class Cropinfo {
       totalSales: json['total_sales_amount']?.toDouble(),
       totalExpenses: json['total_expenses_amount']?.toDouble(),
     );
-  }
 }
 
 class CropGuideline {
@@ -205,8 +193,7 @@ class CropGuideline {
     required this.mediaType,
   });
 
-  factory CropGuideline.fromJson(Map<String, dynamic> json) {
-    return CropGuideline(
+  factory CropGuideline.fromJson(Map<String, dynamic> json) => CropGuideline(
       id: json['id'],
       name: json['name'],
       description: json['description'],
@@ -214,7 +201,6 @@ class CropGuideline {
       document: json['document'],
       mediaType: json['media_type'],
     );
-  }
 }
 
 class Schedule {
@@ -236,8 +222,7 @@ class Schedule {
     required this.comment,
   });
 
-  factory Schedule.fromJson(Map<String, dynamic> json) {
-    return Schedule(
+  factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
       id: json['schedule_id'],
       activityType: json['schedule_activity_type'],
       startDate: json['start_date'],
@@ -246,7 +231,6 @@ class Schedule {
       schedule: json['schedule']??" ",
       comment: json['comment'] ?? '',
     );
-  }
 }
 
 class MeasurementUnit {
@@ -255,9 +239,7 @@ class MeasurementUnit {
 
   MeasurementUnit({required this.id, required this.name});
 
-  factory MeasurementUnit.fromJson(Map<String, dynamic> json) {
-    return MeasurementUnit(id: json['id'], name: json['name']);
-  }
+  factory MeasurementUnit.fromJson(Map<String, dynamic> json) => MeasurementUnit(id: json['id'], name: json['name']);
 }
 
 class SoilType {
@@ -266,9 +248,7 @@ class SoilType {
 
   SoilType({required this.id, required this.name});
 
-  factory SoilType.fromJson(Map<String, dynamic> json) {
-    return SoilType(id: json['id'], name: json['name']);
-  }
+  factory SoilType.fromJson(Map<String, dynamic> json) => SoilType(id: json['id'], name: json['name']);
 }
 
 class Crop {
@@ -289,9 +269,7 @@ class HarvestingType {
 
   HarvestingType({required this.id, required this.name});
 
-  factory HarvestingType.fromJson(Map<String, dynamic> json) {
-    return HarvestingType(id: json['id'], name: json['name']);
-  }
+  factory HarvestingType.fromJson(Map<String, dynamic> json) => HarvestingType(id: json['id'], name: json['name']);
 }
 
 class MyCropDetails {

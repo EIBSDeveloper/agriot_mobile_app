@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/app_images.dart';
-import '../../../../widgets/app_text_field.dart';
 import '../../../../widgets/primary_button.dart';
 import '../../controller/auth_controller.dart';
+import '../widgets/my_behavior.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -26,7 +27,7 @@ class _LoginPageState extends State<LoginPage>
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     );
 
     _opacity =
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage>
     Size size = MediaQuery.of(context).size;
     bool isTablet = size.width >= 600; // Typical breakpoint for tablets
 
-    return BackgroudImage(
+    return BackgroundImage(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         extendBodyBehindAppBar: true,
@@ -72,7 +73,8 @@ class _LoginPageState extends State<LoginPage>
             child: SizedBox(
               height: size.height,
               child: Container(
-                alignment: Alignment.center, margin:  EdgeInsets.only(top:  size.height *0.3),
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(top: size.height * 0.3),
                 child: Opacity(
                   opacity: _opacity.value,
                   child: Transform.scale(
@@ -85,7 +87,7 @@ class _LoginPageState extends State<LoginPage>
                             Container(
                               width: isTablet ? 400 : size.width * 0.9,
                               height: size.height * 0.8,
-                             
+
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 28,
                               ),
@@ -97,8 +99,10 @@ class _LoginPageState extends State<LoginPage>
                                 //     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   const SizedBox(height: 150),
-                                  AppTextField(
-                                    labelText: 'Mobile Number OR Email',
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Mobile Number OR Email',
+                                    ),
                                     controller: mobileNumber,
                                     onChanged: (phone) {
                                       controller.mobileNumber.value = phone;
@@ -132,7 +136,7 @@ class _LoginPageState extends State<LoginPage>
                                     ),
                                   ),
 
-                                  SizedBox(),
+                                  const SizedBox(),
                                 ],
                               ),
                             ),
@@ -214,19 +218,10 @@ class _LoginPageState extends State<LoginPage>
         ),
         child: Text(
           string,
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
     );
   }
 }
 
-class MyBehavior extends ScrollBehavior {
-  Widget buildViewportChrome(
-    BuildContext context,
-    Widget child,
-    AxisDirection axisDirection,
-  ) {
-    return child;
-  }
-}

@@ -8,8 +8,7 @@ class TitleText extends StatelessWidget {
   const TitleText(this.title, {super.key, this.color, this.fit});
 
   @override
-  Widget build(BuildContext context) {
-    return fit != BoxFit.none
+  Widget build(BuildContext context) => fit != BoxFit.none
         ? FittedBox( alignment : Alignment.centerLeft,
             fit: fit ?? BoxFit.scaleDown,
             child: Text(
@@ -28,5 +27,4 @@ class TitleText extends StatelessWidget {
               color: color ?? Get.theme.primaryColor,
             ),
           );
-  }
 }

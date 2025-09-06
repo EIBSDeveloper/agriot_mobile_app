@@ -256,8 +256,7 @@ class NotificationView extends GetView<NotificationController> {
   const NotificationView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
         title: "notifications".tr, // Localized
         showBackButton: true,
@@ -290,9 +289,7 @@ class NotificationView extends GetView<NotificationController> {
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
-                  ...notificationGroup.notifications.map((notification) {
-                    return _buildNotificationCard(notification);
-                  }),
+                  ...notificationGroup.notifications.map((notification) => _buildNotificationCard(notification)),
                 ],
               );
             },
@@ -300,14 +297,11 @@ class NotificationView extends GetView<NotificationController> {
         );
       }),
     );
-  }
 
-  Widget _buildShimmerLoading() {
-    return ListView.builder(
+  Widget _buildShimmerLoading() => ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: 5,
-      itemBuilder: (context, index) {
-        return Padding(
+      itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Shimmer.fromColors(
             baseColor: Colors.grey[300]!,
@@ -320,13 +314,10 @@ class NotificationView extends GetView<NotificationController> {
               ),
             ),
           ),
-        );
-      },
+        ),
     );
-  }
 
-  Widget _buildNotificationCard(NotificationItem notification) {
-    return InkWell(
+  Widget _buildNotificationCard(NotificationItem notification) => InkWell(
       onTap: () {
         if (notification.isRead) {
           Fluttertoast.showToast(
@@ -483,5 +474,4 @@ class NotificationView extends GetView<NotificationController> {
         ),
       ),
     );
-  }
 }

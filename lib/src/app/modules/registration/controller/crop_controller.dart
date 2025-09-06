@@ -118,7 +118,7 @@ class RegCropController extends GetxController {
   Future<void> pickLocation() async {
     try {
       final location = await Get.to(
-        LandPickerView(),
+        const LandPickerView(),
         arguments: {
           'land': landCoordinates,
           if (cropCoordinates.isNotEmpty) 'crop': cropCoordinates,

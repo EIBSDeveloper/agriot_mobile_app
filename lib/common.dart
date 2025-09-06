@@ -3,29 +3,24 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import 'src/app/controller/app_controller.dart';
-import 'src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/controller/app_controller.dart';
+import 'package:argiot/src/app/utils/http/http_service.dart';
 
 class InventoryType {
-  final int id;
-  final String name;
-  final String? totalQuantity;
 
   InventoryType({required this.id, required this.name, this.totalQuantity});
 
-  factory InventoryType.fromJson(Map<String, dynamic> json) {
-    return InventoryType(
+  factory InventoryType.fromJson(Map<String, dynamic> json) => InventoryType(
       id: json['id'],
       name: json['name'],
       totalQuantity: json['total_quantity'],
     );
-  }
+  final int id;
+  final String name;
+  final String? totalQuantity;
 }
 
 class InventoryCategory {
-  final int id;
-  final String name;
-  final int inventoryTypeId;
 
   InventoryCategory({
     required this.id,
@@ -33,20 +28,17 @@ class InventoryCategory {
     required this.inventoryTypeId,
   });
 
-  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
-    return InventoryCategory(
+  factory InventoryCategory.fromJson(Map<String, dynamic> json) => InventoryCategory(
       id: json['id'],
       name: json['name'],
       inventoryTypeId: json['inventory_type_id'],
     );
-  }
+  final int id;
+  final String name;
+  final int inventoryTypeId;
 }
 
 class InventoryItem {
-  final int id;
-  final String name;
-  final String? code;
-  final String? description;
 
   InventoryItem({
     required this.id,
@@ -55,21 +47,19 @@ class InventoryItem {
     this.description,
   });
 
-  factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(
+  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(
       id: json['id'],
       name: json['name'],
       code: json['code'],
       description: json['description'],
     );
-  }
+  final int id;
+  final String name;
+  final String? code;
+  final String? description;
 }
 
 class Vendor {
-  final int id;
-  final String name;
-  final String businessName;
-  final String mobileNo;
 
   Vendor({
     required this.id,
@@ -78,20 +68,19 @@ class Vendor {
     required this.mobileNo,
   });
 
-  factory Vendor.fromJson(Map<String, dynamic> json) {
-    return Vendor(
+  factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
       id: json['id'],
       name: json['name'],
       businessName: json['business_name'] ?? '',
       mobileNo: json['mobile_no']?.toString() ?? '',
     );
-  }
+  final int id;
+  final String name;
+  final String businessName;
+  final String mobileNo;
 }
 
 class DocumentType {
-  final int id;
-  final String name;
-  final String description;
 
   DocumentType({
     required this.id,
@@ -99,29 +88,28 @@ class DocumentType {
     required this.description,
   });
 
-  factory DocumentType.fromJson(Map<String, dynamic> json) {
-    return DocumentType(
+  factory DocumentType.fromJson(Map<String, dynamic> json) => DocumentType(
       id: json['id'],
       name: json['name'],
       description: json['description'],
     );
-  }
+  final int id;
+  final String name;
+  final String description;
 }
 
 class Document {
-  final int id;
-  final String url;
-  final String categoryName;
 
   Document({required this.id, required this.url, required this.categoryName});
 
-  factory Document.fromJson(Map<String, dynamic> json) {
-    return Document(
+  factory Document.fromJson(Map<String, dynamic> json) => Document(
       id: json['id'],
       url: json['upload_document'] ?? '',
       categoryName: json['document_category']?['name'] ?? '',
     );
-  }
+  final int id;
+  final String url;
+  final String categoryName;
 }
 
 class CommonControllers extends GetxController {
@@ -129,15 +117,15 @@ class CommonControllers extends GetxController {
 
   final AppDataController appDeta = Get.put(AppDataController());
   // Inventory Type
-  var inventoryTypes = <InventoryType>[].obs;
-  var isLoadingInventoryTypes = false.obs;
+  RxList<InventoryType> inventoryTypes = <InventoryType>[].obs;
+  RxBool isLoadingInventoryTypes = false.obs;
 
   Future<void> fetchInventoryTypes() async {
     final farmerId = appDeta.userId;
     try {
       isLoadingInventoryTypes(true);
       final response = await httpService.get('/purchase_list/$farmerId/');
-      var response2 = json.decode(response.body);
+      final response2 = json.decode(response.body);
       if (response2 != null) {
         inventoryTypes.clear();
         response2.forEach((key, value) {
@@ -179,8 +167,8 @@ class CommonControllers extends GetxController {
   }
 
   // Inventory Categories
-  var inventoryCategories = <InventoryCategory>[].obs;
-  var isLoadingInventoryCategories = false.obs;
+  RxList<InventoryCategory> inventoryCategories = <InventoryCategory>[].obs;
+  RxBool isLoadingInventoryCategories = false.obs;
 
   Future<void> fetchInventoryCategories(int inventoryTypeId) async {
     try {
@@ -199,8 +187,8 @@ class CommonControllers extends GetxController {
   }
 
   // Inventory Items
-  var inventoryItems = <InventoryItem>[].obs;
-  var isLoadingInventoryItems = false.obs;
+  RxList<InventoryItem> inventoryItems = <InventoryItem>[].obs;
+  RxBool isLoadingInventoryItems = false.obs;
 
   Future<void> fetchInventoryItems(int inventoryCategoryId) async {
     try {
@@ -219,8 +207,8 @@ class CommonControllers extends GetxController {
   }
 
   // Vendors
-  var vendors = <Vendor>[].obs;
-  var isLoadingVendors = false.obs;
+  RxList<Vendor> vendors = <Vendor>[].obs;
+  RxBool isLoadingVendors = false.obs;
 
   Future<void> fetchVendors() async {
     final farmerId = appDeta.userId;
@@ -238,8 +226,8 @@ class CommonControllers extends GetxController {
   }
 
   // Document Types
-  var documentTypes = <DocumentType>[].obs;
-  var isLoadingDocumentTypes = false.obs;
+  RxList<DocumentType> documentTypes = <DocumentType>[].obs;
+  RxBool isLoadingDocumentTypes = false.obs;
 
   Future<void> fetchDocumentTypes() async {
     try {

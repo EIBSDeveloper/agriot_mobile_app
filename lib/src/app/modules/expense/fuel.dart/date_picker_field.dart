@@ -18,8 +18,7 @@ class DatePickerField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return  InputCardStyle(
+  Widget build(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
@@ -36,7 +35,6 @@ class DatePickerField extends StatelessWidget {
         validator: (value) => validator?.call(value ?? ''),
       ),
     );
-  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(

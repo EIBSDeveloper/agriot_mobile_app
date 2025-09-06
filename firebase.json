@@ -1,1 +1,22 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"agriot-df72d","appId":"1:12565808888:android:12cbd1be1f19e42148dd0d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"agriot-df72d","configurations":{"android":"1:12565808888:android:12cbd1be1f19e42148dd0d","ios":"1:12565808888:ios:38c1a4b8f9cf5fbd48dd0d"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "agriot-df72d",
+                    "appId": "1:12565808888:android:12cbd1be1f19e42148dd0d",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "agriot-df72d",
+                    "configurations": {
+                        "android": "1:12565808888:android:12cbd1be1f19e42148dd0d",
+                        "ios": "1:12565808888:ios:38c1a4b8f9cf5fbd48dd0d"
+                    }
+                }
+            }
+        }
+    }
+}

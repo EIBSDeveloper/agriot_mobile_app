@@ -10,8 +10,7 @@ class FertilizerScreen extends GetView<PurchasesAddController> {
   const FertilizerScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
        
         title:"${capitalizeFirstLetter(getType(Get.arguments['id']))} ${ 'add'.tr}",
@@ -29,7 +28,7 @@ class FertilizerScreen extends GetView<PurchasesAddController> {
               const SizedBox(height: 16),
           
               controller.buildInventoryCategoryDropdown(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               controller.buildInventoryItemDropdown(),
               const SizedBox(height: 16),
           
@@ -100,5 +99,4 @@ class FertilizerScreen extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 }

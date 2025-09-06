@@ -9,13 +9,12 @@ class LocationViewerView extends GetView<LocationViewerController> {
   const LocationViewerView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Location Viewer', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Location Viewer', showBackButton: true),
 
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         return Column(
@@ -31,7 +30,7 @@ class LocationViewerView extends GetView<LocationViewerController> {
                 ),
                 markers: {
                   Marker(
-                    markerId: MarkerId('land-location'),
+                    markerId: const MarkerId('land-location'),
                     position: LatLng(
                       controller.latitude.value,
                       controller.longitude.value,
@@ -42,11 +41,11 @@ class LocationViewerView extends GetView<LocationViewerController> {
             ),
             if (controller.address.isNotEmpty)
               Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Card(
                   child: ListTile(
-                    leading: Icon(Icons.location_on),
-                    title: Text('Approximate Address'),
+                    leading: const Icon(Icons.location_on),
+                    title: const Text('Approximate Address'),
                     subtitle: Text(controller.address.value),
                   ),
                 ),
@@ -55,7 +54,6 @@ class LocationViewerView extends GetView<LocationViewerController> {
         );
       }),
     );
-  }
 
   // void _shareLocation() {
   //   // Share.share(

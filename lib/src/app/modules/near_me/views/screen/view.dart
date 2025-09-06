@@ -12,9 +12,8 @@ class NearMeScreen extends StatelessWidget {
   NearMeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Near Me Places', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Near Me Places', showBackButton: true),
       body: Column(
         children: [
           Padding(
@@ -23,13 +22,11 @@ class NearMeScreen extends StatelessWidget {
               children: [
                 // Expanded(child: Text("Near me")),
                 Expanded(
-                  child: Obx(() {
-                    return LandDropdown(
+                  child: Obx(() => LandDropdown(
                       lands: controller.lands,
                       selectedLand: controller.selectedLand.value,
                       onChanged: (land) => controller.changeLand(land!),
-                    );
-                  }),
+                    )),
                 ),
               ],
             ),
@@ -40,25 +37,21 @@ class NearMeScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 
-  Widget _buildTabBar() {
-    return TabBar(
+  Widget _buildTabBar() => TabBar(
       controller: controller.tabController,
       onTap: controller.changeTabIndex,
       tabs: [
-        Tab(text: 'Place'),
-        Tab(text: 'Man Power'),
-        Tab(text: 'Rental'),
+        const Tab(text: 'Place'),
+        const Tab(text: 'Man Power'),
+        const Tab(text: 'Rental'),
       ],
       labelColor: Get.theme.primaryColor,
       unselectedLabelColor: Colors.grey,
       indicatorColor: Get.theme.primaryColor,
     );
-  }
 
-  Widget _buildTabView() {
-    return Obx(() {
+  Widget _buildTabView() => Obx(() {
       switch (controller.currentTabIndex.value) {
         case 0:
           return PlaceTab();
@@ -70,7 +63,6 @@ class NearMeScreen extends StatelessWidget {
           return PlaceTab();
       }
     });
-  }
 }
 //
 // screens/market_list_screen.dart
@@ -82,13 +74,12 @@ class MarketListScreen extends StatelessWidget {
   MarketListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Markets', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Markets', showBackButton: true),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: CustomSearchBar(
               hintText: 'Search market name or place',
               onChanged: (query) => controller.filterMarkets(query),
@@ -109,7 +100,6 @@ class MarketListScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 // screens/near_me/widgets/place_tab.dart
 
@@ -119,14 +109,13 @@ class PlaceTab extends StatelessWidget {
   PlaceTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(() {
+  Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       }
 
       if (controller.placeCategories.isEmpty) {
-        return Center(child: Text('No places available'));
+        return const Center(child: Text('No places available'));
       }
 
       return Column(
@@ -158,7 +147,6 @@ class PlaceTab extends StatelessWidget {
         ],
       );
     });
-  }
 }
 
 // screens/place_details_list_screen.dart
@@ -170,13 +158,12 @@ class PlaceDetailsListScreen extends StatelessWidget {
   PlaceDetailsListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: category.categoryName, showBackButton: true),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: CustomSearchBar(
               hintText: 'Search name or address',
               onChanged: (query) => controller.filterPlaceDetails(query),
@@ -196,7 +183,7 @@ class PlaceDetailsListScreen extends StatelessWidget {
                   );
 
               return ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: filteredCategory.details.length,
                 itemBuilder: (context, index) {
                   final detail = filteredCategory.details[index];
@@ -208,7 +195,6 @@ class PlaceDetailsListScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 // screens/near_me/widgets/man_power_tab.dart
@@ -219,18 +205,17 @@ class ManPowerTab extends StatelessWidget {
   ManPowerTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(() {
+  Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       }
 
       if (controller.manPowerAgents.isEmpty) {
-        return Center(child: Text('No man power agents available'));
+        return const Center(child: Text('No man power agents available'));
       }
 
       return ListView.builder(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         itemCount: controller.manPowerAgents.length,
         itemBuilder: (context, index) {
           final agent = controller.manPowerAgents[index];
@@ -242,7 +227,6 @@ class ManPowerTab extends StatelessWidget {
         },
       );
     });
-  }
 }
 
 // screens/workers_list_screen.dart
@@ -253,8 +237,7 @@ class WorkersListScreen extends StatelessWidget {
   WorkersListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: CustomAppBar(
         title: 'Workers - ${agent.name}',
@@ -266,7 +249,7 @@ class WorkersListScreen extends StatelessWidget {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               boxShadow: [
                 BoxShadow(
@@ -275,7 +258,7 @@ class WorkersListScreen extends StatelessWidget {
                   offset: Offset(0, 3),
                 ),
               ],
-              borderRadius: const BorderRadius.only(
+              borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(16),
                 bottomRight: Radius.circular(16),
               ),
@@ -336,7 +319,6 @@ class WorkersListScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 // screens/near_me/widgets/rental_tab.dart
@@ -346,14 +328,13 @@ class RentalTab extends StatelessWidget {
   RentalTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(() {
+  Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       }
 
       if (controller.rentalItems.isEmpty) {
-        return Center(child: Text('No rental items available'));
+        return const Center(child: Text('No rental items available'));
       }
 
       return ListView.builder(
@@ -371,7 +352,6 @@ class RentalTab extends StatelessWidget {
         },
       );
     });
-  }
 }
 
 // screens/rental_details_list_screen.dart
@@ -383,13 +363,12 @@ class RentalDetailsListScreen extends StatelessWidget {
   RentalDetailsListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: item.inventoryItemName, showBackButton: true),
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: CustomSearchBar(
               hintText: 'Search item name',
               onChanged: (query) => controller.filterRentalDetails(query),
@@ -398,7 +377,7 @@ class RentalDetailsListScreen extends StatelessWidget {
           Expanded(
             child: Obx(
               () => ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: controller.filteredRentalDetails.length,
                 itemBuilder: (context, index) {
                   final detail = controller.filteredRentalDetails[index];
@@ -410,5 +389,4 @@ class RentalDetailsListScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 }

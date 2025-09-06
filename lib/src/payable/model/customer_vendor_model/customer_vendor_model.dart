@@ -6,12 +6,10 @@ class VendorCustomerResponse {
 
   VendorCustomerResponse({required this.detail, required this.data});
 
-  factory VendorCustomerResponse.fromJson(Map<String, dynamic> json) {
-    return VendorCustomerResponse(
+  factory VendorCustomerResponse.fromJson(Map<String, dynamic> json) => VendorCustomerResponse(
       detail: json['detail'] ?? '',
       data: VendorCustomerData.fromJson(json['data'] ?? {}),
     );
-  }
 }
 
 class VendorCustomerData {
@@ -23,8 +21,7 @@ class VendorCustomerData {
     required this.customerReceivables,
   });
 
-  factory VendorCustomerData.fromJson(Map<String, dynamic> json) {
-    return VendorCustomerData(
+  factory VendorCustomerData.fromJson(Map<String, dynamic> json) => VendorCustomerData(
       vendorReceivables:
           (json['vendor_receivables'] ?? json['vendor_payables'] ?? [])
               .map<VendorReceivable>((e) => VendorReceivable.fromJson(e))
@@ -34,7 +31,6 @@ class VendorCustomerData {
               .map<CustomerReceivable>((e) => CustomerReceivable.fromJson(e))
               .toList(),
     );
-  }
 }
 
 // ================== VENDOR ==================
@@ -65,8 +61,7 @@ class VendorReceivable {
     required this.toolReceivables,
   });
 
-  factory VendorReceivable.fromJson(Map<String, dynamic> json) {
-    return VendorReceivable(
+  factory VendorReceivable.fromJson(Map<String, dynamic> json) => VendorReceivable(
       vendorId: json['vendor_id'] ?? 0,
       vendorName: json['vendor_name'] ?? '',
       businessName: json['business_name'] ?? '',
@@ -102,7 +97,6 @@ class VendorReceivable {
               .map<ToolReceivable>((e) => ToolReceivable.fromJson(e))
               .toList(),
     );
-  }
 }
 
 // Generic structure for all purchase types
@@ -127,8 +121,7 @@ class FuelReceivable {
     required this.toReceiveAmount,
   });
 
-  factory FuelReceivable.fromJson(Map<String, dynamic> json) {
-    return FuelReceivable(
+  factory FuelReceivable.fromJson(Map<String, dynamic> json) => FuelReceivable(
       fuelPurchaseId: json['fuel_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -138,7 +131,6 @@ class FuelReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 class SeedReceivable {
@@ -162,8 +154,7 @@ class SeedReceivable {
     required this.toReceiveAmount,
   });
 
-  factory SeedReceivable.fromJson(Map<String, dynamic> json) {
-    return SeedReceivable(
+  factory SeedReceivable.fromJson(Map<String, dynamic> json) => SeedReceivable(
       seedPurchaseId: json['seed_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -173,7 +164,6 @@ class SeedReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 class PesticideReceivable {
@@ -197,8 +187,7 @@ class PesticideReceivable {
     required this.toReceiveAmount,
   });
 
-  factory PesticideReceivable.fromJson(Map<String, dynamic> json) {
-    return PesticideReceivable(
+  factory PesticideReceivable.fromJson(Map<String, dynamic> json) => PesticideReceivable(
       pesticidePurchaseId: json['pesticide_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -208,7 +197,6 @@ class PesticideReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 class FertilizerReceivable {
@@ -232,8 +220,7 @@ class FertilizerReceivable {
     required this.toReceiveAmount,
   });
 
-  factory FertilizerReceivable.fromJson(Map<String, dynamic> json) {
-    return FertilizerReceivable(
+  factory FertilizerReceivable.fromJson(Map<String, dynamic> json) => FertilizerReceivable(
       fertilizerPurchaseId: json['fertilizer_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -243,7 +230,6 @@ class FertilizerReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 class VehicleReceivable {
@@ -267,8 +253,7 @@ class VehicleReceivable {
     required this.toReceiveAmount,
   });
 
-  factory VehicleReceivable.fromJson(Map<String, dynamic> json) {
-    return VehicleReceivable(
+  factory VehicleReceivable.fromJson(Map<String, dynamic> json) => VehicleReceivable(
       vehiclePurchaseId: json['vehicle_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -278,7 +263,6 @@ class VehicleReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 class MachineryReceivable {
@@ -302,8 +286,7 @@ class MachineryReceivable {
     required this.toReceiveAmount,
   });
 
-  factory MachineryReceivable.fromJson(Map<String, dynamic> json) {
-    return MachineryReceivable(
+  factory MachineryReceivable.fromJson(Map<String, dynamic> json) => MachineryReceivable(
       machineryPurchaseId: json['machinery_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -313,7 +296,6 @@ class MachineryReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 class ToolReceivable {
@@ -337,8 +319,7 @@ class ToolReceivable {
     required this.toReceiveAmount,
   });
 
-  factory ToolReceivable.fromJson(Map<String, dynamic> json) {
-    return ToolReceivable(
+  factory ToolReceivable.fromJson(Map<String, dynamic> json) => ToolReceivable(
       toolPurchaseId: json['tool_purchase_id'] ?? 0,
       purchaseDate: json['purchase_date'] ?? '',
       inventoryType: json['inventory_type'] ?? '',
@@ -348,7 +329,6 @@ class ToolReceivable {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toReceiveAmount: (json['toreceive_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 // ================== CUSTOMER ==================
@@ -367,8 +347,7 @@ class CustomerReceivable {
     required this.sales,
   });
 
-  factory CustomerReceivable.fromJson(Map<String, dynamic> json) {
-    return CustomerReceivable(
+  factory CustomerReceivable.fromJson(Map<String, dynamic> json) => CustomerReceivable(
       customerId: json['customer_id'] ?? 0,
       customerName: json['customer_name'] ?? '',
       shopName: json['shop_name'] ?? '',
@@ -379,7 +358,6 @@ class CustomerReceivable {
               .toList() ??
           [],
     );
-  }
 }
 
 class Sale {
@@ -403,8 +381,7 @@ class Sale {
     required this.toPayAmount,
   });
 
-  factory Sale.fromJson(Map<String, dynamic> json) {
-    return Sale(
+  factory Sale.fromJson(Map<String, dynamic> json) => Sale(
       salesId: json['sales_id'] ?? 0,
       salesDate: json['sales_date'] ?? '',
       cropId: json['crop_id'] ?? 0,
@@ -414,5 +391,4 @@ class Sale {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       toPayAmount: (json['topay_amount'] ?? 0).toDouble(),
     );
-  }
 }

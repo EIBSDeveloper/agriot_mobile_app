@@ -13,7 +13,7 @@ class ResgisterController extends GetxController {
   ResgisterController(){
     pageIndex.value = Get.arguments ?? 0;
   }
-  List<Widget> pages = [KycView(), LandView(), CropView()];
+  List<Widget> pages = [const KycView(), LandView(), const CropView()];
   List<String> title = ['Farmer Details', 'Land Details', 'Crop Details'];
 
   moveNextPage() async {

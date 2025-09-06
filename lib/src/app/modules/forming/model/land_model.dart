@@ -19,8 +19,7 @@ class Land {
     required this.crops,
   });
 
-  factory Land.fromJson(Map<String, dynamic> json) {
-    return Land(
+  factory Land.fromJson(Map<String, dynamic> json) => Land(
       id: json['id'],
       name: json['name'],
       // village: Village.fromJson(json['village']),
@@ -29,7 +28,6 @@ class Land {
       landCropCount: json['land_crop_count'],
       crops: List<CropCardModel>.from(json['crops'].map((x) => CropCardModel.fromJson(x))),
     );
-  }
 }
 
 class Village {
@@ -38,9 +36,7 @@ class Village {
 
   Village({required this.id, required this.name});
 
-  factory Village.fromJson(Map<String, dynamic> json) {
-    return Village(id: json['id'], name: json['name']);
-  }
+  factory Village.fromJson(Map<String, dynamic> json) => Village(id: json['id'], name: json['name']);
 }
 
 class MeasurementUnit {
@@ -49,7 +45,5 @@ class MeasurementUnit {
 
   MeasurementUnit({required this.id, required this.name});
 
-  factory MeasurementUnit.fromJson(Map<String, dynamic> json) {
-    return MeasurementUnit(id: json['id'], name: json['name']);
-  }
+  factory MeasurementUnit.fromJson(Map<String, dynamic> json) => MeasurementUnit(id: json['id'], name: json['name']);
 }

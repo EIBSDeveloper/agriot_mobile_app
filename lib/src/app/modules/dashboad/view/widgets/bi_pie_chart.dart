@@ -7,9 +7,8 @@ class BiPieChart extends StatelessWidget {
   const BiPieChart({super.key, required this.chartData});
 
   @override
-  Widget build(BuildContext context) {
-    return SfCircularChart(
-      legend: Legend(
+  Widget build(BuildContext context) => SfCircularChart(
+      legend: const Legend(
         isVisible: false,
         position: LegendPosition.top,
         overflowMode: LegendItemOverflowMode.wrap,
@@ -21,7 +20,7 @@ class BiPieChart extends StatelessWidget {
           xValueMapper: (ChartData d, _) => d.label,
           yValueMapper: (ChartData d, _) => d.value,
           pointColorMapper: (ChartData d, _) => d.color,
-          dataLabelSettings: DataLabelSettings(
+          dataLabelSettings: const DataLabelSettings(
             isVisible: false,
             labelPosition: ChartDataLabelPosition.outside,
             textStyle: TextStyle(fontSize: 12),
@@ -29,7 +28,6 @@ class BiPieChart extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class ChartData {

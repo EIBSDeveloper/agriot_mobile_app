@@ -34,8 +34,7 @@ class FuelInventoryModel {
     required this.documents,
   });
 
-  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) {
-    return FuelInventoryModel(
+  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) => FuelInventoryModel(
       fuelId: json['fuel_id'] ?? 0,
       quantity: (json['quantity'] ?? 0.0).toDouble(),
       purchaseAmount: (json['purchase_amount'] ?? 0.0).toDouble(),
@@ -52,7 +51,6 @@ class FuelInventoryModel {
           .map((doc) => DocumentCategory.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class Farmer {
@@ -61,9 +59,7 @@ class Farmer {
 
   Farmer({required this.id, required this.name});
 
-  factory Farmer.fromJson(Map<String, dynamic> json) {
-    return Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class InventoryItem {
@@ -72,9 +68,7 @@ class InventoryItem {
 
   InventoryItem({required this.id, required this.name});
 
-  factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class InventoryType {
@@ -83,9 +77,7 @@ class InventoryType {
 
   InventoryType({required this.id, required this.name});
 
-  factory InventoryType.fromJson(Map<String, dynamic> json) {
-    return InventoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory InventoryType.fromJson(Map<String, dynamic> json) => InventoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class InventoryCategory {
@@ -94,9 +86,7 @@ class InventoryCategory {
 
   InventoryCategory({required this.id, required this.name});
 
-  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
-    return InventoryCategory(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory InventoryCategory.fromJson(Map<String, dynamic> json) => InventoryCategory(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Vendor {
@@ -105,9 +95,7 @@ class Vendor {
 
   Vendor({required this.id, required this.name});
 
-  factory Vendor.fromJson(Map<String, dynamic> json) {
-    return Vendor(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class DocumentCategory {
@@ -116,14 +104,12 @@ class DocumentCategory {
 
   DocumentCategory({required this.categoryId, required this.documents});
 
-  factory DocumentCategory.fromJson(Map<String, dynamic> json) {
-    return DocumentCategory(
+  factory DocumentCategory.fromJson(Map<String, dynamic> json) => DocumentCategory(
       categoryId: json['category_id'] ?? 0,
       documents: (json['documents'] as List<dynamic>? ?? [])
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class Document {
@@ -136,15 +122,13 @@ class Document {
     required this.uploadDocument,
   });
 
-  factory Document.fromJson(Map<String, dynamic> json) {
-    return Document(
+  factory Document.fromJson(Map<String, dynamic> json) => Document(
       id: json['id'] ?? 0,
       documentCategory: DocumentCategoryDetail.fromJson(
         json['document_category'] ?? {},
       ),
       uploadDocument: json['upload_document'] ?? '',
     );
-  }
 }
 
 class DocumentCategoryDetail {
@@ -153,12 +137,10 @@ class DocumentCategoryDetail {
 
   DocumentCategoryDetail({required this.id, required this.name});
 
-  factory DocumentCategoryDetail.fromJson(Map<String, dynamic> json) {
-    return DocumentCategoryDetail(
+  factory DocumentCategoryDetail.fromJson(Map<String, dynamic> json) => DocumentCategoryDetail(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
     );
-  }
 }
 
 class FuelInventoryRepository {
@@ -258,8 +240,7 @@ class FuelInventoryController extends GetxController {
     }
   }
 
-  Future<bool> showDeleteConfirmation() async {
-    return await Get.dialog(
+  Future<bool> showDeleteConfirmation() async => await Get.dialog(
           AlertDialog(
             title: Text('confirm_delete'.tr),
             content: Text('delete_fuel_confirmation'.tr),
@@ -276,7 +257,6 @@ class FuelInventoryController extends GetxController {
           ),
         ) ??
         false;
-  }
 
   void navigateToEditScreen() {
     if (fuelInventory.value != null) {
@@ -303,12 +283,11 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
   const FuelInventoryView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.error.value.isNotEmpty) {
@@ -317,7 +296,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('error_loading_data'.tr),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: controller.loadFuelInventoryDetail,
                   child: Text('retry'.tr),
@@ -335,11 +314,9 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
         return _buildFuelDetailContent(fuel);
       }),
     );
-  }
 
-  Widget _buildFuelDetailContent(FuelInventoryModel fuel) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+  Widget _buildFuelDetailContent(FuelInventoryModel fuel) => SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -349,7 +326,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
               Text(fuel.inventoryItem.name, style: Get.textTheme.headlineSmall),
             ],
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Basic Information
           _buildInfoRow('date'.tr, fuel.date),
@@ -359,27 +336,25 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
           _buildInfoRow('purchase_amount'.tr, '${fuel.purchaseAmount} ₹'),
           _buildInfoRow('quantity'.tr, '${fuel.quantity} L'),
 
-          Divider(height: 32),
+          const Divider(height: 32),
 
           // Uploaded Documents
           Text('uploaded_documents'.tr, style: Get.textTheme.titleMedium),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildDocumentsSection(fuel),
 
-          Divider(height: 32),
+          const Divider(height: 32),
 
           // Description
           Text('description'.tr, style: Get.textTheme.titleMedium),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(fuel.description, style: Get.textTheme.bodyLarge),
         ],
       ),
     );
-  }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+  Widget _buildInfoRow(String label, String value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -388,7 +363,6 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
         ],
       ),
     );
-  }
 
   Widget _buildDocumentsSection(FuelInventoryModel fuel) {
     final allDocuments = fuel.documents
@@ -402,8 +376,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
     return Wrap(
       spacing: 16,
       runSpacing: 16,
-      children: allDocuments.map((document) {
-        return GestureDetector(
+      children: allDocuments.map((document) => GestureDetector(
           onTap: () => controller.viewDocument(document.uploadDocument),
           child: Container(
             width: 100,
@@ -422,7 +395,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Text(
                     document.documentCategory.name,
                     style: Get.textTheme.labelSmall,
@@ -434,8 +407,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
               ],
             ),
           ),
-        );
-      }).toList(),
+        )).toList(),
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:argiot/src/app/bindings/app_binding.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/registration/controller/kyc_controller.dart';
 import 'package:argiot/src/app/modules/registration/model/address_model.dart';
 import 'package:argiot/src/app/modules/registration/model/document_model.dart';
@@ -17,29 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import 'src/app/modules/near_me/views/widget/widgets.dart';
-
 class LandDetails {
-  final int id;
-  final String farmer;
-  final String name;
-  final String measurementValue;
-  final String measurementUnit;
-  final String soilType;
-  final String country;
-  final String state;
-  final String city;
-  final String taluk;
-  final String village;
-  final String doorNo;
-  final String locations;
-  final double latitude;
-  final double longitude;
-  final String pattaNumber;
-  final String? description;
-  final int status;
-  final List<SurveyDetail> surveyDetails;
-  final List<LandDocument> documents;
 
   LandDetails({
     required this.id,
@@ -64,8 +44,7 @@ class LandDetails {
     required this.documents,
   });
 
-  factory LandDetails.fromJson(Map<String, dynamic> json) {
-    return LandDetails(
+  factory LandDetails.fromJson(Map<String, dynamic> json) => LandDetails(
       id: json['id'],
       farmer: json['farmer'],
       name: json['name'],
@@ -91,13 +70,29 @@ class LandDetails {
           .map((e) => LandDocument.fromJson(e))
           .toList(),
     );
-  }
+  final int id;
+  final String farmer;
+  final String name;
+  final String measurementValue;
+  final String measurementUnit;
+  final String soilType;
+  final String country;
+  final String state;
+  final String city;
+  final String taluk;
+  final String village;
+  final String doorNo;
+  final String locations;
+  final double latitude;
+  final double longitude;
+  final String pattaNumber;
+  final String? description;
+  final int status;
+  final List<SurveyDetail> surveyDetails;
+  final List<LandDocument> documents;
 }
 
 class LandDocument {
-  final int id;
-  final String documentType;
-  final String documentUrl;
 
   LandDocument({
     required this.id,
@@ -105,13 +100,14 @@ class LandDocument {
     required this.documentUrl,
   });
 
-  factory LandDocument.fromJson(Map<String, dynamic> json) {
-    return LandDocument(
+  factory LandDocument.fromJson(Map<String, dynamic> json) => LandDocument(
       id: json['id'],
       documentType: json['document_type'],
       documentUrl: json['document_url'],
     );
-  }
+  final int id;
+  final String documentType;
+  final String documentUrl;
 }
 
 class LandRepository {
@@ -322,7 +318,7 @@ class LandEditController extends GetxController {
       _populateFormFields(landDetails);
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'Failed to load land details: ${e.toString()}',
+        msg: 'Failed to load land details: $e',
       );
     } finally {
       isLoadingLandDetails(false);
@@ -352,7 +348,7 @@ class LandEditController extends GetxController {
   Future<void> pickLocation() async {
     try {
       final location = await Get.to(
-        LocationPickerView(),
+        const LocationPickerView(),
         binding: LocationViewerBinding(),
       );
       if (location != null) {
@@ -419,7 +415,7 @@ class LandEditController extends GetxController {
       final result = await _landRepository.getLandUnits();
       landUnits.assignAll(result);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to load land units: ${e.toString()}');
+      Fluttertoast.showToast(msg: 'Failed to load land units: $e');
     } finally {
       isLoadingLandUnits(false);
     }
@@ -431,7 +427,7 @@ class LandEditController extends GetxController {
       final result = await _landRepository.getSoilTypes();
       soilTypes.assignAll(result);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to load soil types: ${e.toString()}');
+      Fluttertoast.showToast(msg: 'Failed to load soil types: $e');
     } finally {
       isLoadingSoilTypes(false);
     }
@@ -442,7 +438,7 @@ class LandEditController extends GetxController {
       isLoadingAreaUnits(true);
       // Implement area units loading
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to load area units: ${e.toString()}');
+      Fluttertoast.showToast(msg: 'Failed to load area units: $e');
     } finally {
       isLoadingAreaUnits(false);
     }
@@ -500,7 +496,7 @@ class LandEditController extends GetxController {
       Get.back(result: true); // Return success to previous screen
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'Failed to update land: ${e.toString()}',
+        msg: 'Failed to update land: $e',
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
       );
@@ -523,18 +519,17 @@ class LandEditView extends GetView<LandEditController> {
   const LandEditView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
       
         title: 'land_details'.tr,
       ),
       body: Obx(() {
         if (controller.isLoadingLandDetails.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Form(
             key: controller.formKey,
             child: Column(
@@ -546,14 +541,14 @@ class LandEditView extends GetView<LandEditController> {
                   validator: (value) =>
                       value!.isEmpty ? 'required_field'.tr : null,
                 ),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildTextField(
                   controller: controller.pattaNoController,
                   label: '${'patta_number'.tr} *',
                   validator: (value) =>
                       value!.isEmpty ? 'required_field'.tr : null,
                 ),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 Row(
                   children: [
                     Expanded(
@@ -566,13 +561,13 @@ class LandEditView extends GetView<LandEditController> {
                         keyboardType: TextInputType.number,
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       flex: 2,
                       child: SearchableDropdown<AppDropdownItem>(
                         label: '${'unit'.tr} *',
                         items: controller.landUnits,
-                        displayItem: (value) => value.name.toString(),
+                        displayItem: (value) => value.name,
                         selectedItem: controller.selectedLandUnit.value,
                         onChanged: (value) =>
                             controller.selectedLandUnit.value = value,
@@ -582,28 +577,28 @@ class LandEditView extends GetView<LandEditController> {
                     ),
                   ],
                 ),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 SearchableDropdown<AppDropdownItem>(
                   label: '${'soil_type'.tr} *',
                   items: controller.soilTypes,
                   selectedItem: controller.selectedSoilType.value,
                   onChanged: (value) =>
                       controller.selectedSoilType.value = value,
-                  displayItem: (value) => value.name.toString(),
+                  displayItem: (value) => value.name,
                   validator: (value) =>
                       value == null ? 'required_field'.tr : null,
                 ),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildCountryDropdown(),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildStateDropdown(),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildCityDropdown(),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildTalukDropdown(),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildVillageDropdown(),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildTextField(
                   controller: controller.locationController,
                   label: '${'location_coordinates'.tr} *',
@@ -612,11 +607,11 @@ class LandEditView extends GetView<LandEditController> {
                   readOnly: true,
                   onTap: controller.pickLocation,
                 ),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildSurveyDetailsSection(),
-                SizedBox(height: 14),
+                const SizedBox(height: 14),
                 _buildDocumentsSection(),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 _buildSubmitButton(),
               ],
             ),
@@ -624,10 +619,8 @@ class LandEditView extends GetView<LandEditController> {
         );
       }),
     );
-  }
 
-  Widget _buildCountryDropdown() {
-    return Obx(() {
+  Widget _buildCountryDropdown() => Obx(() {
       if (controller.isLoadingCountries.value) {
         return _buildLoadingDropdown('Loading countries...');
       }
@@ -641,10 +634,8 @@ class LandEditView extends GetView<LandEditController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
-  Widget _buildStateDropdown() {
-    return Obx(() {
+  Widget _buildStateDropdown() => Obx(() {
       if (controller.selectedCountry.value == null) {
         return _buildDisabledDropdown('Select country first');
       }
@@ -661,11 +652,9 @@ class LandEditView extends GetView<LandEditController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
   // Update similarly for _buildCityDropdown, _buildTalukDropdown, _buildVillageDropdown
-  Widget _buildCityDropdown() {
-    return Obx(() {
+  Widget _buildCityDropdown() => Obx(() {
       if (controller.selectedState.value == null) {
         return _buildDisabledDropdown('Select state first');
       }
@@ -681,10 +670,8 @@ class LandEditView extends GetView<LandEditController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
-  Widget _buildTalukDropdown() {
-    return Obx(() {
+  Widget _buildTalukDropdown() => Obx(() {
       if (controller.selectedCity.value == null) {
         return _buildDisabledDropdown('Select city first');
       }
@@ -701,10 +688,8 @@ class LandEditView extends GetView<LandEditController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
-  Widget _buildVillageDropdown() {
-    return Obx(() {
+  Widget _buildVillageDropdown() => Obx(() {
       if (controller.selectedTaluk.value == null) {
         return _buildDisabledDropdown('Select taluk first');
       }
@@ -721,10 +706,8 @@ class LandEditView extends GetView<LandEditController> {
         validator: (value) => value == null ? 'Required field' : null,
       );
     });
-  }
 
-  Widget _buildLoadingDropdown(String text) {
-    return Container(
+  Widget _buildLoadingDropdown(String text) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -741,7 +724,7 @@ class LandEditView extends GetView<LandEditController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(text),
-            SizedBox(
+            const SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
@@ -750,10 +733,8 @@ class LandEditView extends GetView<LandEditController> {
         ),
       ),
     );
-  }
 
-  Widget _buildDisabledDropdown(String text) {
-    return Container(
+  Widget _buildDisabledDropdown(String text) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -770,8 +751,8 @@ class LandEditView extends GetView<LandEditController> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(text),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Icon(
                 Icons.keyboard_arrow_down_outlined,
                 color: Colors.grey,
@@ -781,21 +762,19 @@ class LandEditView extends GetView<LandEditController> {
         ),
       ),
     );
-  }
 
-  Widget _buildSurveyDetailsSection() {
-    return Column(
+  Widget _buildSurveyDetailsSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Survey Details',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: controller.addSurveyItem,
               tooltip: 'Add Survey Detail',
             ),
@@ -803,7 +782,7 @@ class LandEditView extends GetView<LandEditController> {
         ),
         Obx(() {
           if (controller.surveyItems.isEmpty) {
-            return Padding(
+            return const Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 'No survey details added',
@@ -813,38 +792,34 @@ class LandEditView extends GetView<LandEditController> {
           }
           return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: controller.surveyItems.length,
-            itemBuilder: (context, index) {
-              return SurveyItemWidget(
+            itemBuilder: (context, index) => SurveyItemWidget(
                 index: index,
                 item: controller.surveyItems[index],
                 areaUnits: controller.landUnits,
                 onRemove: () => controller.removeSurveyItem(index),
                 onChanged: (item) => controller.surveyItems[index] = item,
-              );
-            },
+              ),
           );
         }),
       ],
     );
-  }
 
-  Widget _buildDocumentsSection() {
-    return Padding(
-      padding: EdgeInsets.all(16),
+  Widget _buildDocumentsSection() => Padding(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Land Documents',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 onPressed: controller.addDocumentItem,
                 tooltip: 'Add Document',
               ),
@@ -852,7 +827,7 @@ class LandEditView extends GetView<LandEditController> {
           ),
           Obx(() {
             if (controller.documentItems.isEmpty) {
-              return Padding(
+              return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 child: Text(
                   'No documents added',
@@ -862,34 +837,29 @@ class LandEditView extends GetView<LandEditController> {
             }
             return ListView.builder(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.documentItems.length,
-              itemBuilder: (context, index) {
-                return DocumentItemWidget(
+              itemBuilder: (context, index) => DocumentItemWidget(
                   index: index,
                   item: controller.documentItems[index],
                   documentTypes: controller.documentTypes,
                   onRemove: () => controller.removeDocumentItem(index),
                   onChanged: (item) => controller.documentItems[index] = item,
                   onPickDocument: () => controller.pickDocument(index),
-                );
-              },
+                ),
             );
           }),
         ],
       ),
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return Obx(() {
-      return ElevatedButton(
+  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
         onPressed: controller.isSubmitting.value ? null : controller.submitForm,
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
         ),
         child: controller.isSubmitting.value
-            ? SizedBox(
+            ? const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -897,10 +867,8 @@ class LandEditView extends GetView<LandEditController> {
                   color: Colors.white,
                 ),
               )
-            : Text('Save Land Details'),
-      );
-    });
-  }
+            : const Text('Save Land Details'),
+      ));
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -909,8 +877,7 @@ class LandEditView extends GetView<LandEditController> {
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) {
-    return Container(
+  }) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -923,7 +890,7 @@ class LandEditView extends GetView<LandEditController> {
           labelText: label,
           border: InputBorder.none,
           isDense: true,
-          suffixIcon: readOnly ? Icon(Icons.location_on) : null,
+          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
         ),
         validator: validator,
         keyboardType: keyboardType,
@@ -931,5 +898,4 @@ class LandEditView extends GetView<LandEditController> {
         onTap: onTap,
       ),
     );
-  }
 }

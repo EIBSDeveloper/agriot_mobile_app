@@ -51,8 +51,7 @@ class ProfileModel {
     required this.subscriptions,
   });
 
-  factory ProfileModel.fromJson(Map<String, dynamic> json) {
-    return ProfileModel(
+  factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       phone: json['phone'] ?? '',
@@ -79,7 +78,6 @@ class ProfileModel {
         (json['subscriptions'] ?? []).map((x) => Subscription.fromJson(x))
       ),
     );
-  }
 }
 
 class Subscription {
@@ -113,8 +111,7 @@ class Subscription {
     required this.packagePercentage,
   });
 
-  factory Subscription.fromJson(Map<String, dynamic> json) {
-    return Subscription(
+  factory Subscription.fromJson(Map<String, dynamic> json) => Subscription(
       packageName: json['package_name'] ?? '',
       packageDuration: json['package_duration'] ?? '',
       packageValidity: json['package_validity'] ?? 0,
@@ -129,5 +126,4 @@ class Subscription {
       packageOffer: json['package_offer'] ?? false,
       packagePercentage: json['package_percentage'] ?? 0,
     );
-  }
 }

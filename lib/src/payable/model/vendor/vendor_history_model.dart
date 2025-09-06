@@ -23,8 +23,7 @@ class VendorPayableHistoryModel {
     required this.createdAt,
   });
 
-  factory VendorPayableHistoryModel.fromJson(Map<String, dynamic> json) {
-    return VendorPayableHistoryModel(
+  factory VendorPayableHistoryModel.fromJson(Map<String, dynamic> json) => VendorPayableHistoryModel(
       id: json['id'] ?? 0,
       balance: (json['balance'] ?? 0).toDouble(),
       paid: (json['paid'] ?? 0).toDouble(),
@@ -36,7 +35,6 @@ class VendorPayableHistoryModel {
       status: json['status'] ?? 0,
       createdAt: json['created_at'] ?? '',
     );
-  }
 
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -77,8 +75,7 @@ class VendorReceivableHistoryModel {
     required this.createdAt,
   });
 
-  factory VendorReceivableHistoryModel.fromJson(Map<String, dynamic> json) {
-    return VendorReceivableHistoryModel(
+  factory VendorReceivableHistoryModel.fromJson(Map<String, dynamic> json) => VendorReceivableHistoryModel(
       id: json['id'] ?? 0,
       balance: (json['balance'] ?? 0).toDouble(),
       received: (json['received'] ?? 0).toDouble(),
@@ -90,7 +87,6 @@ class VendorReceivableHistoryModel {
       status: json['status'] ?? 0,
       createdAt: json['created_at'] ?? '',
     );
-  }
 
   Map<String, dynamic> toJson() => {
     'id': id,

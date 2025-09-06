@@ -24,9 +24,8 @@ class LandCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+  Widget build(BuildContext context) => AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       // margin: EdgeInsets.only(bottom: 4),
       child: Card(
         elevation: 0,
@@ -38,7 +37,7 @@ class LandCard extends StatelessWidget {
             InkWell(
               onTap: onTap,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   children: [
                     // Left side: Name and count
@@ -50,13 +49,13 @@ class LandCard extends StatelessWidget {
                             children: [
                               Text(
                                 land.name,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   // color: TEc
                                 ),
                               ),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 '(${land.landCropCount})',
                                 style: TextStyle(
@@ -66,10 +65,10 @@ class LandCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             '${land.measurementValue} ${land.measurementUnit.name}',
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ],
                       ),
@@ -97,13 +96,13 @@ class LandCard extends StatelessWidget {
             ),
 
             if (isExpanded) ...[
-              Divider(height: 1),
+              const Divider(height: 1),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -112,7 +111,7 @@ class LandCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     ...land.crops.map(
                       (crop) => InkWell(
                         onTap: () {
@@ -156,5 +155,4 @@ refresh;
         ),
       ),
     );
-  }
 }

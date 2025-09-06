@@ -66,8 +66,7 @@ class PurchaseList extends StatelessWidget {
     );
   }
 
-  Widget _formatDate(DateTime date) {
-    return Column(
+  Widget _formatDate(DateTime date) => Column(
       children: [
         Text(
           _getMonthName(date.month),
@@ -86,7 +85,6 @@ class PurchaseList extends StatelessWidget {
         ),
       ],
     );
-  }
 
   String _getMonthName(int month) {
     const months = [

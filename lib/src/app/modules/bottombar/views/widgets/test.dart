@@ -14,8 +14,7 @@ class ProfileAppBar extends GetView<UserProfileController>
   Size get preferredSize => const Size.fromHeight(60);
 
   @override
-  Widget build(BuildContext context) {
-    return AppBar(
+  Widget build(BuildContext context) => AppBar(
       backgroundColor: const Color.fromARGB(223, 229, 235, 209),
       title: SizedBox(
         height: 40,
@@ -44,7 +43,6 @@ class ProfileAppBar extends GetView<UserProfileController>
         ),
       ],
     );
-  }
 
   void showLanguageDialog() {
     Locale currentLocale = Get.locale ?? const Locale('en', 'US');
@@ -53,8 +51,7 @@ class ProfileAppBar extends GetView<UserProfileController>
     Get.defaultDialog(
       title: 'choose_language'.tr,
       content: StatefulBuilder(
-        builder: (context, setState) {
-          return Column(
+        builder: (context, setState) => Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               RadioListTile(
@@ -88,8 +85,7 @@ class ProfileAppBar extends GetView<UserProfileController>
                 },
               ),
             ],
-          );
-        },
+          ),
       ),
     );
   }
@@ -97,10 +93,11 @@ class ProfileAppBar extends GetView<UserProfileController>
 class NotificationIconButton extends StatelessWidget {
   final NotificationController controller = Get.put(NotificationController());
 
+   NotificationIconButton({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      final unread = controller.unread_notifications.value;
+  Widget build(BuildContext context) => Obx(() {
+      final unread = controller.unreadNotifications.value;
 
       return Stack(
         clipBehavior: Clip.none,
@@ -139,5 +136,4 @@ class NotificationIconButton extends StatelessWidget {
             ),
         ],
       );
-    });
-  }}
+    });}

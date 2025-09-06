@@ -7,26 +7,22 @@ class Home extends GetView<BottomBarContoller> {
   const Home({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: ProfileAppBar(),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const ProfileAppBar(),
       body: SafeArea(
         child: PageView.builder(
           controller: controller.pageController,
           itemCount: controller.pages.length,
-          itemBuilder: (context, index) {
-            return controller.pages[index];
-          },
+          itemBuilder: (context, index) => controller.pages[index],
           onPageChanged: (index) {
             controller.selectedIndex.value = index;
           },
         ),
       ),
-      bottomNavigationBar: Obx(() {
-        return Container(
+      bottomNavigationBar: Obx(() => Container(
           decoration: BoxDecoration(
             color: Get.theme.colorScheme.primaryContainer.withAlpha(180),
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
             ),
@@ -45,13 +41,13 @@ class Home extends GetView<BottomBarContoller> {
                   child: Container(
                     height: 60,
 
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     // margin: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: isSelected
                           ? Get.theme.primaryColor.withAlpha(180)
                           : Colors.transparent,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                       
@@ -67,8 +63,6 @@ class Home extends GetView<BottomBarContoller> {
               );
             }),
           ),
-        );
-      }),
+        )),
     );
-  }
 }

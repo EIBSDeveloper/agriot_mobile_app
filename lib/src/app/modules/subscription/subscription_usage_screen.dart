@@ -158,8 +158,7 @@ class SubscriptionUsageScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUsageItem(String title, int used, int total) {
-    return Padding(
+  Widget _buildUsageItem(String title, int used, int total) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,5 +166,4 @@ class SubscriptionUsageScreen extends StatelessWidget {
         children: [Text(title), Text('${(total>used)?total-used:0} ')],
       ),
     );
-  }
 }

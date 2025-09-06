@@ -9,15 +9,13 @@ class LandWithSurvey {
     required this.surveyDetails,
   });
 
-  factory LandWithSurvey.fromJson(Map<String, dynamic> json) {
-    return LandWithSurvey(
+  factory LandWithSurvey.fromJson(Map<String, dynamic> json) => LandWithSurvey(
       landId: json['land_id'],
       landName: json['land_name'],
       surveyDetails: (json['survey_details'] as List)
           .map((item) => SurveyDetail.fromJson(item))
           .toList(),
     );
-  }
 
   @override
   String toString() => landName;
@@ -66,11 +64,11 @@ class LandDetail {
   final double measurementValue;
   final MeasurementUnit measurementUnit;
   final SoilType? soilType;
-  final Country country;
-  final State state;
-  final City city;
-  final Taluk taluk;
-  final Village village;
+  // final Country country;
+  // final State state;
+  // final City city;
+  // final Taluk taluk;
+  // final Village village;
   final String doorNo;
   final String locations;
   final double latitude;
@@ -95,11 +93,11 @@ class LandDetail {
     required this.measurementValue,
     required this.measurementUnit,
     this.soilType,
-    required this.country,
-    required this.state,
-    required this.city,
-    required this.taluk,
-    required this.village,
+    // required this.country,
+    // required this.state,
+    // required this.city,
+    // required this.taluk,
+    // required this.village,
     required this.doorNo,
     required this.locations,
     required this.latitude,
@@ -119,18 +117,17 @@ class LandDetail {
     required this.documents,
   });
 
-  factory LandDetail.fromJson(Map<String, dynamic> json) {
-    return LandDetail(
+  factory LandDetail.fromJson(Map<String, dynamic> json) => LandDetail(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       measurementValue: (json['measurement_value'] ?? 0).toDouble(),
       measurementUnit: MeasurementUnit.fromJson(json['measurement_unit'] ?? {}),
       soilType: SoilType.fromJson(json['soil_type'] ?? {}),
-      country: Country.fromJson(json['country'] ?? {}),
-      state: State.fromJson(json['state'] ?? {}),
-      city: City.fromJson(json['city'] ?? {}),
-      taluk: Taluk.fromJson(json['taluk'] ?? {}),
-      village: Village.fromJson(json['village'] ?? {}),
+      // country: Country.fromJson(json['country'] ?? {}),
+      // state: State.fromJson(json['state'] ?? {}),
+      // city: City.fromJson(json['city'] ?? {}),
+      // taluk: Taluk.fromJson(json['taluk'] ?? {}),
+      // village: Village.fromJson(json['village'] ?? {}),
       doorNo: json['door_no'] ?? '',
       locations: json['locations'] ?? '',
       latitude: (json['latitude'] ?? 0.0).toDouble(),
@@ -153,7 +150,6 @@ class LandDetail {
           [],
       documents: json['documents'] ?? [],
     );
-  }
 }
 
 class SoilType {
@@ -162,9 +158,7 @@ class SoilType {
 
   SoilType({required this.id, required this.name});
 
-  factory SoilType.fromJson(Map<String, dynamic> json) {
-    return SoilType(id: json['id'], name: json['name']);
-  }
+  factory SoilType.fromJson(Map<String, dynamic> json) => SoilType(id: json['id'], name: json['name']);
 }
 
 class MeasurementUnit {
@@ -173,9 +167,7 @@ class MeasurementUnit {
 
   MeasurementUnit({required this.id, required this.name});
 
-  factory MeasurementUnit.fromJson(Map<String, dynamic> json) {
-    return MeasurementUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory MeasurementUnit.fromJson(Map<String, dynamic> json) => MeasurementUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Country {
@@ -184,9 +176,7 @@ class Country {
 
   Country({required this.id, required this.name});
 
-  factory Country.fromJson(Map<String, dynamic> json) {
-    return Country(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Country.fromJson(Map<String, dynamic> json) => Country(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class State {
@@ -195,9 +185,7 @@ class State {
 
   State({required this.id, required this.name});
 
-  factory State.fromJson(Map<String, dynamic> json) {
-    return State(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory State.fromJson(Map<String, dynamic> json) => State(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class City {
@@ -206,9 +194,7 @@ class City {
 
   City({required this.id, required this.name});
 
-  factory City.fromJson(Map<String, dynamic> json) {
-    return City(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory City.fromJson(Map<String, dynamic> json) => City(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Taluk {
@@ -217,9 +203,7 @@ class Taluk {
 
   Taluk({required this.id, required this.name});
 
-  factory Taluk.fromJson(Map<String, dynamic> json) {
-    return Taluk(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Taluk.fromJson(Map<String, dynamic> json) => Taluk(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Village {
@@ -228,9 +212,7 @@ class Village {
 
   Village({required this.id, required this.name});
 
-  factory Village.fromJson(Map<String, dynamic> json) {
-    return Village(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Village.fromJson(Map<String, dynamic> json) => Village(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class CreatedBy {
@@ -238,9 +220,7 @@ class CreatedBy {
 
   CreatedBy({required this.id});
 
-  factory CreatedBy.fromJson(Map<String, dynamic> json) {
-    return CreatedBy(id: json['id'] ?? 0);
-  }
+  factory CreatedBy.fromJson(Map<String, dynamic> json) => CreatedBy(id: json['id'] ?? 0);
 }
 
 class TranslateJson {
@@ -254,11 +234,9 @@ class TranslateJson {
     required this.description,
   });
 
-  factory TranslateJson.fromJson(Map<String, dynamic> json) {
-    return TranslateJson(
+  factory TranslateJson.fromJson(Map<String, dynamic> json) => TranslateJson(
       name: Map<String, dynamic>.from(json['name'] ?? {}),
       doorNo: Map<String, dynamic>.from(json['door_no'] ?? {}),
       description: Map<String, dynamic>.from(json['description'] ?? {}),
     );
-  }
 }

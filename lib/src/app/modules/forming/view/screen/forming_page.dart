@@ -12,11 +12,10 @@ class FormingView extends GetView<FormingController> {
   const FormingView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.error.isNotEmpty) {
@@ -36,7 +35,7 @@ class FormingView extends GetView<FormingController> {
                 child: Row(
                   children: [
                     TitleText("Lands".tr),
-                    Spacer(),
+                    const Spacer(),
                     InkWell(
                       onTap: () {
                         Get.toNamed(Routes.landMapView);
@@ -91,8 +90,7 @@ class FormingView extends GetView<FormingController> {
             showDefaultGetXDialog("Land");
           }
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
-  }
 }

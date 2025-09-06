@@ -19,8 +19,7 @@ class InventoryModel {
     required this.seeds,
   });
 
-  factory InventoryModel.fromJson(Map<String, dynamic> json) {
-    return InventoryModel(
+  factory InventoryModel.fromJson(Map<String, dynamic> json) => InventoryModel(
       fuel: InventoryFuel.fromJson(json['fuel']),
       vehicle: InventoryVehicle.fromJson(json['vehicle']),
       machinery: InventoryMachinery.fromJson(json['machinery']),
@@ -29,7 +28,6 @@ class InventoryModel {
       fertilizers: InventoryFertilizers.fromJson(json['fertilizers']),
       seeds: InventorySeeds.fromJson(json['seeds']),
     );
-  }
 }
 
 class InventoryFuel {
@@ -39,12 +37,10 @@ class InventoryFuel {
 
   InventoryFuel({required this.totalQuantity,required this.id});
 
-  factory InventoryFuel.fromJson(Map<String, dynamic> json) {
-    return InventoryFuel(
+  factory InventoryFuel.fromJson(Map<String, dynamic> json) => InventoryFuel(
       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
       id: json['id'],
     );
-  }
 }
 
 class InventoryVehicle {
@@ -52,12 +48,10 @@ class InventoryVehicle {
  final int id;
   InventoryVehicle({required this.totalFuelCapacity,required this.id});
 
-  factory InventoryVehicle.fromJson(Map<String, dynamic> json) {
-    return InventoryVehicle(
+  factory InventoryVehicle.fromJson(Map<String, dynamic> json) => InventoryVehicle(
        id: json['id'],
       totalFuelCapacity: double.tryParse(json['total_fuel_capacity'].toString()) ?? 0.0,
     );
-  }
 }
 
 class InventoryMachinery {
@@ -65,12 +59,10 @@ class InventoryMachinery {
  final int id;
   InventoryMachinery({required this.totalFuelCapacity,required this.id});
 
-  factory InventoryMachinery.fromJson(Map<String, dynamic> json) {
-    return InventoryMachinery(
+  factory InventoryMachinery.fromJson(Map<String, dynamic> json) => InventoryMachinery(
        id: json['id'],
       totalFuelCapacity: double.tryParse(json['total_fuel_capacity'].toString()) ?? 0.0,
     );
-  }
 }
 
 class InventoryTools {
@@ -78,12 +70,10 @@ class InventoryTools {
  final int id;
   InventoryTools({required this.totalQuantity,required this.id});
 
-  factory InventoryTools.fromJson(Map<String, dynamic> json) {
-    return InventoryTools(
+  factory InventoryTools.fromJson(Map<String, dynamic> json) => InventoryTools(
        id: json['id'],
       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
     );
-  }
 }
 
 class InventoryPesticides {
@@ -91,12 +81,10 @@ class InventoryPesticides {
 
   InventoryPesticides({required this.totalQuantity,required this.id});
 
-  factory InventoryPesticides.fromJson(Map<String, dynamic> json) {
-    return InventoryPesticides(
+  factory InventoryPesticides.fromJson(Map<String, dynamic> json) => InventoryPesticides(
        id: json['id'],
       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
     );
-  }
 }
 
 class InventoryFertilizers {
@@ -104,12 +92,10 @@ class InventoryFertilizers {
  final int id;
   InventoryFertilizers({required this.totalQuantity,required this.id});
 
-  factory InventoryFertilizers.fromJson(Map<String, dynamic> json) {
-    return InventoryFertilizers(
+  factory InventoryFertilizers.fromJson(Map<String, dynamic> json) => InventoryFertilizers(
        id: json['id'],
       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
     );
-  }
 }
 
 class InventorySeeds {
@@ -117,10 +103,8 @@ class InventorySeeds {
  final int id;
   InventorySeeds({required this.totalQuantity,required this.id});
 
-  factory InventorySeeds.fromJson(Map<String, dynamic> json) {
-    return InventorySeeds(
+  factory InventorySeeds.fromJson(Map<String, dynamic> json) => InventorySeeds(
        id: json['id'],
       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
     );
-  }
 }

@@ -21,8 +21,7 @@ class MinimalHorizontalStepper extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -35,8 +34,7 @@ class MinimalHorizontalStepper extends StatelessWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(steps.length, (index) {
-                return Expanded(
+              children: List.generate(steps.length, (index) => Expanded(
                   child: Text(
                     steps[index],
                     textAlign: (index == 0)
@@ -49,8 +47,7 @@ class MinimalHorizontalStepper extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
-                );
-              }),
+                )),
             ),
           ),
 
@@ -108,10 +105,10 @@ class MinimalHorizontalStepper extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: isCompleted
-                            ? Icon(Icons.done, color: Colors.white,size: 15,)
+                            ? const Icon(Icons.done, color: Colors.white,size: 15,)
                             : (isActive
-                                  ? Icon(Icons.circle, color: Colors.white,size: 7,)
-                                  : SizedBox()),
+                                  ? const Icon(Icons.circle, color: Colors.white,size: 7,)
+                                  : const SizedBox()),
                       );
                     }),
                   ),
@@ -122,5 +119,4 @@ class MinimalHorizontalStepper extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -5,12 +5,10 @@ class Land {
 
   Land({required this.id, required this.name});
 
-  factory Land.fromJson(Map<String, dynamic> json) {
-    return Land(
+  factory Land.fromJson(Map<String, dynamic> json) => Land(
       id: json['id'],
       name: json['name'],
     );
-  }
 }
 
 class LandList {
@@ -65,8 +63,7 @@ class Market {
     required this.farmerLandName,
   });
 
-  factory Market.fromJson(Map<String, dynamic> json) {
-    return Market(
+  factory Market.fromJson(Map<String, dynamic> json) => Market(
       id: json['id'],
       name: json['name'],
       marketImg: json['market_img'],
@@ -85,7 +82,6 @@ class Market {
       farmerId: json['farmer_id'],
       farmerLandName: json['farmer_land']['land_name'],
     );
-  }
 }
 
 class MarketResponse {
@@ -134,8 +130,7 @@ class PlaceDetail {
     required this.status,
   });
 
-  factory PlaceDetail.fromJson(Map<String, dynamic> json) {
-    return PlaceDetail(
+  factory PlaceDetail.fromJson(Map<String, dynamic> json) => PlaceDetail(
       id: json['id'],
       name: json['name'],
       contact: json['contact'],
@@ -149,7 +144,6 @@ class PlaceDetail {
       longitude: json['longitude'],
       status: json['status'],
     );
-  }
 }
 
 class PlaceCategory {
@@ -181,12 +175,10 @@ class WorkType {
 
   WorkType({required this.workType, required this.personCount});
 
-  factory WorkType.fromJson(Map<String, dynamic> json) {
-    return WorkType(
+  factory WorkType.fromJson(Map<String, dynamic> json) => WorkType(
       workType: json['work_type'],
       personCount: json['person_count'],
     );
-  }
 }
 
 class Worker {
@@ -260,11 +252,9 @@ class RentalLanguage {
 
   RentalLanguage({required this.defaultLang});
 
-  factory RentalLanguage.fromJson(Map<String, dynamic> json) {
-    return RentalLanguage(
+  factory RentalLanguage.fromJson(Map<String, dynamic> json) => RentalLanguage(
       defaultLang: json['default'],
     );
-  }
 }
 
 class RentalDetail {
@@ -286,8 +276,7 @@ class RentalDetail {
     required this.language,
   });
 
-  factory RentalDetail.fromJson(Map<String, dynamic> json) {
-    return RentalDetail(
+  factory RentalDetail.fromJson(Map<String, dynamic> json) => RentalDetail(
       id: json['id'],
       vendorName: json['vendor_name'],
       vendorPhone: json['vendor_phone'],
@@ -296,7 +285,6 @@ class RentalDetail {
       inventoryItemName: json['inventory_item_name'],
       language: RentalLanguage.fromJson(json['language']),
     );
-  }
 }
 
 class RentalItem {

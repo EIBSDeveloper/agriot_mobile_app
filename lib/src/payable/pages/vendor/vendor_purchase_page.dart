@@ -79,8 +79,7 @@ class VendorPurchasePage extends StatelessWidget {
     VendorPayable vendor,
     bool isPayable,
     VendorAddController controller,
-  ) {
-    return SingleChildScrollView(
+  ) => SingleChildScrollView(
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,7 +158,6 @@ class VendorPurchasePage extends StatelessWidget {
         ],
       ),
     );
-  }
 
   Widget buildSection(
     BuildContext context,
@@ -168,8 +166,7 @@ class VendorPurchasePage extends StatelessWidget {
     bool isPayable,
     VendorAddController controller, {
     bool isReceivable = false,
-  }) {
-    return (items == null || items.isEmpty)
+  }) => (items == null || items.isEmpty)
         ? const SizedBox()
         : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,15 +183,13 @@ class VendorPurchasePage extends StatelessWidget {
             const SizedBox(height: 16),
           ],
         );
-  }
 
   Widget _buildPurchaseTile(
     BuildContext context,
     Purchase purchase,
     bool isPayable,
     VendorAddController controller,
-  ) {
-    return Container(
+  ) => Container(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -304,15 +299,13 @@ class VendorPurchasePage extends StatelessWidget {
         ],
       ),
     );
-  }
 
   Widget _buildCircleIcon({
     required IconData icon,
     required Color bgColor,
     required Color iconColor,
     required VoidCallback onTap,
-  }) {
-    return InkWell(
+  }) => InkWell(
       borderRadius: BorderRadius.circular(30),
       onTap: onTap,
       child: Container(
@@ -331,7 +324,6 @@ class VendorPurchasePage extends StatelessWidget {
         child: Icon(icon, color: iconColor, size: 22),
       ),
     );
-  }
 }
 
 void showAddVendorPaymentBottomSheet({
@@ -353,8 +345,7 @@ void showAddVendorPaymentBottomSheet({
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (BuildContext ctx) {
-      return Padding(
+    builder: (BuildContext ctx) => Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -411,10 +402,9 @@ void showAddVendorPaymentBottomSheet({
                     initialDate: DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
-                    builder: (context, child) {
-                      return Theme(
+                    builder: (context, child) => Theme(
                         data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
+                          colorScheme: const ColorScheme.light(
                             primary: Colors.green,
                             onPrimary: Colors.white,
                             onSurface: Colors.black87,
@@ -426,8 +416,7 @@ void showAddVendorPaymentBottomSheet({
                           ),
                         ),
                         child: child!,
-                      );
-                    },
+                      ),
                   );
                   if (pickedDate != null) {
                     dateController.text =
@@ -556,7 +545,6 @@ void showAddVendorPaymentBottomSheet({
             ],
           ),
         ),
-      );
-    },
+      ),
   );
 }

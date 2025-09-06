@@ -1,6 +1,5 @@
 import 'package:argiot/item.dart';
 import 'package:argiot/src/app/modules/registration/model/address_model.dart';
-import 'package:argiot/src/sercis/address_service.dart';
 import 'package:argiot/src/app/modules/vendor/vendor_customer_model.dart';
 import 'package:argiot/src/app/modules/vendor/vendor_customer_repository.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import '../../../utils.dart';
 
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();
-  final AddressService _addressService = Get.find();
+  // final AddressService _addressService = Get.find();
   final RxString selectedFilter = 'both'.obs;
   final RxList<VendorCustomer?> vendorCustomerList = <VendorCustomer>[].obs;
   final RxBool isLoading = false.obs;
@@ -49,11 +48,11 @@ class VendorCustomerController extends GetxController {
   // final RxList<InventoryTypeModel> selectedInventoryTypes = <InventoryTypeModel>[].obs;
 
   // Selected values
-  final Rx<CountryModel?> selectedCountry = Rx<CountryModel?>(null);
-  final Rx<StateModel?> selectedState = Rx<StateModel?>(null);
-  final Rx<CityModel?> selectedCity = Rx<CityModel?>(null);
-  final Rx<TalukModel?> selectedTaluk = Rx<TalukModel?>(null);
-  final Rx<VillageModel?> selectedVillage = Rx<VillageModel?>(null);
+  // final Rx<CountryModel?> selectedCountry = Rx<CountryModel?>(null);
+  // final Rx<StateModel?> selectedState = Rx<StateModel?>(null);
+  // final Rx<CityModel?> selectedCity = Rx<CityModel?>(null);
+  // final Rx<TalukModel?> selectedTaluk = Rx<TalukModel?>(null);
+  // final Rx<VillageModel?> selectedVillage = Rx<VillageModel?>(null);
 
   // Loading states
   final markets = <Market>[].obs;
@@ -61,11 +60,11 @@ class VendorCustomerController extends GetxController {
   final isMARKETLoading = false.obs;
   final searchController = TextEditingController();
   final RxBool isSubmitting = false.obs;
-  final RxBool isLoadingCountries = false.obs;
-  final RxBool isLoadingStates = false.obs;
-  final RxBool isLoadingCities = false.obs;
-  final RxBool isLoadingTaluks = false.obs;
-  final RxBool isLoadingVillages = false.obs;
+  // final RxBool isLoadingCountries = false.obs;
+  // final RxBool isLoadingStates = false.obs;
+  // final RxBool isLoadingCities = false.obs;
+  // final RxBool isLoadingTaluks = false.obs;
+  // final RxBool isLoadingVillages = false.obs;
 
   final RxBool isImageUploading = false.obs;
 
@@ -78,34 +77,34 @@ class VendorCustomerController extends GetxController {
     }
     fetchVendorCustomerList();
 
-    loadCountries();
+    // loadCountries();
     loadMarkets();
     loadPurchaseList();
-    _setupDropdownListeners();
+    // _setupDropdownListeners();
   }
 
-  void _setupDropdownListeners() {
-    ever(selectedCountry, (_) => _onCountryChanged());
-    ever(selectedState, (_) => _onStateChanged());
-    ever(selectedCity, (_) => _onCityChanged());
-    ever(selectedTaluk, (_) => _onTalukChanged());
-  }
+  // void _setupDropdownListeners() {
+  //   ever(selectedCountry, (_) => _onCountryChanged());
+  //   ever(selectedState, (_) => _onStateChanged());
+  //   ever(selectedCity, (_) => _onCityChanged());
+  //   ever(selectedTaluk, (_) => _onTalukChanged());
+  // }
 
-  void _onCountryChanged() {
-    selectedState.value = null;
-    selectedCity.value = null;
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+  // void _onCountryChanged() {
+  //   selectedState.value = null;
+  //   selectedCity.value = null;
+  //   selectedTaluk.value = null;
+  //   selectedVillage.value = null;
 
-    if (selectedCountry.value != null) {
-      loadStates(selectedCountry.value!.id!);
-    } else {
-      states.clear();
-      cities.clear();
-      taluks.clear();
-      villages.clear();
-    }
-  }
+  //   if (selectedCountry.value != null) {
+  //     loadStates(selectedCountry.value!.id!);
+  //   } else {
+  //     states.clear();
+  //     cities.clear();
+  //     taluks.clear();
+  //     villages.clear();
+  //   }
+  // }
 
   Future<void> deleteDetails(int id, String type) async {
     try {
@@ -122,101 +121,102 @@ class VendorCustomerController extends GetxController {
     }
   }
 
-  void _onStateChanged() {
-    selectedCity.value = null;
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+  // void _onStateChanged() {
+  //   selectedCity.value = null;
+  //   selectedTaluk.value = null;
+  //   selectedVillage.value = null;
 
-    if (selectedState.value != null) {
-      loadCities(selectedState.value!.id!);
-    } else {
-      cities.clear();
-      taluks.clear();
-      villages.clear();
-    }
-  }
+  //   if (selectedState.value != null) {
+  //     loadCities(selectedState.value!.id!);
+  //   } else {
+  //     cities.clear();
+  //     taluks.clear();
+  //     villages.clear();
+  //   }
+  // }
 
-  void _onCityChanged() {
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+  // void _onCityChanged() {
+  //   selectedTaluk.value = null;
+  //   selectedVillage.value = null;
 
-    if (selectedCity.value != null) {
-      loadTaluks(selectedCity.value!.id!);
-    } else {
-      taluks.clear();
-      villages.clear();
-    }
-  }
+  //   if (selectedCity.value != null) {
+  //     loadTaluks(selectedCity.value!.id!);
+  //   } else {
+  //     taluks.clear();
+  //     villages.clear();
+  //   }
+  // }
 
-  void _onTalukChanged() {
-    selectedVillage.value = null;
+  // void _onTalukChanged() {
+  //   selectedVillage.value = null;
 
-    if (selectedTaluk.value != null) {
-      loadVillages(selectedTaluk.value!.id!);
-    } else {
-      villages.clear();
-    }
-  }
+  //   if (selectedTaluk.value != null) {
+  //     loadVillages(selectedTaluk.value!.id!);
+  //   } else {
+  //     villages.clear();
+  //   }
+  // }
 
-  Future<void> loadCountries() async {
-    try {
-      isLoadingCountries(true);
-      final result = await _addressService.getCountries();
-      countries.assignAll(result);
-    } catch (e) {
-      showError('Failed to load countries');
-    } finally {
-      isLoadingCountries(false);
-    }
-  }
+  // Future<void> loadCountries() async {
+  //   try {
+  //     isLoadingCountries(true);
+  //     final result = await _addressService.getCountries();
+  //     countries.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load countries');
+  //   } finally {
+  //     isLoadingCountries(false);
+  //   }
+  // }
 
-  Future<void> loadStates(int countryId) async {
-    try {
-      isLoadingStates(true);
-      final result = await _addressService.getStates(countryId);
-      states.assignAll(result);
-    } catch (e) {
-      showError('Failed to load states');
-    } finally {
-      isLoadingStates(false);
-    }
-  }
+  // Future<void> loadStates(int countryId) async {
+  //   try {
+  //     isLoadingStates(true);
+  //     final result = await _addressService.getStates(countryId);
+  //     states.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load states');
+  //   } finally {
+  //     isLoadingStates(false);
+  //   }
+  // }
 
-  Future<void> loadCities(int stateId) async {
-    try {
-      isLoadingCities(true);
-      final result = await _addressService.getCities(stateId);
-      cities.assignAll(result);
-    } catch (e) {
-      showError('Failed to load cities');
-    } finally {
-      isLoadingCities(false);
-    }
-  }
+  // Future<void> loadCities(int stateId) async {
+  //   try {
+  //     isLoadingCities(true);
+  //     final result = await _addressService.getCities(stateId);
+  //     cities.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load cities');
+  //   } finally {
+  //     isLoadingCities(false);
+  //   }
+  // }
 
-  Future<void> loadTaluks(int cityId) async {
-    try {
-      isLoadingTaluks(true);
-      final result = await _addressService.getTaluks(cityId);
-      taluks.assignAll(result);
-    } catch (e) {
-      showError('Failed to load taluks');
-    } finally {
-      isLoadingTaluks(false);
-    }
-  }
+  // Future<void> loadTaluks(int cityId) async {
+  //   try {
+  //     isLoadingTaluks(true);
+  //     final result = await _addressService.getTaluks(cityId);
+  //     taluks.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load taluks');
+  //   } finally {
+  //     isLoadingTaluks(false);
+  //   }
+  // }
 
-  Future<void> loadVillages(int talukId) async {
-    try {
-      isLoadingVillages(true);
-      final result = await _addressService.getVillages(talukId);
-      villages.assignAll(result);
-    } catch (e) {
-      showError('Failed to load villages');
-    } finally {
-      isLoadingVillages(false);
-    }
-  }
+  // Future<void> loadVillages(int talukId) async {
+  //   try {
+  //     isLoadingVillages(true);
+  //     final result = await _addressService.getVillages(talukId);
+  //     villages.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load villages');
+  //   } finally {
+  //     isLoadingVillages(false);
+  //   }
+  // }
+
   //Market
 
   Future<void> loadMarkets() async {
@@ -282,7 +282,7 @@ class VendorCustomerController extends GetxController {
   }
 
   void setSelectedKeys(Set<String> keys) {
-    selectedKeys.value = keys;
+    selectedKeys.assignAll(keys);
   }
 
   ////inventory end
@@ -349,11 +349,11 @@ class VendorCustomerController extends GetxController {
         mobileNo: mobileController.text,
         email: emailController.text,
         doorNo: doorNoController.text,
-        countryId: selectedCountry.value?.id ?? 1,
-        stateId: selectedState.value?.id ?? 1,
-        cityId: selectedCity.value?.id ?? 1,
-        talukId: selectedTaluk.value?.id ?? 1,
-        villageId: selectedVillage.value?.id ?? 1,
+        // countryId: selectedCountry.value?.id ?? 1,
+        // stateId: selectedState.value?.id ?? 1,
+        // cityId: selectedCity.value?.id ?? 1,
+        // talukId: selectedTaluk.value?.id ?? 1,
+        // villageId: selectedVillage.value?.id ?? 1,
         gstNo: gstNoController.text,
         taxNo: taxNoController.text,
         postCode: int.tryParse(pincodeController.text) ?? 0,
@@ -410,11 +410,11 @@ class VendorCustomerController extends GetxController {
     taxNoController.clear();
     openingBalanceController.clear();
     descriptionController.clear();
-    selectedCountry.value = null;
-    selectedState.value = null;
-    selectedCity.value = null;
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+    // selectedCountry.value = null;
+    // selectedState.value = null;
+    // selectedCity.value = null;
+    // selectedTaluk.value = null;
+    // selectedVillage.value = null;
     // selectedMarkets.clear();
     // selectedInventoryTypes.clear();
     imagePath.value = '';

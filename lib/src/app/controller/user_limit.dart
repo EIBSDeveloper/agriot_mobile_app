@@ -19,6 +19,9 @@ class UserLimitController extends GetxController {
       usage.value = response;
       packageUsage.value = usage.value!.packageDetails;
       // if(usage.value!.packageDetails.)
-    } catch (e) {}
+    // ignore: empty_catches
+    } catch (e) {
+
+    }
   }
 }

@@ -85,8 +85,7 @@ class Sales {
     required this.updatedAt,
   });
 
-  factory Sales.fromJson(Map<String, dynamic> json) {
-    return Sales(
+  factory Sales.fromJson(Map<String, dynamic> json) => Sales(
       salesId: json['sales_id'],
       datesOfSales: json['dates_of_sales'],
       salesQuantity: json['sales_quantity'],
@@ -103,7 +102,6 @@ class Sales {
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
     );
-  }
 }
 
 class SalesDetailResponse {
@@ -149,8 +147,7 @@ class SalesDetailResponse {
     required this.documents,
   });
 
-  factory SalesDetailResponse.fromJson(Map<String, dynamic> json) {
-    return SalesDetailResponse(
+  factory SalesDetailResponse.fromJson(Map<String, dynamic> json) => SalesDetailResponse(
       salesId: json['sales_id'],
       farmer: Farmer.fromJson(json['farmer']),
       datesOfSales: json['dates_of_sales'],
@@ -173,7 +170,6 @@ class SalesDetailResponse {
       documents: List<DocumentCategory>.from(
           json['documents'].map((x) => DocumentCategory.fromJson(x))),
     );
-  }
 }
 
 class Farmer {
@@ -182,12 +178,10 @@ class Farmer {
 
   Farmer({required this.id, required this.name});
 
-  factory Farmer.fromJson(Map<String, dynamic> json) {
-    return Farmer(
+  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(
       id: json['id'],
       name: json['name'],
     );
-  }
 }
 
 class Customer {
@@ -197,13 +191,11 @@ class Customer {
 
   Customer({required this.id, required this.name, this.village});
 
-  factory Customer.fromJson(Map<String, dynamic> json) {
-    return Customer(
+  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
       id: json['id'],
       name: json['name'],
       village: json['village'],
     );
-  }
 }
 
 class Crop {
@@ -213,13 +205,11 @@ class Crop {
 
   Crop({required this.id, required this.name, required this.img});
 
-  factory Crop.fromJson(Map<String, dynamic> json) {
-    return Crop(
+  factory Crop.fromJson(Map<String, dynamic> json) => Crop(
       id: json['id'],
       name: json['name'],
       img: json['img'],
     );
-  }
 }
 
 class Unit {
@@ -228,12 +218,10 @@ class Unit {
 
   Unit({required this.id, required this.name});
 
-  factory Unit.fromJson(Map<String, dynamic> json) {
-    return Unit(
+  factory Unit.fromJson(Map<String, dynamic> json) => Unit(
       id: json['id'],
       name: json['name'],
     );
-  }
 }
 
 class Deduction {
@@ -249,23 +237,19 @@ class Deduction {
     required this.rupee,
   });
 
-  factory Deduction.fromJson(Map<String, dynamic> json) {
-    return Deduction(
+  factory Deduction.fromJson(Map<String, dynamic> json) => Deduction(
       deductionId: json['deduction_id'],
       reason: json['reason'] != null ? Reason.fromJson(json['reason']) : null,
       charges: json['charges'],
       rupee: Rupee.fromJson(json['rupee']),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       if (deductionId != null) 'deduction_id': deductionId,
       if (reason != null) 'reason': reason?.toJson(),
       'charges': charges,
       'rupee': rupee.toJson(),
     };
-  }
 }
 
 class Reason {
@@ -274,19 +258,15 @@ class Reason {
 
   Reason({required this.id, required this.name});
 
-  factory Reason.fromJson(Map<String, dynamic> json) {
-    return Reason(
+  factory Reason.fromJson(Map<String, dynamic> json) => Reason(
       id: json['id'],
       name: json['name'],
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
     };
-  }
 }
 
 class Rupee {
@@ -295,19 +275,15 @@ class Rupee {
 
   Rupee({required this.id, required this.name});
 
-  factory Rupee.fromJson(Map<String, dynamic> json) {
-    return Rupee(
+  factory Rupee.fromJson(Map<String, dynamic> json) => Rupee(
       id: json['id'],
       name: json['name'],
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
     };
-  }
 }
 
 class DocumentCategory {
@@ -319,13 +295,11 @@ class DocumentCategory {
     required this.documents,
   });
 
-  factory DocumentCategory.fromJson(Map<String, dynamic> json) {
-    return DocumentCategory(
+  factory DocumentCategory.fromJson(Map<String, dynamic> json) => DocumentCategory(
       categoryId: json['category_id'],
       documents: List<Document>.from(
           json['documents'].map((x) => Document.fromJson(x))),
     );
-  }
 }
 
 class Document {
@@ -341,14 +315,12 @@ class Document {
     required this.language,
   });
 
-  factory Document.fromJson(Map<String, dynamic> json) {
-    return Document(
+  factory Document.fromJson(Map<String, dynamic> json) => Document(
       id: json['id'],
       documentCategory: DocumentCategoryType.fromJson(json['document_category']),
       fileUpload: json['file_upload'],
       language: Language.fromJson(json['language']),
     );
-  }
 }
 
 class DocumentCategoryType {
@@ -357,12 +329,10 @@ class DocumentCategoryType {
 
   DocumentCategoryType({required this.id, required this.name});
 
-  factory DocumentCategoryType.fromJson(Map<String, dynamic> json) {
-    return DocumentCategoryType(
+  factory DocumentCategoryType.fromJson(Map<String, dynamic> json) => DocumentCategoryType(
       id: json['id'],
       name: json['name'],
     );
-  }
 }
 
 class Language {
@@ -370,11 +340,9 @@ class Language {
 
   Language({required this.defaultLanguage});
 
-  factory Language.fromJson(Map<String, dynamic> json) {
-    return Language(
+  factory Language.fromJson(Map<String, dynamic> json) => Language(
       defaultLanguage: json['default'],
     );
-  }
 }
 
 class DropdownItem {
@@ -383,12 +351,10 @@ class DropdownItem {
 
   DropdownItem({required this.id, required this.name});
 
-  factory DropdownItem.fromJson(Map<String, dynamic> json) {
-    return DropdownItem(
+  factory DropdownItem.fromJson(Map<String, dynamic> json) => DropdownItem(
       id: json['id'],
       name: json['name'],
     );
-  }
 }
 
 class SalesAddRequest {
@@ -420,8 +386,7 @@ class SalesAddRequest {
     required this.fileData,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'dates_of_sales': datesOfSales,
       'my_crop': myCrop,
       'my_customer': myCustomer,
@@ -435,7 +400,6 @@ class SalesAddRequest {
       'deductions': deductions,
       'file_data': fileData,
     };
-  }
 }
 
 class SalesEditRequest {
@@ -469,8 +433,7 @@ class SalesEditRequest {
     required this.fileData,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'sales_id': salesId,
       'dates_of_sales': datesOfSales,
       'my_crop': myCrop,
@@ -485,5 +448,4 @@ class SalesEditRequest {
       'deductions': deductions,
       'file_data': fileData,
     };
-  }
 }

@@ -16,8 +16,7 @@ class AppButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
       onPressed: enabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
         backgroundColor: Get.theme.primaryColor,
@@ -35,5 +34,4 @@ class AppButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }

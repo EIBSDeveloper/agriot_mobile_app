@@ -14,23 +14,19 @@ class SurveyDropdownWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField<CropSurveyDetail>(
-      value: selectedSurvey,
-      decoration: InputDecoration(
+  Widget build(BuildContext context) => DropdownButtonFormField<CropSurveyDetail>(
+      initialValue: selectedSurvey,
+      decoration: const InputDecoration(
         labelText: 'Survey Number *',
         border: OutlineInputBorder(),
         isDense: true,
       ),
-      items: surveys.map((survey) {
-        return DropdownMenuItem<CropSurveyDetail>(
+      items: surveys.map((survey) => DropdownMenuItem<CropSurveyDetail>(
           value: survey,
           child: Text('${survey.surveyNo} (${survey.surveyMeasurementValue} ${survey.surveyMeasurementUnit})'),
-        );
-      }).toList(),
+        )).toList(),
       onChanged: onChanged,
       validator: (value) => value == null ? 'Required field' : null,
       isExpanded: true,
     );
-  }
 }

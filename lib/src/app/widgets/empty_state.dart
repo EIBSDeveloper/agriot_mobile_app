@@ -15,8 +15,7 @@ class EmptyState extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -39,5 +38,4 @@ class EmptyState extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -21,7 +21,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final InitializationSettings initializationSettings = InitializationSettings(
+  final InitializationSettings initializationSettings = const InitializationSettings(
     android: AndroidInitializationSettings('@mipmap/ic_launcher'),
   );
 
@@ -68,8 +68,7 @@ class _AppState extends State<App> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
+  Widget build(BuildContext context) => GetMaterialApp(
       title: 'ARGIOT App',
       theme: FashionStoreTheme.lightTheme,
       darkTheme: FashionStoreTheme.darkTheme,
@@ -82,5 +81,4 @@ class _AppState extends State<App> {
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
     );
-  }
 }

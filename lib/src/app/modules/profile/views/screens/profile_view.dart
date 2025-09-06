@@ -1,15 +1,9 @@
-// lib/app/modules/profile/views/profile_view.dart
-
 import 'dart:io';
 
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/app/widgets/my_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
-import '../../../../../core/app_style.dart';
 import '../../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../near_me/views/widget/widgets.dart';
@@ -20,8 +14,7 @@ class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
         title: 'Profile',
         showBackButton: true,
@@ -30,7 +23,7 @@ class ProfileView extends GetView<ProfileController> {
             onPressed: () {
               Get.toNamed('/vendor-customer');
             },
-            icon: Icon(Icons.account_box),
+            icon: const Icon(Icons.account_box),
           ),
         ],
       ),
@@ -46,9 +39,7 @@ class ProfileView extends GetView<ProfileController> {
         }
 
         return RefreshIndicator(
-          onRefresh: () {
-            return controller.fetchProfile();
-          },
+          onRefresh: () => controller.fetchProfile(),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(10),
             child: Column(
@@ -78,7 +69,6 @@ class ProfileView extends GetView<ProfileController> {
         );
       }),
     );
-  }
 
   void _showLogoutConfirmation(ProfileController controller) {
     Get.dialog(
@@ -100,8 +90,7 @@ class ProfileView extends GetView<ProfileController> {
   }
 
 
-  Widget _buildProfileCard(ProfileModel profile, BuildContext context) {
-    return Card(
+  Widget _buildProfileCard(ProfileModel profile, BuildContext context) => Card(
       color: Colors.grey.withAlpha(30), //rgb(226,237,201)
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -140,7 +129,6 @@ class ProfileView extends GetView<ProfileController> {
         ),
       ),
     );
-  }
 
   Widget _buildSubscriptionCard(ProfileModel profile) {
     if (profile.subscriptions.isEmpty) {
@@ -160,7 +148,7 @@ class ProfileView extends GetView<ProfileController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TitleText('Current Plan'),
+                const TitleText('Current Plan'),
 
                 InkWell(
                   onTap: () {
@@ -194,7 +182,7 @@ class ProfileView extends GetView<ProfileController> {
               onPressed: () {
                 Get.toNamed(Routes.subscriptionPlans);
               },
-              child: Text("Explore Plans"),
+              child: const Text("Explore Plans"),
             ),
 
             // LinearProgressIndicator(
@@ -215,8 +203,7 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildSubscriptionDetailRow(String label, String value) {
-    return Padding(
+  Widget _buildSubscriptionDetailRow(String label, String value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -236,10 +223,8 @@ class ProfileView extends GetView<ProfileController> {
         ],
       ),
     );
-  }
 
-  Widget _buildContactCard(ProfileModel profile) {
-    return Card(
+  Widget _buildContactCard(ProfileModel profile) => Card(
       color: Colors.grey.withAlpha(30),
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -248,7 +233,7 @@ class ProfileView extends GetView<ProfileController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TitleText('Contact Information'),
+            const TitleText('Contact Information'),
             const SizedBox(height: 12),
             _buildContactDetailRow(Icons.email, profile.email),
             if (profile.doorNo.isNotEmpty)
@@ -257,10 +242,8 @@ class ProfileView extends GetView<ProfileController> {
         ),
       ),
     );
-  }
 
-  Widget _buildCompanyCard(ProfileModel profile) {
-    return (profile.description != null ||
+  Widget _buildCompanyCard(ProfileModel profile) => (profile.description != null ||
             profile.taxNo != null ||
             profile.companyName != null)
         ? Card(
@@ -274,7 +257,7 @@ class ProfileView extends GetView<ProfileController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TitleText('Company Details'),
+                  const TitleText('Company Details'),
                   const SizedBox(height: 12),
                   _buildDetailRow('Company Name', profile.companyName),
                   _buildDetailRow('Tax Number', profile.taxNo),
@@ -284,11 +267,9 @@ class ProfileView extends GetView<ProfileController> {
               ),
             ),
           )
-        : SizedBox();
-  }
+        : const SizedBox();
 
-  Widget _buildContactDetailRow(IconData icon, String value) {
-    return Padding(
+  Widget _buildContactDetailRow(IconData icon, String value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +280,6 @@ class ProfileView extends GetView<ProfileController> {
         ],
       ),
     );
-  }
 
   Widget _buildDetailRow(String label, String? value) {
     if (value == null || value == '') {
@@ -334,9 +314,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
   const ProfileEditView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Edit Profile', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Edit Profile', showBackButton: true),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -363,10 +342,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
         );
       }),
     );
-  }
 
-  Widget _buildImagePicker() {
-    return Center(
+  Widget _buildImagePicker() => Center(
       child: Stack(
         children: [
           Obx(() {
@@ -406,10 +383,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
         ],
       ),
     );
-  }
 
-  Widget _buildPersonalInfoSection() {
-    return Card(
+  Widget _buildPersonalInfoSection() => Card(
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -448,10 +423,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
         ),
       ),
     );
-  }
 
-  Widget _buildAddressSection() {
-    return Card(
+  Widget _buildAddressSection() => Card(
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -500,10 +473,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
         ),
       ),
     );
-  }
 
-  Widget _buildCompanySection() {
-    return Card(
+  Widget _buildCompanySection() => Card(
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -538,7 +509,6 @@ class ProfileEditView extends GetView<ProfileEditController> {
         ),
       ),
     );
-  }
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -548,8 +518,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) {
-    return InputCardStyle(
+  }) => InputCardStyle(
       
       child: TextFormField(
         controller: controller,
@@ -557,7 +526,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
           hintText: label,
           border: InputBorder.none,
           isDense: true,
-          suffixIcon: readOnly ? Icon(Icons.location_on) : null,
+          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
         ),
         validator: validator,
         keyboardType: keyboardType,
@@ -565,11 +534,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
         onTap: onTap,
       ),
     );
-  }
 
-Widget _buildSubmitButton() {
-    return Obx(() {
-      return SizedBox(
+Widget _buildSubmitButton() => Obx(() => SizedBox(
         width: double.infinity,
         child: ElevatedButton(
           onPressed: controller.isSubmitting.value
@@ -589,9 +555,7 @@ Widget _buildSubmitButton() {
                 )
               : const Text('Save Changes', style: TextStyle(fontSize: 16)),
         ),
-      );
-    });
-  }
+      ));
 }
 
 class ExampleSlider extends StatefulWidget {
@@ -614,6 +578,7 @@ class ExampleSlider extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ExampleSliderState createState() => _ExampleSliderState();
 }
 
@@ -626,8 +591,7 @@ class _ExampleSliderState extends State<ExampleSlider> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SliderTheme(
+  Widget build(BuildContext context) => SliderTheme(
       data: SliderTheme.of(context).copyWith(
         activeTrackColor: widget.primaryColor,
         inactiveTrackColor: widget.primaryColor.withAlpha(35),
@@ -660,10 +624,8 @@ class _ExampleSliderState extends State<ExampleSlider> {
         },
       ),
     );
-  }
 }
 
-// Credits to @Ankit Chowdhury
 class CustomSliderThumbCircle extends SliderComponentShape {
   final double thumbRadius;
   final double min;
@@ -676,9 +638,7 @@ class CustomSliderThumbCircle extends SliderComponentShape {
   });
 
   @override
-  Size getPreferredSize(bool isEnabled, bool isDiscrete) {
-    return Size.fromRadius(thumbRadius);
-  }
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => Size.fromRadius(thumbRadius);
 
   @override
   void paint(
@@ -726,7 +686,5 @@ class CustomSliderThumbCircle extends SliderComponentShape {
     tp.paint(canvas, textCenter);
   }
 
-  String getValue(double value) {
-    return (min + (max - min) * value).round().toString();
-  }
+  String getValue(double value) => (min + (max - min) * value).round().toString();
 }

@@ -117,8 +117,7 @@ class BothCustomerVendor {
     required this.openingBalance,
   });
 
-  factory BothCustomerVendor.fromJson(Map<String, dynamic> json) {
-    return BothCustomerVendor(
+  factory BothCustomerVendor.fromJson(Map<String, dynamic> json) => BothCustomerVendor(
       id: json['id'],
       customerName: json['customer_name'],
       shopName: json['shop_name'],
@@ -127,7 +126,6 @@ class BothCustomerVendor {
       isCredit: json['is_credit'],
       openingBalance: (json['opening_balance'] as num).toDouble(),
     );
-  }
 }
 
 class PayablesReceivablesList {
@@ -204,15 +202,13 @@ class CustomerReceivable {
     required this.sales,
   });
 
-  factory CustomerReceivable.fromJson(Map<String, dynamic> json) {
-    return CustomerReceivable(
+  factory CustomerReceivable.fromJson(Map<String, dynamic> json) => CustomerReceivable(
       customerId: json["customer_id"],
       customerName: json["customer_name"],
       shopName: json["shop_name"],
       customerImage: json["customer_image"],
       sales: (json["sales"] as List).map((s) => Sale.fromJson(s)).toList(),
     );
-  }
 }
 
 class Sale {
@@ -236,8 +232,7 @@ class Sale {
     required this.toPayAmount,
   });
 
-  factory Sale.fromJson(Map<String, dynamic> json) {
-    return Sale(
+  factory Sale.fromJson(Map<String, dynamic> json) => Sale(
       salesId: json["sales_id"],
       salesDate: json["sales_date"],
       cropId: json["crop_id"],
@@ -247,5 +242,4 @@ class Sale {
       receivedAmount: (json["received_amount"] as num).toDouble(),
       toPayAmount: (json["topay_amount"] as num).toDouble(),
     );
-  }
 }

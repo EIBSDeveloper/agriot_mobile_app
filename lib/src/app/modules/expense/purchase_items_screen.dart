@@ -9,8 +9,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
   const PurchaseItemsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: 'Add New Purchase'.tr),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -184,15 +183,13 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
         }),
       ),
     );
-  }
 
   Widget _buildInventoryItem(
     String title,
     String quantity, {
     Function()? onTap,
     Function()? open,
-  }) {
-    return InkWell(
+  }) => InkWell(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -240,5 +237,4 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
         ),
       ),
     );
-  }
 }

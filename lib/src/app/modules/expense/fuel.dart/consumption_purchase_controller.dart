@@ -27,16 +27,13 @@ class ConsumptionPurchaseController extends GetxController {
   void onInit() {
     super.onInit();
     var argument = Get.arguments['id'];
-    var type =getType(argument);
+    var type = getType(argument);
     var tab = Get.arguments["tab"];
     if (tab != null) {
       currentTabIndex.value = tab;
     }
-    if (type != null) {
-      selectedInventoryTypeName.value = type;
-    } else {
-      selectedInventoryTypeName.value = '';
-    }
+    selectedInventoryTypeName.value = type;
+
     setInventoryType(argument);
     fetchInventoryCategories(argument);
   }
@@ -82,15 +79,17 @@ class ConsumptionPurchaseController extends GetxController {
   }
 
   String? get selectedInventoryItemName {
-   try {
+    try {
       final selectedId = selectedInventoryItem.value;
-    final String item = inventoryItems.isNotEmpty
-        ? inventoryItems.firstWhere((element) => element.id == selectedId).name
-        : '';
-    return item;
-   } catch (e) {
-     return '';
-   }
+      final String item = inventoryItems.isNotEmpty
+          ? inventoryItems
+                .firstWhere((element) => element.id == selectedId)
+                .name
+          : '';
+      return item;
+    } catch (e) {
+      return '';
+    }
   }
 
   Future<void> fetchInventoryItems(int inventoryCategoryId) async {
@@ -125,9 +124,7 @@ class ConsumptionPurchaseController extends GetxController {
         inventoryTypeid!,
       );
 
-      var where = data.consumptionRecords.where((e) {
-        return e.quantityUtilized != 0;
-      });
+      var where = data.consumptionRecords.where((e) => e.quantityUtilized != 0);
       consumptionData.assignAll(where);
       purchaseData.assignAll(data.purchaseRecords);
 

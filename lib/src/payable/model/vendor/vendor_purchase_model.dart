@@ -8,14 +8,12 @@ class VendorPurchaseResponse {
     required this.vendorInventoryData,
   });
 
-  factory VendorPurchaseResponse.fromJson(Map<String, dynamic> json) {
-    return VendorPurchaseResponse(
+  factory VendorPurchaseResponse.fromJson(Map<String, dynamic> json) => VendorPurchaseResponse(
       detail: json['detail'] ?? '',
       vendorInventoryData: VendorInventoryData.fromJson(
         json['vendor_inventory_data'] ?? {},
       ),
     );
-  }
 }
 
 class VendorInventoryData {
@@ -24,8 +22,7 @@ class VendorInventoryData {
 
   VendorInventoryData({this.payables, this.receivables});
 
-  factory VendorInventoryData.fromJson(Map<String, dynamic> json) {
-    return VendorInventoryData(
+  factory VendorInventoryData.fromJson(Map<String, dynamic> json) => VendorInventoryData(
       payables:
           json['payables'] != null
               ? List<VendorPayable>.from(
@@ -39,7 +36,6 @@ class VendorInventoryData {
               )
               : [],
     );
-  }
 }
 
 class VendorPayable {
@@ -69,8 +65,7 @@ class VendorPayable {
     required this.toolPurchases,
   });
 
-  factory VendorPayable.fromJson(Map<String, dynamic> json) {
-    return VendorPayable(
+  factory VendorPayable.fromJson(Map<String, dynamic> json) => VendorPayable(
       vendorId: json['vendor_id'] ?? 0,
       vendorName: json['vendor_name'] ?? '',
       businessName: json['business_name'] ?? '',
@@ -146,7 +141,6 @@ class VendorPayable {
               )
               : [],
     );
-  }
 }
 
 class Purchase {
@@ -172,8 +166,7 @@ class Purchase {
     required this.topayAmount,
   });
 
-  factory Purchase.fromJson(Map<String, dynamic> json) {
-    return Purchase(
+  factory Purchase.fromJson(Map<String, dynamic> json) => Purchase(
       id: json['id'],
 
       purchaseDate: json['purchase_date'] ?? '',
@@ -185,5 +178,4 @@ class Purchase {
       topayAmount:
           ((json['topay_amount'] ?? json['toreceive_amount']) ?? 0).toDouble(),
     );
-  }
 }

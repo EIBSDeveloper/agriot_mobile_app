@@ -5,7 +5,6 @@ import 'package:argiot/src/app/utils/http/http_service.dart';
 import 'package:argiot/src/app/modules/vendor/vendor_customer_model.dart';
 import 'package:get/get.dart';
 
-
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
   final AppDataController _appDataController = Get.find();
@@ -92,10 +91,10 @@ class VendorCustomerRepository {
   }
 
   Future<int> addVendor(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.userId.value;
     try {
       var json2 = formData.toJson();
-      json2['farmer'] ="${farmerId}";
+      json2['farmer'] = farmerId;
       final response = await _httpService.post('/add_vendor/$farmerId', json2);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body)['id'] ?? 0;
@@ -111,8 +110,8 @@ class VendorCustomerRepository {
     final farmerId = _appDataController.userId;
     try {
       var json2 = formData.toJson();
-      json2["is_customer_is_vendor"]="yes";
-      
+      json2["is_customer_is_vendor"] = "yes";
+
       final response = await _httpService.post(
         '/add_customer/$farmerId',
         json2,

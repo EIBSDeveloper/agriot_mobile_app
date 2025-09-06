@@ -19,8 +19,7 @@ class PrimaryButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return SizedBox(
+  Widget build(BuildContext context) => SizedBox(
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
@@ -46,7 +45,6 @@ class PrimaryButton extends StatelessWidget {
               ),
       ),
     );
-  }
 }
 
 class GoogleSignInButton extends StatelessWidget {
@@ -60,12 +58,11 @@ class GoogleSignInButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      icon: FaIcon(FontAwesomeIcons.google, color: Colors.redAccent, size: 24),
+  Widget build(BuildContext context) => ElevatedButton.icon(
+      icon: const FaIcon(FontAwesomeIcons.google, color: Colors.redAccent, size: 24),
       label: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black87,
           fontWeight: FontWeight.w600,
           fontSize: 16,
@@ -75,11 +72,10 @@ class GoogleSignInButton extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
 
-        minimumSize: Size(double.infinity, 50),
+        minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       ),
       onPressed: onPressed,
     );
-  }
 }

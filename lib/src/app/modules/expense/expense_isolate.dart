@@ -40,10 +40,5 @@ class ExpenseIsolate {
     return await response.first;
   }
 
-  static List<ExpenseSummary> _calculate(List<ExpenseSummary> data) {
-    // Your calculation logic here
-    return data;
-  }
+  static List<ExpenseSummary> _calculate(List<ExpenseSummary> data) => data;
 }
-
-// Call this in main() before runApp

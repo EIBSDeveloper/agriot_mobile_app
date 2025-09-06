@@ -218,14 +218,14 @@ import '../../widgets/dialogwidget/customerDialogWidget.dart';
 import 'customer_historydetails.dart';
 
 class CustomerSalesPage extends StatelessWidget {
-  final int customer_Id;
+  final int customerId;
   final String customerName;
   final double amount;
   final bool isPayable;
 
   const CustomerSalesPage({
     super.key,
-    required this.customer_Id,
+    required this.customerId,
     required this.customerName,
     required this.amount,
     required this.isPayable,
@@ -243,9 +243,9 @@ class CustomerSalesPage extends StatelessWidget {
     // 🔥 Schedule API call after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (isPayable) {
-        controller.loadPayables(customer_Id);
+        controller.loadPayables(customerId);
       } else {
-        controller.loadReceivables(customer_Id);
+        controller.loadReceivables(customerId);
       }
     });
 
@@ -279,8 +279,7 @@ class CustomerSalesPage extends StatelessWidget {
     CustomerAddController addController,
     dynamic customer,
     bool isPayable,
-  ) {
-    return Card(
+  ) => Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -329,8 +328,7 @@ class CustomerSalesPage extends StatelessWidget {
             // Sales Info
             Column(
               children:
-                  customer.sales.map<Widget>((sale) {
-                    return Container(
+                  customer.sales.map<Widget>((sale) => Container(
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -397,12 +395,10 @@ class CustomerSalesPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    );
-                  }).toList(),
+                    )).toList(),
             ),
           ],
         ),
       ),
     );
-  }
 }

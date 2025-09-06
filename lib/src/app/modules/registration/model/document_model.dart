@@ -15,10 +15,8 @@ class DocumentItem {
   DocumentItem copyWith({
     AppDropdownItem? type,
     PlatformFile? file,
-  }) {
-    return DocumentItem(
+  }) => DocumentItem(
       type: type ?? this.type,
       file: file ?? this.file,
     );
-  }
 }

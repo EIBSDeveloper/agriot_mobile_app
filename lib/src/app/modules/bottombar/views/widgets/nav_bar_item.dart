@@ -24,8 +24,7 @@ class NavBarItem extends StatefulWidget {
 
 class _NavBarItemState extends State<NavBarItem> {
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: () {
         widget.onTap();
       },
@@ -59,5 +58,4 @@ class _NavBarItemState extends State<NavBarItem> {
         ),
       ),
     );
-  }
 }

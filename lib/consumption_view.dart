@@ -1,21 +1,18 @@
 import 'package:argiot/consumption_controller.dart';
-
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'src/app/widgets/input_card_style.dart';
-
 // consumption_view.dart
 class ConsumptionView extends StatelessWidget {
-  final ConsumptionController _controller = Get.find<ConsumptionController>();
 
   ConsumptionView({super.key});
+  final ConsumptionController _controller = Get.find<ConsumptionController>();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: 'Consumption'.tr),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,74 +22,74 @@ class ConsumptionView extends StatelessWidget {
             child: Column(
               children: [
                 _buildDatePicker(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildCropDropdown(),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildInventoryTypeDropdown(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildInventoryCategoryDropdown(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 _buildInventoryItemDropdown(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Obx(
                   () => !_controller.requiresUsageHours
                       ? _buildQuantityField()
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Obx(
                   () => !_controller.requiresUsageHours
-                      ? SizedBox(height: 16)
-                      : SizedBox.shrink(),
+                      ? const SizedBox(height: 16)
+                      : const SizedBox.shrink(),
                 ),
 
                 // Conditional fields based on inventory type
                 Obx(
                   () => _controller.requiresUsageHours
                       ? _buildUsageHoursField()
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Obx(
                   () => _controller.requiresUsageHours
-                      ? SizedBox(height: 16)
-                      : SizedBox.shrink(),
+                      ? const SizedBox(height: 16)
+                      : const SizedBox.shrink(),
                 ),
 
                 Obx(
                   () => _controller.requiresKilometerFields
                       ? _buildStartKilometerField()
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Obx(
                   () => _controller.requiresKilometerFields
-                      ? SizedBox(height: 16)
-                      : SizedBox.shrink(),
+                      ? const SizedBox(height: 16)
+                      : const SizedBox.shrink(),
                 ),
 
                 Obx(
                   () => _controller.requiresKilometerFields
                       ? _buildEndKilometerField()
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Obx(
                   () => _controller.requiresKilometerFields
-                      ? SizedBox(height: 16)
-                      : SizedBox.shrink(),
+                      ? const SizedBox(height: 16)
+                      : const SizedBox.shrink(),
                 ),
 
                 Obx(
                   () => _controller.requiresToolItems
                       ? _buildToolItemsField()
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 ),
                 Obx(
                   () => _controller.requiresToolItems
-                      ? SizedBox(height: 16)
-                      : SizedBox.shrink(),
+                      ? const SizedBox(height: 16)
+                      : const SizedBox.shrink(),
                 ),
 
                 _buildDescriptionField(),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 _buildSaveButton(),
               ],
             ),
@@ -100,16 +97,14 @@ class ConsumptionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildDatePicker() {
-    return Obx(
+  Widget _buildDatePicker() => Obx(
       () => InputCardStyle(
         child: TextFormField(
           decoration: InputDecoration(
             hintText: 'Date'.tr,
             border: InputBorder.none,
-            suffixIcon: Icon(Icons.calendar_today),
+            suffixIcon: const Icon(Icons.calendar_today),
           ),
           readOnly: true,
           controller: TextEditingController(
@@ -131,21 +126,15 @@ class ConsumptionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildCropDropdown() {
-    return Obx(() {
-      return MyDropdown(
+  Widget _buildCropDropdown() => Obx(() => MyDropdown(
         items: _controller.crop,
         selectedItem: _controller.selectedCropType.value,
         onChanged: (land) => _controller.changeCrop(land!),
         label: 'crop'.tr,
-      );
-    });
-  }
+      ));
 
-  Widget _buildInventoryTypeDropdown() {
-    return Obx(
+  Widget _buildInventoryTypeDropdown() => Obx(
       () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
@@ -153,7 +142,7 @@ class ConsumptionView extends StatelessWidget {
             border: InputBorder.none,
           ),
           validator: (value) => value == null ? 'required_field'.tr : null,
-          value: _controller.selectedInventoryType.value,
+          initialValue: _controller.selectedInventoryType.value,
           items: _controller.inventoryTypes
               .map(
                 (type) => DropdownMenuItem<int>(
@@ -169,10 +158,8 @@ class ConsumptionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildInventoryCategoryDropdown() {
-    return Obx(
+  Widget _buildInventoryCategoryDropdown() => Obx(
       () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
@@ -180,7 +167,7 @@ class ConsumptionView extends StatelessWidget {
             border: InputBorder.none,
           ),
           validator: (value) => value == null ? 'required_field'.tr : null,
-          value: _controller.selectedInventoryCategory.value,
+          initialValue: _controller.selectedInventoryCategory.value,
           items: _controller.inventoryCategories
               .map(
                 (category) => DropdownMenuItem<int>(
@@ -198,10 +185,8 @@ class ConsumptionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildInventoryItemDropdown() {
-    return Obx(
+  Widget _buildInventoryItemDropdown() => Obx(
       () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           decoration: InputDecoration(
@@ -209,7 +194,7 @@ class ConsumptionView extends StatelessWidget {
             border: InputBorder.none,
           ),
           validator: (value) => value == null ? 'required_field'.tr : null,
-          value: _controller.selectedInventoryItem.value,
+          initialValue: _controller.selectedInventoryItem.value,
           items: _controller.inventoryItems
               .map(
                 (item) => DropdownMenuItem<int>(
@@ -225,10 +210,8 @@ class ConsumptionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildQuantityField() {
-    return Row(
+  Widget _buildQuantityField() => Row(
       children: [
         Expanded(
           flex: 3,
@@ -251,10 +234,8 @@ class ConsumptionView extends StatelessWidget {
   //               child: child)
       ],
     );
-  }
 
-  Widget _buildUsageHoursField() {
-    return InputCardStyle(
+  Widget _buildUsageHoursField() => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'Usage Hours'.tr,
@@ -264,10 +245,8 @@ class ConsumptionView extends StatelessWidget {
         onChanged: _controller.setUsageHours,
       ),
     );
-  }
 
-  Widget _buildStartKilometerField() {
-    return InputCardStyle(
+  Widget _buildStartKilometerField() => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'Start Kilometer'.tr,
@@ -278,10 +257,8 @@ class ConsumptionView extends StatelessWidget {
         onChanged: _controller.setStartKilometer,
       ),
     );
-  }
 
-  Widget _buildEndKilometerField() {
-    return InputCardStyle(
+  Widget _buildEndKilometerField() => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'End Kilometer'.tr,
@@ -292,10 +269,8 @@ class ConsumptionView extends StatelessWidget {
         onChanged: _controller.setEndKilometer,
       ),
     );
-  }
 
-  Widget _buildToolItemsField() {
-    return InputCardStyle(
+  Widget _buildToolItemsField() => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
           hintText: 'Tool Items'.tr,
@@ -305,10 +280,8 @@ class ConsumptionView extends StatelessWidget {
         onChanged: _controller.setToolItems,
       ),
     );
-  }
 
-  Widget _buildDescriptionField() {
-    return InputCardStyle(
+  Widget _buildDescriptionField() => InputCardStyle(
       noHeight: true,
       child: TextFormField(
         decoration: InputDecoration(
@@ -319,18 +292,16 @@ class ConsumptionView extends StatelessWidget {
         onChanged: _controller.setDescription,
       ),
     );
-  }
 
-  Widget _buildSaveButton() {
-    return Obx(
+  Widget _buildSaveButton() => Obx(
       () => ElevatedButton(
         onPressed: _controller.isLoading.value
             ? null
             : () async {
                 final success = await _controller.submitConsumption();
                 if (success) {
-                  Get.back();
-                  Get.toNamed(
+                  Get..back()
+                  ..toNamed(
                     '/consumption-purchase',
                     arguments: {
                       "id": _controller.selectedInventoryType.value,
@@ -339,13 +310,12 @@ class ConsumptionView extends StatelessWidget {
                   );
                 }
               },
-        style: ElevatedButton.styleFrom(minimumSize: Size(double.infinity, 50)),
+        style: ElevatedButton.styleFrom(minimumSize: const Size(double.infinity, 50)),
         child: _controller.isLoading.value
-            ? CircularProgressIndicator()
+            ? const CircularProgressIndicator()
             : Text('Save'.tr),
       ),
     );
-  }
 }
 
 String getType(int id) {

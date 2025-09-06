@@ -10,8 +10,7 @@ class NotificationItemWidget extends StatelessWidget {
   const NotificationItemWidget({super.key, required this.notification});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget build(BuildContext context) => Card(
       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -41,5 +40,4 @@ class NotificationItemWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

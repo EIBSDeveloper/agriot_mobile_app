@@ -17,11 +17,9 @@ class SurveyItem {
     String? surveyNo,
     String? measurement,
     AppDropdownItem? unit,
-  }) {
-    return SurveyItem(
+  }) => SurveyItem(
       surveyNo: surveyNo ?? this.surveyNo,
       measurement: measurement ?? this.measurement,
       unit: unit ?? this.unit,
     );
-  }
 }

@@ -50,15 +50,14 @@ class _LandPickerViewState extends State<LandPickerView> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        title: Text('Select Location'),
-        actions: [IconButton(icon: Icon(Icons.info_outline), onPressed: () {})],
+        title: const Text('Select Location'),
+        actions: [IconButton(icon: const Icon(Icons.info_outline), onPressed: () {})],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return Stack(
           children: [
@@ -72,7 +71,7 @@ class _LandPickerViewState extends State<LandPickerView> {
               markers: controller.selectedLocation.value != null
                   ? {
                       Marker(
-                        markerId: MarkerId('select'),
+                        markerId: const MarkerId('select'),
                         position: controller.selectedLocation.value!,
                       ),
                     }
@@ -81,7 +80,7 @@ class _LandPickerViewState extends State<LandPickerView> {
                 if (controller.landPolylin.isNotEmpty)
                   Polygon(
                     consumeTapEvents: false,
-                    polygonId: PolygonId("test"),
+                    polygonId: const PolygonId("test"),
                     points: controller.landPolylin,
                     fillColor: Colors.green.withAlpha(50),
                     strokeColor: Colors.green,
@@ -89,28 +88,26 @@ class _LandPickerViewState extends State<LandPickerView> {
                     strokeWidth: 4,
                   ),
                 if (controller.priviesCropCoordinates.isNotEmpty)
-                  ...controller.priviesCropCoordinates.map((polygon) {
-                    return Polygon(
+                  ...controller.priviesCropCoordinates.map((polygon) => Polygon(
                       consumeTapEvents: false,
-                      polygonId: PolygonId("crop"),
+                      polygonId: const PolygonId("crop"),
                       points: polygon!,
                       fillColor: Colors.orange.withAlpha(50),
                       strokeColor: Colors.orange,
                       geodesic: true,
                       strokeWidth: 4,
-                    );
-                  }),
+                    )),
               },
               polylines: {
                 Polyline(
-                  polylineId: PolylineId("drawn_path"),
+                  polylineId: const PolylineId("drawn_path"),
                   color: Colors.red,
                   width: 4,
                   points: controller.polylinePoints,
                 ),
                 if (controller.polylinePoints.isNotEmpty)
                   Polyline(
-                    polylineId: PolylineId("end"),
+                    polylineId: const PolylineId("end"),
                     color: Colors.grey,
                     width: 3,
                     points: [
@@ -134,7 +131,7 @@ class _LandPickerViewState extends State<LandPickerView> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -142,7 +139,7 @@ class _LandPickerViewState extends State<LandPickerView> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: controller.confirmSelection,
-                          child: Text('Confirm Location'),
+                          child: const Text('Confirm Location'),
                         ),
                       ),
                     ],
@@ -157,7 +154,7 @@ class _LandPickerViewState extends State<LandPickerView> {
                 heroTag: "current_location",
                 backgroundColor: Get.theme.primaryColor,
                 onPressed: controller.getCurrentLocation,
-                child: Icon(Icons.my_location),
+                child: const Icon(Icons.my_location),
               ),
             ),
             Positioned(
@@ -167,12 +164,11 @@ class _LandPickerViewState extends State<LandPickerView> {
                 heroTag: "clear_polyline",
                 backgroundColor: Colors.red,
                 onPressed: controller.clearPolyline,
-                child: Icon(Icons.clear),
+                child: const Icon(Icons.clear),
               ),
             ),
           ],
         );
       }),
     );
-  }
 }

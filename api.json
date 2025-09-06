@@ -13,7 +13,7 @@
   "chasis_number": "CHS123456789",
   "running_kilometer": 15000.50,
   "service_frequency": 1000,
-  "service_frequency_unit": 0,  // 0: kilometers, 1: days, etc.
+  "service_frequency_unit": 0,  
   "fuel_capacity": 50.75,
   "average_mileage": 15.25,
   "purchase_amount": 200000.00,

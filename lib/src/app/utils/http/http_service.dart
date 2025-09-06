@@ -6,8 +6,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../controller/app_controller.dart';
 
-
-
 class MultipartBody {
   final Map<String, String> fields;
   final List<http.MultipartFile> files;
@@ -46,10 +44,9 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
-      final updatedEndpoint = endpoint;
-      // .contains('?')
-      //     ? '$endpoint&lang=ta'
-      //     : '$endpoint?lang=ta';
+      final updatedEndpoint = endpoint.contains('?')
+          ? '$endpoint&lang=ta'
+          : '$endpoint?lang=ta';
       final response = await http
           .get(Uri.parse(baseUrl + updatedEndpoint), headers: _headers(headers))
           .timeout(Duration(seconds: timeoutSeconds));
@@ -80,11 +77,10 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
-      final updatedEndpoint = endpoint;
-      // .contains('?')
-      //       ? '$endpoint&lang=ta'
-      //       : '$endpoint?lang=ta';
-      final url = Uri.parse(baseUrl + endpoint);
+      final updatedEndpoint = endpoint.contains('?')
+          ? '$endpoint&lang=ta'
+          : '$endpoint?lang=ta';
+      final url = Uri.parse(baseUrl + updatedEndpoint);
 
       if (body is MultipartBody) {
         final request = http.MultipartRequest('PUT', url);
@@ -116,10 +112,9 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
-      final updatedEndpoint = endpoint;
-      // .contains('?')
-      //   ? '$endpoint&lang=ta'
-      //   : '$endpoint?lang=ta';
+      final updatedEndpoint = endpoint.contains('?')
+          ? '$endpoint&lang=ta'
+          : '$endpoint?lang=ta';
       final url = Uri.parse(baseUrl + updatedEndpoint);
 
       if (body is MultipartBody) {

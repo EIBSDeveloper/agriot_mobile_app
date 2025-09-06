@@ -6,13 +6,12 @@ class PaymentFailedScreen extends StatelessWidget {
   const PaymentFailedScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error, color: Colors.red, size: 100),
+            const Icon(Icons.error, color: Colors.red, size: 100),
             const SizedBox(height: 24),
             Text(
               'payment_failed'.tr,
@@ -46,5 +45,4 @@ class PaymentFailedScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

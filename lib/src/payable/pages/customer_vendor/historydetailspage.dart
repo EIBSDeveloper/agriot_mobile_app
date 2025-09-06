@@ -428,8 +428,9 @@ class HistoryDetailsPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final list =
-            isPayable ? controller.historypayableList : controller.historyList;
+        final list = isPayable
+            ? controller.historypayableList
+            : controller.historyList;
 
         if (list.isEmpty) {
           return Center(
@@ -464,16 +465,12 @@ class HistoryDetailsPage extends StatelessWidget {
                   vertical: 16,
                   horizontal: 16,
                 ),
-                child:
-                    isPayable
-                        ? _buildPayableItem(
-                          item as PayableHistorymodel,
-                          context,
-                        )
-                        : _buildReceivableItem(
-                          item as ReceivableHistorymodel,
-                          context,
-                        ),
+                child: isPayable
+                    ? _buildPayableItem(item as PayableHistorymodel, context)
+                    : _buildReceivableItem(
+                        item as ReceivableHistorymodel,
+                        context,
+                      ),
               ),
             );
           },
@@ -486,8 +483,7 @@ class HistoryDetailsPage extends StatelessWidget {
   Widget _buildReceivableItem(
     ReceivableHistorymodel item,
     BuildContext context,
-  ) {
-    return Column(
+  ) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -509,15 +505,14 @@ class HistoryDetailsPage extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.remove_red_eye, color: Colors.black),
-              onPressed:
-                  () => _showHistoryDetailDialog(
-                    context: context,
-                    farmerId: farmerId,
-                    customerId: customerId,
-                    saleId: saleId,
-                    outstandingId: item.id,
-                    isPayable: false,
-                  ),
+              onPressed: () => _showHistoryDetailDialog(
+                context: context,
+                farmerId: farmerId,
+                customerId: customerId,
+                saleId: saleId,
+                outstandingId: item.id,
+                isPayable: false,
+              ),
             ),
           ],
         ),
@@ -537,7 +532,6 @@ class HistoryDetailsPage extends StatelessWidget {
           ),
       ],
     );
-  }
 
   // Payable UI
   Widget _buildPayableItem(PayableHistorymodel item, BuildContext context) {
@@ -573,15 +567,14 @@ class HistoryDetailsPage extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.remove_red_eye, color: Colors.black),
-              onPressed:
-                  () => _showHistoryDetailDialog(
-                    context: context,
-                    farmerId: farmerId,
-                    customerId: customerId,
-                    saleId: saleId,
-                    outstandingId: item.id,
-                    isPayable: true,
-                  ),
+              onPressed: () => _showHistoryDetailDialog(
+                context: context,
+                farmerId: farmerId,
+                customerId: customerId,
+                saleId: saleId,
+                outstandingId: item.id,
+                isPayable: true,
+              ),
             ),
           ],
         ),
@@ -627,10 +620,9 @@ class HistoryDetailsPage extends StatelessWidget {
       );
     }
 
-    final detail =
-        isPayable
-            ? controller.selectedpayableHistory.value
-            : controller.selectedHistory.value;
+    final detail = isPayable
+        ? controller.selectedpayableHistory.value
+        : controller.selectedHistory.value;
 
     if (detail == null) {
       Get.snackbar(
@@ -641,13 +633,12 @@ class HistoryDetailsPage extends StatelessWidget {
       return;
     }
 
-    Widget _buildHistoryRow(String label, dynamic value) {
-      String displayValue =
-          value == null
-              ? "-"
-              : (value is double
-                  ? "₹${value.toStringAsFixed(2)}"
-                  : value.toString());
+    Widget buildHistoryRow(String label, dynamic value) {
+      String displayValue = value == null
+          ? "-"
+          : (value is double
+                ? "₹${value.toStringAsFixed(2)}"
+                : value.toString());
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
@@ -684,27 +675,27 @@ class HistoryDetailsPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               if (isPayable) ...[
-                _buildHistoryRow(
+                buildHistoryRow(
                   "date".tr,
                   (detail as PayableHistorymodel).paidDate,
                 ),
-                _buildHistoryRow("balance".tr, detail.balance),
-                _buildHistoryRow("paid".tr, detail.paid),
-                _buildHistoryRow("payment_amount".tr, detail.paymentAmount),
-                _buildHistoryRow("to_pay".tr, detail.toPay),
-                _buildHistoryRow("total_paid".tr, detail.totalPaid),
+                buildHistoryRow("balance".tr, detail.balance),
+                buildHistoryRow("paid".tr, detail.paid),
+                buildHistoryRow("payment_amount".tr, detail.paymentAmount),
+                buildHistoryRow("to_pay".tr, detail.toPay),
+                buildHistoryRow("total_paid".tr, detail.totalPaid),
                 if ((detail.description ?? '').isNotEmpty)
                   Text("${"description".tr}: ${detail.description}"),
               ] else ...[
-                _buildHistoryRow(
+                buildHistoryRow(
                   "date".tr,
                   (detail as ReceivableHistorymodel).receivedDate,
                 ),
-                _buildHistoryRow("balance".tr, detail.balance),
-                _buildHistoryRow("received".tr, detail.received),
-                _buildHistoryRow("payment_amount".tr, detail.paymentAmount),
-                _buildHistoryRow("to_receive".tr, detail.toReceive),
-                _buildHistoryRow("total_received".tr, detail.totalReceived),
+                buildHistoryRow("balance".tr, detail.balance),
+                buildHistoryRow("received".tr, detail.received),
+                buildHistoryRow("payment_amount".tr, detail.paymentAmount),
+                buildHistoryRow("to_receive".tr, detail.toReceive),
+                buildHistoryRow("total_received".tr, detail.totalReceived),
                 if ((detail.description ?? '').isNotEmpty)
                   Text("${"description".tr}: ${detail.description}"),
               ],
@@ -723,8 +714,7 @@ class HistoryDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAmountRow(String label, double value) {
-    return Padding(
+  Widget _buildAmountRow(String label, double value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
@@ -736,5 +726,4 @@ class HistoryDetailsPage extends StatelessWidget {
         ],
       ),
     );
-  }
 }

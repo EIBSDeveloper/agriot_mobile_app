@@ -26,7 +26,7 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
     );
 
     _opacity =
@@ -60,8 +60,8 @@ Widget build(BuildContext context) {
   Widget otpForm = Container(
     width: isTablet ? size.width * 0.4 : size.width * 0.9,
     height: isTablet ? size.height * 0.7 : size.width * 0.95,
-    margin: EdgeInsets.only(top: 70),
-    padding: EdgeInsets.symmetric(horizontal: 20),
+    margin: const EdgeInsets.only(top: 70),
+    padding: const EdgeInsets.symmetric(horizontal: 20),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +164,7 @@ Widget build(BuildContext context) {
     ),
   );
 
-  return BackgroudImage(
+  return BackgroundImage(
     child: Scaffold(
       backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
@@ -172,7 +172,7 @@ Widget build(BuildContext context) {
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios_new_outlined, color: Colors.white),
           onPressed: () {
             controller.currentStep.value = 0;
             Get.back();

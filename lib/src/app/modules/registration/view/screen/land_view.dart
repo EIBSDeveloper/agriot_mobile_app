@@ -12,10 +12,9 @@ class LandView extends GetView<RegLandController> {
   LandView({super.key});
 
   final kycController = Get.find<KycController>();
-  var gap = SizedBox(height: 14);
+  var gap = const SizedBox(height: 14);
   @override
-  Widget build(BuildContext context) {
-    return Form(
+  Widget build(BuildContext context) => Form(
       key: controller.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -27,9 +26,7 @@ class LandView extends GetView<RegLandController> {
               controller.formKey.currentState!.validate();
             },
             label: 'Land Identification *',
-            validator: (value) {
-              return value!.isEmpty ? 'Required field' : null;
-            },
+            validator: (value) => value!.isEmpty ? 'Required field' : null,
           ),
           gap,
           CustomTextField(
@@ -52,7 +49,7 @@ class LandView extends GetView<RegLandController> {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 flex: 2,
                 child: SearchableDropdown<AppDropdownItem>(
@@ -95,7 +92,7 @@ class LandView extends GetView<RegLandController> {
     ),
             child: TextFormField(
               controller: controller.locationListController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Location Coordinates *',
                 border: InputBorder.none,
                 isDense: true,
@@ -135,21 +132,19 @@ class LandView extends GetView<RegLandController> {
         ],
       ),
     );
-  }
 
-  Widget _buildSurveyDetailsSection() {
-    return Column(
+  Widget _buildSurveyDetailsSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Survey Details',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: controller.addSurveyItem,
               tooltip: 'Add Survey Detail',
             ),
@@ -157,7 +152,7 @@ class LandView extends GetView<RegLandController> {
         ),
         Obx(() {
           if (controller.surveyItems.isEmpty) {
-            return Padding(
+            return const Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 'No survey details added',
@@ -167,10 +162,9 @@ class LandView extends GetView<RegLandController> {
           }
           return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: controller.surveyItems.length,
-            itemBuilder: (context, index) {
-              return SurveyItemWidget(
+            itemBuilder: (context, index) => SurveyItemWidget(
                 index: index,
                 item: controller.surveyItems[index],
                 areaUnits: controller.landUnits,
@@ -180,27 +174,24 @@ class LandView extends GetView<RegLandController> {
                   controller.surveyItems[index] = item;
                   controller.formKey.currentState!.validate();
                 },
-              );
-            },
+              ),
           );
         }),
       ],
     );
-  }
 
-  Widget _buildDocumentsSection() {
-    return Column(
+  Widget _buildDocumentsSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Land Documents',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: controller.addDocumentItem,
               tooltip: 'Add Document',
             ),
@@ -208,7 +199,7 @@ class LandView extends GetView<RegLandController> {
         ),
         Obx(() {
           if (controller.documentItems.isEmpty) {
-            return Padding(
+            return const Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 'No documents added',
@@ -218,33 +209,28 @@ class LandView extends GetView<RegLandController> {
           }
           return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: controller.documentItems.length,
-            itemBuilder: (context, index) {
-              return DocumentItemWidget(
+            itemBuilder: (context, index) => DocumentItemWidget(
                 index: index,
                 item: controller.documentItems[index],
                 documentTypes: controller.documentTypes,
                 onRemove: () => controller.removeDocumentItem(index),
                 onChanged: (item) => controller.documentItems[index] = item,
                 onPickDocument: () => controller.pickDocument(index),
-              );
-            },
+              ),
           );
         }),
       ],
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return Obx(() {
-      return ElevatedButton(
+  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
         onPressed: controller.isSubmitting.value ? null : controller.submitForm,
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
         ),
         child: controller.isSubmitting.value
-            ? SizedBox(
+            ? const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -252,10 +238,8 @@ class LandView extends GetView<RegLandController> {
                   color: Colors.white,
                 ),
               )
-            : Text('Save Land Details'),
-      );
-    });
-  }
+            : const Text('Save Land Details'),
+      ));
 
   // Widget _buildTextField({
   //   required TextEditingController controller,
@@ -312,8 +296,7 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -337,5 +320,4 @@ class CustomTextField extends StatelessWidget {
         onTap: onTap,
       ),
     );
-  }
 }

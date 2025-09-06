@@ -11,8 +11,7 @@ class FinanceLineChart extends StatelessWidget {
   const FinanceLineChart({super.key, required this.financeData});
 
   // Bottom axis labels with dynamic font size
-  Widget bottomTitleWidgets(double value, TitleMeta meta, double chartWidth) {
-    return SideTitleWidget(
+  Widget bottomTitleWidgets(double value, TitleMeta meta, double chartWidth) => SideTitleWidget(
       meta: meta,
       space: 8,
       child: Text(
@@ -24,7 +23,6 @@ class FinanceLineChart extends StatelessWidget {
         ),
       ),
     );
-  }
 
   // Left axis labels with styling
   Widget leftTitleWidgets(double value, TitleMeta meta, double chartWidth) {
@@ -41,21 +39,18 @@ class FinanceLineChart extends StatelessWidget {
   }
 
   // Build LineChartBarData from finance data
-  LineChartBarData _buildLine(List<DailyData> data, Color color) {
-    return LineChartBarData(
+  LineChartBarData _buildLine(List<DailyData> data, Color color) => LineChartBarData(
       spots: data.map((d) => FlSpot(double.parse(d.day), d.amount)).toList(),
       isCurved: true,
       color: color,
       barWidth: 2.5,
-      dotData: FlDotData(show: false),
+      dotData: const FlDotData(show: false),
       belowBarData: BarAreaData(show: false),
       isStrokeCapRound: true,
     );
-  }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.all(5),
       child: AspectRatio(
         aspectRatio: 1.8,
@@ -82,8 +77,7 @@ class FinanceLineChart extends StatelessWidget {
                     tooltipMargin: 8,
                     maxContentWidth: 150,
                     getTooltipColor: (spot) => Colors.blueGrey.withOpacity(0.8),
-                    getTooltipItems: (touchedSpots) {
-                      return touchedSpots.map((spot) {
+                    getTooltipItems: (touchedSpots) => touchedSpots.map((spot) {
                         final style = TextStyle(
                           color: spot.bar.color,
                           fontWeight: FontWeight.bold,
@@ -98,8 +92,7 @@ class FinanceLineChart extends StatelessWidget {
                           '$label\nDay: ${spot.x.toInt()}\n${spot.y.toStringAsFixed(2)}',
                           style,
                         );
-                      }).toList();
-                    },
+                      }).toList(),
                   ),
                 ),
                 titlesData: FlTitlesData(
@@ -145,7 +138,7 @@ class FinanceLineChart extends StatelessWidget {
                     sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
-                gridData: FlGridData(show: false), // grid removed
+                gridData: const FlGridData(show: false), // grid removed
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(
@@ -163,5 +156,4 @@ class FinanceLineChart extends StatelessWidget {
         ),
       ),
     );
-  }
 }

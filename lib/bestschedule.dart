@@ -1,64 +1,50 @@
-// lib/modules/schedules/models/schedule_model.dart
 import 'dart:convert';
 
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/task/model/model.dart';
+import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
+import 'package:argiot/src/app/widgets/toggle_bar.dart';
+import 'package:argiot/src/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import 'src/app/controller/app_controller.dart';
-import 'src/app/modules/task/model/model.dart';
-import 'src/app/utils/http/http_service.dart';
-import 'src/app/widgets/input_card_style.dart';
-import 'src/app/widgets/toggle_bar.dart';
-import 'src/utils.dart';
-
 // lib/common/models/land_crop_model.dart
 class ScheduleLand {
+  const ScheduleLand({
+    required this.id,
+    required this.name,
+    required this.crops,
+  });
+
+  factory ScheduleLand.fromJson(Map<String, dynamic> json) => ScheduleLand(
+    id: json['id'] ?? 0,
+    name: json['name'] ?? '',
+    crops:
+        (json['crops'] as List<dynamic>?)
+            ?.map((cropJson) => ScheduleCrop.fromJson(cropJson))
+            .toList() ??
+        <ScheduleCrop>[],
+  );
+
   final int id;
   final String name;
   final List<ScheduleCrop> crops;
-
-  ScheduleLand({required this.id, required this.name, required this.crops});
-
-  factory ScheduleLand.fromJson(Map<String, dynamic> json) {
-    return ScheduleLand(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      crops:
-          (json['crops'] as List<dynamic>?)
-              ?.map((cropJson) => ScheduleCrop.fromJson(cropJson))
-              .toList() ??
-          [],
-    );
-  }
 }
 
 class ScheduleCrop {
-  final int id;
-  final String name;
-
   ScheduleCrop({required this.id, required this.name});
 
-  factory ScheduleCrop.fromJson(Map<String, dynamic> json) {
-    return ScheduleCrop(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory ScheduleCrop.fromJson(Map<String, dynamic> json) =>
+      ScheduleCrop(id: json['id'] ?? 0, name: json['name'] ?? '');
+  final int id;
+  final String name;
 }
 
 class Schedule {
-  final int id;
-  final int farmerId;
-  final int landId;
-  final int myCropId;
-  final int cropId;
-  final String crop;
-  final String cropImage;
-  final int activityTypeId;
-  final String activityType;
-  final int days;
-  final String description;
-
   Schedule({
     required this.id,
     required this.farmerId,
@@ -73,21 +59,30 @@ class Schedule {
     required this.description,
   });
 
-  factory Schedule.fromJson(Map<String, dynamic> json) {
-    return Schedule(
-      id: json['id'] ?? 0,
-      farmerId: json['farmer_id'] ?? 0,
-      landId: json['land_id'] ?? 0,
-      myCropId: json['my_crop_id'] ?? 0,
-      cropId: json['crop_id'] ?? 0,
-      crop: json['crop'] ?? '',
-      cropImage: json['crop_image'] ?? '',
-      activityTypeId: json['activity_type_id'] ?? 0,
-      activityType: json['activity_type'] ?? '',
-      days: json['days'] ?? 0,
-      description: json['description'] ?? '',
-    );
-  }
+  factory Schedule.fromJson(Map<String, dynamic> json) => Schedule(
+    id: json['id'] ?? 0,
+    farmerId: json['farmer_id'] ?? 0,
+    landId: json['land_id'] ?? 0,
+    myCropId: json['my_crop_id'] ?? 0,
+    cropId: json['crop_id'] ?? 0,
+    crop: json['crop'] ?? '',
+    cropImage: json['crop_image'] ?? '',
+    activityTypeId: json['activity_type_id'] ?? 0,
+    activityType: json['activity_type'] ?? '',
+    days: json['days'] ?? 0,
+    description: json['description'] ?? '',
+  );
+  final int id;
+  final int farmerId;
+  final int landId;
+  final int myCropId;
+  final int cropId;
+  final String crop;
+  final String cropImage;
+  final int activityTypeId;
+  final String activityType;
+  final int days;
+  final String description;
 }
 
 class ScheduleRepository {
@@ -95,7 +90,7 @@ class ScheduleRepository {
   final AppDataController appDeta = Get.put(AppDataController());
   Future<List<Schedule>> fetchSchedules(int landId, int cropId) async {
     try {
-      final farmerId = appDeta.userId;
+      final String farmerId = appDeta.userId.value;
       final response = await _httpService.get(
         '/best_practice_schedule/$farmerId/$landId/$cropId/',
       );
@@ -125,10 +120,7 @@ class ScheduleRepository {
       );
 
       if (response.statusCode == 200) {
-        Map decode = json.decode(response.body);
-
-        var decode2 = decode["schedule"];
-        final schedulesJson = decode2;
+        final schedulesJson = json.decode(response.body)["schedule"];
         if (schedulesJson.isNotEmpty) {
           return Schedule.fromJson(schedulesJson);
         } else {
@@ -148,7 +140,7 @@ class ScheduleRepository {
       final data = json.decode(response.body)['data'] as List;
       return data.map((item) => ActivityModel.fromJson(item)).toList();
     } catch (e) {
-      throw Exception('Failed to load activity types: ${e.toString()}');
+      throw Exception('Failed to load activity types: $e');
     }
   }
 
@@ -157,7 +149,7 @@ class ScheduleRepository {
   }
 
   Future<List<ScheduleLand>> fetchLandsAndCrops() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',
@@ -180,14 +172,14 @@ class ScheduleRepository {
 class ScheduleController extends GetxController {
   final ScheduleRepository _repository = ScheduleRepository();
   final AppDataController _appDataController = Get.find();
-  var lands = <ScheduleLand>[].obs;
-  var selectedLand = Rxn<ScheduleLand>();
-  var selectedCrop = Rxn<ScheduleCrop>();
-  var isLoading = false.obs;
+  RxList<ScheduleLand> lands = <ScheduleLand>[].obs;
+  Rxn<ScheduleLand> selectedLand = Rxn<ScheduleLand>();
+  Rxn<ScheduleCrop> selectedCrop = Rxn<ScheduleCrop>();
+  RxBool isLoading = false.obs;
   final formKey = GlobalKey<FormState>();
-  var schedules = <Schedule>[].obs;
-  var filteredSchedules = <Schedule>[].obs;
-  var selectedSchedule = Schedule(
+  RxList<Schedule> schedules = <Schedule>[].obs;
+  RxList<Schedule> filteredSchedules = <Schedule>[].obs;
+  Rx<Schedule> selectedSchedule = Schedule(
     id: 0,
     farmerId: 0,
     landId: 0,
@@ -201,13 +193,13 @@ class ScheduleController extends GetxController {
     description: '',
   ).obs;
 
-  var searchQuery = ''.obs;
+  RxString searchQuery = ''.obs;
 
   // Parameters for API calls
-  var farmerId = 0.obs;
-  var landId = 0.obs;
-  var cropId = 0.obs;
-  var scheduleId = 0.obs;
+  RxInt farmerId = 0.obs;
+  RxInt landId = 0.obs;
+  RxInt cropId = 0.obs;
+  RxInt scheduleId = 0.obs;
   final RxList<ActivityModel> activity = <ActivityModel>[].obs;
   final Rx<ActivityModel> selectedActivityType = ActivityModel(
     id: 0,
@@ -227,9 +219,9 @@ class ScheduleController extends GetxController {
   final RxString selectedDateFilter = 'Today'.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    fetchLandsAndCrops();
+    await fetchLandsAndCrops();
 
     debounce(
       searchQuery,
@@ -243,7 +235,9 @@ class ScheduleController extends GetxController {
   // }
 
   Future<void> addTask() async {
-    if (!formKey.currentState!.validate()) return;
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
 
     final farmerId = _appDataController.userId.value;
     try {
@@ -264,18 +258,14 @@ class ScheduleController extends GetxController {
 
       await _repository.addTask(taskRequest);
 
-      Get.back(result: true);
-      Get.back(result: true);
+      Get..back(result: true)
+      ..back(result: true);
       showSuccess('Task added successfully');
     } catch (e) {
-      showError('Failed to add task: ${e.toString()}');
+      showError('Failed to add task: $e');
     } finally {
       isLoading(false);
     }
-  }
-
-  void changeActivity(ActivityModel activity) {
-    selectedActivityType.value = activity;
   }
 
   Future<void> fetchLandsAndCrops() async {
@@ -284,7 +274,7 @@ class ScheduleController extends GetxController {
       final result = await _repository.fetchLandsAndCrops();
       lands.assignAll(result);
 
-      selectLand(result.first);
+      await selectLand(result.first);
       final activityList = await _repository.getActivityTypes();
       activity.assignAll(activityList);
     } catch (e) {
@@ -294,22 +284,21 @@ class ScheduleController extends GetxController {
     }
   }
 
-  void selectLand(ScheduleLand? land) {
+  Future<void> selectLand(ScheduleLand? land) async {
     selectedLand.value = land;
     if (land!.crops.isNotEmpty) {
       selectedCrop.value = land.crops.first;
-      fetchSchedules();
+      await fetchSchedules();
     }
   }
 
-  void selectCrop(ScheduleCrop? crop) {
+  Future<void> selectCrop(ScheduleCrop? crop) async {
     selectedCrop.value = crop;
-    fetchSchedules();
+    await fetchSchedules();
   }
 
-  List<ScheduleCrop> get cropsForSelectedLand {
-    return selectedLand.value?.crops ?? [];
-  }
+  List<ScheduleCrop> get cropsForSelectedLand =>
+      selectedLand.value?.crops ?? [];
 
   void setParameters({required int lId, required int cId, int sId = 0}) {
     landId.value = lId;
@@ -392,198 +381,187 @@ class ScheduleListPage extends GetView<ScheduleController> {
   const ScheduleListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'schedules'.tr),
-      body: Column(
-        children: [
-          SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Obx(() {
-                    return InputCardStyle(
-                      child: DropdownButtonFormField<ScheduleLand>(
-                        value: controller.selectedLand.value,
+  Widget build(BuildContext context) => Scaffold(
+    appBar: CustomAppBar(title: 'schedules'.tr),
+    body: Column(
+      children: [
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            children: [
+              Expanded(
+                child: Obx(
+                  () => InputCardStyle(
+                    child: DropdownButtonFormField<ScheduleLand>(
+                      initialValue: controller.selectedLand.value,
 
-                        items: controller.lands.map((ScheduleLand land) {
-                          return DropdownMenuItem<ScheduleLand>(
-                            value: land,
-                            child: Text(land.name),
-                          );
-                        }).toList(),
-                        onChanged: (ScheduleLand? land) {
-                          controller.selectLand(land);
-                        },
+                      items: controller.lands
+                          .map(
+                            (ScheduleLand land) =>
+                                DropdownMenuItem<ScheduleLand>(
+                                  value: land,
+                                  child: Text(land.name),
+                                ),
+                          )
+                          .toList(),
+                      onChanged: (ScheduleLand? land) {
+                        controller.selectLand(land);
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Land',
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Obx(() {
+                  final crops = controller.cropsForSelectedLand;
+
+                  if (controller.selectedLand.value == null) {
+                    return InputCardStyle(
+                      child: DropdownButtonFormField(
+                        items: const [],
+                        onChanged: null,
                         decoration: const InputDecoration(
-                          hintText: 'Land',
+                          labelText: 'Select land first',
                           border: InputBorder.none,
                         ),
                       ),
                     );
-                  }),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Obx(() {
-                    final crops = controller.cropsForSelectedLand;
+                  }
 
-                    if (controller.selectedLand.value == null) {
-                      return InputCardStyle(
-                        child: DropdownButtonFormField(
-                          items: [],
-                          onChanged: null,
-                          decoration: InputDecoration(
-                            labelText: 'Select land first',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      );
-                    }
+                  return InputCardStyle(
+                    child: DropdownButtonFormField<ScheduleCrop>(
+                      initialValue: controller.selectedCrop.value,
 
-                    return InputCardStyle(
-                      child: DropdownButtonFormField<ScheduleCrop>(
-                        value: controller.selectedCrop.value,
-
-                        items: crops.map((ScheduleCrop crop) {
-                          return DropdownMenuItem<ScheduleCrop>(
-                            value: crop,
-                            child: Text(crop.name),
-                          );
-                        }).toList(),
-                        onChanged: (ScheduleCrop? crop) {
-                          controller.selectCrop(crop);
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Crop',
-                          border: InputBorder.none,
-                        ),
+                      items: crops
+                          .map(
+                            (ScheduleCrop crop) =>
+                                DropdownMenuItem<ScheduleCrop>(
+                                  value: crop,
+                                  child: Text(crop.name),
+                                ),
+                          )
+                          .toList(),
+                      onChanged: (ScheduleCrop? crop) {
+                        controller.selectCrop(crop);
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Crop',
+                        border: InputBorder.none,
                       ),
-                    );
-                  }),
-                ),
-              ],
-            ),
+                    ),
+                  );
+                }),
+              ),
+            ],
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(10.0),
-          //   child: TextField(
-          //     onChanged: (value) => controller.searchQuery(value),
-          //     decoration: InputDecoration(
-          //       hintText: 'search_schedules'.tr,
-          //       prefixIcon: const Icon(Icons.search),
-          //       border: OutlineInputBorder(
-          //         borderRadius: BorderRadius.circular(10.0),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          Expanded(
-            child: Obx(() {
-              if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              }
+        ),
 
-              if (controller.filteredSchedules.isEmpty) {
-                return Center(child: Text('no_schedules_found'.tr));
-              }
+        Expanded(
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              return RefreshIndicator(
-                onRefresh: () => controller.fetchSchedules(),
-                child: ListView.builder(
-                  itemCount: controller.filteredSchedules.length,
-                  itemBuilder: (context, index) {
-                    final schedule = controller.filteredSchedules[index];
-                    return ScheduleCard(
-                      schedule: schedule,
-                      controller: controller,
-                    );
-                  },
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
+            if (controller.filteredSchedules.isEmpty) {
+              return Center(child: Text('no_schedules_found'.tr));
+            }
+
+            return RefreshIndicator(
+              onRefresh: () => controller.fetchSchedules(),
+              child: ListView.builder(
+                itemCount: controller.filteredSchedules.length,
+                itemBuilder: (context, index) {
+                  final schedule = controller.filteredSchedules[index];
+                  return ScheduleCard(
+                    schedule: schedule,
+                    controller: controller,
+                  );
+                },
+              ),
+            );
+          }),
+        ),
+      ],
+    ),
+  );
 }
 
 class ScheduleCard extends StatelessWidget {
-  final Schedule schedule;
-  final ScheduleController controller;
-
   const ScheduleCard({
-    super.key,
     required this.schedule,
     required this.controller,
+    super.key,
   });
+  final Schedule schedule;
+
+  final ScheduleController controller;
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      elevation: 1,
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: CachedNetworkImage(
-            imageUrl: schedule.cropImage,
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
-            placeholder: (context, url) =>
-                Container(width: 50, height: 50, color: Colors.grey[300]),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-          ),
+  Widget build(BuildContext context) => Card(
+    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    elevation: 1,
+    child: ListTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: CachedNetworkImage(
+          imageUrl: schedule.cropImage,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+          placeholder: (context, url) =>
+              Container(width: 50, height: 50, color: Colors.grey[300]),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
-        title: Text(schedule.crop),
-        subtitle: Text(schedule.activityType),
-        trailing: IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () async {
-            controller.setParameters(
-              lId: schedule.cropId,
-              cId: schedule.cropId,
-              sId: schedule.id,
-            );
-
-            // Delay execution until after the first build
-
-            await controller.fetchScheduleDetails();
-            addScheduleBottomSheet();
-          },
-        ),
-        onTap: () {
-          Get.toNamed(
-            '/schedule-details',
-            arguments: {
-              'landId': schedule.cropId,
-              'cropId': schedule.cropId,
-              'scheduleId': schedule.id,
-            },
+      ),
+      title: Text(schedule.crop),
+      subtitle: Text(schedule.activityType),
+      trailing: IconButton(
+        icon: const Icon(Icons.add),
+        onPressed: () async {
+          controller.setParameters(
+            lId: schedule.cropId,
+            cId: schedule.cropId,
+            sId: schedule.id,
           );
+
+          // Delay execution until after the first build
+
+          await controller.fetchScheduleDetails();
+          addScheduleBottomSheet();
         },
       ),
-    );
-  }
+      onTap: ()  {
+         Get.toNamed(
+          '/schedule-details',
+          arguments: {
+            'landId': schedule.cropId,
+            'cropId': schedule.cropId,
+            'scheduleId': schedule.id,
+          },
+        );
+      },
+    ),
+  );
 }
 
 // lib/modules/schedules/views/schedule_details_page.dart
 
 class ScheduleDetailsPage extends StatefulWidget {
-  final int landId;
-  final int cropId;
-  final int scheduleId;
-
   const ScheduleDetailsPage({
-    super.key,
     required this.landId,
     required this.cropId,
     required this.scheduleId,
+    super.key,
   });
+  final int landId;
+  final int cropId;
+  final int scheduleId;
 
   @override
   State<ScheduleDetailsPage> createState() => _ScheduleDetailsPageState();
@@ -608,80 +586,74 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'schedule_details'.tr),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+  Widget build(BuildContext context) => Scaffold(
+    appBar: CustomAppBar(title: 'schedule_details'.tr),
+    body: Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        final schedule = controller.selectedSchedule.value;
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12.0),
-                  child: CachedNetworkImage(
-                    imageUrl: schedule.cropImage,
+      final schedule = controller.selectedSchedule.value;
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: schedule.cropImage,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
                     width: 200,
                     height: 200,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      width: 200,
-                      height: 200,
-                      color: Colors.grey[300],
-                    ),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error, size: 50),
+                    color: Colors.grey[300],
                   ),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error, size: 50),
                 ),
               ),
-              const SizedBox(height: 20),
-              Text(schedule.crop, style: Get.textTheme.headlineSmall),
-              const SizedBox(height: 10),
-              _buildDetailItem('activity_type'.tr, schedule.activityType),
-              _buildDetailItem('days'.tr, '${schedule.days}'),
-              _buildDetailItem('description'.tr, schedule.description),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () async {
-                    addScheduleBottomSheet();
-                  },
-                  icon: const Icon(Icons.add),
-                  label: Text('add_schedule'.tr),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
-    );
-  }
-
-  Widget _buildDetailItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: Get.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
             ),
+            const SizedBox(height: 20),
+            Text(schedule.crop, style: Get.textTheme.headlineSmall),
+            const SizedBox(height: 10),
+            _buildDetailItem('activity_type'.tr, schedule.activityType),
+            _buildDetailItem('days'.tr, '${schedule.days}'),
+            _buildDetailItem('description'.tr, schedule.description),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: addScheduleBottomSheet,
+                icon: const Icon(Icons.add),
+                label: Text('add_schedule'.tr),
+              ),
+            ),
+          ],
+        ),
+      );
+    }),
+  );
+
+  Widget _buildDetailItem(String label, String value) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: Get.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(height: 4),
-          Text(value, style: Get.textTheme.bodyLarge),
-          const Divider(),
-        ],
-      ),
-    );
-  }
+        ),
+        const SizedBox(height: 4),
+        Text(value, style: Get.textTheme.bodyLarge),
+        const Divider(),
+      ],
+    ),
+  );
 }
 
 void addScheduleBottomSheet() {
@@ -711,13 +683,10 @@ void addScheduleBottomSheet() {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Add Schedule',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
 
@@ -750,7 +719,7 @@ void addScheduleBottomSheet() {
 
               Column(
                 children: [
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Obx(
                     () => CheckboxListTile(
                       title: const Text('Recurring Task'),
@@ -773,7 +742,7 @@ void addScheduleBottomSheet() {
                             controller.recurrenceType.value = index;
                           },
                           activePageIndex: controller.recurrenceType.value,
-                          buttonsList: ["Daily", "Weekly ", "Monthly "],
+                          buttonsList: const ["Daily", "Weekly ", "Monthly "],
                         ),
                         const SizedBox(height: 16),
 
@@ -841,13 +810,13 @@ void addScheduleBottomSheet() {
                   }),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
 
               // Description
               InputCardStyle(
                 noHeight: true,
                 child: TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Description*',
                     border: InputBorder.none,
                   ),
@@ -865,12 +834,10 @@ void addScheduleBottomSheet() {
                 () => ElevatedButton(
                   onPressed: controller.isLoading.value
                       ? null
-                      : () {
-                          controller.addTask();
-                        },
+                      : controller.addTask,
                   child: controller.isLoading.value
                       ? const CircularProgressIndicator()
-                      : Text('Add Task Schedule'),
+                      : const Text('Add Task Schedule'),
                 ),
               ),
             ],

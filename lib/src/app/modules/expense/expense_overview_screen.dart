@@ -14,29 +14,28 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
+  Widget build(BuildContext context) => RefreshIndicator(
       onRefresh: () => controller.loadExpenseData(),
 
       child: Scaffold(
         body: Obx(() {
           if (controller.isLoading.value) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           return SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TitleText("Expense".tr),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildSummarySection(),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildPieChart(),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTabBar(),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTransactionList(),
               ],
             ),
@@ -45,11 +44,10 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Get.theme.primaryColor,
           onPressed: _showAddDialog,
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
       ),
     );
-  }
 
   void _showAddDialog() {
     Get.bottomSheet(
@@ -106,7 +104,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                 });
               },
             ),
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
           ],
         ),
       ),
@@ -114,8 +112,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
     );
   }
 
-  Widget _buildSummarySection() {
-    return Row(
+  Widget _buildSummarySection() => Row(
       children: [
         // const Text(
         //   "Expenses",
@@ -130,7 +127,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             ),
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         Expanded(
           child: InputCardStyle(
             // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -153,19 +150,17 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         ),
       ],
     );
-  }
 
-  Widget _buildPieChart() {
-    return Obx(() {
+  Widget _buildPieChart() => Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
       if (controller.cardexpenses.isEmpty) {
-        return SizedBox();
+        return const SizedBox();
       }
       Map<String, double> dataMap = {
         for (var item in controller.cardexpenses)
-          item.type_expenses__name: item.total_amount,
+          item.expensestype: item.totalAmount,
       };
 
       return Card(
@@ -219,7 +214,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                           children: [
                             Expanded(
                               child: Text(
-                                expense.type_expenses__name,
+                                expense.expensestype,
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.black,
@@ -228,7 +223,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                               ),
                             ),
                             Text(
-                              "₹ ${expense.total_amount.toStringAsFixed(1)}k",
+                              "₹ ${expense.totalAmount.toStringAsFixed(1)}k",
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
@@ -249,20 +244,16 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         ),
       );
     });
-  }
 
-  Widget _buildTabBar() {
-    return Row(
+  Widget _buildTabBar() => Row(
       children: [
         _buildTabButton(0, 'All'),
         _buildTabButton(1, 'Expenses'),
         _buildTabButton(2, 'Purchases'),
       ],
     );
-  }
 
-  Widget _buildTabButton(int index, String text) {
-    return Expanded(
+  Widget _buildTabButton(int index, String text) => Expanded(
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: TextButton(
@@ -283,7 +274,6 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         ),
       ),
     );
-  }
 
   Widget _buildTransactionList() {
     final items = controller.selectedTab.value == 0
@@ -303,7 +293,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
 
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
@@ -311,7 +301,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         if (item is Expense) {
           return Card(
             elevation: 1,
-            margin: EdgeInsets.symmetric(vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 4),
             child: ListTile(
               title: Text('${item.createdDay} - ${item.typeExpenses.name}'),
               subtitle: Text(item.myCrop.name),
@@ -326,7 +316,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         } else if (item is Purchase) {
           return Card(
             elevation: 1,
-            margin: EdgeInsets.symmetric(vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 4),
             child: ListTile(
               title: Text(
                 '${item.dateOfConsumption} - ${item.inventoryItems.name}',
@@ -343,7 +333,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             ),
           );
         } else {
-          return SizedBox(); // Fallback for unexpected types
+          return const SizedBox(); // Fallback for unexpected types
         }
       },
     );

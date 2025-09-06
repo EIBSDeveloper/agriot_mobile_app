@@ -133,7 +133,7 @@ class RegLandController extends GetxController {
   Future<void> listpickLocation() async {
     try {
       final location = await Get.to(
-        LandPickerView(),
+        const LandPickerView(),
         arguments: {
           if (landCoordinates.isNotEmpty) 'crop': landCoordinates,
           "zoom": true,
@@ -149,7 +149,7 @@ class RegLandController extends GetxController {
 
         !formKey.currentState!.validate();
       }
-    update();
+      update();
     } catch (e) {
       showError('Failed to pick location');
     }
@@ -189,14 +189,12 @@ class RegLandController extends GetxController {
       isSubmitting(true);
 
       // Prepare survey details
-      final surveyDetails = surveyItems.asMap().map((index, item) {
-        return MapEntry(
+      final surveyDetails = surveyItems.asMap().map((index, item) => MapEntry(
           'survey_details_${index + 1}',
           'survey_no:${item.surveyNo},'
               'survey_measurement_value:${item.measurement},'
               'survey_measurement_unit_id:${item.unit?.id}',
-        );
-      });
+        ));
 
       // Prepare documents
       final documents = documentItems
@@ -229,13 +227,11 @@ class RegLandController extends GetxController {
         request: request,
         documents: documents,
       );
-
-      showSuccess('Land added successfully');
-
-      // Navigate to next screen
-
-      ResgisterController resgisterController = Get.find();
-      resgisterController.moveNextPage();
+      if (response.isNotEmpty) {
+        showSuccess('Land added successfully');
+        ResgisterController resgisterController = Get.find();
+        resgisterController.moveNextPage();
+      }
     } catch (e) {
       showError('Error');
     } finally {

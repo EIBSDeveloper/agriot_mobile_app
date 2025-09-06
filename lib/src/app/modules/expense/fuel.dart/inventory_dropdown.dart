@@ -10,18 +10,17 @@ class InventoryDropdown<T> extends StatelessWidget {
   final bool enabled;
 
   const InventoryDropdown({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     required this.items,
     required this.onChanged,
     this.value,
     this.enabled = true,
-  }) : super(key: key);
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: Get.textTheme.bodyMedium),
@@ -44,5 +43,4 @@ class InventoryDropdown<T> extends StatelessWidget {
         ),
       ],
     );
-  }
 }

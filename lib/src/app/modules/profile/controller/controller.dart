@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:argiot/src/routes/app_routes.dart';
-import 'package:argiot/src/sercis/address_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,7 +16,6 @@ import '../../../../utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
-import '../../registration/model/address_model.dart';
 import '../../registration/view/screen/landpicker.dart';
 import '../model/model.dart';
 
@@ -116,7 +114,7 @@ class ProfileController extends GetxController {
 class ProfileEditController extends GetxController {
   // Services & Repositories
   final ProfileRepository _profileRepository = Get.find();
-  final AddressService _addressService = Get.find();
+  // final AddressService _addressService = Get.find();
 
   // Form controllers
   final nameController = TextEditingController();
@@ -135,18 +133,18 @@ class ProfileEditController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
   // Dropdown data
-  final RxList<CountryModel> countries = <CountryModel>[].obs;
-  final RxList<StateModel> states = <StateModel>[].obs;
-  final RxList<CityModel> cities = <CityModel>[].obs;
-  final RxList<TalukModel> taluks = <TalukModel>[].obs;
-  final RxList<VillageModel> villages = <VillageModel>[].obs;
+  // final RxList<CountryModel> countries = <CountryModel>[].obs;
+  // final RxList<StateModel> states = <StateModel>[].obs;
+  // final RxList<CityModel> cities = <CityModel>[].obs;
+  // final RxList<TalukModel> taluks = <TalukModel>[].obs;
+  // final RxList<VillageModel> villages = <VillageModel>[].obs;
 
   // Selected values
-  final Rx<CountryModel?> selectedCountry = Rx<CountryModel?>(null);
-  final Rx<StateModel?> selectedState = Rx<StateModel?>(null);
-  final Rx<CityModel?> selectedCity = Rx<CityModel?>(null);
-  final Rx<TalukModel?> selectedTaluk = Rx<TalukModel?>(null);
-  final Rx<VillageModel?> selectedVillage = Rx<VillageModel?>(null);
+  // final Rx<CountryModel?> selectedCountry = Rx<CountryModel?>(null);
+  // final Rx<StateModel?> selectedState = Rx<StateModel?>(null);
+  // final Rx<CityModel?> selectedCity = Rx<CityModel?>(null);
+  // final Rx<TalukModel?> selectedTaluk = Rx<TalukModel?>(null);
+  // final Rx<VillageModel?> selectedVillage = Rx<VillageModel?>(null);
 
   // Loading states
   final RxBool isLoading = false.obs;
@@ -167,7 +165,7 @@ class ProfileEditController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _setupDropdownListeners();
+    // _setupDropdownListeners();
     _loadInitialData();
   }
 
@@ -178,12 +176,12 @@ class ProfileEditController extends GetxController {
     super.onClose();
   }
 
-  void _setupDropdownListeners() {
-    ever(selectedCountry, (_) => _onCountryChanged());
-    ever(selectedState, (_) => _onStateChanged());
-    ever(selectedCity, (_) => _onCityChanged());
-    ever(selectedTaluk, (_) => _onTalukChanged());
-  }
+  // void _setupDropdownListeners() {
+  //   ever(selectedCountry, (_) => _onCountryChanged());
+  //   ever(selectedState, (_) => _onStateChanged());
+  //   ever(selectedCity, (_) => _onCityChanged());
+  //   ever(selectedTaluk, (_) => _onTalukChanged());
+  // }
 
   void _cancelSubscriptions() {
     for (var sub in _subscriptions) {
@@ -206,7 +204,7 @@ class ProfileEditController extends GetxController {
   Future<void> _loadInitialData() async {
     try {
       isLoading(true);
-      await Future.wait([loadCountries(), _loadProfileData()]);
+      await Future.wait([ _loadProfileData()]);
     } catch (e) {
       showError('Failed to load initial data');
     } finally {
@@ -230,89 +228,89 @@ class ProfileEditController extends GetxController {
     pincodeController.text = profile.pincode.toString();
     locationController.text = profile.location.toString();
     // Set dropdown values if they exist
-    _setInitialAddressValues(
-      countryId: profile.countryId,
-      stateId: profile.stateId,
-      cityId: profile.cityId,
-      talukId: profile.talukId,
-      villageId: profile.villageId,
-    );
+    // _setInitialAddressValues(
+    //   countryId: profile.countryId,
+    //   stateId: profile.stateId,
+    //   cityId: profile.cityId,
+    //   talukId: profile.talukId,
+    //   villageId: profile.villageId,
+    // );
   }
 
-  Future<void> _setInitialAddressValues({
-    int? countryId,
-    int? stateId,
-    int? cityId,
-    int? talukId,
-    int? villageId,
-  }) async {
-    // Set country if exists
-    if (countryId != null) {
-      final country = countries.firstWhereOrNull((c) => c.id == countryId);
-      if (country != null) {
-        selectedCountry(country);
-        await loadStates(countryId);
+  // Future<void> _setInitialAddressValues({
+  //   int? countryId,
+  //   int? stateId,
+  //   int? cityId,
+  //   int? talukId,
+  //   int? villageId,
+  // }) async {
+  //   // Set country if exists
+  //   if (countryId != null) {
+  //     final country = countries.firstWhereOrNull((c) => c.id == countryId);
+  //     if (country != null) {
+  //       selectedCountry(country);
+  //       await loadStates(countryId);
 
-        // Set state if exists
-        if (stateId != null) {
-          final state = states.firstWhereOrNull((s) => s.id == stateId);
-          if (state != null) {
-            selectedState(state);
-            await loadCities(stateId);
+  //       // Set state if exists
+  //       if (stateId != null) {
+  //         final state = states.firstWhereOrNull((s) => s.id == stateId);
+  //         if (state != null) {
+  //           selectedState(state);
+  //           await loadCities(stateId);
 
-            // Set city if exists
-            if (cityId != null) {
-              final city = cities.firstWhereOrNull((c) => c.id == cityId);
-              if (city != null) {
-                selectedCity(city);
-                await loadTaluks(cityId);
+  //           // Set city if exists
+  //           if (cityId != null) {
+  //             final city = cities.firstWhereOrNull((c) => c.id == cityId);
+  //             if (city != null) {
+  //               selectedCity(city);
+  //               await loadTaluks(cityId);
 
-                // Set taluk if exists
-                if (talukId != null) {
-                  final taluk = taluks.firstWhereOrNull((t) => t.id == talukId);
-                  if (taluk != null) {
-                    selectedTaluk(taluk);
-                    await loadVillages(talukId);
+  //               // Set taluk if exists
+  //               if (talukId != null) {
+  //                 final taluk = taluks.firstWhereOrNull((t) => t.id == talukId);
+  //                 if (taluk != null) {
+  //                   selectedTaluk(taluk);
+  //                   await loadVillages(talukId);
 
-                    // Set village if exists
-                    if (villageId != null) {
-                      final village = villages.firstWhereOrNull(
-                        (v) => v.id == villageId,
-                      );
-                      if (village != null) {
-                        selectedVillage(village);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    } else {}
-  }
+  //                   // Set village if exists
+  //                   if (villageId != null) {
+  //                     final village = villages.firstWhereOrNull(
+  //                       (v) => v.id == villageId,
+  //                     );
+  //                     if (village != null) {
+  //                       selectedVillage(village);
+  //                     }
+  //                   }
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   } else {}
+  // }
 
-  void _onCountryChanged() {
-    selectedState.value = null;
-    selectedCity.value = null;
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+  // void _onCountryChanged() {
+  //   selectedState.value = null;
+  //   selectedCity.value = null;
+  //   selectedTaluk.value = null;
+  //   selectedVillage.value = null;
 
-    if (selectedCountry.value != null) {
-      loadStates(selectedCountry.value!.id!);
-    } else {
-      states.clear();
-      cities.clear();
-      taluks.clear();
-      villages.clear();
-    }
-  }
+  //   if (selectedCountry.value != null) {
+  //     loadStates(selectedCountry.value!.id!);
+  //   } else {
+  //     states.clear();
+  //     cities.clear();
+  //     taluks.clear();
+  //     villages.clear();
+  //   }
+  // }
 
   Future<void> pickLocation() async {
     try {
       final location = await Get.to(
-        LocationPickerView(),
+        const LocationPickerView(),
         binding: LocationViewerBinding(),
       );
       if (location != null) {
@@ -325,101 +323,103 @@ class ProfileEditController extends GetxController {
     }
   }
 
-  void _onStateChanged() {
-    selectedCity.value = null;
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+  // void _onStateChanged() {
+  //   selectedCity.value = null;
+  //   selectedTaluk.value = null;
+  //   selectedVillage.value = null;
 
-    if (selectedState.value != null) {
-      loadCities(selectedState.value!.id!);
-    } else {
-      cities.clear();
-      taluks.clear();
-      villages.clear();
-    }
-  }
+  //   if (selectedState.value != null) {
+  //     loadCities(selectedState.value!.id!);
+  //   } else {
+  //     cities.clear();
+  //     taluks.clear();
+  //     villages.clear();
+  //   }
+  // }
 
-  void _onCityChanged() {
-    selectedTaluk.value = null;
-    selectedVillage.value = null;
+  // void _onCityChanged() {
+  //   selectedTaluk.value = null;
+  //   selectedVillage.value = null;
 
-    if (selectedCity.value != null) {
-      loadTaluks(selectedCity.value!.id!);
-    } else {
-      taluks.clear();
-      villages.clear();
-    }
-  }
+  //   if (selectedCity.value != null) {
+  //     loadTaluks(selectedCity.value!.id!);
+  //   } else {
+  //     taluks.clear();
+  //     villages.clear();
+  //   }
+  // }
 
-  void _onTalukChanged() {
-    selectedVillage.value = null;
+  // void _onTalukChanged() {
+  //   selectedVillage.value = null;
 
-    if (selectedTaluk.value != null) {
-      loadVillages(selectedTaluk.value!.id!);
-    } else {
-      villages.clear();
-    }
-  }
+  //   if (selectedTaluk.value != null) {
+  //     loadVillages(selectedTaluk.value!.id!);
+  //   } else {
+  //     villages.clear();
+  //   }
+  // }
 
-  Future<void> loadCountries() async {
-    try {
-      isLoadingCountries(true);
-      final result = await _addressService.getCountries();
-      countries.assignAll(result);
-    } catch (e) {
-      showError('Failed to load countries');
-    } finally {
-      isLoadingCountries(false);
-    }
-  }
+  // Future<void> loadCountries() async {
+  //   try {
+  //     isLoadingCountries(true);
+  //     final result = await _addressService.getCountries();
+  //     countries.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load countries');
+  //   } finally {
+  //     isLoadingCountries(false);
+  //   }
+  // }
 
-  Future<void> loadStates(int countryId) async {
-    try {
-      isLoadingStates(true);
-      final result = await _addressService.getStates(countryId);
-      states.assignAll(result);
-    } catch (e) {
-      showError('Failed to load states');
-    } finally {
-      isLoadingStates(false);
-    }
-  }
+  // Future<void> loadStates(int countryId) async {
+  //   try {
+  //     isLoadingStates(true);
+  //     final result = await _addressService.getStates(countryId);
+  //     states.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load states');
+  //   } finally {
+  //     isLoadingStates(false);
+  //   }
+  // }
 
-  Future<void> loadCities(int stateId) async {
-    try {
-      isLoadingCities(true);
-      final result = await _addressService.getCities(stateId);
-      cities.assignAll(result);
-    } catch (e) {
-      showError('Failed to load cities');
-    } finally {
-      isLoadingCities(false);
-    }
-  }
+  // Future<void> loadCities(int stateId) async {
+  //   try {
+  //     isLoadingCities(true);
+  //     final result = await _addressService.getCities(stateId);
+  //     cities.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load cities');
+  //   } finally {
+  //     isLoadingCities(false);
+  //   }
+  // }
 
-  Future<void> loadTaluks(int cityId) async {
-    try {
-      isLoadingTaluks(true);
-      final result = await _addressService.getTaluks(cityId);
-      taluks.assignAll(result);
-    } catch (e) {
-      showError('Failed to load taluks');
-    } finally {
-      isLoadingTaluks(false);
-    }
-  }
+  // Future<void> loadTaluks(int cityId) async {
+  //   try {
+  //     isLoadingTaluks(true);
+  //     final result = await _addressService.getTaluks(cityId);
+  //     taluks.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load taluks');
+  //   } finally {
+  //     isLoadingTaluks(false);
+  //   }
+  // }
 
-  Future<void> loadVillages(int talukId) async {
-    try {
-      isLoadingVillages(true);
-      final result = await _addressService.getVillages(talukId);
-      villages.assignAll(result);
-    } catch (e) {
-      showError('Failed to load villages');
-    } finally {
-      isLoadingVillages(false);
-    }
-  }
+  // Future<void> loadVillages(int talukId) async {
+  //   try {
+  //     isLoadingVillages(true);
+  //     final result = await _addressService.getVillages(talukId);
+  //     villages.assignAll(result);
+  //   } catch (e) {
+  //     showError('Failed to load villages');
+  //   } finally {
+  //     isLoadingVillages(false);
+  //   }
+  // }
+
+
 
   Future<void> pickImage() async {
     try {
@@ -445,11 +445,6 @@ class ProfileEditController extends GetxController {
       final response = await _profileRepository.updateProfile({
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
-        "country": selectedCountry.value?.id,
-        "state": selectedState.value?.id,
-        "city": selectedCity.value?.id,
-        "taluk": selectedTaluk.value?.id,
-        "village": selectedVillage.value?.id,
         "door_no": doorNoController.text.trim(),
         "pincode": pincodeController.text.trim(),
         "description": descriptionController.text.trim(),

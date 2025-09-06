@@ -15,24 +15,20 @@ class Task {
      this.status,
   });
 
-  factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
       id: json['id'],
       cropType: json['crop_type'],
       cropImage: json['crop_image'],
       description: json['description'] ?? " ",
       status: json['schedule_status_name'] ,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'crop_type': cropType,
       'crop_image': cropImage,
       'description': description,
     };
-  }
 }
 
 class TaskGroup {
@@ -42,13 +38,11 @@ class TaskGroup {
 
   TaskGroup({required this.date, required this.day, required this.tasks});
 
-  factory TaskGroup.fromJson(Map<String, dynamic> json) {
-    return TaskGroup(
+  factory TaskGroup.fromJson(Map<String, dynamic> json) => TaskGroup(
       date: json['Date'],
       day: json['Day'],
       tasks: List<Task>.from(json['crop'].map((x) => Task.fromJson(x))),
     );
-  }
 }
 
 class TaskRequest {
@@ -101,9 +95,7 @@ class ActivityModel implements NamedItem {
 
   ActivityModel({required this.id, required this.name});
 
-  factory ActivityModel.fromJson(Map<String, dynamic> json) {
-    return ActivityModel(id: json['id'], name: json['name']);
-  }
+  factory ActivityModel.fromJson(Map<String, dynamic> json) => ActivityModel(id: json['id'], name: json['name']);
 
   @override
   bool operator ==(Object other) =>
@@ -125,9 +117,7 @@ class CropModel implements NamedItem {
 
   CropModel({required this.id, required this.name});
 
-  factory CropModel.fromJson(Map<String, dynamic> json) {
-    return CropModel(id: json['id'], name: json['name']);
-  }
+  factory CropModel.fromJson(Map<String, dynamic> json) => CropModel(id: json['id'], name: json['name']);
 
   @override
   bool operator ==(Object other) =>
@@ -159,8 +149,7 @@ class TaskResponse {
     required this.defaultLanguage,
   });
 
-  factory TaskResponse.fromJson(Map<String, dynamic> json) {
-    return TaskResponse(
+  factory TaskResponse.fromJson(Map<String, dynamic> json) => TaskResponse(
       completedTasks: (json['completed_task'] as List)
           .map((e) => DateTask.fromJson(e))
           .toList(),
@@ -179,7 +168,6 @@ class TaskResponse {
       events: (json['events'] as List).map((e) => Event.fromJson(e)).toList(),
       defaultLanguage: json['language']['default'] ?? 'en',
     );
-  }
 }
 
 class DateTask {
@@ -189,13 +177,11 @@ class DateTask {
 
   DateTask({required this.date, required this.tasks, required this.count});
 
-  factory DateTask.fromJson(Map<String, dynamic> json) {
-    return DateTask(
+  factory DateTask.fromJson(Map<String, dynamic> json) => DateTask(
       date: json['Date'],
       tasks: (json['tasks'] as List).map((e) => CTask.fromJson(e)).toList(),
       count: json['count'],
     );
-  }
 }
 
 class Event {
@@ -211,14 +197,12 @@ class Event {
     required this.tasks,
   });
 
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
+  factory Event.fromJson(Map<String, dynamic> json) => Event(
       date: json['Date'],
       count: json['count'],
       status: json['status'],
       tasks: (json['tasks'] as List).map((e) => CTask.fromJson(e)).toList(),
     );
-  }
 }
 
 class CTask {
@@ -236,15 +220,13 @@ class CTask {
     required this.status,
   });
 
-  factory CTask.fromJson(Map<String, dynamic> json) {
-    return CTask(
+  factory CTask.fromJson(Map<String, dynamic> json) => CTask(
       taskId: json['task_id'],
       activityTypeName: json['activity_type_name'],
       description: json['description'] ?? "",
       statusId: json['status_id'],
       status: json['status'],
     );
-  }
 }
 
 class TaskDetails {
@@ -280,8 +262,7 @@ class TaskDetails {
     required this.language,
   });
 
-  factory TaskDetails.fromJson(Map<String, dynamic> json) {
-    return TaskDetails(
+  factory TaskDetails.fromJson(Map<String, dynamic> json) => TaskDetails(
       farmerId: json['farmer_id'],
       scheduleId: json['schedule_id'],
       myLand: TaskLand.fromJson(json['my_land']),
@@ -299,7 +280,6 @@ class TaskDetails {
       totalExpenseAmount: json['total_expense_amount']?.toDouble() ?? 0.0,
       language: Language.fromJson(json['language']),
     );
-  }
 }
 
 class TaskLand {
@@ -308,9 +288,7 @@ class TaskLand {
 
   TaskLand({required this.id, required this.name});
 
-  factory TaskLand.fromJson(Map<String, dynamic> json) {
-    return TaskLand(id: json['id'], name: json['name']);
-  }
+  factory TaskLand.fromJson(Map<String, dynamic> json) => TaskLand(id: json['id'], name: json['name']);
 }
 
 class TaskCrop {
@@ -320,13 +298,11 @@ class TaskCrop {
 
   TaskCrop({required this.id, required this.name, required this.cropImg});
 
-  factory TaskCrop.fromJson(Map<String, dynamic> json) {
-    return TaskCrop(
+  factory TaskCrop.fromJson(Map<String, dynamic> json) => TaskCrop(
       id: json['id'],
       name: json['name'],
       cropImg: json['crop_img'],
     );
-  }
 }
 
 class ScheduleActivityType {
@@ -335,9 +311,7 @@ class ScheduleActivityType {
 
   ScheduleActivityType({required this.id, required this.name});
 
-  factory ScheduleActivityType.fromJson(Map<String, dynamic> json) {
-    return ScheduleActivityType(id: json['id'], name: json['name']);
-  }
+  factory ScheduleActivityType.fromJson(Map<String, dynamic> json) => ScheduleActivityType(id: json['id'], name: json['name']);
 }
 
 class ScheduleStatus {
@@ -346,9 +320,7 @@ class ScheduleStatus {
 
   ScheduleStatus({required this.id, required this.name});
 
-  factory ScheduleStatus.fromJson(Map<String, dynamic> json) {
-    return ScheduleStatus(id: json['id'], name: json['name']);
-  }
+  factory ScheduleStatus.fromJson(Map<String, dynamic> json) => ScheduleStatus(id: json['id'], name: json['name']);
 }
 
 class Language {
@@ -356,7 +328,5 @@ class Language {
 
   Language({required this.defaultLang});
 
-  factory Language.fromJson(Map<String, dynamic> json) {
-    return Language(defaultLang: json['default']);
-  }
+  factory Language.fromJson(Map<String, dynamic> json) => Language(defaultLang: json['default']);
 }

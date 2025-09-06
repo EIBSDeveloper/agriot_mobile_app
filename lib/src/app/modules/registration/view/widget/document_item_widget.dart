@@ -23,12 +23,11 @@ class DocumentItemWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget build(BuildContext context) => Card(
       elevation: 1,
-      margin: EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,15 +36,15 @@ class DocumentItemWidget extends StatelessWidget {
               children: [
                 Text(
                   'Document #${index + 1}',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: onRemove,
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Container(
               decoration: AppStyle.decoration.copyWith(
                 color: const Color.fromARGB(137, 221, 234, 234),
@@ -54,36 +53,34 @@ class DocumentItemWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               height: 55,
               child: DropdownButtonFormField<AppDropdownItem>(
-                value: item.type,
-                decoration: InputDecoration(
+                initialValue: item.type,
+                decoration: const InputDecoration(
                   labelText: 'Document Type',
                   border: InputBorder.none,
                   isDense: true,
                 ),
-                items: documentTypes.map((type) {
-                  return DropdownMenuItem<AppDropdownItem>(
+                items: documentTypes.map((type) => DropdownMenuItem<AppDropdownItem>(
                     value: type,
                     child: Text(type.name),
-                  );
-                }).toList(),
+                  )).toList(),
                 onChanged: (value) => onChanged(item.copyWith(type: value)),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: onPickDocument,
               style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 48),
+                minimumSize: const Size(double.infinity, 48),
               ),
               child: Text(
                 item.file == null ? 'Select Document' : 'Document Selected',
               ),
             ),
             if (item.file != null) ...[
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 item.file!.name,
-                style: TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -91,5 +88,4 @@ class DocumentItemWidget extends StatelessWidget {
         ),
       ),
     );
-  }
 }

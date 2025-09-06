@@ -29,6 +29,7 @@ class SearchableDropdown<T> extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchableDropdownState<T> createState() => _SearchableDropdownState<T>();
 }
 
@@ -57,8 +58,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return  InputCardStyle(
+  Widget build(BuildContext context) => InputCardStyle(
       child: TextFormField(
         controller: _displayController,
         readOnly: true,
@@ -74,22 +74,19 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
         validator: (value) => widget.validator?.call(widget.selectedItem),
       ),
     );
-  }
 
   Future<void> _showSearchDialog() async {
     final T? selectedItem = await showModalBottomSheet<T>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return _SearchBottomSheet<T>(
+      builder: (BuildContext context) => _SearchBottomSheet<T>(
           items: widget.items,
           displayItem: widget.displayItem,
           label: widget.label,
           validator: widget.validator,
           initialSearchText: _displayController.text,
-        );
-      },
+        ),
     );
 
     if (selectedItem != null) {
@@ -161,14 +158,12 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
+  Widget build(BuildContext context) => DraggableScrollableSheet(
       expand: false,
       maxChildSize: 0.9,
       minChildSize: 0.4,
       initialChildSize: 0.7,
-      builder: (context, scrollController) {
-        return GestureDetector(
+      builder: (context, scrollController) => GestureDetector(
           onTap: () {
             FocusManager.instance.primaryFocus?.unfocus();
           },
@@ -249,10 +244,8 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
               ],
             ),
           ),
-        );
-      },
+        ),
     );
-  }
 
   @override
   void dispose() {

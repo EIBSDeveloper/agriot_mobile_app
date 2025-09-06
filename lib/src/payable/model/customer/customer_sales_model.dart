@@ -5,8 +5,7 @@ class CustomerSalesModel {
 
   CustomerSalesModel({required this.payables, required this.receivables});
 
-  factory CustomerSalesModel.fromJson(Map<String, dynamic> json) {
-    return CustomerSalesModel(
+  factory CustomerSalesModel.fromJson(Map<String, dynamic> json) => CustomerSalesModel(
       payables:
           json['customer_sales']['payables'] != null
               ? List<CustomerPayable>.from(
@@ -24,7 +23,6 @@ class CustomerSalesModel {
               )
               : [],
     );
-  }
 }
 
 // ---------- Payables ----------
@@ -43,8 +41,7 @@ class CustomerPayable {
     required this.sales,
   });
 
-  factory CustomerPayable.fromJson(Map<String, dynamic> json) {
-    return CustomerPayable(
+  factory CustomerPayable.fromJson(Map<String, dynamic> json) => CustomerPayable(
       customerId: json['customer_id'] ?? 0,
       customerName: json['customer_name'] ?? '',
       shopName: json['shop_name'] ?? '',
@@ -55,7 +52,6 @@ class CustomerPayable {
               .toList() ??
           [],
     );
-  }
 }
 
 // ---------- Receivables ----------
@@ -74,8 +70,7 @@ class CustomerReceivable {
     required this.sales,
   });
 
-  factory CustomerReceivable.fromJson(Map<String, dynamic> json) {
-    return CustomerReceivable(
+  factory CustomerReceivable.fromJson(Map<String, dynamic> json) => CustomerReceivable(
       customerId: json['customer_id'] ?? 0,
       customerName: json['customer_name'] ?? '',
       shopName: json['shop_name'] ?? '',
@@ -86,7 +81,6 @@ class CustomerReceivable {
               .toList() ??
           [],
     );
-  }
 }
 
 // ---------- Common Sales ----------
@@ -111,8 +105,7 @@ class SalesData {
     required this.topayAmount,
   });
 
-  factory SalesData.fromJson(Map<String, dynamic> json) {
-    return SalesData(
+  factory SalesData.fromJson(Map<String, dynamic> json) => SalesData(
       salesId: json['sales_id'] ?? 0,
       salesDate: json['sales_date'] ?? '',
       cropId: json['crop_id'] ?? 0,
@@ -122,7 +115,6 @@ class SalesData {
       receivedAmount: (json['received_amount'] ?? 0).toDouble(),
       topayAmount: (json['topay_amount'] ?? 0).toDouble(),
     );
-  }
 }
 
 // lib/models/customer_sales_model.dart

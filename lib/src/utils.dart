@@ -7,7 +7,7 @@ import 'app/controller/user_limit.dart';
 import 'app/modules/subscription/package_model.dart';
 import 'routes/app_routes.dart';
 
-void showError(String message) {
+void showError(final String message) {
   Fluttertoast.showToast(
     msg: message,
     toastLength: Toast.LENGTH_LONG,
@@ -16,13 +16,13 @@ void showError(String message) {
     textColor: Colors.white,
   );
 }
-String capitalizeFirstLetter(String input) {
+String capitalizeFirstLetter(final String input) {
   if (input.isEmpty) return input;
   return input[0].toUpperCase() + input.substring(1);
 }
 
 
-  Future<void> makePhoneCall(String phoneNumber) async {
+  Future<void> makePhoneCall(final String phoneNumber) async {
     final Uri uri = Uri(scheme: 'tel', path: phoneNumber);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
@@ -31,7 +31,7 @@ String capitalizeFirstLetter(String input) {
     }
   }
 
-void showSuccess(String message) {
+void showSuccess(final String message) {
   Fluttertoast.showToast(
     msg: message,
     toastLength: Toast.LENGTH_LONG,
@@ -41,7 +41,7 @@ void showSuccess(String message) {
   );
 }
 
-void warningSuccess(String message) {
+void warningSuccess(final String message) {
   Fluttertoast.showToast(
     msg: message,
     toastLength: Toast.LENGTH_LONG,
@@ -51,7 +51,7 @@ void warningSuccess(String message) {
   );
 }
 
-double kelvinToCelsius(double kelvin) {
+double kelvinToCelsius(final double kelvin) {
   return kelvin - 273.15;
 }
 
@@ -65,18 +65,16 @@ packageRefresh() {
   limitController.loadUsage();
 }
 
-void showDefaultGetXDialog(String message) {
+ void showDefaultGetXDialog(final String message) {
   Get.defaultDialog(
-    title: "Package Limit Reached",
+    title: 'Package Limit Reached',
     middleText: "You've reached your limit for adding new $message .",
     textConfirm: "Upgrade",
-    textCancel: "Close",
-    radius :10.0,
-    onConfirm: () {
-      Get.toNamed(Routes.subscriptionUsage);
+    textCancel: 'Close',
+    radius :10,
+    onConfirm: () async {
+      await Get.toNamed(Routes.subscriptionUsage);
     },
-    onCancel: () {
-      Get.back();
-    },
+    onCancel: Get.back,
   );
 }

@@ -16,9 +16,7 @@ class Farmer {
 
   Farmer({required this.id, required this.name});
 
-  factory Farmer.fromJson(Map<String, dynamic> json) {
-    return Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class InventoryItem {
@@ -27,9 +25,7 @@ class InventoryItem {
 
   InventoryItem({required this.id, required this.name});
 
-  factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class InventoryType {
@@ -38,9 +34,7 @@ class InventoryType {
 
   InventoryType({required this.id, required this.name});
 
-  factory InventoryType.fromJson(Map<String, dynamic> json) {
-    return InventoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory InventoryType.fromJson(Map<String, dynamic> json) => InventoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class InventoryCategory {
@@ -49,9 +43,7 @@ class InventoryCategory {
 
   InventoryCategory({required this.id, required this.name});
 
-  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
-    return InventoryCategory(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory InventoryCategory.fromJson(Map<String, dynamic> json) => InventoryCategory(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Vendor {
@@ -60,9 +52,7 @@ class Vendor {
 
   Vendor({required this.id, required this.name});
 
-  factory Vendor.fromJson(Map<String, dynamic> json) {
-    return Vendor(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class QuantityUnit {
@@ -71,9 +61,7 @@ class QuantityUnit {
 
   QuantityUnit({required this.id, required this.name});
 
-  factory QuantityUnit.fromJson(Map<String, dynamic> json) {
-    return QuantityUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory QuantityUnit.fromJson(Map<String, dynamic> json) => QuantityUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Document {
@@ -87,15 +75,13 @@ class Document {
     required this.fileType,
   });
 
-  factory Document.fromJson(Map<String, dynamic> json) {
-    return Document(
+  factory Document.fromJson(Map<String, dynamic> json) => Document(
       id: json['id'] ?? 0,
       documentName: json['document_name'] ?? '',
       fileType: json['file_type'] is String
           ? json['file_type']
           : (json['file_type']?['name'] ?? 'Document'),
     );
-  }
 }
 
 // Inventory Type Models
@@ -126,8 +112,7 @@ class FuelInventoryModel {
     required this.documents,
   });
 
-  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) {
-    return FuelInventoryModel(
+  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) => FuelInventoryModel(
       fuelId: json['fuel_id'] ?? 0,
       quantity: (json['quantity'] ?? 0.0).toDouble(),
       purchaseAmount: (json['purchase_amount'] ?? 0.0).toDouble(),
@@ -144,7 +129,6 @@ class FuelInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class MachineryInventoryModel {
@@ -180,8 +164,7 @@ class MachineryInventoryModel {
     required this.documents,
   });
 
-  factory MachineryInventoryModel.fromJson(Map<String, dynamic> json) {
-    return MachineryInventoryModel(
+  factory MachineryInventoryModel.fromJson(Map<String, dynamic> json) => MachineryInventoryModel(
       machineryId: json['machinery_id'] ?? 0,
       vendor: Vendor.fromJson(json['vendor'] ?? {}),
       inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
@@ -201,7 +184,6 @@ class MachineryInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class PesticidesInventoryModel {
@@ -233,8 +215,7 @@ class PesticidesInventoryModel {
     required this.documents,
   });
 
-  factory PesticidesInventoryModel.fromJson(Map<String, dynamic> json) {
-    return PesticidesInventoryModel(
+  factory PesticidesInventoryModel.fromJson(Map<String, dynamic> json) => PesticidesInventoryModel(
       pesticidesId: json['pesticides_id'] ?? 0,
       vendor: Vendor.fromJson(json['vendor'] ?? {}),
       inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
@@ -252,7 +233,6 @@ class PesticidesInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class SeedsInventoryModel {
@@ -284,8 +264,7 @@ class SeedsInventoryModel {
     required this.documents,
   });
 
-  factory SeedsInventoryModel.fromJson(Map<String, dynamic> json) {
-    return SeedsInventoryModel(
+  factory SeedsInventoryModel.fromJson(Map<String, dynamic> json) => SeedsInventoryModel(
       seedsId: json['seeds_id'] ?? 0,
       vendor: Vendor.fromJson(json['vendor'] ?? {}),
       inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
@@ -303,7 +282,6 @@ class SeedsInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class VehicleInventoryModel {
@@ -337,8 +315,7 @@ class VehicleInventoryModel {
     required this.documents,
   });
 
-  factory VehicleInventoryModel.fromJson(Map<String, dynamic> json) {
-    return VehicleInventoryModel(
+  factory VehicleInventoryModel.fromJson(Map<String, dynamic> json) => VehicleInventoryModel(
       vehicleId: json['vehicle_id'] ?? 0,
       registerNumber: json['register_number'] ?? '',
       ownerName: json['owner_name'] ?? '',
@@ -357,7 +334,6 @@ class VehicleInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class FertilizersInventoryModel {
@@ -389,8 +365,7 @@ class FertilizersInventoryModel {
     required this.documents,
   });
 
-  factory FertilizersInventoryModel.fromJson(Map<String, dynamic> json) {
-    return FertilizersInventoryModel(
+  factory FertilizersInventoryModel.fromJson(Map<String, dynamic> json) => FertilizersInventoryModel(
       fertilizerId: json['fertilizer_id'] ?? 0,
       vendor: Vendor.fromJson(json['vendor'] ?? {}),
       inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
@@ -408,7 +383,6 @@ class FertilizersInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 class ToolsInventoryModel {
@@ -438,8 +412,7 @@ class ToolsInventoryModel {
     required this.documents,
   });
 
-  factory ToolsInventoryModel.fromJson(Map<String, dynamic> json) {
-    return ToolsInventoryModel(
+  factory ToolsInventoryModel.fromJson(Map<String, dynamic> json) => ToolsInventoryModel(
       toolsId: json['tools_id'] ?? 0,
       vendor: Vendor.fromJson(json['vendor'] ?? {}),
       inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
@@ -456,7 +429,6 @@ class ToolsInventoryModel {
           .map((doc) => Document.fromJson(doc))
           .toList(),
     );
-  }
 }
 
 enum MyInventoryType {
@@ -652,8 +624,7 @@ class InventoryDetailController extends GetxController {
     // }
   }
 
-  Future<bool> showDeleteConfirmation() async {
-    return await Get.dialog(
+  Future<bool> showDeleteConfirmation() async => await Get.dialog(
           AlertDialog(
             title: Text('confirm_delete'.tr),
             content: Text('delete_inventory_confirmation'.tr),
@@ -670,7 +641,6 @@ class InventoryDetailController extends GetxController {
           ),
         ) ??
         false;
-  }
 
   void navigateToEditScreen() {
     if (inventoryData.value != null) {
@@ -710,17 +680,16 @@ class InventoryView extends GetView<InventoryDetailController> {
   const InventoryView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (controller.error.value.isNotEmpty) {
@@ -729,7 +698,7 @@ class InventoryView extends GetView<InventoryDetailController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('error_loading_data'.tr),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: controller.loadInventoryDetail,
                   child: Text('retry'.tr),
@@ -746,119 +715,20 @@ class InventoryView extends GetView<InventoryDetailController> {
         return _buildInventoryContent();
       }),
     );
-  }
 
-  Widget _buildInventoryContent() {
-    return SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+  Widget _buildInventoryContent() => SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // _buildTypeSpecificContent(),
-          Divider(height: 32),
+          const Divider(height: 32),
           _buildDocumentsSection(),
-          Divider(height: 32),
+          const Divider(height: 32),
           _buildDescriptionSection(),
         ],
       ),
     );
-  }
-
-  // Widget _buildTypeSpecificContent() {
-  //   switch (controller.inventoryType.value) {
-  //     case MyInventoryType.fuel:
-  //       return _buildFuelContent(
-  //         controller.inventoryData.value as FuelInventoryModel,
-  //       );
-  //     case MyInventoryType.machinery:
-  //       return _buildMachineryContent(
-  //         controller.inventoryData.value as MachineryInventoryModel,
-  //       );
-  //     case MyInventoryType.pesticides:
-  //       return _buildPesticidesContent(
-  //         controller.inventoryData.value as PesticidesInventoryModel,
-  //       );
-  //     case MyInventoryType.seeds:
-  //       return _buildSeedsContent(
-  //         controller.inventoryData.value as SeedsInventoryModel,
-  //       );
-  //     case MyInventoryType.vehicle:
-  //       return _buildVehicleContent(
-  //         controller.inventoryData.value as VehicleInventoryModel,
-  //       );
-  //     case MyInventoryType.fertilizers:
-  //       return _buildFertilizersContent(
-  //         controller.inventoryData.value as FertilizersInventoryModel,
-  //       );
-  //     case MyInventoryType.tools:
-  //       return _buildToolsContent(
-  //         controller.inventoryData.value as ToolsInventoryModel,
-  //       );
-  //   }
-  // }
-
-  Widget _buildFuelContent(FuelInventoryModel fuel) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(fuel.inventoryItem.name, style: Get.textTheme.headlineSmall),
-        SizedBox(height: 24),
-        _buildInfoRow('date'.tr, fuel.date),
-        _buildInfoRow('inventory_type'.tr, fuel.inventoryType.name),
-        _buildInfoRow('inventory_category'.tr, fuel.inventoryCategory.name),
-        _buildInfoRow('vendor'.tr, fuel.vendor.name),
-        _buildInfoRow('purchase_amount'.tr, '${fuel.purchaseAmount} ₹'),
-        _buildInfoRow('quantity'.tr, '${fuel.quantity} L'),
-      ],
-    );
-  }
-
-  Widget _buildMachineryContent(MachineryInventoryModel machinery) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(machinery.inventoryItem.name, style: Get.textTheme.headlineSmall),
-        SizedBox(height: 24),
-        _buildInfoRow('vendor'.tr, machinery.vendor.name),
-        _buildInfoRow('inventory_type'.tr, machinery.inventoryType.name),
-        _buildInfoRow(
-          'inventory_category'.tr,
-          machinery.inventoryCategory.name,
-        ),
-        _buildInfoRow('machinery_type'.tr, machinery.machineryType.toString()),
-        _buildInfoRow('fuel_capacity'.tr, '${machinery.fuelCapacity} L'),
-        _buildInfoRow('purchase_amount'.tr, '${machinery.purchaseAmount} ₹'),
-        _buildInfoRow('warranty_start'.tr, machinery.warrantyStartDate),
-        _buildInfoRow('warranty_end'.tr, machinery.warrantyEndDate),
-        _buildInfoRow('available_quantity'.tr, machinery.availableQuantity),
-      ],
-    );
-  }
-
-  Widget _buildPesticidesContent(PesticidesInventoryModel pesticides) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(pesticides.inventoryItem.name, style: Get.textTheme.headlineSmall),
-        SizedBox(height: 24),
-        _buildInfoRow('vendor'.tr, pesticides.vendor.name),
-        _buildInfoRow('inventory_type'.tr, pesticides.inventoryType.name),
-        _buildInfoRow(
-          'inventory_category'.tr,
-          pesticides.inventoryCategory.name,
-        ),
-        _buildInfoRow(
-          'quantity'.tr,
-          '${pesticides.quantity} ${pesticides.quantityUnit.name}',
-        ),
-        _buildInfoRow('purchase_amount'.tr, '${pesticides.purchaseAmount} ₹'),
-        _buildInfoRow(
-          'available_quantity'.tr,
-          pesticides.availableQuantity.toString(),
-        ),
-      ],
-    );
-  }
 
   // Similar methods for other inventory types (seeds, vehicle, fertilizers, tools)
 
@@ -901,7 +771,7 @@ class InventoryView extends GetView<InventoryDetailController> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('uploaded_documents'.tr, style: Get.textTheme.titleMedium),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         _buildDocumentsGrid(documents),
       ],
     );
@@ -948,24 +818,13 @@ class InventoryView extends GetView<InventoryDetailController> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('description'.tr, style: Get.textTheme.titleMedium),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(description, style: Get.textTheme.bodyLarge),
       ],
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: Get.textTheme.bodySmall),
-          Text(value, style: Get.textTheme.titleMedium),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildDocumentsGrid(List<Document> documents) {
     if (documents.isEmpty) {
@@ -975,8 +834,7 @@ class InventoryView extends GetView<InventoryDetailController> {
     return Wrap(
       spacing: 16,
       runSpacing: 16,
-      children: documents.map((document) {
-        return GestureDetector(
+      children: documents.map((document) => GestureDetector(
           onTap: () => controller.viewDocument(document.documentName),
           child: Container(
             width: 100,
@@ -995,7 +853,7 @@ class InventoryView extends GetView<InventoryDetailController> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   child: Text(
                     document.fileType,
                     style: Get.textTheme.labelSmall,
@@ -1007,8 +865,7 @@ class InventoryView extends GetView<InventoryDetailController> {
               ],
             ),
           ),
-        );
-      }).toList(),
+        )).toList(),
     );
   }
 }

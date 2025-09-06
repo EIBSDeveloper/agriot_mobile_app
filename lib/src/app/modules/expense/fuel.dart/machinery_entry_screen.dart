@@ -10,8 +10,7 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
   const MachineryEntryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: 'title'.tr),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -21,9 +20,9 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               controller.buildDateField(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               controller.buildInventoryCategoryDropdown(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               controller.buildInventoryItemDropdown(),
               const SizedBox(height: 16),
 
@@ -60,11 +59,8 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 
-  Widget _buildMachineryTypeRadio() {
-    return Obx(() {
-      return Column(
+  Widget _buildMachineryTypeRadio() => Obx(() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('type'.tr, style: Get.textTheme.bodyLarge),
@@ -85,12 +81,9 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
             ],
           ),
         ],
-      );
-    });
-  }
+      ));
 
-  Widget _buildFuelCapacityField() {
-    return InputCardStyle(
+  Widget _buildFuelCapacityField() => InputCardStyle(
       child: TextFormField(
         controller: controller.fuelCapacityController,
         decoration: InputDecoration(
@@ -102,18 +95,14 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
         keyboardType: TextInputType.number,
       ),
     );
-  }
 
-  Widget _buildWarrantyStartDateField() {
-    return DatePickerField(
+  Widget _buildWarrantyStartDateField() => DatePickerField(
       controller: controller.warrantyStartDateController,
       labelText: 'warranty_start'.tr,
       onChanged: (vlu) {},
     );
-  }
 
-  Widget _buildWarrantyEndDateField() {
-    return DatePickerField(
+  Widget _buildWarrantyEndDateField() => DatePickerField(
       controller: controller.warrantyEndDateController,
       onChanged: (vlu) {},
       labelText: 'warranty_end'.tr,
@@ -129,7 +118,6 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
         return null;
       },
     );
-  }
 
   // Widget _buildDocumentUpload() {
   //   return DocumentUpload(
@@ -137,8 +125,7 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
   //   );
   // }
 
-  Widget _buildSubmitButton() {
-    return Obx(
+  Widget _buildSubmitButton() => Obx(
       () => SizedBox(
         width: double.infinity,
         child: ElevatedButton(
@@ -151,5 +138,4 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
         ),
       ),
     );
-  }
 }

@@ -78,7 +78,7 @@ class ExpenseController extends GetxController {
       cardexpenses.addAll(summary);
       cardtotalExpenses.value = summary.fold(
         0,
-        (sum, item) => sum + item.total_amount,
+        (sum, item) => sum + item.totalAmount,
       );
     } catch (e) {
      showError('Error', );

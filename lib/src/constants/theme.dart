@@ -40,7 +40,7 @@ class AppTextStyles {
 // theme/app_theme.dart
 final appTheme = ThemeData(
   primaryColor: AppColors.primary,
-  colorScheme: ColorScheme.light(
+  colorScheme: const ColorScheme.light(
     primary: AppColors.primary,
     secondary: AppColors.secondary,
   ),

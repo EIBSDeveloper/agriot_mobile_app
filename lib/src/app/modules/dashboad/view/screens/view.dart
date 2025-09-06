@@ -19,18 +19,15 @@ class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(() {
+  Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
 
       return RefreshIndicator(
-        onRefresh: () {
-          return controller.fetchLands();
-        },
+        onRefresh: () => controller.fetchLands(),
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
@@ -68,34 +65,28 @@ class DashboardView extends GetView<DashboardController> {
         ),
       );
     });
-  }
 
-  Widget _buildLandDropdown() {
-    return Row(
+  Widget _buildLandDropdown() => Row(
       children: [
         Expanded(
-          child: Obx(() {
-            return LandDropdown(
+          child: Obx(() => LandDropdown(
               lands: controller.lands,
               color: Colors.transparent,
               selectedLand: controller.selectedLand.value,
               onChanged: (land) => controller.changeLand(land!),
-            );
-          }),
+            )),
         ),
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.widgets_outlined,
-            color: const Color.fromARGB(199, 0, 0, 0),
+            color: Color.fromARGB(199, 0, 0, 0),
           ),
           onPressed: () => _showWidgetSettings(),
         ),
       ],
     );
-  }
 
-  Widget _buildWeatherAndPaymentsCard() {
-    return Row(
+  Widget _buildWeatherAndPaymentsCard() => Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (controller.weatherData.value != null) ...[
@@ -113,10 +104,10 @@ class DashboardView extends GetView<DashboardController> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.cloud,
                               size: 60,
                               color: Colors.white,
@@ -143,7 +134,7 @@ class DashboardView extends GetView<DashboardController> {
                                 controller.weatherData.value!.condition.tr,
                               ),
                             ),
-                            Text(" / "),
+                            const Text(" / "),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
@@ -213,7 +204,7 @@ class DashboardView extends GetView<DashboardController> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          Get.to(PayablesReceivablesPage());
+                          Get.to(const PayablesReceivablesPage());
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -229,7 +220,7 @@ class DashboardView extends GetView<DashboardController> {
                                     .receivables,
                                 const Color.fromARGB(255, 107, 151, 37),
                               ),
-                              Divider(),
+                              const Divider(),
                               _buildPaymentItem(
                                 'payables'.tr,
                                 controller.paymentSummary.value!.total.payables,
@@ -240,7 +231,7 @@ class DashboardView extends GetView<DashboardController> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                   ],
                 ),
               ),
@@ -249,10 +240,8 @@ class DashboardView extends GetView<DashboardController> {
         ],
       ],
     );
-  }
 
-  Widget _buildPaymentItem(String title, double amount, Color color) {
-    return Column(
+  Widget _buildPaymentItem(String title, double amount, Color color) => Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -266,15 +255,13 @@ class DashboardView extends GetView<DashboardController> {
         ),
       ],
     );
-  }
 
   Widget _buildExpenssItem(
     String title,
     double amount,
     Color color,
     Function()? onTap,
-  ) {
-    return InkWell(
+  ) => InkWell(
       onTap: onTap,
       child: Container(
         color: color.withAlpha(5),
@@ -298,10 +285,8 @@ class DashboardView extends GetView<DashboardController> {
         ),
       ),
     );
-  }
 
-  Widget _buildFinanceGraphCard() {
-    return (controller.financeData.value != null ||
+  Widget _buildFinanceGraphCard() => (controller.financeData.value != null ||
             controller.landVSCropData.value != null)
         ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,14 +309,14 @@ class DashboardView extends GetView<DashboardController> {
                           controller.idlandVSCropGraph.value =
                               !controller.idlandVSCropGraph.value;
                         },
-                        icon: Icon(Icons.keyboard_arrow_left),
+                        icon: const Icon(Icons.keyboard_arrow_left),
                       ),
                       IconButton(
                         onPressed: () {
                           controller.idlandVSCropGraph.value =
                               !controller.idlandVSCropGraph.value;
                         },
-                        icon: Icon(Icons.keyboard_arrow_right),
+                        icon: const Icon(Icons.keyboard_arrow_right),
                       ),
                     ],
                   ),
@@ -388,7 +373,7 @@ class DashboardView extends GetView<DashboardController> {
                                             },
                                           ),
                                         ),
-                                        Divider(),
+                                        const Divider(),
                                         Expanded(
                                           child: _buildExpenssItem(
                                             'expenses',
@@ -407,7 +392,7 @@ class DashboardView extends GetView<DashboardController> {
                                             },
                                           ),
                                         ),
-                                        SizedBox(height: 20),
+                                        const SizedBox(height: 20),
                                       ],
                                     ),
                                   ),
@@ -424,15 +409,11 @@ class DashboardView extends GetView<DashboardController> {
               ),
             ],
           )
-        : SizedBox();
-  }
+        : const SizedBox();
 
-  Widget _buildFinanceChart() {
-    return FinanceLineChart(financeData: controller.financeData.value!);
-  }
+  Widget _buildFinanceChart() => FinanceLineChart(financeData: controller.financeData.value!);
 
-  Widget _buildGuidelinesCard() {
-    return Column(
+  Widget _buildGuidelinesCard() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -496,7 +477,6 @@ class DashboardView extends GetView<DashboardController> {
         ),
       ],
     );
-  }
 
   void _handleGuidelineTap(Guideline guideline) {
     if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
@@ -509,8 +489,7 @@ class DashboardView extends GetView<DashboardController> {
     }
   }
 
-  Widget _buildThumbnail(Guideline guideline) {
-    return Stack(
+  Widget _buildThumbnail(Guideline guideline) => Stack(
       alignment: Alignment.center,
       children: [
         Container(
@@ -532,10 +511,8 @@ class DashboardView extends GetView<DashboardController> {
           const Icon(Icons.play_circle_fill, size: 40, color: Colors.white),
       ],
     );
-  }
 
-  Widget _buildGuidelineCard(Guideline guideline) {
-    return SizedBox(
+  Widget _buildGuidelineCard(Guideline guideline) => SizedBox(
       width: 300,
       child: Card(
         color: const Color.fromARGB(255, 242, 240, 232),
@@ -581,10 +558,8 @@ class DashboardView extends GetView<DashboardController> {
         ),
       ),
     );
-  }
 
-  Widget _buildMarketPricesCard() {
-    return Center(
+  Widget _buildMarketPricesCard() => Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -592,7 +567,7 @@ class DashboardView extends GetView<DashboardController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(child: TitleText('market_prices'.tr)),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               InkWell(
                 onTap: () {
                   Get.toNamed(Routes.nearMe);
@@ -697,10 +672,8 @@ class DashboardView extends GetView<DashboardController> {
         ],
       ),
     );
-  }
 
-  Widget _buildHeaderCell(String text) {
-    return Padding(
+  Widget _buildHeaderCell(String text) => Padding(
       padding: const EdgeInsets.all(5.0),
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -712,10 +685,8 @@ class DashboardView extends GetView<DashboardController> {
         ),
       ),
     );
-  }
 
-  TableRow _buildDataRow(List<String> cells) {
-    return TableRow(
+  TableRow _buildDataRow(List<String> cells) => TableRow(
       decoration: const BoxDecoration(color: Colors.white),
       children: [
         Padding(
@@ -742,10 +713,8 @@ class DashboardView extends GetView<DashboardController> {
             ),
       ],
     );
-  }
 
-  Widget _buildTasksCard() {
-    return Column(
+  Widget _buildTasksCard() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -805,7 +774,6 @@ class DashboardView extends GetView<DashboardController> {
         ),
       ],
     );
-  }
 
   Widget _buildTaskCard(Task tas) {
     Task task = tas;
@@ -824,7 +792,7 @@ class DashboardView extends GetView<DashboardController> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          trailing: Row(
+          trailing: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               // IconButton(
@@ -842,9 +810,9 @@ class DashboardView extends GetView<DashboardController> {
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -859,7 +827,7 @@ class DashboardView extends GetView<DashboardController> {
                 ),
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
@@ -871,8 +839,7 @@ class DashboardView extends GetView<DashboardController> {
               ),
             ),
             const SizedBox(height: 16),
-            Obx(() {
-              return Column(
+            Obx(() => Column(
                 children: [
                   _buildWidgetToggle(
                     'weather_payments'.tr,
@@ -920,8 +887,7 @@ class DashboardView extends GetView<DashboardController> {
                     },
                   ),
                 ],
-              );
-            }),
+              )),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -960,8 +926,7 @@ class DashboardView extends GetView<DashboardController> {
     String title,
     bool value,
     Function(bool) onChanged,
-  ) {
-    return SwitchListTile(
+  ) => SwitchListTile(
       title: FittedBox(
         fit: BoxFit.scaleDown,
         alignment: Alignment.centerLeft,
@@ -973,7 +938,6 @@ class DashboardView extends GetView<DashboardController> {
       value: value,
       onChanged: onChanged,
     );
-  }
 }
 
 class ScrollableBarChart extends StatelessWidget {
@@ -998,21 +962,14 @@ class ScrollableBarChart extends StatelessWidget {
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
               tooltipBorderRadius: BorderRadius.circular(6),
-              tooltipPadding: EdgeInsets.all(8),
+              tooltipPadding: const EdgeInsets.all(8),
               tooltipMargin: 8,
-              getTooltipColor: (group) {
-                // For example, alternate colors or based on group.x
-                // if (group.x % 2 == 0) {
-                return Get.theme.primaryColor;
-                // } else {
-                //   return Colors.green.withOpacity(0.8);
-                // }
-              },
+              getTooltipColor: (group) => Get.theme.primaryColor,
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 final value = rod.toY;
                 return BarTooltipItem(
                   value.round().toString(),
-                  TextStyle(
+                  const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -1030,7 +987,7 @@ class ScrollableBarChart extends StatelessWidget {
                   if (value % 1 != 0) return Container();
                   return Text(
                     value.toInt().toString(),
-                    style: TextStyle(fontSize: 10),
+                    style: const TextStyle(fontSize: 10),
                   );
                 },
                 interval: 1,
@@ -1045,18 +1002,17 @@ class ScrollableBarChart extends StatelessWidget {
                   if (index < 0 || index >= labels.length) return Container();
                   return Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(labels[index], style: TextStyle(fontSize: 12)),
+                    child: Text(labels[index], style: const TextStyle(fontSize: 12)),
                   );
                 },
               ),
             ),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
           borderData: FlBorderData(show: true),
-          gridData: FlGridData(show: false),
-          barGroups: List.generate(labels.length, (index) {
-            return BarChartGroupData(
+          gridData: const FlGridData(show: false),
+          barGroups: List.generate(labels.length, (index) => BarChartGroupData(
               x: index,
               barRods: [
                 BarChartRodData(
@@ -1066,8 +1022,7 @@ class ScrollableBarChart extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
               ],
-            );
-          }),
+            )),
         ),
       ),
     );

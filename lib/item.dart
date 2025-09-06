@@ -1,19 +1,16 @@
 class Item {
-  final int id;
-  final String quantity;
 
   Item({required this.id, required this.quantity});
 
-  factory Item.fromJson(Map<String, dynamic> json) {
-    return Item(
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
       id: json['id'],
       quantity: json['total_quantity'] ?? json['total_fuel_capacity'] ?? '0',
     );
-  }
+  final int id;
+  final String quantity;
 }
 
 class PurchaseModel {
-  final Map<String, Item> items;
 
   PurchaseModel({required this.items});
 
@@ -28,4 +25,5 @@ class PurchaseModel {
 
     return PurchaseModel(items: parsedItems);
   }
+  final Map<String, Item> items;
 }

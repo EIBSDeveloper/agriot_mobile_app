@@ -7,9 +7,8 @@ class CropDetailCard extends StatelessWidget {
   const CropDetailCard({super.key, required this.crop});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 16),
+  Widget build(BuildContext context) => Card(
+      margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
@@ -22,17 +21,17 @@ class CropDetailCard extends StatelessWidget {
               : null,
           title: Text(
             crop['crop']['name'],
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
           subtitle: Text(crop['crop_type']['name']),
-          childrenPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          childrenPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           children: [
             GridView.count(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
               childAspectRatio: 3,
               crossAxisSpacing: 8,
@@ -53,34 +52,31 @@ class CropDetailCard extends StatelessWidget {
             ),
             if (crop['description'] != null && crop['description'].isNotEmpty)
               Padding(
-                padding: EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.only(top: 16),
                 child: Text(
                   crop['description'],
-                  style: TextStyle(fontStyle: FontStyle.italic),
+                  style: const TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
           ],
         ),
       ),
     );
-  }
 
-  Widget _buildDetailItem(String label, String value) {
-    return Column(
+  Widget _buildDetailItem(String label, String value) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
             color: Colors.grey,
           ),
         ),
         Text(
           value,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ],
     );
-  }
 }

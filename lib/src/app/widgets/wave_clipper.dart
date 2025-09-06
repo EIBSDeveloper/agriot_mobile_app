@@ -30,9 +30,7 @@ class WaveClipper1 extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class WaveClipper3 extends CustomClipper<Path> {
@@ -65,9 +63,7 @@ class WaveClipper3 extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
 class WaveClipper2 extends CustomClipper<Path> {
@@ -100,7 +96,5 @@ class WaveClipper2 extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-  }
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

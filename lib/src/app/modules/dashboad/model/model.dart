@@ -12,14 +12,12 @@ class WeatherData {
     required this.humidity,
   });
 
-  factory WeatherData.fromJson(Map<String, dynamic> json) {
-    return WeatherData(
+  factory WeatherData.fromJson(Map<String, dynamic> json) => WeatherData(
       condition: json['weather'][0]['main'],
       humidity: json['main']['humidity'],
       temperature: json['main']['temp'],
       iconCode: json['weather'][0]['icon'],
     );
-  }
 }
 
 // lib/modules/dashboard/models/guideline_model.dart
@@ -46,8 +44,7 @@ class Guideline {
     required this.mediaType,
   });
 
-  factory Guideline.fromJson(Map<String, dynamic> json) {
-    return Guideline(
+  factory Guideline.fromJson(Map<String, dynamic> json) => Guideline(
       id: json['id'],
       name: json['name'],
       type: json['guidelines_type'],
@@ -58,7 +55,6 @@ class Guideline {
       document: json['document'],
       mediaType: json['media_type'],
     );
-  }
 }
 
 // lib/modules/dashboard/models/task_model.dart
@@ -83,8 +79,7 @@ class Task {
     required this.cropImage,
   });
 
-  factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
       id: json['id'],
       name: json['schedule']??" ",
       startDate: json['start_date'],
@@ -94,7 +89,6 @@ class Task {
       cropName: json['crop_name'],
       cropImage: json['crop_image'],
     );
-  }
 }
 
 // lib/modules/dashboard/models/finance_model.dart
@@ -111,8 +105,7 @@ class FinanceData {
     required this.expenses,
   });
 
-  factory FinanceData.fromJson(Map<String, dynamic> json) {
-    return FinanceData(
+  factory FinanceData.fromJson(Map<String, dynamic> json) => FinanceData(
       totalSales: json['total_sales_amount']?.toDouble() ?? 0.0,
       totalExpenses: json['total_expenses_amount']?.toDouble() ?? 0.0,
       sales: List<DailyData>.from(
@@ -122,7 +115,6 @@ class FinanceData {
         json['expenses']?.map((x) => DailyData.fromJson(x)) ?? [],
       ),
     );
-  }
 }
 class LandVSCropModel {
   final List<String> labels;
@@ -134,20 +126,16 @@ class LandVSCropModel {
   });
 
   // Factory constructor to create a DataModel from JSON
-  factory LandVSCropModel.fromJson(Map<String, dynamic> json) {
-    return LandVSCropModel(
+  factory LandVSCropModel.fromJson(Map<String, dynamic> json) => LandVSCropModel(
       labels: List<String>.from(json['labels']),
       data: List<int>.from(json['data']),
     );
-  }
 
   // Method to convert DataModel to JSON
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'labels': labels,
       'data': data,
     };
-  }
 }
 
 class DailyData {
@@ -156,12 +144,10 @@ class DailyData {
 
   DailyData({required this.day, required this.amount});
 
-  factory DailyData.fromJson(Map<String, dynamic> json) {
-    return DailyData(
+  factory DailyData.fromJson(Map<String, dynamic> json) => DailyData(
       day: json['day'],
       amount: json['amount']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 // lib/modules/dashboard/models/market_model.dart
@@ -171,14 +157,12 @@ class MarketPrice {
 
   MarketPrice({required this.marketName, required this.prices});
 
-  factory MarketPrice.fromJson(Map<String, dynamic> json) {
-    return MarketPrice(
+  factory MarketPrice.fromJson(Map<String, dynamic> json) => MarketPrice(
       marketName: json['market'],
       prices: List<ProductPrice>.from(
         json['price']?.map((x) => ProductPrice.fromJson(x)) ?? [],
       ),
     );
-  }
 }
 
 class ProductPrice {
@@ -187,12 +171,10 @@ class ProductPrice {
 
   ProductPrice({required this.product, required this.price});
 
-  factory ProductPrice.fromJson(Map<String, dynamic> json) {
-    return ProductPrice(
+  factory ProductPrice.fromJson(Map<String, dynamic> json) => ProductPrice(
       product: json['product'],
       price: json['product_price']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 // lib/modules/dashboard/models/payment_model.dart
@@ -209,14 +191,12 @@ class PaymentSummary {
     required this.total,
   });
 
-  factory PaymentSummary.fromJson(Map<String, dynamic> json) {
-    return PaymentSummary(
+  factory PaymentSummary.fromJson(Map<String, dynamic> json) => PaymentSummary(
       vendor: VendorPayments.fromJson(json['vendor']),
       customer: CustomerPayments.fromJson(json['customer']),
       both: BothPayments.fromJson(json['both']),
       total: TotalPayments.fromJson(json['total']),
     );
-  }
 }
 
 class VendorPayments {
@@ -225,12 +205,10 @@ class VendorPayments {
 
   VendorPayments({required this.payables, required this.receivables});
 
-  factory VendorPayments.fromJson(Map<String, dynamic> json) {
-    return VendorPayments(
+  factory VendorPayments.fromJson(Map<String, dynamic> json) => VendorPayments(
       payables: json['payables']?.toDouble() ?? 0.0,
       receivables: json['receivables']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 class CustomerPayments {
@@ -239,12 +217,10 @@ class CustomerPayments {
 
   CustomerPayments({required this.payables, required this.receivables});
 
-  factory CustomerPayments.fromJson(Map<String, dynamic> json) {
-    return CustomerPayments(
+  factory CustomerPayments.fromJson(Map<String, dynamic> json) => CustomerPayments(
       payables: json['payables']?.toDouble() ?? 0.0,
       receivables: json['receivables']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 class BothPayments {
@@ -253,12 +229,10 @@ class BothPayments {
 
   BothPayments({required this.payables, required this.receivables});
 
-  factory BothPayments.fromJson(Map<String, dynamic> json) {
-    return BothPayments(
+  factory BothPayments.fromJson(Map<String, dynamic> json) => BothPayments(
       payables: json['payables']?.toDouble() ?? 0.0,
       receivables: json['receivables']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 class TotalPayments {
@@ -267,12 +241,10 @@ class TotalPayments {
 
   TotalPayments({required this.payables, required this.receivables});
 
-  factory TotalPayments.fromJson(Map<String, dynamic> json) {
-    return TotalPayments(
+  factory TotalPayments.fromJson(Map<String, dynamic> json) => TotalPayments(
       payables: json['payables']?.toDouble() ?? 0.0,
       receivables: json['receivables']?.toDouble() ?? 0.0,
     );
-  }
 }
 
 // lib/modules/dashboard/models/widget_config_model.dart
@@ -291,23 +263,19 @@ class WidgetConfig {
     required this.guidelines,
   });
 
-  factory WidgetConfig.fromJson(Map<String, dynamic> json) {
-    return WidgetConfig(
+  factory WidgetConfig.fromJson(Map<String, dynamic> json) => WidgetConfig(
       weatherAndPayments: json['weather_date & receivables_payables'] ?? true,
       expensesSales: json['expenses_sales'] ?? true,
       marketPrice: json['near_by_market_price'] ?? true,
       scheduleTask: json['schedulr_task'] ?? true,
       guidelines: json['guidelines'] ?? true,
     );
-  }
   // {"detail":"Widget configuration updated successfully.","widget_config":{"id":164,"farmer_id":312,"farmer-name":"teena","weather_date & receivables_payables":true,"expenses_sales":true,"near_by_market_price":false,"schedulr_task":true,"Guidelines":true,"language":{"default":"en"}}}
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'weather_date & receivables_payables': weatherAndPayments,
       'expenses_sales': expensesSales,
       'near_by_market_price': marketPrice,
       'schedulr_task': scheduleTask,
       'guidelines': guidelines,
     };
-  }
 }

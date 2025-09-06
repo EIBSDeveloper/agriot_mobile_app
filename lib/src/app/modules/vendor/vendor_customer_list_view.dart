@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/vendor/vendor_customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/app_style.dart';
 import '../../../utils.dart';
@@ -15,13 +14,10 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
   const VendorCustomerListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: 'vendor_customer'.tr),
       body: RefreshIndicator(
-        onRefresh: () {
-          return controller.fetchVendorCustomerList();
-        },
+        onRefresh: () => controller.fetchVendorCustomerList(),
         child: Column(
           children: [
             _buildFilterRow(),
@@ -31,7 +27,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return ListView.builder(
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(),
                   itemCount: controller.vendorCustomerList.length,
                   itemBuilder: (context, index) {
                     final item = controller.vendorCustomerList[index];
@@ -49,10 +45,8 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         child: const Icon(Icons.add),
       ),
     );
-  }
 
-  Widget _buildFilterRow() {
-    return Padding(
+  Widget _buildFilterRow() => Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
@@ -62,11 +56,8 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         ],
       ),
     );
-  }
 
-  Widget _buildTabButton(String index, String text) {
-    return Obx(() {
-      return Expanded(
+  Widget _buildTabButton(String index, String text) => Obx(() => Expanded(
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: TextButton(
@@ -89,12 +80,9 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
             ),
           ),
         ),
-      );
-    });
-  }
+      ));
 
-  Widget _buildListItem(VendorCustomer item) {
-    return Card(
+  Widget _buildListItem(VendorCustomer item) => Card(
       elevation: 1,
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
@@ -117,7 +105,6 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
             Get.toNamed('/vendor-customer-details', arguments: {'id': item.id}),
       ),
     );
-  }
 
   void _showAddDialog(BuildContext context) {
     Get.bottomSheet(
@@ -184,8 +171,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
   const AddVendorCustomerView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
         title: 'add_${controller.selectedType}'.tr,
       ),
@@ -209,10 +195,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         ),
       ),
     );
-  }
 
-  Widget _buildMarketTypeSection() {
-    return Obx(() {
+  Widget _buildMarketTypeSection() => Obx(() {
       if (controller.isMARKETLoading.value) {
         return _buildMarketLoadingDropdown();
       }
@@ -225,17 +209,15 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
               decoration: InputDecoration(
                 hintText: "${'select_market'.tr}*",
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
               ),
-              items: controller.markets.map((Market market) {
-                return DropdownMenuItem<Market>(
+              items: controller.markets.map((Market market) => DropdownMenuItem<Market>(
                   value: market,
                   child: Text(market.name),
-                );
-              }).toList(),
+                )).toList(),
               onChanged: (Market? value) {
                 controller.selectedMarket.value = value;
               },
@@ -245,10 +227,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         ],
       );
     });
-  }
 
-  Widget _buildInventoryTypeSection() {
-    return Column(
+  Widget _buildInventoryTypeSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("${'inventory_type'.tr} *", style: Get.textTheme.titleSmall),
@@ -274,15 +254,15 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             items: options,
             dialogHeight: 300,
             initialValue: controller.selectedKeys.toList(),
-            title: Text("Select Inventory Types"),
-            itemsTextStyle: TextStyle(color: Colors.black),
-            selectedItemsTextStyle: TextStyle(color: Colors.black),
-            searchHintStyle: TextStyle(color: Colors.black),
-            searchTextStyle: TextStyle(color: Colors.black),
-            buttonText: Text("Select Inventory Types"),
+            title: const Text("Select Inventory Types"),
+            itemsTextStyle: const TextStyle(color: Colors.black),
+            selectedItemsTextStyle: const TextStyle(color: Colors.black),
+            searchHintStyle: const TextStyle(color: Colors.black),
+            searchTextStyle: const TextStyle(color: Colors.black),
+            buttonText: const Text("Select Inventory Types"),
             selectedColor: Get.theme.primaryColor,
             chipDisplay: MultiSelectChipDisplay(
-              textStyle: TextStyle(color: Colors.black),
+              textStyle: const TextStyle(color: Colors.black),
               chipColor: const Color.fromARGB(137, 221, 234, 234),
               onTap: (value) => controller.toggleSelection(value),
             ),
@@ -294,10 +274,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         const SizedBox(height: 16),
       ],
     );
-  }
 
-  Widget _buildBasicInfoSection() {
-    return Column(
+  Widget _buildBasicInfoSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('basic_info'.tr, style: Get.textTheme.titleSmall),
@@ -365,10 +343,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         _buildMarketTypeSection(),
       ],
     );
-  }
 
-  Widget _buildLocationSection() {
-    return Column(
+  Widget _buildLocationSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('location_info'.tr, style: Get.textTheme.titleSmall),
@@ -402,15 +378,13 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         const SizedBox(height: 12),
       ],
     );
-  }
 
-  Widget _buildMarketLoadingDropdown() {
-    return InputDecorator(
+  Widget _buildMarketLoadingDropdown() => InputDecorator(
       decoration: InputDecoration(
         labelText: 'loading_markets'.tr,
-        border: OutlineInputBorder(),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        suffixIcon: Padding(
+        border: const OutlineInputBorder(),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        suffixIcon: const Padding(
           padding: EdgeInsets.all(12.0),
           child: SizedBox(
             width: 16,
@@ -419,12 +393,10 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           ),
         ),
       ),
-      child: SizedBox.shrink(),
+      child: const SizedBox.shrink(),
     );
-  }
 
-  Widget _buildFinancialSection() {
-    return Column(
+  Widget _buildFinancialSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('financial_info'.tr, style: Get.textTheme.titleSmall),
@@ -459,11 +431,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         const SizedBox(height: 16),
       ],
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return Obx(() {
-      return ElevatedButton(
+  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
         onPressed: controller.isSubmitting.value ? null : controller.submitForm,
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(double.infinity, 50),
@@ -471,10 +440,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         ),
         child: controller.isSubmitting.value
             ? const CircularProgressIndicator(color: Colors.white)
-            : Text('submit'.tr, style: TextStyle(color: Colors.white)),
-      );
-    });
-  }
+            : Text('submit'.tr, style: const TextStyle(color: Colors.white)),
+      ));
 }
 
 class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
@@ -503,7 +470,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
             onPressed: () {
               controller.deleteDetails(item.id, item.type);
             },
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
           ),
         ],
       ),
@@ -528,8 +495,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
     );
   }
 
-  Widget _buildVendorDetails(VendorCustomer item) {
-    return Column(
+  Widget _buildVendorDetails(VendorCustomer item) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TitleText('vendor_details'.tr),
@@ -541,10 +507,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         const Divider(),
       ],
     );
-  }
 
-  Widget _buildCustomerDetails(VendorCustomer item) {
-    return Column(
+  Widget _buildCustomerDetails(VendorCustomer item) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TitleText('customer_details'.tr),
@@ -555,10 +519,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         const Divider(),
       ],
     );
-  }
 
-  Widget _buildCommonDetails(VendorCustomer item) {
-    return Column(
+  Widget _buildCommonDetails(VendorCustomer item) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildDetailRow('mobile_number'.tr, item.mobileNo),
@@ -582,10 +544,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
           _buildDetailRow('description'.tr, item.description!),
       ],
     );
-  }
 
-  Widget _buildDetailRow(String label, String value, {Color? color}) {
-    return Padding(
+  Widget _buildDetailRow(String label, String value, {Color? color}) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -606,10 +566,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         ],
       ),
     );
-  }
 
-  Widget _buildActionButtons(VendorCustomer item) {
-    return Row(
+  Widget _buildActionButtons(VendorCustomer item) => Row(
       children: [
         // Expanded(
         //   child: ElevatedButton.icon(
@@ -634,7 +592,6 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         ),
       ],
     );
-  }
 
   void _navigateToEdit(VendorCustomer item) {
     // Populate the form with existing data

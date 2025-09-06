@@ -16,26 +16,22 @@ class ToggleBar extends StatelessWidget {
   final List<String> buttonsList;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       width: 300.0,
       height: 40.0,
       decoration: AppStyle.decoration,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          ...List.generate(buttonsList.length, (index) {
-            return ToggleBox(
+          ...List.generate(buttonsList.length, (index) => ToggleBox(
               onTap: onTap,
               activePageIndex: activePageIndex,
               lable: buttonsList[index],
               index: index,
-            );
-          }),
+            )),
         ],
       ),
     );
-  }
 }
 
 class ToggleBox extends StatelessWidget {
@@ -53,10 +49,9 @@ class ToggleBox extends StatelessWidget {
   final int index;
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
+  Widget build(BuildContext context) => Expanded(
       child: InkWell(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
         onTap: () => onTap?.call(index),
         child: Container(
           alignment: Alignment.center,
@@ -64,7 +59,7 @@ class ToggleBox extends StatelessWidget {
               (activePageIndex == index)
                   ? BoxDecoration(
                     color: Get.theme.colorScheme.primary,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                   )
                   : null,
           child: Text(
@@ -76,5 +71,4 @@ class ToggleBox extends StatelessWidget {
         ),
       ),
     );
-  }
 }

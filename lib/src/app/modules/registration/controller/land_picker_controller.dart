@@ -8,7 +8,7 @@ import '../repostrory/crop_service.dart';
 
 class LandPickerController extends GetxController {
   var isLoading = true.obs;
-  var cameraPosition = CameraPosition(target: LatLng(0, 0), zoom: 14).obs;
+  var cameraPosition = const CameraPosition(target: LatLng(0, 0), zoom: 14).obs;
   var selectedLocation = Rxn<LatLng>();
   var address = ''.obs;
   var landPolylin = <LatLng>[].obs;

@@ -13,14 +13,12 @@ class CropSurveyDetail {
     required this.surveyMeasurementUnit,
   });
 
-  factory CropSurveyDetail.fromJson(Map<String, dynamic> json) {
-    return CropSurveyDetail(
+  factory CropSurveyDetail.fromJson(Map<String, dynamic> json) => CropSurveyDetail(
       id: json['id'],
       surveyNo: json['survey_no'],
       surveyMeasurementValue: json['survey_measurement_value'].toString(),
       surveyMeasurementUnit: json['survey_measurement_unit'].toString(),
     );
-  }
 
   @override
   bool operator ==(Object other) =>

@@ -5,7 +5,5 @@ class MyBehavior extends ScrollBehavior {
     BuildContext context,
     Widget child,
     AxisDirection axisDirection,
-  ) {
-    return child;
-  }
+  ) => child;
 }

@@ -67,11 +67,9 @@ class UserProfileResponse {
     required this.userProfile,
   });
 
-  factory UserProfileResponse.fromJson(Map<String, dynamic> json) {
-    return UserProfileResponse(
+  factory UserProfileResponse.fromJson(Map<String, dynamic> json) => UserProfileResponse(
       success: json['status'] == 'success',
       message: json['message'] ?? '',
       userProfile: UserProfile.fromJson(json),
     );
-  }
 }

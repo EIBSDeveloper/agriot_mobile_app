@@ -127,7 +127,7 @@ List<LatLng> parseLatLngListFromString(List<dynamic> data) {
       if (item is List && item.length == 2) {
         return LatLng(item[0], item[1]);
       } else {
-        throw FormatException("Invalid LatLng format");
+        throw const FormatException("Invalid LatLng format");
       }
     }).toList();
 
@@ -144,7 +144,7 @@ List<LatLng> parseLngListFromString(List<dynamic> data) {
       if (item is Map && item.length == 2) {
         return LatLng(item['lat'], item['lng']);
       } else {
-        throw FormatException("Invalid LatLng format");
+        throw const FormatException("Invalid LatLng format");
       }
     }).toList();
 
@@ -161,7 +161,7 @@ List<LatLng> parseLatLngMapFromString(List<dynamic> data) {
       if (item is Map) {
         return LatLng(item['lat'], item['lng']);
       } else {
-        throw FormatException("Invalid LatLng format");
+        throw const FormatException("Invalid LatLng format");
       }
     }).toList();
     print("Error ");
@@ -172,14 +172,10 @@ List<LatLng> parseLatLngMapFromString(List<dynamic> data) {
   }
 }
 
-List<List<double>> convertLatLngListToList(List<LatLng> latLngList) {
-  return latLngList
+List<List<double>> convertLatLngListToList(List<LatLng> latLngList) => latLngList
       .map((latLng) => [latLng.latitude, latLng.longitude])
       .toList();
-}
 
-List<Map<String, double>> convertLatLngListToMap(List<LatLng?> latLngList) {
-  return latLngList
+List<Map<String, double>> convertLatLngListToMap(List<LatLng?> latLngList) => latLngList
       .map((latLng) => {'lat': latLng!.latitude, 'lng': latLng.longitude})
       .toList();
-}

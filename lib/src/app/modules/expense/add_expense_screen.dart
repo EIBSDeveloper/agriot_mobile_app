@@ -12,33 +12,32 @@ class AddExpenseScreen extends GetView<ExpenseController> {
   AddExpenseScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
         title: Text('Add New Expenses'.tr),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Form(
           key: _formKey,
           child: Obx(() {
             if (controller.isLoading.value && controller.expenseTypes.isEmpty) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             return Column(
               children: [
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 MyDropdown(
                   items: controller.crop,
                   selectedItem: controller.selectedCrop.value,
                   onChanged: (crop) => controller.selectedCrop(crop!),
                   label: 'Crop*'.tr,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   decoration: AppStyle.decoration.copyWith(
                     color: const Color.fromARGB(137, 221, 234, 234),
@@ -58,7 +57,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     ),
                     decoration: InputDecoration(
                       hintText: 'Date*'.tr,
-                      suffixIcon: Icon(Icons.calendar_today),
+                      suffixIcon: const Icon(Icons.calendar_today),
                       border: InputBorder.none,
                     ),
                     onTap: () => controller.selectDate(context),
@@ -70,7 +69,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     },
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   decoration: AppStyle.decoration.copyWith(
                     color: const Color.fromARGB(137, 221, 234, 234),
@@ -106,7 +105,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     },
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   decoration: AppStyle.decoration.copyWith(
                     color: const Color.fromARGB(137, 221, 234, 234),
@@ -138,9 +137,9 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     },
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Container(
                   decoration: AppStyle.decoration.copyWith(
                     color: const Color.fromARGB(137, 221, 234, 234),
@@ -161,7 +160,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     onChanged: controller.description.call,
                   ),
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
@@ -169,7 +168,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
                   child: Text('Save'.tr),
                 ),
@@ -179,5 +178,4 @@ class AddExpenseScreen extends GetView<ExpenseController> {
         ),
       ),
     );
-  }
 }

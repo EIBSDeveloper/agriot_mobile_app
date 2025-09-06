@@ -157,7 +157,7 @@ class TaskDetailsController extends GetxController {
         description: description.value,
         scheduleStatus: task.value?.status ?? 0,
       );
-
+      if (response.isNotEmpty) {}
       await fetchTaskDetails(); // Refresh task details
       Get.back(); // Close the edit sheet
       Fluttertoast.showToast(msg: 'Task updated successfully');

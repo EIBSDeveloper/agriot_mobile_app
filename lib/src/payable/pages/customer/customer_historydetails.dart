@@ -512,8 +512,7 @@ class HistoryPage extends StatelessWidget {
         return ListView.builder(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           itemCount: history.length,
-          itemBuilder: (context, index) {
-            return AnimatedContainer(
+          itemBuilder: (context, index) => AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
               decoration: BoxDecoration(
@@ -541,15 +540,13 @@ class HistoryPage extends StatelessWidget {
                           history[index] as ReceivableHistorymodel,
                         ),
               ),
-            );
-          },
+            ),
         );
       }),
     );
   }
 
-  Widget _buildPayableItem(PayableHistorymodel item) {
-    return Column(
+  Widget _buildPayableItem(PayableHistorymodel item) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -598,10 +595,8 @@ class HistoryPage extends StatelessWidget {
           ),
       ],
     );
-  }
 
-  Widget _buildReceivableItem(ReceivableHistorymodel item) {
-    return Column(
+  Widget _buildReceivableItem(ReceivableHistorymodel item) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -650,7 +645,6 @@ class HistoryPage extends StatelessWidget {
           ),
       ],
     );
-  }
 
   Future<void> _showHistoryDetailDialog({
     required BuildContext context,
@@ -823,8 +817,7 @@ class HistoryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildAmountRow(String label, double value) {
-    return Padding(
+  Widget _buildAmountRow(String label, double value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
@@ -847,5 +840,4 @@ class HistoryPage extends StatelessWidget {
         ],
       ),
     );
-  }
 }

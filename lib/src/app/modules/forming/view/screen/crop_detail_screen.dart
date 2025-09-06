@@ -28,36 +28,35 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(
         title: 'Crop Details ',
         showBackButton: true,
         actions: [],
       ),
       body: Obx(() {
         if (cropDetailsController.isDetailsLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (cropDetailsController.details.value == null) {
-          return Center(child: Text('No crop details available'));
+          return const Center(child: Text('No crop details available'));
         }
 
         final crop = cropDetailsController.details.value;
         return SingleChildScrollView(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Crop Info Section
               _buildCropInfo(crop),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Crop Details
               _buildCropDetailsSection(crop),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Survey Details
               _buildSurveyDetailsSection(crop),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Location
               // _buildLocationSection(crop),
             ],
@@ -65,15 +64,13 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
         );
       }),
     );
-  }
 
-  Widget _buildCropInfo(MyCropDetails? details) {
-    return Stack(
+  Widget _buildCropInfo(MyCropDetails? details) => Stack(
       children: [
         Card(
           elevation: 1,
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 CircleAvatar(
@@ -81,10 +78,10 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
 
                   backgroundImage: NetworkImage(details!.imageUrl!),
                   child: details.imageUrl!.isEmpty
-                      ? Icon(Icons.agriculture, size: 30)
+                      ? const Icon(Icons.agriculture, size: 30)
                       : null,
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -103,7 +100,7 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
           top: 8,
           right: 8,
           child: IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () => Get.toNamed(
               Routes.addCrop,
               arguments: {'landId': landId, 'cropId': cropId},
@@ -112,18 +109,16 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
         ),
       ],
     );
-  }
 
-  Widget _buildCropDetailsSection(MyCropDetails? details) {
-    return Card(
+  Widget _buildCropDetailsSection(MyCropDetails? details) => Card(
       elevation: 1,
       child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Crop Details', style: Get.textTheme.titleLarge),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             _buildDetailRow('Crop Type', details!.cropType!.name!),
             _buildDetailRow('Harvest Frequency', details.harvestingType!.name!),
             _buildDetailRow(
@@ -139,11 +134,9 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
         ),
       ),
     );
-  }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+  Widget _buildDetailRow(String label, String value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Expanded(
@@ -159,10 +152,9 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
         ],
       ),
     );
-  }
 
   Widget _buildSurveyDetailsSection(MyCropDetails? details) {
-    if (details!.surveyDetails!.isEmpty) return SizedBox();
+    if (details!.surveyDetails!.isEmpty) return const SizedBox();
 
     return Card(
       elevation: 1,
@@ -173,14 +165,13 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
           title: Text('Survey Details (${details.surveyDetails!.length})'),
           children: [
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: DataTable(
                 columns: [
-                  DataColumn(label: Text('Survey No')),
-                  DataColumn(label: Text('Area')),
+                  const DataColumn(label: Text('Survey No')),
+                  const DataColumn(label: Text('Area')),
                 ],
-                rows: details.surveyDetails!.map((survey) {
-                  return DataRow(
+                rows: details.surveyDetails!.map((survey) => DataRow(
                     cells: [
                       DataCell(Text(survey.surveyNo!)),
                       DataCell(
@@ -189,8 +180,7 @@ class _CropDetailScreenState extends State<CropDetailScreen> {
                         ),
                       ),
                     ],
-                  );
-                }).toList(),
+                  )).toList(),
               ),
             ),
           ],

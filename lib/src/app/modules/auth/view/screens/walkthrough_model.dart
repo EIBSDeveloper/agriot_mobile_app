@@ -20,8 +20,7 @@ class WalkthroughModel {
 
 class WalkthroughRepository {
   // Local data for now since it's static content
-  List<WalkthroughModel> getLocalWalkthroughData() {
-    return [
+  List<WalkthroughModel> getLocalWalkthroughData() => [
       WalkthroughModel(
         title: 'landManagement'.tr,
         description: 'landManagementDescription'.tr,
@@ -38,7 +37,6 @@ class WalkthroughRepository {
         imagePath: 'assets/image/man_power.png',
       ),
     ];
-  }
 }
 // lib/modules/walkthrough/controllers/walkthrough_controller.dart
 
@@ -87,8 +85,7 @@ class WalkthroughView extends GetView<WalkthroughController> {
   const WalkthroughView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,7 +126,6 @@ class WalkthroughView extends GetView<WalkthroughController> {
         ),
       ),
     );
-  }
 }
 
 class _WalkthroughPage extends StatelessWidget {
@@ -144,8 +140,7 @@ class _WalkthroughPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
+  Widget build(BuildContext context) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +177,6 @@ class _WalkthroughPage extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class _ProgressDots extends StatelessWidget {
@@ -191,8 +185,7 @@ class _ProgressDots extends StatelessWidget {
   const _ProgressDots({required this.controller});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(
+  Widget build(BuildContext context) => Obx(
       () => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
@@ -211,7 +204,6 @@ class _ProgressDots extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _NextButton extends StatelessWidget {
@@ -220,8 +212,7 @@ class _NextButton extends StatelessWidget {
   const _NextButton({required this.onPressed});
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
+  Widget build(BuildContext context) => GestureDetector(
       onTap: onPressed,
       child: Container(
         width: 60,
@@ -233,7 +224,6 @@ class _NextButton extends StatelessWidget {
         child: Icon(Icons.arrow_forward, color: Get.theme.colorScheme.primary),
       ),
     );
-  }
 }
 
 class _StartButton extends StatelessWidget {
@@ -242,8 +232,7 @@ class _StartButton extends StatelessWidget {
   const _StartButton({required this.onPressed});
 
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         shape: const StadiumBorder(),
@@ -256,6 +245,5 @@ class _StartButton extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 

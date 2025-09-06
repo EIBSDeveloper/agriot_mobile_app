@@ -61,11 +61,11 @@ class LandController extends GetxController {
     name: '',
     measurementValue: 0,
     measurementUnit: MeasurementUnit(id: 0, name: ''),
-    country: Country(id: 0, name: ''),
-    state: State(id: 0, name: ''),
-    city: City(id: 0, name: ''),
-    taluk: Taluk(id: 0, name: ''),
-    village: Village(id: 0, name: ''),
+    // country: Country(id: 0, name: ''),
+    // state: State(id: 0, name: ''),
+    // city: City(id: 0, name: ''),
+    // taluk: Taluk(id: 0, name: ''),
+    // village: Village(id: 0, name: ''),
     doorNo: '',
     locations: '',
     latitude: 0,
@@ -153,21 +153,6 @@ class LandController extends GetxController {
         ),
       );
     }
-
-    // Populate document items
-    documentItems.clear();
-    for (var doc in landDetail.value.documents) {
-      // documentItems.add(
-      //   DocumentItem(
-      //     type: AppDropdownItem(
-      //       id: doc.documentCategory.id,
-      //       name: doc.documentCategory.name,
-      //     ),
-
-      //     file: null, // Existing file, not a new one
-      //   ),
-      // );
-    }
   }
 
   Future<void> loadLandUnits() async {
@@ -216,7 +201,7 @@ class LandController extends GetxController {
 
   void addDocumentItem() {
     Get.to(
-      AddDocumentView(),
+      const AddDocumentView(),
       binding: NewDocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
@@ -234,7 +219,7 @@ class LandController extends GetxController {
   Future<void> listpickLocation() async {
     try {
       final location = await Get.to(
-        LandPickerView(),
+        const LandPickerView(),
         arguments: {
           if (landCoordinates.isNotEmpty) 'crop': landCoordinates,
           "zoom": true,
@@ -259,9 +244,9 @@ class LandController extends GetxController {
     try {
       isSubmitting(true);
 
-      final dynamic  surveyDetails;
+      final dynamic surveyDetails;
       if (landId.value != 0) {
-       surveyDetails = surveyItems.map((survey) {
+        surveyDetails = surveyItems.map((survey) {
           Map map = {
             if (survey.id != null) "id": survey.id,
             "survey_no": survey.surveyNo,
@@ -270,16 +255,13 @@ class LandController extends GetxController {
           };
           return map;
         }).toList();
-       
       } else {
-        surveyDetails = surveyItems.asMap().map((index, item) {
-          return MapEntry(
+        surveyDetails = surveyItems.asMap().map((index, item) => MapEntry(
             'survey_details_${index + 1}',
             'survey_no:${item.surveyNo},'
                 'survey_measurement_value:${item.measurement},'
                 'survey_measurement_unit_id:${item.unit?.id}',
-          );
-        });
+          ));
       }
 
       final documentItemsList = documentItems.map((doc) {
@@ -310,20 +292,21 @@ class LandController extends GetxController {
           "patta_number": pattaNoController.text.trim(),
         if (descriptionController.text.isNotEmpty)
           "description": descriptionController.text.trim(),
-        if (newSurveyItems.value &&landId.value == 0) ...surveyDetails ,
-        if(landId.value == 0)"surveyDetails":surveyDetails,
+        if (newSurveyItems.value && landId.value == 0) ...surveyDetails,
+        if (landId.value == 0) "surveyDetails": surveyDetails,
         "documents": documentItemsList,
       };
 
       // Call appropriate API based on whether we're creating or editing
       if (landId.value == 0) {
         // Create new land
-        var res = await _landService.addLand(request: request, documents: []);
+        await _landService.addLand(request: request, documents: []);
+
         Get.back();
         showSuccess('Land added successfully');
       } else {
         // Edit existing land
-        var res = await _landService.editLand(request: request, documents: []);
+        await _landService.editLand(request: request, documents: []);
         Get.back();
         showSuccess('Land updated successfully');
       }

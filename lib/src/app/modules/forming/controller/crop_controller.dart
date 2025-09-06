@@ -146,9 +146,7 @@ class CropController extends GetxController {
     isLoadingCrops(true);
     crops.assignAll(await _cropService.getCrops(selectedCropType.value!.id));
     if (parameterCrop.value != null) {
-      selectedCrop.value = crops.firstWhere((e) {
-        return parameterCrop.value!.id == e.id;
-      });
+      selectedCrop.value = crops.firstWhere((e) => parameterCrop.value!.id == e.id);
     } else {
       selectedCrop.value = null;
     }
@@ -199,7 +197,7 @@ class CropController extends GetxController {
   Future<void> pickLocation() async {
     try {
       final location = await Get.to(
-        LandPickerView(),
+        const LandPickerView(),
         arguments: {
           'land': landCoordinates,
           'priviese_crop': priviesCropCoordinates,

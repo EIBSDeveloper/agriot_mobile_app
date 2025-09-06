@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+
 
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
@@ -74,38 +74,6 @@ class LandService extends GetxService {
         .map((item) => AppDropdownItem.fromJson(item))
         .toList();
   }
-  // Future<Map<String, dynamic>> editLand({
-  //   required int landId,
-  //   required Map<String, dynamic> request,
-  //   required List<DocumentItem> documents,
-  // }) async {
-  //   // Convert all request values to strings
-  //   final requestFields = request.map<String, String>(
-  //     (key, value) => MapEntry(key, value.toString()),
-  //   );
-
-  //   // Prepare multipart files (with null safety check)
-  //   final multipartFiles = documents
-  //       .where((doc) => doc.file != null)
-  //       .map(
-  //         (doc) => http.MultipartFile.fromBytes(
-  //           'documents[]',
-  //           doc.file!.bytes!,
-  //           filename: doc.file!.name,
-  //         ),
-  //       )
-  //       .toList();
-
-  //   final response = await _httpService.put(
-  //     '/edit_my_land/$landId/',
-  //     MultipartBody(
-  //       fields: requestFields, // Now properly typed as Map<String, String>
-  //       files: multipartFiles,
-  //     ),
-  //   );
-
-  //   return json.decode(response.body);
-  // }
 
   Future<List<AppDropdownItem>> getDocumentTypes(int docType) async {
     final response = await _httpService.get(
@@ -126,18 +94,6 @@ class LandService extends GetxService {
       (key, value) => MapEntry(key, value),
     );
 
-    // Prepare multipart files (with null safety check)
-    final multipartFiles = documents
-        .where((doc) => doc.file != null)
-        .map(
-          (doc) => http.MultipartFile.fromBytes(
-            'documents[]',
-            doc.file!.bytes!,
-            filename: doc.file!.name,
-          ),
-        )
-        .toList();
-
     final response = await _httpService.post('/add_my_land/', requestFields);
 
     return json.decode(response.body);
@@ -153,25 +109,9 @@ class LandService extends GetxService {
       (key, value) => MapEntry(key, value),
     );
 
-    // Prepare multipart files (with null safety check)
-    final multipartFiles = documents
-        .where((doc) => doc.file != null)
-        .map(
-          (doc) => http.MultipartFile.fromBytes(
-            'documents[]',
-            doc.file!.bytes!,
-            filename: doc.file!.name,
-          ),
-        )
-        .toList();
-
     final response = await _httpService.put(
       '/edit_my_land/$farmerId',
       requestFields,
-      // MultipartBody(
-      //   fields: requestFields, // Now properly typed as Map<String, String>
-      //   files: multipartFiles,
-      // ),
     );
 
     return json.decode(response.body);

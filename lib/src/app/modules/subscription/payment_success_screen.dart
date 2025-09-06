@@ -6,13 +6,12 @@ class PaymentSuccessScreen extends StatelessWidget {
   const PaymentSuccessScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.check_circle, color: Colors.green, size: 100),
+            const Icon(Icons.check_circle, color: Colors.green, size: 100),
             const SizedBox(height: 24),
             Text(
               'payment_successful'.tr,
@@ -42,5 +41,4 @@ class PaymentSuccessScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -10,30 +10,26 @@ class SlideAnimation extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: AnimationController(
         vsync: Navigator.of(context),
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
       )..forward(),
-      builder: (context, child) {
-        return SlideTransition(
+      builder: (context, child) => SlideTransition(
           position: Tween<Offset>(
-            begin: Offset(-1, 0),
+            begin: const Offset(-1, 0),
             end: Offset.zero,
           ).animate(CurvedAnimation(
             parent: AnimationController(
               vsync: Navigator.of(context),
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
             )..forward(from: delay.inMilliseconds / 1000),
             curve: Curves.easeOut,
           )),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }
 
 class FadeInAnimation extends StatelessWidget {
@@ -46,28 +42,24 @@ class FadeInAnimation extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
       animation: AnimationController(
         vsync: Navigator.of(context),
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
       )..forward(),
-      builder: (context, child) {
-        return FadeTransition(
+      builder: (context, child) => FadeTransition(
           opacity: Tween<double>(
             begin: 0,
             end: 1,
           ).animate(CurvedAnimation(
             parent: AnimationController(
               vsync: Navigator.of(context),
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
             )..forward(from: delay.inMilliseconds / 1000),
             curve: Curves.easeIn,
           )),
           child: child,
-        );
-      },
+        ),
       child: child,
     );
-  }
 }

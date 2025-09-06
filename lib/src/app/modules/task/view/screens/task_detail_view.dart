@@ -13,15 +13,14 @@ class TaskDetailView extends GetView<TaskDetailsController> {
   const TaskDetailView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
         title: 'Task Details',
         showBackButton: true,
         actions: [
           IconButton(
             onPressed: () => _confirmDeleteTask(),
-            icon: Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete, color: Colors.red),
           ),
         ],
       ),
@@ -98,7 +97,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
             onPressed: _showEditTaskSheet,
             child: const Icon(Icons.message),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
             backgroundColor: Get.theme.primaryColor,
             onPressed: _showEditTaskSheet,
@@ -107,7 +106,6 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         ],
       ),
     );
-  }
 
   void _showEditTaskSheet() {
     controller.prepareEditFields();
@@ -155,16 +153,14 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                 // const SizedBox(height: 8),
 
                 // Activity Dropdown
-                Obx(() {
-                  return MyDropdown<ActivityModel>(
+                Obx(() => MyDropdown<ActivityModel>(
                     items: controller
                         .activity, // Make sure you have activities list
                     selectedItem: controller.selectedActivityType.value,
                     onChanged: (activity) =>
                         controller.selectedActivityType.value = activity!,
                     label: 'Activity type*',
-                  );
-                }),
+                  )),
                 const SizedBox(height: 8),
 
                 // Schedule Date
@@ -236,8 +232,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
+  Widget _buildSectionHeader(String title) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         title,
@@ -247,10 +242,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         ),
       ),
     );
-  }
 
-  Widget _buildDetailItem(String label, String value) {
-    return Padding(
+  Widget _buildDetailItem(String label, String value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,10 +262,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         ],
       ),
     );
-  }
 
-  Widget _buildStatus(String label) {
-    return Padding(
+  Widget _buildStatus(String label) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -295,12 +286,10 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                   hintText: "Status",
                   border: InputBorder.none
                 ),
-                items: controller.statusList.map((item) {
-                  return DropdownMenuItem<int>(
+                items: controller.statusList.map((item) => DropdownMenuItem<int>(
                     value: item["value"],
                     child: Text(item["name"]),
-                  );
-                }).toList(),
+                  )).toList(),
                 onChanged: (value) {
                   controller.selectedValue.value = value!;
                   // setState(() {
@@ -313,10 +302,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         ],
       ),
     );
-  }
 
-  Widget _buildActionButtons() {
-    return Column(
+  Widget _buildActionButtons() => Column(
       children: [
         // if (controller.task.value?.status == 0)
         //   SizedBox(
@@ -328,8 +315,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         //   ),
         // const SizedBox(height: 10),
         const SizedBox(height: 10),
-        Obx(() {
-          return (controller.task.value?.scheduleStatus.id !=
+        Obx(() => (controller.task.value?.scheduleStatus.id !=
                   controller.selectedValue.value)
               ? SizedBox(
                   width: double.infinity,
@@ -343,82 +329,10 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                     child: const Text('Update'),
                   ),
                 )
-              : SizedBox();
-        }),
+              : const SizedBox()),
         const SizedBox(height: 8),
       ],
     );
-  }
-
-  void _showAddCommentDialog() {
-    final commentController = TextEditingController(
-      text: controller.task.value?.comment ?? '',
-    );
-
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            const Text(
-              'Add Comment',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: commentController,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                hintText: 'Enter your comment...',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () => Get.back(),
-                  child: const Text('Cancel'),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    if (commentController.text.trim().isNotEmpty) {
-                      controller.addComment(commentController.text.trim());
-                      Get.back();
-                    }
-                  },
-                  child: const Text('Save'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-    );
-  }
 
   void _confirmDeleteTask() {
     Get.dialog(

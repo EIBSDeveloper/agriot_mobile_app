@@ -9,9 +9,8 @@ class SalesListView extends GetView<SalesController> {
   const SalesListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Sales List', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Sales List', showBackButton: true),
       body: RefreshIndicator(
         onRefresh: () async {
           await controller.fetchSalesList();
@@ -21,8 +20,7 @@ class SalesListView extends GetView<SalesController> {
           child: Column(
             children: [
               // SizedBox(height: 18,),
-              Obx(() {
-                return Row(
+              Obx(() => Row(
                   children: [
                     Expanded(
                       child: Container(
@@ -34,11 +32,11 @@ class SalesListView extends GetView<SalesController> {
                         decoration: AppStyle.decoration,
                         child: Column(
                           children: [
-                            FittedBox(
+                            const FittedBox(
                               child: Text(
                                 "Total Sales ",
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -102,8 +100,7 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ],
-                );
-              }),
+                )),
               Expanded(
                 child: Obx(() {
                   if (controller.isLoading.value) {
@@ -136,8 +133,7 @@ class SalesListView extends GetView<SalesController> {
                             ),
                           ),
                           // 🔹 Sales Cards for this date
-                          ...group.sales.map((sale) {
-                            return Card(
+                          ...group.sales.map((sale) => Card(
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 4,
@@ -165,12 +161,11 @@ class SalesListView extends GetView<SalesController> {
                                   ),
                                 ),
                                 onTap: () => Get.toNamed(
-                                  Routes.SALES_DETAILS,
+                                  Routes.salesDetails,
                                   arguments: {'id': sale.salesId},
                                 ),
                               ),
-                            );
-                          }),
+                            )),
                         ],
                       );
                     },
@@ -185,10 +180,9 @@ class SalesListView extends GetView<SalesController> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Get.theme.primaryColor,
         child: const Icon(Icons.add),
-        onPressed: () => Get.toNamed(Routes.NEW_SALES,arguments: {"new":true})?.then((yy) {
+        onPressed: () => Get.toNamed(Routes.newSales,arguments: {"new":true})?.then((yy) {
           controller.fetchSalesList();
         }),
       ),
     );
-  }
 }

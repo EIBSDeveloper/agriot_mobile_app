@@ -149,8 +149,7 @@ class VendorHistoryPage extends StatelessWidget {
     required String title,
     required Map<String, String> fields,
     required VoidCallback onEyeTap,
-  }) {
-    return Card(
+  }) => Card(
       elevation: 4,
       shadowColor: Colors.grey.shade300,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -214,7 +213,6 @@ class VendorHistoryPage extends StatelessWidget {
         ),
       ),
     );
-  }
 
   void _showHistoryDetailsDialog(
     BuildContext context, {

@@ -13,8 +13,7 @@ class LandDetailView extends GetView<LandDetailController> {
   const LandDetailView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Obx(
+  Widget build(BuildContext context) => Obx(
       () => Scaffold(
         appBar: CustomAppBar(
           title: controller.landDetails['name'] ?? 'Loading...',
@@ -29,13 +28,13 @@ class LandDetailView extends GetView<LandDetailController> {
                   controller.loadData();
                 });
               },
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
             ),
             IconButton(
               onPressed: () {
                 controller.deleteLandDetails(Get.arguments as int);
               },
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
             ),
           ],
         ),
@@ -48,11 +47,10 @@ class LandDetailView extends GetView<LandDetailController> {
         ),
       ),
     );
-  }
 
   Widget _buildBody() {
     if (controller.isLoading.value) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (controller.error.isNotEmpty) {
@@ -61,11 +59,11 @@ class LandDetailView extends GetView<LandDetailController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(controller.error.value),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () =>
                   controller.fetchLandDetails(Get.arguments as int),
-              child: Text('Retry'),
+              child: const Text('Retry'),
             ),
           ],
         ),
@@ -73,40 +71,39 @@ class LandDetailView extends GetView<LandDetailController> {
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      physics: AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      physics: const AlwaysScrollableScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // Header Section
           _buildHeaderSection(),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-          Divider(), SizedBox(height: 8),
+          const Divider(), const SizedBox(height: 8),
           _buildSurveySection(),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-          Divider(), SizedBox(height: 8),
+          const Divider(), const SizedBox(height: 8),
           // Crops
           _buildCropsSection(),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
-          Divider(), SizedBox(height: 8),
+          const Divider(), const SizedBox(height: 8),
           // Documents
           _buildDocumentsSection(),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  Widget _buildHeaderSection() {
-    return Column(
+  Widget _buildHeaderSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleText('Land Details'),
-        SizedBox(height: 10),
+        const TitleText('Land Details'),
+        const SizedBox(height: 10),
         _buildDetailRow(
           'Soil Type',
           controller.landDetails['soil_type']!['name'] ?? "",
@@ -141,23 +138,22 @@ class LandDetailView extends GetView<LandDetailController> {
         // ),
       ],
     );
-  }
 
   Widget _buildSurveySection() {
     final surveys = controller.landDetails['survey_details'] as List? ?? [];
-    if (surveys.isEmpty) return SizedBox();
+    if (surveys.isEmpty) return const SizedBox();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleText('Survey Details '),
+        const TitleText('Survey Details '),
 
         // SizedBox(height: 8),
         ...surveys.asMap().entries.map<Widget>((entry) {
           int index = entry.key;
           var survey = entry.value;
           return Padding(
-            padding: EdgeInsets.only(bottom: 8, left: 20),
+            padding: const EdgeInsets.only(bottom: 8, left: 20),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               leading: CircleAvatar(
@@ -182,31 +178,27 @@ class LandDetailView extends GetView<LandDetailController> {
 
   Widget _buildDocumentsSection() {
     final documents = controller.landDetails['documents'] as List? ?? [];
-    if (documents.isEmpty) return SizedBox();
+    if (documents.isEmpty) return const SizedBox();
 
     return Card(
       elevation: 2,
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TitleText('Documents'),
-            SizedBox(height: 8),
-            ...documents.map((doc) {
-              return Wrap(
+            const TitleText('Documents'),
+            const SizedBox(height: 8),
+            ...documents.map((doc) => Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: doc['documents'].map<Widget>((list) {
-                  return ActionChip(
-                    avatar: Icon(Icons.picture_as_pdf),
+                children: doc['documents'].map<Widget>((list) => ActionChip(
+                    avatar: const Icon(Icons.picture_as_pdf),
                     label: Text(list['document_category']['name']),
                     onPressed: () =>
                         controller.viewDocument(list['upload_document']),
-                  );
-                }).toList(),
-              );
-            }),
+                  )).toList(),
+              )),
           ],
         ),
       ),
@@ -216,14 +208,12 @@ class LandDetailView extends GetView<LandDetailController> {
   Widget _buildCropsSection() {
     final crops = controller.landDetails['crop_details'] as List? ?? [];
     if (crops.isEmpty) return addNewCrop();
-    var crop = crops.map((e) {
-      return CropCardModel.fromJson(e);
-    });
+    var crop = crops.map((e) => CropCardModel.fromJson(e));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleText('Crops'),
-        SizedBox(height: 8),
+        const TitleText('Crops'),
+        const SizedBox(height: 8),
         ...crop.map(
           (crop) => InkWell(
             onTap: () {
@@ -245,8 +235,7 @@ class LandDetailView extends GetView<LandDetailController> {
     );
   }
 
-  Widget addNewCrop() {
-    return Row(
+  Widget addNewCrop() => Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         OutlinedButton(
@@ -272,11 +261,9 @@ class LandDetailView extends GetView<LandDetailController> {
         ),
       ],
     );
-  }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4),
+  Widget _buildDetailRow(String label, String value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -284,13 +271,12 @@ class LandDetailView extends GetView<LandDetailController> {
             width: 100,
             child: Text(
               '$label:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Expanded(child: Text(value)),
         ],
       ),
     );
-  }
 }

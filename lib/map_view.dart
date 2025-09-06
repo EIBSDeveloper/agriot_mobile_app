@@ -1,9 +1,16 @@
-
 import 'dart:convert';
 import 'dart:ui';
 
 import 'package:argiot/bestschedule.dart';
+import 'package:argiot/src/app/controller/app_controller.dart';
+import 'package:argiot/src/app/modules/dashboad/model/model.dart' hide Task;
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/registration/repostrory/crop_service.dart';
 import 'package:argiot/src/app/modules/task/model/model.dart';
+import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/widgets/title_text.dart';
+import 'package:argiot/src/core/app_style.dart';
+import 'package:argiot/src/routes/app_routes.dart';
 import 'package:argiot/src/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +18,6 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-
-import 'src/app/controller/app_controller.dart';
-import 'src/app/modules/dashboad/model/model.dart' hide Task;
-import 'src/app/modules/near_me/views/widget/widgets.dart';
-import 'src/app/modules/registration/repostrory/crop_service.dart';
-import 'src/app/utils/http/http_service.dart';
-import 'src/app/widgets/title_text.dart';
-import 'src/core/app_style.dart';
-import 'src/routes/app_routes.dart';
 
 class LandMapViewBinding extends Bindings {
   @override
@@ -107,7 +105,7 @@ class LandMapViewController extends GetxController {
   var selectedCrop = Rxn<ScheduleCrop>();
   final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);
   var mapType = MapType.normal.obs;
-  var cameraPosition = CameraPosition(
+  var cameraPosition = const CameraPosition(
     target: LatLng(12.9716, 77.5946),
     zoom: 14,
   ).obs;
@@ -154,9 +152,7 @@ class LandMapViewController extends GetxController {
     return LatLngBounds(northeast: LatLng(x1, y1), southwest: LatLng(x0, y0));
   }
 
-  List<ScheduleCrop> get cropsForSelectedLand {
-    return selectedLand.value?.crops ?? [];
-  }
+  List<ScheduleCrop> get cropsForSelectedLand => selectedLand.value?.crops ?? [];
 
   void changeMapType(MapType type) {
     mapType.value = type;
@@ -283,12 +279,11 @@ class _LandMapViewState extends State<LandMapView> {
   LandMapViewController controller = Get.find();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Land Details'),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Land Details'),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return Stack(
           children: [
@@ -302,8 +297,7 @@ class _LandMapViewState extends State<LandMapView> {
 
               return FutureBuilder<Set<Marker>>(
                 future: cropMarkersFuture,
-                builder: (context, snapshot) {
-                  return Obx(
+                builder: (context, snapshot) => Obx(
                     () => GoogleMap(
                       mapType: controller.mapType.value, // reactive
                       initialCameraPosition: controller.cameraPosition.value,
@@ -351,8 +345,7 @@ class _LandMapViewState extends State<LandMapView> {
                       },
                       markers: snapshot.data ?? {},
                     ),
-                  );
-                },
+                  ),
               );
             }),
 
@@ -365,22 +358,21 @@ class _LandMapViewState extends State<LandMapView> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Obx(() {
-                        return Container(
+                      
+                      child: Obx(() => Container(
                           decoration: AppStyle.decoration.copyWith(
                             color: const Color.fromARGB(137, 221, 234, 234),
                             boxShadow: const [],
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 5),
+                         
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonFormField<ScheduleLand>(
                             value: controller.selectedLand.value,
 
-                            items: controller.lands.map((ScheduleLand land) {
-                              return DropdownMenuItem<ScheduleLand>(
+                            items: controller.lands.map((ScheduleLand land) => DropdownMenuItem<ScheduleLand>(
                                 value: land,
                                 child: Text(land.name),
-                              );
-                            }).toList(),
+                              )).toList(),
                             onChanged: (ScheduleLand? land) {
                               controller.selectLand(land);
                             },
@@ -389,10 +381,9 @@ class _LandMapViewState extends State<LandMapView> {
                               border: InputBorder.none,
                             ),
                           ),
-                        );
-                      }),
+                        )),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Obx(() {
                         if (controller.selectedLand.value == null) {
@@ -401,27 +392,25 @@ class _LandMapViewState extends State<LandMapView> {
                               color: const Color.fromARGB(137, 221, 234, 234),
                               boxShadow: const [],
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: DropdownButtonFormField<ScheduleCrop>(
                               value: controller.selectedCrop.value,
                               items: [
                                 DropdownMenuItem<ScheduleCrop>(
                                   value: ScheduleCrop(id: 0, name: "All"),
-                                  child: Text("All"),
+                                  child: const Text("All"),
                                 ),
                                 ...controller.cropsForSelectedLand.map((
                                   ScheduleCrop crop,
-                                ) {
-                                  return DropdownMenuItem<ScheduleCrop>(
+                                ) => DropdownMenuItem<ScheduleCrop>(
                                     value: crop,
                                     child: Text(crop.name),
-                                  );
-                                }),
+                                  )),
                               ],
                               onChanged: (ScheduleCrop? crop) {
                                 controller.selectCrop(crop);
                               },
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Crop',
                                 border: InputBorder.none,
                               ),
@@ -434,7 +423,7 @@ class _LandMapViewState extends State<LandMapView> {
                             color: const Color.fromARGB(137, 221, 234, 234),
                             boxShadow: const [],
                           ),
-                          padding: EdgeInsets.symmetric(horizontal: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonFormField<ScheduleCrop>(
                             value: controller
                                 .selectedCrop
@@ -442,16 +431,14 @@ class _LandMapViewState extends State<LandMapView> {
                             items: [
                               DropdownMenuItem<ScheduleCrop>(
                                 value: controller.allCrop, // ✅ same reference
-                                child: Text("All"),
+                                child: const Text("All"),
                               ),
                               ...controller.cropsForSelectedLand.map((
                                 ScheduleCrop crop,
-                              ) {
-                                return DropdownMenuItem<ScheduleCrop>(
+                              ) => DropdownMenuItem<ScheduleCrop>(
                                   value: crop,
                                   child: Text(crop.name),
-                                );
-                              }),
+                                )),
                             ],
                             onChanged: (ScheduleCrop? crop) {
                               controller.selectCrop(crop);
@@ -507,11 +494,10 @@ class _LandMapViewState extends State<LandMapView> {
         ],
       ),
     );
-  }
 
   void cropDetails(CropMapData crop) async {
     Get.dialog(
-      Dialog(
+      const Dialog(
         child: SizedBox(
           height: 100,
           width: 100,
@@ -527,8 +513,8 @@ class _LandMapViewState extends State<LandMapView> {
       Container(
         // height: 300,
         width: double.infinity,
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
@@ -537,12 +523,12 @@ class _LandMapViewState extends State<LandMapView> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TitleText(crop.cropName ?? "Crop"),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 if (crop.cropImage != null)
                   Image.network(crop.cropImage!, height: 80, width: 80),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -567,16 +553,16 @@ class _LandMapViewState extends State<LandMapView> {
                     ),
                   ),
                 ),
-                SizedBox(width: 4),
-                Text("/"),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
+                const Text("/"),
+                const SizedBox(width: 4),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(controller.weatherData.value!.condition.tr),
                 ),
-                SizedBox(width: 4),
-                Text("/"),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
+                const Text("/"),
+                const SizedBox(width: 4),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
@@ -585,12 +571,10 @@ class _LandMapViewState extends State<LandMapView> {
                 ),
               ],
             ),
-            TitleText("Today task"),
-            Obx(() {
-              return Column(
+            const TitleText("Today task"),
+            Obx(() => Column(
                 children: [
-                  ...controller.cropDetails.value!.tasks.map((task) {
-                    return _buildTaskCard(
+                  ...controller.cropDetails.value!.tasks.map((task) => _buildTaskCard(
                       Task(
                         id: task.id,
                         cropType: task.activityType,
@@ -599,12 +583,10 @@ class _LandMapViewState extends State<LandMapView> {
                         status: task.scheduleStatusName,
                       ),
                       crop.cropId,
-                    );
-                  }),
+                    )),
                 ],
-              );
-            }),
-            SizedBox(height: 60),
+              )),
+            const SizedBox(height: 60),
           ],
         ),
       ),
@@ -642,7 +624,7 @@ class _LandMapViewState extends State<LandMapView> {
               ),
             ],
           ),
-          trailing: Row(
+          trailing: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               // IconButton(
@@ -766,8 +748,7 @@ class CropDetails {
     required this.tasks,
   });
 
-  factory CropDetails.fromJson(Map<String, dynamic> json) {
-    return CropDetails(
+  factory CropDetails.fromJson(Map<String, dynamic> json) => CropDetails(
       id: json['id'] ?? 0,
       crop: json['crop'] ?? '',
       type: json['type'] ?? '',
@@ -782,10 +763,8 @@ class CropDetails {
           .map((taskJson) => CropTask.fromJson(taskJson))
           .toList(),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'crop': crop,
       'type': type,
@@ -798,7 +777,6 @@ class CropDetails {
       'sales': sales,
       'task': tasks.map((task) => task.toJson()).toList(),
     };
-  }
 }
 
 class CropTask {
@@ -816,23 +794,19 @@ class CropTask {
     required this.scheduleStatusName,
   });
 
-  factory CropTask.fromJson(Map<String, dynamic> json) {
-    return CropTask(
+  factory CropTask.fromJson(Map<String, dynamic> json) => CropTask(
       id: json['id'] ?? 0,
       activityType: json['activity_type'] ?? '',
       description: json['description'] ?? '',
       scheduleStatus: json['schedule_status'] ?? 0,
       scheduleStatusName: json['schedule_status_name'] ?? '',
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'activity_type': activityType,
       'description': description,
       'schedule_status': scheduleStatus,
       'schedule_status_name': scheduleStatusName,
     };
-  }
 }

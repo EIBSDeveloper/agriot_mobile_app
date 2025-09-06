@@ -14,6 +14,7 @@ class LocationPicker extends StatefulWidget {
   const LocationPicker({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LocationPickerState createState() => _LocationPickerState();
 }
 
@@ -124,8 +125,7 @@ class _LocationPickerState extends State<LocationPicker> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       height: MediaQuery.of(context).size.height * 0.75,
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -158,7 +158,7 @@ class _LocationPickerState extends State<LocationPicker> {
                         markers: {
                           if (_selectedLocation != null)
                             Marker(
-                              markerId: MarkerId('selected-location'),
+                              markerId: const MarkerId('selected-location'),
                               position: _selectedLocation!,
                             ),
                         },
@@ -183,7 +183,7 @@ class _LocationPickerState extends State<LocationPicker> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(_selectedAddress ?? "Location selected!"),
-                        duration: Duration(seconds: 3),
+                        duration: const Duration(seconds: 3),
                       ),
                     );
                   }
@@ -199,7 +199,7 @@ class _LocationPickerState extends State<LocationPicker> {
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color.fromARGB(255, 0, 163, 38),
+                    color: const Color.fromARGB(255, 0, 163, 38),
                   ),
                   child: Row(
                     children: [
@@ -217,14 +217,11 @@ class _LocationPickerState extends State<LocationPicker> {
         ),
       ),
     );
-  }
 }
 
 void showDialogWithFields(context) {
   showDialog(
     context: context,
-    builder: (_) {
-      return Material(child: LocationPicker());
-    },
+    builder: (_) => const Material(child: LocationPicker()),
   );
 }

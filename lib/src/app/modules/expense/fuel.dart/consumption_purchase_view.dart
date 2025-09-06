@@ -14,8 +14,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   const ConsumptionPurchaseView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
         title: capitalizeFirstLetter(
           controller.selectedInventoryTypeName.value,
@@ -29,15 +28,14 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             child: Row(
               children: [
                 buildInventoryCategoryDropdown(),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 buildInventoryItemDropdown(),
               ],
             ),
           ),
 
           // Tab Bar
-          Obx(() {
-            return Container(
+          Obx(() => Container(
               color: Get.theme.colorScheme.surface,
               child: TabBar(
                 controller: TabController(
@@ -57,8 +55,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   ),
                 ],
               ),
-            );
-          }),
+            )),
 
           // Content Area
           Expanded(
@@ -76,11 +73,10 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               );
             }),
           ),
-          Obx(() {
-            return Container(
+          Obx(() => Container(
               height: 60,
               width: double.infinity,
-              decoration: AppStyle.inputDecoration!.copyWith(
+              decoration: AppStyle.inputDecoration.copyWith(
                 color: Get.theme.primaryColor.withAlpha(100),
               ),
               padding: const EdgeInsets.only(right: 80, left: 8),
@@ -93,8 +89,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   ),
                 ),
               ),
-            );
-          }),
+            )),
         ],
       ),
 
@@ -134,13 +129,11 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             }
           }
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
-  }
 
-  Widget buildInventoryCategoryDropdown() {
-    return Expanded(
+  Widget buildInventoryCategoryDropdown() => Expanded(
       child: Obx(
         () => Column(
           children: [
@@ -151,7 +144,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   hintText: 'Inventory Category'.tr,
                   border: InputBorder.none,
                 ),
-                value: controller.selectedInventoryCategory.value,
+                initialValue: controller.selectedInventoryCategory.value,
                 items: controller.inventoryCategories
                     .map(
                       (category) => DropdownMenuItem<int>(
@@ -174,10 +167,8 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
         ),
       ),
     );
-  }
 
-  Widget buildInventoryItemDropdown() {
-    return Expanded(
+  Widget buildInventoryItemDropdown() => Expanded(
       child: Obx(
         () => InputCardStyle(
           child: DropdownButtonFormField<int>(
@@ -186,7 +177,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               hintText: 'Inventory Item'.tr,
               border: InputBorder.none,
             ),
-            value: controller.selectedInventoryItem.value,
+            initialValue: controller.selectedInventoryItem.value,
             items: controller.inventoryItems
                 .map(
                   (item) => DropdownMenuItem<int>(
@@ -207,5 +198,4 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
         ),
       ),
     );
-  }
 }

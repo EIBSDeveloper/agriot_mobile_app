@@ -9,14 +9,13 @@ class CropCard extends StatelessWidget {
   const CropCard({super.key, required this.crop});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 8),
+  Widget build(BuildContext context) => Card(
+      margin: const EdgeInsets.only(bottom: 8),
       elevation: 1,
       child: ListTile(
         leading: crop.img != null
             ? CircleAvatar(backgroundImage: NetworkImage(crop.img!))
-            : CircleAvatar(child: Icon(Icons.grass)),
+            : const CircleAvatar(child: Icon(Icons.grass)),
         title: Text(
           crop.name,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: Get.theme.primaryColor),
@@ -50,5 +49,4 @@ class CropCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

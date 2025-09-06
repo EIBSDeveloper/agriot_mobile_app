@@ -6,23 +6,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'common.dart';
-import 'src/app/controller/app_controller.dart';
-import 'src/app/utils/http/http_service.dart';
-import 'src/app/widgets/input_card_style.dart';
-import 'src/routes/app_routes.dart';
+import 'package:argiot/common.dart';
+import 'package:argiot/src/app/controller/app_controller.dart';
+import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
+import 'package:argiot/src/routes/app_routes.dart';
 
 class FuelPurchase {
-  final int id;
-  final String date;
-  final Vendor vendor;
-  final InventoryType inventoryType;
-  final InventoryCategory inventoryCategory;
-  final InventoryItem inventoryItem;
-  final double quantity;
-  final double purchaseAmount;
-  final String? description;
-  final List<Document>? documents;
 
   FuelPurchase({
     required this.id,
@@ -37,8 +27,7 @@ class FuelPurchase {
     this.documents,
   });
 
-  factory FuelPurchase.fromJson(Map<String, dynamic> json) {
-    return FuelPurchase(
+  factory FuelPurchase.fromJson(Map<String, dynamic> json) => FuelPurchase(
       id: json['id'],
       date: json['date_of_consumption'] ?? json['date'],
       vendor: Vendor.fromJson(
@@ -67,33 +56,38 @@ class FuelPurchase {
       description: json['description'],
       documents: json['documents'] != null
           ? (json['documents'] as List)
-                .map((docGroup) {
-                  return (docGroup['documents'] as List)
+                .map((docGroup) => (docGroup['documents'] as List)
                       .map((doc) => Document.fromJson(doc))
-                      .toList();
-                })
+                      .toList())
                 .expand((docs) => docs)
                 .toList()
           : null,
     );
-  }
+  final int id;
+  final String date;
+  final Vendor vendor;
+  final InventoryType inventoryType;
+  final InventoryCategory inventoryCategory;
+  final InventoryItem inventoryItem;
+  final double quantity;
+  final double purchaseAmount;
+  final String? description;
+  final List<Document>? documents;
 }
 
 class FuelType {
-  final int id;
-  final String name;
-  final double totalQuantity;
 
   FuelType({required this.id, required this.name, required this.totalQuantity});
 
-  factory FuelType.fromJson(Map<String, dynamic> json) {
-    return FuelType(
+  factory FuelType.fromJson(Map<String, dynamic> json) => FuelType(
       id: json['id'],
       name: json['name'],
       totalQuantity:
           double.tryParse(json['total_quantity']?.toString() ?? '0') ?? 0,
     );
-  }
+  final int id;
+  final String name;
+  final double totalQuantity;
 }
 
 // lib/modules/inventory/fuel/controllers/fuel_controller.dart
@@ -102,24 +96,24 @@ class FuelController extends GetxController {
   final FuelRepository _repository = Get.find();
 
   // Fuel Types List
-  var fuelTypes = <FuelType>[].obs;
-  var isLoadingFuelTypes = false.obs;
-  var selectedFuelType = Rx<FuelType?>(null);
+  RxList<FuelType> fuelTypes = <FuelType>[].obs;
+  RxBool isLoadingFuelTypes = false.obs;
+  Rx<FuelType?> selectedFuelType = Rx<FuelType?>(null);
 
   // Fuel Purchases List
-  var fuelPurchases = <FuelPurchase>[].obs;
-  var isLoadingFuelPurchases = false.obs;
-  var selectedFuelPurchase = Rx<FuelPurchase?>(null);
+  RxList<FuelPurchase> fuelPurchases = <FuelPurchase>[].obs;
+  RxBool isLoadingFuelPurchases = false.obs;
+  Rx<FuelPurchase?> selectedFuelPurchase = Rx<FuelPurchase?>(null);
 
   // Form state
-  var selectedDate = DateTime.now().obs;
-  var selectedVendor = Rx<Vendor?>(null);
-  var selectedInventoryItem = Rx<InventoryItem?>(null);
-  var quantity = ''.obs;
-  var purchaseAmount = ''.obs;
-  var description = ''.obs;
-  var selectedDocuments = <Map<String, dynamic>>[].obs;
-  var isSubmitting = false.obs;
+  Rx<DateTime> selectedDate = DateTime.now().obs;
+  Rx<Vendor?> selectedVendor = Rx<Vendor?>(null);
+  Rx<InventoryItem?> selectedInventoryItem = Rx<InventoryItem?>(null);
+  RxString quantity = ''.obs;
+  RxString purchaseAmount = ''.obs;
+  RxString description = ''.obs;
+  RxList<Map<String, dynamic>> selectedDocuments = <Map<String, dynamic>>[].obs;
+  RxBool isSubmitting = false.obs;
 
   @override
   void onInit() {
@@ -141,9 +135,7 @@ class FuelController extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>?> pickDocument() async {
-    return await _repository.pickDocument();
-  }
+  Future<Map<String, dynamic>?> pickDocument() async => await _repository.pickDocument();
 
   Future<void> fetchFuelPurchases(int inventoryItemId) async {
     try {
@@ -272,14 +264,12 @@ class FuelController extends GetxController {
         [];
   }
 
-  bool get isFormValid {
-    return selectedVendor.value != null &&
+  bool get isFormValid => selectedVendor.value != null &&
         selectedInventoryItem.value != null &&
         quantity.value.isNotEmpty &&
         double.tryParse(quantity.value) != null &&
         purchaseAmount.value.isNotEmpty &&
         double.tryParse(purchaseAmount.value) != null;
-  }
 }
 
 // lib/modules/inventory/fuel/repository/fuel_repository.dart
@@ -314,7 +304,7 @@ class FuelRepository {
     try {
       final farmerId = appDeta.userId;
       final respons = await _httpService.get(
-        '/fuel_list_with_items/$farmerId?inventory_type=6&inventory_items=${inventoryItemId.toString()}',
+        '/fuel_list_with_items/$farmerId?inventory_type=6&inventory_items=$inventoryItemId',
       );
       final response = json.decode(respons.body);
       if (response != null && response['fuels'] != null) {
@@ -363,7 +353,7 @@ class FuelRepository {
         'inventory_items': inventoryItemId.toString(),
         'quantity': quantity.toString(),
         'purchase_amount': purchaseAmount.toString(),
-        if (description != null) 'description': description,
+        'description': ?description,
         if (documents != null && documents.isNotEmpty)
           'documents': _prepareDocuments(documents),
       };
@@ -397,7 +387,7 @@ class FuelRepository {
         'inventory_items': inventoryItemId,
         'quantity': quantity,
         'purchase_amount': purchaseAmount,
-        if (description != null) 'description': description,
+        'description': ?description,
         if (documents != null && documents.isNotEmpty)
           'documents': _prepareDocuments(documents),
       };
@@ -424,14 +414,11 @@ class FuelRepository {
     }
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-  }
+  String _formatDate(DateTime date) => '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
 
   List<Map<String, dynamic>> _prepareDocuments(
     List<Map<String, dynamic>> documents,
-  ) {
-    return documents.map((doc) {
+  ) => documents.map((doc) {
       if (doc['file'] != null) {
         // New file upload
         return {
@@ -446,7 +433,6 @@ class FuelRepository {
         };
       }
     }).toList();
-  }
 
   Future<Map<String, dynamic>?> pickDocument() async {
     try {
@@ -470,9 +456,10 @@ class FuelRepository {
 class FuelBindings extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => CommonControllers());
-    Get.lazyPut(() => FuelRepository());
-    Get.lazyPut(() => FuelController());
+  
+    Get..lazyPut(CommonControllers.new)
+    ..lazyPut(FuelRepository.new)
+    ..lazyPut(FuelController.new);
   }
 }
 
@@ -481,17 +468,16 @@ class FuelBindings extends Bindings {
 // lib/modules/inventory/fuel/views/fuel_list_screen.dart
 
 class FuelListScreen extends StatelessWidget {
-  final FuelController controller = Get.find();
 
   FuelListScreen({super.key});
+  final FuelController controller = Get.find();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: Text('Fuel'.tr), centerTitle: true),
       body: Obx(() {
         if (controller.isLoadingFuelTypes.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return ListView.builder(
           itemCount: controller.fuelTypes.length,
@@ -512,7 +498,7 @@ class FuelListScreen extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           if (controller.fuelTypes.isNotEmpty) {
             Get.toNamed(
@@ -525,16 +511,15 @@ class FuelListScreen extends StatelessWidget {
         },
       ),
     );
-  }
 }
 
 // lib/modules/inventory/fuel/views/fuel_purchase_list_screen.dart
 
 class FuelPurchaseListScreen extends StatefulWidget {
-  final int inventoryItemId;
 
   FuelPurchaseListScreen({super.key})
     : inventoryItemId = Get.arguments['inventoryItemId'];
+  final int inventoryItemId;
 
   @override
   State<FuelPurchaseListScreen> createState() => _FuelPurchaseListScreenState();
@@ -544,14 +529,12 @@ class _FuelPurchaseListScreenState extends State<FuelPurchaseListScreen> {
   final FuelController controller = Get.find();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.fetchFuelPurchases(widget.inventoryItemId);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: Text(
           controller.selectedFuelType.value?.name ?? 'Fuel Purchases'.tr,
@@ -559,7 +542,7 @@ class _FuelPurchaseListScreenState extends State<FuelPurchaseListScreen> {
       ),
       body: Obx(() {
         if (controller.isLoadingFuelPurchases.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return ListView.builder(
           itemCount: controller.fuelPurchases.length,
@@ -584,7 +567,7 @@ class _FuelPurchaseListScreenState extends State<FuelPurchaseListScreen> {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Get.toNamed(
             Routes.addFuelPurchase,
@@ -593,17 +576,16 @@ class _FuelPurchaseListScreenState extends State<FuelPurchaseListScreen> {
         },
       ),
     );
-  }
 }
 
 // lib/modules/inventory/fuel/views/add_edit_fuel_purchase_screen.dart
 
 class AddEditFuelPurchaseScreen extends StatelessWidget {
+
+  AddEditFuelPurchaseScreen({required this.isEditing, super.key});
   final FuelController controller = Get.find();
   final CommonControllers commonControllers = Get.find();
   final bool isEditing;
-
-  AddEditFuelPurchaseScreen({required this.isEditing, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -613,8 +595,8 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
       controller.setFormData(controller.selectedFuelPurchase.value!);
     } else {
       controller.clearForm();
-      commonControllers.fetchVendors();
-      commonControllers.fetchInventoryItems(inventoryItemId);
+      commonControllers..fetchVendors()
+      ..fetchInventoryItems(inventoryItemId);
     }
 
     return Scaffold(
@@ -623,7 +605,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
         actions: isEditing
             ? [
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () async {
                     final confirmed = await Get.dialog(
                       AlertDialog(
@@ -657,7 +639,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
             : null,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Form(
           child: Column(
             children: [
@@ -677,7 +659,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                 child: InputDecorator(
                   decoration: InputDecoration(
                     labelText: 'Date'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -687,12 +669,12 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                           'yyyy-MM-dd',
                         ).format(controller.selectedDate.value),
                       ),
-                      Icon(Icons.calendar_today),
+                      const Icon(Icons.calendar_today),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Fuel Category (read-only)
                InputCardStyle(
@@ -700,22 +682,21 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Fuel Category'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   readOnly: true,
                   initialValue: controller.selectedFuelType.value?.name ?? '',
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Vendor Dropdown
-              Obx(() {
-                return DropdownButtonFormField<Vendor>(
+              Obx(() => DropdownButtonFormField<Vendor>(
                   decoration: InputDecoration(
                     labelText: 'Vendor'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       onPressed: () {
                         Fluttertoast.showToast(
                           msg: 'Add vendor functionality to be implemented',
@@ -723,44 +704,37 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                       },
                     ),
                   ),
-                  value: controller.selectedVendor.value,
-                  items: commonControllers.vendors.map((vendor) {
-                    return DropdownMenuItem<Vendor>(
+                  initialValue: controller.selectedVendor.value,
+                  items: commonControllers.vendors.map((vendor) => DropdownMenuItem<Vendor>(
                       value: vendor,
                       child: Text(vendor.name),
-                    );
-                  }).toList(),
+                    )).toList(),
                   onChanged: (Vendor? value) {
                     controller.selectedVendor.value = value;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a vendor'.tr : null,
-                );
-              }),
-              SizedBox(height: 16),
+                )),
+              const SizedBox(height: 16),
 
               // Inventory Item Dropdown
-              Obx(() {
-                return DropdownButtonFormField<InventoryItem>(
+              Obx(() => DropdownButtonFormField<InventoryItem>(
                   decoration: InputDecoration(
                     labelText: 'Fuel Type'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
-                  value: controller.selectedInventoryItem.value,
-                  items: commonControllers.inventoryItems.map((item) {
-                    return DropdownMenuItem<InventoryItem>(
+                  initialValue: controller.selectedInventoryItem.value,
+                  items: commonControllers.inventoryItems.map((item) => DropdownMenuItem<InventoryItem>(
                       value: item,
                       child: Text(item.name),
-                    );
-                  }).toList(),
+                    )).toList(),
                   onChanged: (InventoryItem? value) {
                     controller.selectedInventoryItem.value = value;
                   },
                   validator: (value) =>
                       value == null ? 'Please select a fuel type'.tr : null,
-                );
-              }),
-              SizedBox(height: 16),
+                )),
+              const SizedBox(height: 16),
 
               // Purchase Amount
               InputCardStyle(
@@ -768,7 +742,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Purchase Amount'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     prefixText: '\$ ',
                   ),
                   keyboardType: TextInputType.number,
@@ -791,7 +765,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Quantity
                InputCardStyle(
@@ -799,7 +773,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Quantity (Litre)'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                   controller:
@@ -819,28 +793,25 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Documents
               ExpansionTile(
                 title: Text('Documents'.tr),
                 children: [
-                  Obx(() {
-                    return Column(
+                  Obx(() => Column(
                       children: [
-                        ...controller.selectedDocuments.map((doc) {
-                          return ListTile(
+                        ...controller.selectedDocuments.map((doc) => ListTile(
                             title: Text(
                               doc['name'] ?? doc['categoryName'] ?? 'Document',
                             ),
                             trailing: IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: const Icon(Icons.delete),
                               onPressed: () {
                                 controller.selectedDocuments.remove(doc);
                               },
                             ),
-                          );
-                        }),
+                          )),
                         ElevatedButton(
                           onPressed: () async {
                             final doc = await controller.pickDocument();
@@ -851,11 +822,10 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                           child: Text('Add Document'.tr),
                         ),
                       ],
-                    );
-                  }),
+                    )),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Description
               InputCardStyle(
@@ -863,7 +833,7 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                 child: TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Description'.tr,
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                   maxLines: 3,
                   controller:
@@ -874,11 +844,10 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                   onChanged: (value) => controller.description.value = value,
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
 
               // Submit Button
-              Obx(() {
-                return ElevatedButton(
+              Obx(() => ElevatedButton(
                   onPressed:
                       controller.isFormValid && !controller.isSubmitting.value
                       ? () async {
@@ -893,13 +862,12 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
                   child: controller.isSubmitting.value
-                      ? CircularProgressIndicator(color: Colors.white)
+                      ? const CircularProgressIndicator(color: Colors.white)
                       : Text(isEditing ? 'Update'.tr : 'Add'.tr),
-                );
-              }),
+                )),
             ],
           ),
         ),
@@ -911,9 +879,9 @@ class AddEditFuelPurchaseScreen extends StatelessWidget {
 // lib/modules/inventory/fuel/views/fuel_purchase_details_screen.dart
 
 class FuelPurchaseDetailsScreen extends StatelessWidget {
-  final FuelController controller = Get.find();
 
   FuelPurchaseDetailsScreen({super.key});
+  final FuelController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -930,7 +898,7 @@ class FuelPurchaseDetailsScreen extends StatelessWidget {
         title: Text('Purchase Details'.tr),
         actions: [
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () {
               Get.toNamed(Routes.editFuelPurchase);
             },
@@ -938,7 +906,7 @@ class FuelPurchaseDetailsScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -953,9 +921,9 @@ class FuelPurchaseDetailsScreen extends StatelessWidget {
 
             // Documents
             if (purchase.documents?.isNotEmpty ?? false) ...[
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text('Documents'.tr, style: Get.textTheme.titleLarge),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               SizedBox(
                 height: 100,
                 child: ListView.builder(
@@ -964,11 +932,10 @@ class FuelPurchaseDetailsScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final doc = purchase.documents![index];
                     return Padding(
-                      padding: EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.only(right: 8),
                       child: GestureDetector(
                         onTap: () {
-                          // TODO: Implement document preview
-                          Fluttertoast.showToast(
+                         Fluttertoast.showToast(
                             msg: 'Document preview to be implemented',
                           );
                         },
@@ -981,7 +948,7 @@ class FuelPurchaseDetailsScreen extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.picture_as_pdf, size: 40),
+                              const Icon(Icons.picture_as_pdf, size: 40),
                               Text(
                                 doc.categoryName,
                                 textAlign: TextAlign.center,
@@ -1003,20 +970,18 @@ class FuelPurchaseDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailItem(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+  Widget _buildDetailItem(String label, String value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label.tr, style: Get.textTheme.bodySmall),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(value, style: Get.textTheme.bodyLarge),
-          Divider(),
+          const Divider(),
         ],
       ),
     );
-  }
 }
 
 // Add to your existing localization file or create a new one

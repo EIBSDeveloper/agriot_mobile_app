@@ -13,7 +13,6 @@ import '../../../consumption_controller.dart';
 import '../controller/user_limit.dart';
 import '../modules/inventory/controller/inventory_controller.dart';
 import '../modules/auth/view/screens/walkthrough_model.dart';
-import '../../sercis/address_service.dart';
 import '../controller/app_controller.dart';
 import '../controller/network_contoller.dart';
 import '../modules/auth/controller/splash_controller.dart';
@@ -80,7 +79,7 @@ class HomeBinding implements Bindings {
     Get.lazyPut(() => ExpenseRepository());
     Get.lazyPut<VendorCustomerController>(() => VendorCustomerController());
     Get.lazyPut<VendorCustomerRepository>(() => VendorCustomerRepository());
-    Get.lazyPut<AddressService>(() => AddressService());
+    // Get.lazyPut<AddressService>(() => AddressService());
     Get.lazyPut<InventoryController>(() => InventoryController(), fenix: true);
   }
 }
@@ -153,7 +152,7 @@ class ProfileEditBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<ProfileEditController>(() => ProfileEditController());
-    Get.lazyPut<AddressService>(() => AddressService());
+    // Get.lazyPut<AddressService>(() => AddressService());
   }
 }
 
@@ -180,7 +179,7 @@ class VendorCustomerBinding extends Bindings {
   void dependencies() {
     Get.lazyPut<VendorCustomerController>(() => VendorCustomerController());
     Get.lazyPut<VendorCustomerRepository>(() => VendorCustomerRepository());
-    Get.lazyPut<AddressService>(() => AddressService());
+    // Get.lazyPut<AddressService>(() => AddressService());
   }
 }
 
@@ -210,7 +209,7 @@ class LandAddBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<LandService>(() => LandService(), fenix: false);
-    Get.lazyPut<AddressService>(() => AddressService(), fenix: false);
+    // Get.lazyPut<AddressService>(() => AddressService(), fenix: false);
     Get.lazyPut<KycController>(() => KycController(), fenix: false);
     Get.lazyPut<LandController>(() => LandController());
   }

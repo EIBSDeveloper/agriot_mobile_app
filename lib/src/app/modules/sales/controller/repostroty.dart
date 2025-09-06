@@ -63,9 +63,7 @@ class SalesRepository {
     }
   }
 
-  static SalesListResponse _parseSalesList(String response) {
-    return SalesListResponse.fromJson(jsonDecode(response));
-  }
+  static SalesListResponse _parseSalesList(String response) => SalesListResponse.fromJson(jsonDecode(response));
 
   Future<SalesDetailResponse> getSalesDetails({required int salesId}) async {
     final farmerId = _appDataController.userId;
@@ -79,9 +77,7 @@ class SalesRepository {
     }
   }
 
-  static SalesDetailResponse _parseSalesDetails(String response) {
-    return SalesDetailResponse.fromJson(jsonDecode(response));
-  }
+  static SalesDetailResponse _parseSalesDetails(String response) => SalesDetailResponse.fromJson(jsonDecode(response));
 
   Future<List<DropdownItem>> getReasons() async {
     try {

@@ -1,4 +1,3 @@
-import 'package:argiot/src/sercis/address_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../utils.dart';
@@ -10,7 +9,7 @@ import '../view/screen/landpicker.dart';
 import 'resgister_controller.dart';
 
 class KycController extends GetxController {
-  final AddressService _addressService = AddressService();
+  // final AddressService _addressService = AddressService();
 
   // Form controllers
   final nameController = TextEditingController();
@@ -50,112 +49,13 @@ class KycController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadCountries();
-
-    setupDropdownListeners();
+    loadData();
   }
 
-  void setupDropdownListeners() {
-    ever(selectedCountry, (_) {
-      selectedState.value = null;
-      selectedCity.value = null;
-      selectedTaluk.value = null;
-      selectedVillage.value = null;
-      if (selectedCountry.value != null) {
-        loadStates(selectedCountry.value!.id!);
-      } else {
-        states.clear();
-        cities.clear();
-        taluks.clear();
-        villages.clear();
-      }
-    });
-
-    ever(selectedState, (_) {
-      selectedCity.value = null;
-      selectedTaluk.value = null;
-      selectedVillage.value = null;
-      if (selectedState.value != null) {
-        loadCities(selectedState.value!.id!);
-      } else {
-        cities.clear();
-        taluks.clear();
-        villages.clear();
-      }
-    });
-
-    ever(selectedCity, (_) {
-      selectedTaluk.value = null;
-      selectedVillage.value = null;
-      if (selectedCity.value != null) {
-        loadTaluks(selectedCity.value!.id!);
-      } else {
-        taluks.clear();
-        villages.clear();
-      }
-    });
-
-    ever(selectedTaluk, (_) {
-      selectedVillage.value = null;
-      if (selectedTaluk.value != null) {
-        loadVillages(selectedTaluk.value!.id!);
-      } else {
-        villages.clear();
-      }
-    });
-  }
-
-  Future<void> loadCountries() async {
+  Future<void> loadData() async {
     AppDataController appData = Get.put(AppDataController());
     emailController.text = appData.emailId.value;
     nameController.text = appData.username.value;
-    try {
-      isLoadingCountries(true);
-      final result = await _addressService.getCountries();
-      countries.assignAll(result);
-    } finally {
-      isLoadingCountries(false);
-    }
-  }
-
-  Future<void> loadStates(int countryId) async {
-    try {
-      isLoadingStates(true);
-      final result = await _addressService.getStates(countryId);
-      states.assignAll(result);
-    } finally {
-      isLoadingStates(false);
-    }
-  }
-
-  Future<void> loadCities(int stateId) async {
-    try {
-      isLoadingCities(true);
-      final result = await _addressService.getCities(stateId);
-      cities.assignAll(result);
-    } finally {
-      isLoadingCities(false);
-    }
-  }
-
-  Future<void> loadTaluks(int cityId) async {
-    try {
-      isLoadingTaluks(true);
-      final result = await _addressService.getTaluks(cityId);
-      taluks.assignAll(result);
-    } finally {
-      isLoadingTaluks(false);
-    }
-  }
-
-  Future<void> loadVillages(int talukId) async {
-    try {
-      isLoadingVillages(true);
-      final result = await _addressService.getVillages(talukId);
-      villages.assignAll(result);
-    } finally {
-      isLoadingVillages(false);
-    }
   }
 
   Future<void> submitForm() async {
@@ -181,7 +81,7 @@ class KycController extends GetxController {
         companyName: companyController.text.trim(),
         taxNo: taxNoController.text.trim(),
       );
-      if (response != null) {
+      if (response.isNotEmpty) {
         showSuccess('KYC submitted successfully');
 
         // Navigate to next screen
@@ -200,7 +100,7 @@ class KycController extends GetxController {
   Future<void> pickLocation() async {
     try {
       final location = await Get.to(
-        LocationPickerView(),
+        const LocationPickerView(),
         binding: LocationViewerBinding(),
       );
       if (location != null) {

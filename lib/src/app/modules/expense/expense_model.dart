@@ -19,8 +19,7 @@ class Expense {
     required this.createdDay,
   });
 
-  factory Expense.fromJson(Map<String, dynamic> json) {
-    return Expense(
+  factory Expense.fromJson(Map<String, dynamic> json) => Expense(
       id: json['id'],
       farmer: Farmer.fromJson(json['farmer']),
       myCrop: Crop.fromJson(json['my_crop']),
@@ -29,7 +28,6 @@ class Expense {
       description: json['description'],
       createdDay: json['created_day'],
     );
-  }
 }
 
 class Farmer {
@@ -38,9 +36,7 @@ class Farmer {
 
   Farmer({required this.id, required this.name});
 
-  factory Farmer.fromJson(Map<String, dynamic> json) {
-    return Farmer(id: json['id'], name: json['name']);
-  }
+  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(id: json['id'], name: json['name']);
 }
 
 class Crop {
@@ -49,9 +45,7 @@ class Crop {
 
   Crop({required this.id, required this.name});
 
-  factory Crop.fromJson(Map<String, dynamic> json) {
-    return Crop(id: json['id'], name: json['name']);
-  }
+  factory Crop.fromJson(Map<String, dynamic> json) => Crop(id: json['id'], name: json['name']);
 }
 
 class ExpenseType {
@@ -60,9 +54,7 @@ class ExpenseType {
 
   ExpenseType({required this.id, required this.name});
 
-  factory ExpenseType.fromJson(Map<String, dynamic> json) {
-    return ExpenseType(id: json['id'], name: json['name']);
-  }
+  factory ExpenseType.fromJson(Map<String, dynamic> json) => ExpenseType(id: json['id'], name: json['name']);
 }
 
 class Purchase {
@@ -90,8 +82,7 @@ class Purchase {
     required this.type,
   });
 
-  factory Purchase.fromJson(Map<String, dynamic> json) {
-    return Purchase(
+  factory Purchase.fromJson(Map<String, dynamic> json) => Purchase(
       id: json['id'],
       farmer: Farmer.fromJson(json['farmer']),
       dateOfConsumption: json['date_of_consumption'],
@@ -103,7 +94,6 @@ class Purchase {
       availableQuans: json['available_quans']?.toString(),
       type: json['type'],
     );
-  }
 }
 
 class Vendor {
@@ -112,9 +102,7 @@ class Vendor {
 
   Vendor({required this.id, required this.name});
 
-  factory Vendor.fromJson(Map<String, dynamic> json) {
-    return Vendor(id: json['id'], name: json['name']);
-  }
+  factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(id: json['id'], name: json['name']);
 }
 
 class InventoryItem {
@@ -123,9 +111,7 @@ class InventoryItem {
 
   InventoryItem({required this.id, required this.name});
 
-  factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(id: json['id'], name: json['name']);
-  }
+  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(id: json['id'], name: json['name']);
 }
 
 class ExpenseSummary {
@@ -139,13 +125,11 @@ class ExpenseSummary {
     required this.percentage,
   });
 
-  factory ExpenseSummary.fromJson(Map<String, dynamic> json) {
-    return ExpenseSummary(
+  factory ExpenseSummary.fromJson(Map<String, dynamic> json) => ExpenseSummary(
       category: json['type_expenses__name'],
       totalAmount: json['total_amount'].toDouble(),
       percentage: json['percentage'].toDouble(),
     );
-  }
 }
 
 class TotalExpense {
@@ -154,12 +138,10 @@ class TotalExpense {
 
   TotalExpense({required this.success, required this.expenseAmount});
 
-  factory TotalExpense.fromJson(Map<String, dynamic> json) {
-    return TotalExpense(
+  factory TotalExpense.fromJson(Map<String, dynamic> json) => TotalExpense(
       success: json['success'],
       expenseAmount: json['expenseamount'].toDouble(),
     );
-  }
 }
 
 class ExpenseResponse {
@@ -173,8 +155,7 @@ class ExpenseResponse {
     required this.purchases,
   });
 
-  factory ExpenseResponse.fromJson(Map<String, dynamic> json) {
-    return ExpenseResponse(
+  factory ExpenseResponse.fromJson(Map<String, dynamic> json) => ExpenseResponse(
       success: json['success'],
       expenses: List<Expense>.from(
         json['expenses'].map((x) => Expense.fromJson(x)),
@@ -183,7 +164,6 @@ class ExpenseResponse {
         json['purchases'].map((x) => Purchase.fromJson(x)),
       ),
     );
-  }
 }
 
 class FileType {
@@ -199,42 +179,36 @@ class FileType {
     required this.description,
   });
 
-  factory FileType.fromJson(Map<String, dynamic> json) {
-    return FileType(
+  factory FileType.fromJson(Map<String, dynamic> json) => FileType(
       id: json['id'],
       docType: json['doctype'],
       name: json['name'],
       description: json['description']??"",
     );
-  }
 }
 
 class Chart {
-  final String type_expenses__name;
-  final double total_amount;
+  final String expensestype;
+  final double totalAmount;
   final double percentage;
 
   Chart({
-    required this.type_expenses__name,
-    required this.total_amount,
+    required this.expensestype,
+    required this.totalAmount,
     required this.percentage,
   });
 
-  factory Chart.fromJson(Map<String, dynamic> json) {
-    return Chart(
-      type_expenses__name: json['type_expenses__name'] ?? '',
-      total_amount: (json['total_amount'] ?? 0).toDouble(),
+  factory Chart.fromJson(Map<String, dynamic> json) => Chart(
+      expensestype: json['type_expenses__name'] ?? '',
+      totalAmount: (json['total_amount'] ?? 0).toDouble(),
       percentage: (json['percentage'] ?? 0).toDouble(),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'type_expenses__name': type_expenses__name,
-      'total_amount': total_amount,
+  Map<String, dynamic> toJson() => {
+      'type_expenses__name': expensestype,
+      'total_amount': totalAmount,
       'percentage': percentage,
     };
-  }
 }
 
 

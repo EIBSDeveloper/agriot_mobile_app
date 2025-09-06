@@ -43,8 +43,6 @@ class StorageService extends GetxService {
   Future<void> clear() async {
     await _box.erase();
   }
+  String getUserId() => _box.read('userId') ?? "10";
 
-  String getUserId() {
-    return _box.read('userId') ?? "10";
-  }
 }

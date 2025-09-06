@@ -6,14 +6,12 @@ class NotificationModel {
 
   NotificationModel({required this.timeStamp, required this.notifications});
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) {
-    return NotificationModel(
+  factory NotificationModel.fromJson(Map<String, dynamic> json) => NotificationModel(
       timeStamp: json['timeStamp'],
       notifications: List<NotificationItem>.from(
         json['notification'].map((x) => NotificationItem.fromJson(x)),
       ),
     );
-  }
 
   String get formattedDate {
     try {
@@ -42,8 +40,7 @@ class NotificationItem {
     this.isRead = false,
   });
 
-  factory NotificationItem.fromJson(Map<String, dynamic> json) {
-    return NotificationItem(
+  factory NotificationItem.fromJson(Map<String, dynamic> json) => NotificationItem(
       id: json['notification_id'] ?? 0,
       name: json['name'] ?? '',
       type: json['type'] ?? '',
@@ -51,7 +48,6 @@ class NotificationItem {
       createdAt: json['created_at'] ?? '',
       isRead: json['is_read'] ?? false,
     );
-  }
 
   String get formattedTime {
     try {
@@ -74,11 +70,9 @@ class NotificationCount {
     required this.unread,
   });
 
-  factory NotificationCount.fromJson(Map<String, dynamic> json) {
-    return NotificationCount(
+  factory NotificationCount.fromJson(Map<String, dynamic> json) => NotificationCount(
       total: json['total_notifications'] ?? 0,
       read: json['read_notifications'] ?? 0,
       unread: json['unread_notifications'] ?? 0,
     );
-  }
 }

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:argiot/consumption_model.dart';
 import 'package:argiot/consumption_view.dart';
-import 'package:argiot/src/app/widgets/error_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:intl/intl.dart';
 
 import '../../../../../doc.dart';
 import '../../../../../test.dart' show Unit;
-import '../../../../core/app_style.dart';
 import '../../../widgets/input_card_style.dart';
 
 import '../../task/view/screens/screen.dart';
@@ -70,7 +68,7 @@ class PurchasesAddController extends GetxController {
   final RxBool isFormValid = false.obs;
   final RxBool isTypeLoading = false.obs;
   final RxBool isCategoryLoading = false.obs;
-  final RxBool isinventoryLoading = false.obs;
+  final RxBool isInventoryLoading = false.obs;
   final RxList<Unit> unit = <Unit>[].obs;
   final Rx<Unit> selectedUnit = Unit(id: 0, name: '').obs;
 
@@ -191,14 +189,14 @@ class PurchasesAddController extends GetxController {
 
   Future<void> fetchInventoryItems(int inventoryCategoryId) async {
     try {
-      isinventoryLoading(true);
+      isInventoryLoading(true);
       final response = await _repository.fetchInventoryItems(
         inventoryCategoryId,
       );
 
       inventoryItems.value = response;
     } finally {
-      isinventoryLoading(false);
+      isInventoryLoading(false);
     }
   }
 
@@ -256,9 +254,7 @@ class PurchasesAddController extends GetxController {
     fieldErrors.clear();
   }
 
-  String? getErrorForField(String fieldName) {
-    return fieldErrors[fieldName];
-  }
+  String? getErrorForField(String fieldName) => fieldErrors[fieldName];
 
   Future<void> selectDate1() async {
     final DateTime? picked = await showDatePicker(
@@ -491,9 +487,8 @@ class PurchasesAddController extends GetxController {
 
   //
 
-  //comomn strt
-  Widget buildLitreField() {
-    return Obx(
+  //common start
+  Widget buildLitreField() => Obx(
       () => Row(
         children: [
           Expanded(
@@ -516,25 +511,20 @@ class PurchasesAddController extends GetxController {
           ),
 
           if (requiresUnit) ...[
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(child: buildUnitDropdown()),
           ],
         ],
       ),
     );
-  }
 
-  Widget buildUnitDropdown() {
-    return Obx(() {
-      return MyDropdown(
+  Widget buildUnitDropdown() => Obx(() => MyDropdown(
         items: unit,
         selectedItem: selectedUnit.value,
         onChanged: (unit) => changeUnit(unit!),
         label: 'Unit*',
         // disable: isEditing,
-      );
-    });
-  }
+      ));
 
   Future<void> fetchUnit() async {
     final unitList = await _repository.getUnitList();
@@ -549,9 +539,7 @@ class PurchasesAddController extends GetxController {
     selectedUnit.value = crop;
   }
 
-  Widget buildPurchaseAmountField() {
-    return Obx(() {
-      return InputCardStyle(
+  Widget buildPurchaseAmountField() => Obx(() => InputCardStyle(
         child: TextFormField(
           validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
           decoration: InputDecoration(
@@ -563,13 +551,9 @@ class PurchasesAddController extends GetxController {
           onChanged: purchaseAmount.call,
           initialValue: purchaseAmount.value,
         ),
-      );
-    });
-  }
+      ));
 
-  Widget buildPaidAmountField() {
-    return Obx(() {
-      return InputCardStyle(
+  Widget buildPaidAmountField() => Obx(() => InputCardStyle(
         child: TextFormField(
           decoration: InputDecoration(
             hintText: 'paid_amount'.tr,
@@ -581,20 +565,18 @@ class PurchasesAddController extends GetxController {
           keyboardType: TextInputType.number,
           onChanged: paidAmount.call,
         ),
-      );
-    });
-  }
+      ));
 
   void addDocumentItem() {
     Get.to(
-      AddDocumentView(),
+      const AddDocumentView(),
       binding: NewDocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
       if (result != null && result is DocumentAdd) {
         documentItems.add(result);
       }
-      print(documentItems.toString());
+      // print(documentItems.toString());
     });
   }
 
@@ -602,14 +584,13 @@ class PurchasesAddController extends GetxController {
     documentItems.removeAt(index);
   }
 
-  Widget buildDocumentsSection() {
-    return Column(
+  Widget buildDocumentsSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Land Documents',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -617,7 +598,7 @@ class PurchasesAddController extends GetxController {
               color: Get.theme.primaryColor,
               child: IconButton(
                 color: Colors.white,
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 onPressed: addDocumentItem,
                 tooltip: 'Add Document',
               ),
@@ -626,7 +607,7 @@ class PurchasesAddController extends GetxController {
         ),
         Obx(() {
           if (documentItems.isEmpty) {
-            return Padding(
+            return const Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 'No documents added',
@@ -636,31 +617,27 @@ class PurchasesAddController extends GetxController {
           }
           return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: documentItems.length,
-            itemBuilder: (context, index) {
-              return Column(
+            itemBuilder: (context, index) => Column(
                 children: [
                   Row(
                     children: [
                       Text(
                         "${index + 1}, ${documentItems[index].newFileType!}",
                       ),
-                      Icon(Icons.attach_file),
+                      const Icon(Icons.attach_file),
                     ],
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                 ],
-              );
-            },
+              ),
           );
         }),
       ],
     );
-  }
 
-  Widget buildDescriptionField() {
-    return InputCardStyle(
+  Widget buildDescriptionField() => InputCardStyle(
       noHeight: true,
       child: TextFormField(
         decoration: InputDecoration(
@@ -675,10 +652,8 @@ class PurchasesAddController extends GetxController {
         onChanged: description.call,
       ),
     );
-  }
 
-  Widget buildDateField() {
-    return Obx(
+  Widget buildDateField() => Obx(
       () => Column(
         children: [
           InputCardStyle(
@@ -711,10 +686,8 @@ class PurchasesAddController extends GetxController {
         ],
       ),
     );
-  }
 
-  Widget buildInventoryCategoryDropdown() {
-    return Obx(
+  Widget buildInventoryCategoryDropdown() => Obx(
       () => Column(
         children: [
           InputCardStyle(
@@ -723,7 +696,7 @@ class PurchasesAddController extends GetxController {
                 hintText: 'Inventory Category'.tr,
                 border: InputBorder.none,
               ),
-              value: selectedInventoryCategory.value,
+              initialValue: selectedInventoryCategory.value,
               items: inventoryCategories
                   .map(
                     (category) => DropdownMenuItem<int>(
@@ -741,15 +714,13 @@ class PurchasesAddController extends GetxController {
         ],
       ),
     );
-  }
 
   void inventoryCategory(int? value) {
     setInventoryCategory(value!);
     fetchInventoryItems(value);
   }
 
-  Widget buildInventoryItemDropdown() {
-    return Obx(
+  Widget buildInventoryItemDropdown() => Obx(
       () => InputCardStyle(
         child: DropdownButtonFormField<int>(
           validator: (value) => value == null ? 'required_field'.tr : null,
@@ -757,7 +728,7 @@ class PurchasesAddController extends GetxController {
             hintText: 'Inventory Item'.tr,
             border: InputBorder.none,
           ),
-          value: selectedInventoryItem.value,
+          initialValue: selectedInventoryItem.value,
 
           items: inventoryItems
               .map(
@@ -773,14 +744,11 @@ class PurchasesAddController extends GetxController {
         ),
       ),
     );
-  }
 
-  Widget buildVendorDropdown() {
-    return Row(
+  Widget buildVendorDropdown() => Row(
       children: [
         Expanded(
-          child: Obx(() {
-            return InputCardStyle(
+          child: Obx(() => InputCardStyle(
               child: DropdownButtonFormField<int>(
                 validator: (value) =>
                     value == null ? 'required_field'.tr : null,
@@ -788,17 +756,14 @@ class PurchasesAddController extends GetxController {
                   hintText: 'Vendor*',
                   border: InputBorder.none,
                 ),
-                value: selectedVendor.value,
+                initialValue: selectedVendor.value,
                 onChanged: (value) => selectedVendor.value = value,
-                items: vendorList.map((customer) {
-                  return DropdownMenuItem<int>(
+                items: vendorList.map((customer) => DropdownMenuItem<int>(
                     value: customer.id,
                     child: Text(customer.name),
-                  );
-                }).toList(),
+                  )).toList(),
               ),
-            );
-          }),
+            )),
         ),
         Card(
           color: Get.theme.primaryColor,
@@ -812,13 +777,12 @@ class PurchasesAddController extends GetxController {
                 fetchVendorList();
               });
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ),
       ],
     );
-  }
-  //comomn  end
+  //common  end
 
   @override
   void onClose() {

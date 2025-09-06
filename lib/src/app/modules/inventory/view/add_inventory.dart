@@ -9,8 +9,7 @@ class AddInventory extends GetView<InventoryController> {
   const AddInventory({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -50,16 +49,13 @@ class AddInventory extends GetView<InventoryController> {
         ],
       ),
     );
-  }
 
-  Widget _buildCategoryItem(String category, Function()? onPressed) {
-    return ListTile(
+  Widget _buildCategoryItem(String category, Function()? onPressed) => ListTile(
       title: Text(category),
       trailing: IconButton(
         icon: const Icon(Icons.add, color: Colors.green),
         onPressed: onPressed,
       ),
     );
-  }
 
 }

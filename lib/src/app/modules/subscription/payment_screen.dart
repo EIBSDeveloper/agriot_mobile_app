@@ -105,8 +105,7 @@ class PaymentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentRow(String label, String value, {bool isTotal = false}) {
-    return Padding(
+  Widget _buildPaymentRow(String label, String value, {bool isTotal = false}) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,7 +125,6 @@ class PaymentScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 
   Future<void> _initiatePayment(
     SubscriptionController controller,

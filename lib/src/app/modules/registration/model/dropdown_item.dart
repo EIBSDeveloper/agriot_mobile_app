@@ -15,12 +15,10 @@ class AppDropdownItem extends NamedItem {
     this.description,
   });
 
-  factory AppDropdownItem.fromJson(Map<String, dynamic> json) {
-    return AppDropdownItem(
+  factory AppDropdownItem.fromJson(Map<String, dynamic> json) => AppDropdownItem(
       id: json['id'],
       doctype: json['doctype'],
       name: json['name'],
       description: json['description'],
     );
-  }
 }

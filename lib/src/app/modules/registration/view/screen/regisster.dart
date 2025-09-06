@@ -21,16 +21,12 @@ class Registration extends GetView<ResgisterController> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Obx(() {
-                return  MinimalHorizontalStepper(
+              Obx(() => MinimalHorizontalStepper(
                 steps: const ['KYC', 'Land', 'Crop'],
                 currentStep: controller.pageIndex.value,
-              );
-              })
+              ))
              ,
-              Obx(() {
-                return controller.pages[controller.pageIndex.value];
-              }),
+              Obx(() => controller.pages[controller.pageIndex.value]),
             ],
           ),
         ),

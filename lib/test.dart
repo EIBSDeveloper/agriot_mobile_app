@@ -36,8 +36,7 @@ class SalesListResponse {
     required this.sales,
   });
 
-  factory SalesListResponse.fromJson(Map<String, dynamic> json) {
-    return SalesListResponse(
+  factory SalesListResponse.fromJson(Map<String, dynamic> json) => SalesListResponse(
       cropId: json['crop_id'] ?? 0,
       cropName: json['crop_name'] ?? '',
       cropLandId: json['crop_land_id'] ?? 0,
@@ -48,7 +47,6 @@ class SalesListResponse {
           .map((item) => SalesItem.fromJson(item))
           .toList(),
     );
-  }
 }
 
 class SalesItem {
@@ -86,8 +84,7 @@ class SalesItem {
     required this.updatedAt,
   });
 
-  factory SalesItem.fromJson(Map<String, dynamic> json) {
-    return SalesItem(
+  factory SalesItem.fromJson(Map<String, dynamic> json) => SalesItem(
       salesId: json['sales_id'] ?? 0,
       datesOfSales: json['dates_of_sales'] ?? '',
       salesQuantity: (json['sales_quantity'] ?? 0.0).toDouble(),
@@ -104,7 +101,6 @@ class SalesItem {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );
-  }
 }
 
 class SalesDetail {
@@ -152,8 +148,7 @@ class SalesDetail {
     required this.documents,
   });
 
-  factory SalesDetail.fromJson(Map<String, dynamic> json) {
-    return SalesDetail(
+  factory SalesDetail.fromJson(Map<String, dynamic> json) => SalesDetail(
       salesId: json['sales_id'] ?? 0,
       farmer: Farmer.fromJson(json['farmer'] ?? {}),
       datesOfSales: json['dates_of_sales'] ?? '',
@@ -179,7 +174,6 @@ class SalesDetail {
           .map((item) => DocumentCategory.fromJson(item))
           .toList(),
     );
-  }
 }
 
 class Farmer {
@@ -188,9 +182,7 @@ class Farmer {
 
   Farmer({required this.id, required this.name});
 
-  factory Farmer.fromJson(Map<String, dynamic> json) {
-    return Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Customer extends NamedItem {
@@ -208,14 +200,12 @@ class Customer extends NamedItem {
     this.shopName = '',
   });
 
-  factory Customer.fromJson(Map<String, dynamic> json) {
-    return Customer(
+  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
       id: json['id'] ?? 0,
       name: json['name'] ?? json['customer_name'] ?? '',
       village: json['village'] ?? '',
       shopName: json['shop_name'] ?? '',
     );
-  }
 }
 
 class Crop {
@@ -225,13 +215,11 @@ class Crop {
 
   Crop({required this.id, required this.name, required this.img});
 
-  factory Crop.fromJson(Map<String, dynamic> json) {
-    return Crop(
+  factory Crop.fromJson(Map<String, dynamic> json) => Crop(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       img: json['img'] ?? '',
     );
-  }
 }
 
 class Land {
@@ -240,9 +228,7 @@ class Land {
 
   Land({required this.id, required this.name});
 
-  factory Land.fromJson(Map<String, dynamic> json) {
-    return Land(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Land.fromJson(Map<String, dynamic> json) => Land(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class SalesUnit {
@@ -251,9 +237,7 @@ class SalesUnit {
 
   SalesUnit({required this.id, required this.name});
 
-  factory SalesUnit.fromJson(Map<String, dynamic> json) {
-    return SalesUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory SalesUnit.fromJson(Map<String, dynamic> json) => SalesUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Deduction {
@@ -269,14 +253,12 @@ class Deduction {
     required this.rupee,
   });
 
-  factory Deduction.fromJson(Map<String, dynamic> json) {
-    return Deduction(
+  factory Deduction.fromJson(Map<String, dynamic> json) => Deduction(
       deductionId: json['deduction_id'] ?? 0,
       reason: Reason.fromJson(json['reason'] ?? {}),
       charges: json['charges'] ?? '',
       rupee: Rupee.fromJson(json['rupee'] ?? {}),
     );
-  }
 }
 
 class Reason extends NamedItem {
@@ -287,9 +269,7 @@ class Reason extends NamedItem {
 
   Reason({required this.id, required this.name});
 
-  factory Reason.fromJson(Map<String, dynamic> json) {
-    return Reason(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Reason.fromJson(Map<String, dynamic> json) => Reason(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Unit extends NamedItem {
@@ -300,9 +280,7 @@ class Unit extends NamedItem {
 
   Unit({required this.id, required this.name});
 
-  factory Unit.fromJson(Map<String, dynamic> json) {
-    return Unit(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Unit.fromJson(Map<String, dynamic> json) => Unit(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Rupee {
@@ -311,9 +289,7 @@ class Rupee {
 
   Rupee({required this.id, required this.name});
 
-  factory Rupee.fromJson(Map<String, dynamic> json) {
-    return Rupee(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory Rupee.fromJson(Map<String, dynamic> json) => Rupee(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class DocumentCategory {
@@ -322,14 +298,12 @@ class DocumentCategory {
 
   DocumentCategory({required this.categoryId, required this.documents});
 
-  factory DocumentCategory.fromJson(Map<String, dynamic> json) {
-    return DocumentCategory(
+  factory DocumentCategory.fromJson(Map<String, dynamic> json) => DocumentCategory(
       categoryId: json['category_id'] ?? '',
       documents: (json['documents'] as List<dynamic>? ?? [])
           .map((item) => Document.fromJson(item))
           .toList(),
     );
-  }
 }
 
 class Document {
@@ -343,15 +317,13 @@ class Document {
     required this.fileUpload,
   });
 
-  factory Document.fromJson(Map<String, dynamic> json) {
-    return Document(
+  factory Document.fromJson(Map<String, dynamic> json) => Document(
       id: json['id'] ?? 0,
       documentCategory: DocumentCategoryType.fromJson(
         json['document_category'] ?? {},
       ),
       fileUpload: json['file_upload'] ?? '',
     );
-  }
 }
 
 class DocumentCategoryType {
@@ -360,9 +332,7 @@ class DocumentCategoryType {
 
   DocumentCategoryType({required this.id, required this.name});
 
-  factory DocumentCategoryType.fromJson(Map<String, dynamic> json) {
-    return DocumentCategoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
-  }
+  factory DocumentCategoryType.fromJson(Map<String, dynamic> json) => DocumentCategoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class SalesAddRequest {
@@ -394,8 +364,7 @@ class SalesAddRequest {
     required this.fileData,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'dates_of_sales': datesOfSales,
       'my_crop': myCrop,
       'my_customer': myCustomer,
@@ -409,7 +378,6 @@ class SalesAddRequest {
       'deductions': deductions,
       if (fileData.isNotEmpty) 'file_data': fileData,
     };
-  }
 }
 
 class SalesUpdateRequest {
@@ -443,8 +411,7 @@ class SalesUpdateRequest {
     required this.fileData,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'dates_of_sales': datesOfSales,
       'my_crop': myCrop,
@@ -459,7 +426,6 @@ class SalesUpdateRequest {
       'deductions': deductions,
       'file_data': fileData,
     };
-  }
 }
 
 // repositories/sales_repository.dart
@@ -746,7 +712,7 @@ class NewSalesController extends GetxController {
 
   void addDocumentItem() {
     Get.to(
-      AddDocumentView(),
+      const AddDocumentView(),
       binding: NewDocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
@@ -779,7 +745,7 @@ class NewSalesController extends GetxController {
         deductionAmount: deductionAmount.value,
         description: description.value,
         amountPaid: amountPaid.value,
-        deductions: deductions.value,
+        deductions: deductions,
         fileData: documentItemsList,
       );
 
@@ -811,11 +777,11 @@ class NewSalesController extends GetxController {
 
       final request = SalesUpdateRequest(
         id: salesId.toString(),
-        datesOfSales: selectedDate.value.toIso8601String().split('T')[0] ?? '',
-        myCrop: selectedCropType.value.id ?? 0,
+        datesOfSales: selectedDate.value.toIso8601String().split('T')[0],
+        myCrop: selectedCropType.value.id,
         myCustomer: selectedCustomer.value ?? 0,
         salesQuantity: salesQuantity.value ?? 0,
-        salesUnit: selectedUnit.value.id ?? 0,
+        salesUnit: selectedUnit.value.id,
         quantityAmount: quantityAmount.value,
         salesAmount: salesAmount.value,
         deductionAmount: deductionAmount.value,
@@ -983,8 +949,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   final NewSalesController controller = Get.find<NewSalesController>();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(
         title: 'Sales Details',
         showBackButton: true,
@@ -993,7 +958,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
             icon: const Icon(Icons.edit),
             onPressed: () {
               Get.toNamed(
-                Routes.NEW_SALES,
+                Routes.newSales,
                 arguments: {
                   "id": controller.salesDetail.value?.salesId,
                   "new": true,
@@ -1042,10 +1007,8 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         );
       }),
     );
-  }
 
-  Widget _buildProductHeader(SalesDetail salesDetail) {
-    return Row(
+  Widget _buildProductHeader(SalesDetail salesDetail) => Row(
       children: [
         CachedNetworkImage(
           imageUrl: salesDetail.myCrop.img,
@@ -1064,10 +1027,8 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         ),
       ],
     );
-  }
 
-  Widget _buildSalesDetailsCard(SalesDetail salesDetail) {
-    return Card(
+  Widget _buildSalesDetailsCard(SalesDetail salesDetail) => Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -1083,10 +1044,8 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         ),
       ),
     );
-  }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
+  Widget _buildDetailRow(String label, String value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1096,10 +1055,8 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         ],
       ),
     );
-  }
 
-  Widget _buildDeductionsSection(SalesDetail salesDetail) {
-    return Column(
+  Widget _buildDeductionsSection(SalesDetail salesDetail) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Deductions', style: Get.textTheme.titleMedium),
@@ -1115,10 +1072,8 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         ),
       ],
     );
-  }
 
-  Widget _buildDocumentsSection(SalesDetail salesDetail) {
-    return Column(
+  Widget _buildDocumentsSection(SalesDetail salesDetail) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Uploaded Documents', style: Get.textTheme.titleMedium),
@@ -1167,10 +1122,8 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         ),
       ],
     );
-  }
 
-  Widget _buildDescriptionSection(SalesDetail salesDetail) {
-    return Column(
+  Widget _buildDescriptionSection(SalesDetail salesDetail) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Description', style: Get.textTheme.titleMedium),
@@ -1178,11 +1131,10 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         Text(salesDetail.description ?? ''),
       ],
     );
-  }
 }
 
 class NewSalesView extends StatefulWidget {
-  NewSalesView({super.key});
+const  NewSalesView({super.key});
 
   @override
   State<NewSalesView> createState() => _NewSalesViewState();
@@ -1195,19 +1147,17 @@ class _NewSalesViewState extends State<NewSalesView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.loadData();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'New Sales', showBackButton: true),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'New Sales', showBackButton: true),
 
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -1256,13 +1206,13 @@ class _NewSalesViewState extends State<NewSalesView> {
                 // // Sales Amount
                 // _buildSalesAmountField(),
                 const SizedBox(height: 16),
-                Divider(), const SizedBox(height: 16),
+                const Divider(), const SizedBox(height: 16),
 
                 // Deductions Section
                 _buildDeductionsSection(),
 
                 const SizedBox(height: 16),
-                Divider(),
+                const Divider(),
                 const SizedBox(height: 16),
                 // Amount Paid
                 Row(
@@ -1292,16 +1242,14 @@ class _NewSalesViewState extends State<NewSalesView> {
         );
       }),
     );
-  }
 
-  Widget _buildDocumentsSection() {
-    return Column(
+  Widget _buildDocumentsSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Land Documents',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -1309,7 +1257,7 @@ class _NewSalesViewState extends State<NewSalesView> {
               color: Get.theme.primaryColor,
               child: IconButton(
                 color: Colors.white,
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 onPressed: controller.addDocumentItem,
                 tooltip: 'Add Document',
               ),
@@ -1318,7 +1266,7 @@ class _NewSalesViewState extends State<NewSalesView> {
         ),
         Obx(() {
           if (controller.documentItems.isEmpty) {
-            return Padding(
+            return const Padding(
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Text(
                 'No documents added',
@@ -1328,49 +1276,40 @@ class _NewSalesViewState extends State<NewSalesView> {
           }
           return ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: controller.documentItems.length,
-            itemBuilder: (context, index) {
-              return Column(
+            itemBuilder: (context, index) => Column(
                 children: [
                   Row(
                     children: [
                       Text(
                         "${index + 1}, ${controller.documentItems[index].newFileType!}",
                       ),
-                      Icon(Icons.attach_file),
+                      const Icon(Icons.attach_file),
                     ],
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                 ],
-              );
-            },
+              ),
           );
         }),
       ],
     );
-  }
 
-  Widget _buildProductDropdown() {
-    return // Crop Type Dropdown
-    Obx(() {
-      return MyDropdown(
+  Widget _buildProductDropdown() => Obx(() => MyDropdown(
         items: controller.crop,
         selectedItem: controller.selectedCropType.value,
         onChanged: (land) => controller.changeCrop(land!),
         label: 'Crop*',
         // disable: isEditing,
-      );
-    });
-  }
+      ));
 
-  Widget _buildCustomerDropdown() {
-    return Row(
+  Widget _buildCustomerDropdown() => Row(
       children: [
         Expanded(
           child: InputCardStyle(
             child: DropdownButtonFormField<int>(
-              icon: Icon(Icons.keyboard_arrow_down),
+              icon: const Icon(Icons.keyboard_arrow_down),
               decoration: const InputDecoration(
                 hintText: 'Customer * ',
 
@@ -1378,12 +1317,10 @@ class _NewSalesViewState extends State<NewSalesView> {
               ),
               value: controller.selectedCustomer.value,
               onChanged: (value) => controller.selectedCustomer.value = value,
-              items: controller.customerList.map((customer) {
-                return DropdownMenuItem<int>(
+              items: controller.customerList.map((customer) => DropdownMenuItem<int>(
                   value: customer.id,
                   child: Text(customer.name),
-                );
-              }).toList(),
+                )).toList(),
               validator: (value) =>
                   value == null ? 'Please select a customer' : null,
             ),
@@ -1401,15 +1338,13 @@ class _NewSalesViewState extends State<NewSalesView> {
                 controller.fetchCustomerList();
               });
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ),
       ],
     );
-  }
 
-  Widget _buildDatePicker() {
-    return InputCardStyle(
+  Widget _buildDatePicker() => InputCardStyle(
       child: InkWell(
         onTap: () async {
           final selected = await showDatePicker(
@@ -1439,10 +1374,8 @@ class _NewSalesViewState extends State<NewSalesView> {
         ),
       ),
     );
-  }
 
-  Widget _buildSalesQuantityField() {
-    return InputCardStyle(
+  Widget _buildSalesQuantityField() => InputCardStyle(
       child: TextFormField(
         decoration: const InputDecoration(
           hintText: 'Sales Quantity',
@@ -1460,22 +1393,16 @@ class _NewSalesViewState extends State<NewSalesView> {
             value == null || value.isEmpty ? 'Please enter quantity' : null,
       ),
     );
-  }
 
-  Widget _buildUnitDropdown() {
-    return Obx(() {
-      return MyDropdown(
+  Widget _buildUnitDropdown() => Obx(() => MyDropdown(
         items: controller.unit,
         selectedItem: controller.selectedUnit.value,
         onChanged: (unit) => controller.changeUnit(unit!),
         label: 'Unit*',
         // disable: isEditing,
-      );
-    });
-  }
+      ));
 
-  Widget _buildQuantityAmountField() {
-    return InputCardStyle(
+  Widget _buildQuantityAmountField() => InputCardStyle(
       child: TextFormField(
         decoration: const InputDecoration(
           hintText: 'Amount per unit*',
@@ -1493,16 +1420,14 @@ class _NewSalesViewState extends State<NewSalesView> {
             value == null || value.isEmpty ? 'Please enter amount' : null,
       ),
     );
-  }
 
-  Widget _buildDeductionsSection() {
-    return Column(
+  Widget _buildDeductionsSection() => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Deductions',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
@@ -1511,7 +1436,7 @@ class _NewSalesViewState extends State<NewSalesView> {
               child: IconButton(
                 color: Colors.white,
                 icon: const Icon(Icons.add),
-                onPressed: () => Get.toNamed(Routes.ADD_DEDUCTION),
+                onPressed: () => Get.toNamed(Routes.addDeduction),
               ),
             ),
           ],
@@ -1541,7 +1466,7 @@ class _NewSalesViewState extends State<NewSalesView> {
           ),
         ),
         const SizedBox(height: 16),
-        Divider(),
+        const Divider(),
         const SizedBox(height: 16),
         Obx(
           () => Row(
@@ -1557,10 +1482,8 @@ class _NewSalesViewState extends State<NewSalesView> {
         ),
       ],
     );
-  }
 
-  Widget _buildAmountPaidField() {
-    return InputCardStyle(
+  Widget _buildAmountPaidField() => InputCardStyle(
       child: TextFormField(
         decoration: const InputDecoration(
           hintText: 'Amount Paid*',
@@ -1573,10 +1496,8 @@ class _NewSalesViewState extends State<NewSalesView> {
             value == null || value.isEmpty ? 'Please enter amount paid' : null,
       ),
     );
-  }
 
-  Widget _buildDescriptionField() {
-    return Container(
+  Widget _buildDescriptionField() => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -1592,10 +1513,8 @@ class _NewSalesViewState extends State<NewSalesView> {
         onChanged: (value) => controller.description.value = value,
       ),
     );
-  }
 
-  Widget _buildSubmitButton() {
-    return SizedBox(
+  Widget _buildSubmitButton() => SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
@@ -1609,7 +1528,6 @@ class _NewSalesViewState extends State<NewSalesView> {
         child: const Text('Submit'),
       ),
     );
-  }
 }
 
 // views/sales/edit_sales_view.dart
@@ -2026,8 +1944,7 @@ class AddDeductionView extends StatelessWidget {
   AddDeductionView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -2061,11 +1978,8 @@ class AddDeductionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildReasonInput() {
-    return Obx(() {
-      return Row(
+  Widget _buildReasonInput() => Obx(() => Row(
         children: [
           if (!controller.isNewReason.value)
             Expanded(
@@ -2105,15 +2019,12 @@ class AddDeductionView extends StatelessWidget {
             onPressed: () {
               controller.isNewReason.value = !controller.isNewReason.value;
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
-      );
-    });
-  }
+      ));
 
-  Widget _buildChargesInput() {
-    return Row(
+  Widget _buildChargesInput() => Row(
       children: [
         Expanded(
           child: InputCardStyle(
@@ -2140,14 +2051,12 @@ class AddDeductionView extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(width: 10),
+        const SizedBox(width: 10),
         SizedBox(width: 100, child: _buildTypeSelector()),
       ],
     );
-  }
 
-  Widget _buildTypeSelector() {
-    return Obx(
+  Widget _buildTypeSelector() => Obx(
       () => InputCardStyle(
         child: DropdownButtonFormField<String>(
           value: _selectedType.value,
@@ -2180,10 +2089,10 @@ class AddDeductionView extends StatelessWidget {
               ),
             ),
           ],
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             // : 'Discount Type',
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(
+            contentPadding: EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 12,
             ),
@@ -2192,10 +2101,8 @@ class AddDeductionView extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildAddButton() {
-    return SizedBox(
+  Widget _buildAddButton() => SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
@@ -2218,7 +2125,6 @@ class AddDeductionView extends StatelessWidget {
         child: const Text('Add Deduction'),
       ),
     );
-  }
 }
 
 // NewSalesController

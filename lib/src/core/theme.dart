@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FashionStoreTheme {
-  static ThemeData get lightTheme {
-    return ThemeData(
+  static ThemeData get lightTheme => ThemeData(
       useMaterial3: true,
       colorScheme: const ColorScheme.light(
         primary: Color.fromARGB(255, 73, 148, 38),
@@ -37,7 +36,7 @@ class FashionStoreTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor:  Color.fromARGB(255, 73, 148, 38),
+          backgroundColor:  const Color.fromARGB(255, 73, 148, 38),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -75,10 +74,8 @@ class FashionStoreTheme {
         space: 0,
       ),
     );
-  }
 
-  static ThemeData get darkTheme {
-    return ThemeData(
+  static ThemeData get darkTheme => ThemeData(
       useMaterial3: true,
       colorScheme: const ColorScheme.dark(
         primary: Color(0xFF63781F),
@@ -95,5 +92,4 @@ class FashionStoreTheme {
       ),
       // You can also add dark variants of AppBarTheme, textTheme, etc. if needed
     );
-  }
 }

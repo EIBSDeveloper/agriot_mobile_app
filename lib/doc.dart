@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/registration/model/dropdown_item.dart';
+import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
+import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'src/app/modules/registration/model/dropdown_item.dart';
-import 'src/app/modules/task/view/screens/screen.dart';
-import 'src/app/utils/http/http_service.dart';
-
 import 'package:mime/mime.dart';
-import 'src/core/app_style.dart';
 
 class NewDocumentBinding extends Bindings {
   @override
@@ -49,13 +49,13 @@ class AddDocumentController extends GetxController {
   /// Store as base64 instead of files
   RxList<String> uploadedDocs = <String>[].obs;
 
+  
+
   Future<void> fetchDocument(typeId) async {
     try {
       final response = await _documentRepository.getDocumentTypes();
       docTypeList.assignAll(
-        response.where((doc) {
-          return typeId == doc.doctype;
-        }),
+        response.where((doc) => typeId == doc.doctype),
       );
       if (docTypeList.isNotEmpty) {
         selectedDocument.value = docTypeList.first;
@@ -82,7 +82,7 @@ class AddDocumentController extends GetxController {
   Future<void> pickFromGallery() async {
     final ImagePicker picker = ImagePicker();
     final List<XFile> pickedFiles = await picker.pickMultiImage();
-    for (var f in pickedFiles) {
+    for (final f in pickedFiles) {
       uploadedDocs.add(await _fileToBase64(File(f.path)));
     }
   }
@@ -114,15 +114,15 @@ class _AddDocumentViewState extends State<AddDocumentView> {
   final TextEditingController _textController = TextEditingController();
   @override
   void initState() {
-    int typeId = Get.arguments['id'];
+   final int typeId = Get.arguments['id'];
+   
     controller.fetchDocument(typeId);
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Add Document'),
+  Widget build(BuildContext context) => Scaffold(
+      appBar: const CustomAppBar(title: 'Add Document'),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -141,11 +141,8 @@ class _AddDocumentViewState extends State<AddDocumentView> {
         ),
       ),
     );
-  }
 
-  Widget _buildDocumentUploadSection() {
-    return Obx(() {
-      return Column(
+  Widget _buildDocumentUploadSection() => Obx(() => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -211,13 +208,9 @@ class _AddDocumentViewState extends State<AddDocumentView> {
             }),
           ),
         ],
-      );
-    });
-  }
+      ));
 
-  Widget _buildReasonInput() {
-    return Obx(() {
-      return Row(
+  Widget _buildReasonInput() => Obx(() => Row(
         children: [
           if (!controller.isNewDocument.value)
             Expanded(
@@ -261,15 +254,12 @@ class _AddDocumentViewState extends State<AddDocumentView> {
               _textController.clear();
               controller.isNewDocument.value = !controller.isNewDocument.value;
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
         ],
-      );
-    });
-  }
+      ));
 
-  Widget _buildAddButton() {
-    return SizedBox(
+  Widget _buildAddButton() => SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
@@ -289,14 +279,9 @@ class _AddDocumentViewState extends State<AddDocumentView> {
         child: const Text('Add Document'),
       ),
     );
-  }
 }
 
 class DocumentAdd {
-  final int? fileType;
-  final bool isNew;
-  final String? newFileType;
-  final List? documents;
 
   DocumentAdd({
     this.fileType,
@@ -304,6 +289,10 @@ class DocumentAdd {
     this.newFileType,
     this.documents,
   });
+  final int? fileType;
+  final bool isNew;
+  final String? newFileType;
+  final List? documents;
 
   Map<String, dynamic> toJson() => {
     if (!isNew) "file_type": fileType,

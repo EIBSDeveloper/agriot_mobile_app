@@ -22,17 +22,14 @@ class LandDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InputCardStyle(
+  Widget build(BuildContext context) => InputCardStyle(
      
       child: DropdownButtonFormField<Land>(
         value: selectedLand,
-        items: lands.map((Land land) {
-          return DropdownMenuItem<Land>(value: land, child: Text(land.name));
-        }).toList(),
-        icon: Icon(Icons.keyboard_arrow_down_rounded),
+        items: lands.map((Land land) => DropdownMenuItem<Land>(value: land, child: Text(land.name))).toList(),
+        icon: const Icon(Icons.keyboard_arrow_down_rounded),
         onChanged: onChanged,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           // labelText: 'Land',
           border: InputBorder.none,
 
@@ -40,7 +37,6 @@ class LandDropdown extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class CountCard extends StatelessWidget {
@@ -58,30 +54,28 @@ class CountCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onTap,
       child: Container(
         decoration: AppStyle.decoration,
-        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             if (count > 0) Text('($count) '),
           ],
         ),
       ),
     );
-  }
 }
 
 class MarketCard extends StatelessWidget {
@@ -90,10 +84,9 @@ class MarketCard extends StatelessWidget {
   const MarketCard({super.key, required this.market});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+  Widget build(BuildContext context) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,17 +108,17 @@ class MarketCard extends StatelessWidget {
                   children: [
                     Text(
                       market.name,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 16, color: Colors.grey),
-                        SizedBox(width: 4),
+                        const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             market.address,
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -133,14 +126,14 @@ class MarketCard extends StatelessWidget {
                       ],
                     ),
                 
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.access_time, size: 16, color: Colors.grey),
-                        SizedBox(width: 4),
+                        const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                        const SizedBox(width: 4),
                         Text(
                           '${market.openingTime} - ${market.closingTime}',
-                          style: TextStyle(color: Colors.grey),
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ],
                     ),
@@ -149,15 +142,13 @@ class MarketCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Wrap(
             spacing: 4,
-            children: market.products.take(3).map((product) {
-              return Chip(
+            children: market.products.take(3).map((product) => Chip(
                 label: Text(product),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              );
-            }).toList(),
+              )).toList(),
           ),
           // if (market.products.length > 3)
           //   Align(
@@ -170,7 +161,6 @@ class MarketCard extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 class PlaceDetailCard extends StatelessWidget {
@@ -179,37 +169,36 @@ class PlaceDetailCard extends StatelessWidget {
   const PlaceDetailCard({super.key, required this.detail});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 16),
+  Widget build(BuildContext context) => Card(
+      margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               detail.name,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.phone, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
-                Text(detail.contact, style: TextStyle(color: Colors.grey)),
+                const Icon(Icons.phone, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text(detail.contact, style: const TextStyle(color: Colors.grey)),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
+                const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     detail.address,
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -231,7 +220,6 @@ class PlaceDetailCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class ManPowerAgentCard extends StatelessWidget {
@@ -245,14 +233,13 @@ class ManPowerAgentCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: AppStyle.decoration,
-        margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -261,25 +248,25 @@ class ManPowerAgentCard extends StatelessWidget {
               children: [
                 Text(
                   agent.name,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.phone, size: 16, color: Colors.grey),
-                    SizedBox(width: 4),
+                    const Icon(Icons.phone, size: 16, color: Colors.grey),
+                    const SizedBox(width: 4),
                     Text(
                       agent.mobileNo.toString(),
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.location_on, size: 16, color: Colors.grey),
-                    SizedBox(width: 4),
-                    Text(agent.taluk, style: TextStyle(color: Colors.grey)),
+                    const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                    const SizedBox(width: 4),
+                    Text(agent.taluk, style: const TextStyle(color: Colors.grey)),
                   ],
                 ),
               ],
@@ -293,7 +280,6 @@ class ManPowerAgentCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class WorkerCard extends StatelessWidget {
@@ -302,8 +288,7 @@ class WorkerCard extends StatelessWidget {
   const WorkerCard({super.key, required this.worker});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
+  Widget build(BuildContext context) => Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
@@ -369,8 +354,7 @@ class WorkerCard extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: worker.workTypes.map((workType) {
-                return Chip(
+              children: worker.workTypes.map((workType) => Chip(
                   label: Text(
                     '${workType.workType} (${workType.personCount})',
                     style: const TextStyle(fontSize: 13),
@@ -379,14 +363,12 @@ class WorkerCard extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                );
-              }).toList(),
+                )).toList(),
             ),
           ],
         ),
       ),
     );
-  }
 }
 
 class RentalDetailCard extends StatelessWidget {
@@ -395,61 +377,59 @@ class RentalDetailCard extends StatelessWidget {
   const RentalDetailCard({super.key, required this.detail});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 16),
+  Widget build(BuildContext context) => Card(
+      margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               detail.inventoryItemName,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Vendor: ${detail.vendorName}',
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.phone, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
+                const Icon(Icons.phone, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
                 Text(
                   detail.vendorPhone.toString(),
-                  style: TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
-                Icon(Icons.location_on, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
+                const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
                 Expanded(
                   child: Text(
                     detail.vendorAddress,
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               'Reg No: ${detail.registerNumber}',
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
           ],
         ),
       ),
     );
-  }
 }
 
 class CustomSearchBar extends StatelessWidget {
@@ -463,8 +443,7 @@ class CustomSearchBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: AppStyle.decoration.copyWith(
         color: const Color.fromARGB(137, 221, 234, 234),
         boxShadow: const [],
@@ -474,13 +453,12 @@ class CustomSearchBar extends StatelessWidget {
       child: TextField(
         decoration: InputDecoration(
           hintText: hintText,
-          prefixIcon: Icon(Icons.search),
+          prefixIcon: const Icon(Icons.search),
           border: InputBorder.none,
         ),
         onChanged: onChanged,
       ),
     );
-  }
 }
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -496,19 +474,17 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return AppBar(
+  Widget build(BuildContext context) => AppBar(
       title: Text(title),
       // centerTitle: true,
       actions: actions,
       leading:  IconButton(
-              icon: Icon(Icons.arrow_back_ios_new),
+              icon: const Icon(Icons.arrow_back_ios_new),
               onPressed: () => Navigator.of(context).pop(),
             )
           ,
     );
-  }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

@@ -8,8 +8,7 @@ class InputCardStyle extends StatelessWidget {
   const InputCardStyle({super.key, this.noHeight = false, required this.child});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context) => Container(
       decoration: AppStyle.inputDecoration,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       constraints: noHeight
@@ -19,5 +18,4 @@ class InputCardStyle extends StatelessWidget {
             ),
       child: child,
     );
-  }
 }

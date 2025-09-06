@@ -6,12 +6,10 @@ class ErrorText extends StatelessWidget {
   final String? error;
 
   @override
-  Widget build(BuildContext context) {
-    return error == null
-        ? SizedBox()
+  Widget build(BuildContext context) => error == null
+        ? const SizedBox()
         : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [Text(error!, style: const TextStyle(color: Colors.red))],
           );
-  }
 }

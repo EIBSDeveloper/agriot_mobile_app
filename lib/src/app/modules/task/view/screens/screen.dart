@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../../core/app_style.dart';
 import '../../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../../widgets/toggle_bar.dart';
@@ -17,12 +16,9 @@ class TaskView extends GetView<TaskController> {
   const TaskView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: RefreshIndicator(
-        onRefresh: () {
-          return controller.loadTasks();
-        },
+        onRefresh: () => controller.loadTasks(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -37,7 +33,7 @@ class TaskView extends GetView<TaskController> {
                     ),
                     child: TitleText("tasks".tr),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Get.theme.primaryColor,
@@ -49,7 +45,7 @@ class TaskView extends GetView<TaskController> {
                         }
                       });
                     },
-                    child: Text("Best schedule"),
+                    child: const Text("Best schedule"),
                   ),
                 ],
               ),
@@ -60,13 +56,11 @@ class TaskView extends GetView<TaskController> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Obx(() {
-                      return LandDropdown(
+                    child: Obx(() => LandDropdown(
                         lands: controller.lands,
                         selectedLand: controller.selectedLand.value,
                         onChanged: (land) => controller.changeLand(land!),
-                      );
-                    }),
+                      )),
                   ),
                   const SizedBox(width: 10),
                   Container(
@@ -75,15 +69,14 @@ class TaskView extends GetView<TaskController> {
                       border: Border.all(color: Colors.grey, width: 1),
                     ),
 
-                    child: Obx(() {
-                      return Row(
+                    child: Obx(() => Row(
                         children: [
                           Container(
                             decoration: BoxDecoration(
                               color: !(controller.isList.value)
                                   ? Get.theme.primaryColor
                                   : Colors.transparent,
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(10),
                                 bottomLeft: Radius.circular(10),
                               ),
@@ -105,7 +98,7 @@ class TaskView extends GetView<TaskController> {
                               color: (controller.isList.value)
                                   ? Get.theme.primaryColor
                                   : Colors.transparent,
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(10),
                                 bottomRight: Radius.circular(10),
                               ),
@@ -124,8 +117,7 @@ class TaskView extends GetView<TaskController> {
                             ),
                           ),
                         ],
-                      );
-                    }),
+                      )),
                   ),
                 ],
               ),
@@ -142,9 +134,9 @@ class TaskView extends GetView<TaskController> {
                       child: Column(
                         children: [
                           if (controller.errorMessage.value.isNotEmpty)
-                            Center(
+                            const Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 100),
+                                padding: EdgeInsets.only(top: 100),
                                 child: Text("No data found"),
                               ),
                             ),
@@ -171,10 +163,7 @@ class TaskView extends GetView<TaskController> {
                                       ),
                                     ),
                                     ...group.tasks.map(
-                                      (task) {
-                                        int u=0;
-                                        return _buildTaskCard(task);
-                                      },
+                                      (task) => _buildTaskCard(task),
                                     ),
                                   ],
                                 );
@@ -204,7 +193,6 @@ class TaskView extends GetView<TaskController> {
         child: const Icon(Icons.add),
       ),
     );
-  }
 
   Widget _buildTaskCard(Task tas) {
     Task task = tas;
@@ -270,7 +258,7 @@ class TaskView extends GetView<TaskController> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Text(
                   isEditing ? 'Edit Task' : 'Add New Task',
                   style: const TextStyle(
@@ -281,25 +269,21 @@ class TaskView extends GetView<TaskController> {
                 const SizedBox(height: 16),
 
                 // Crop Type Dropdown
-                Obx(() {
-                  return MyDropdown(
+                Obx(() => MyDropdown(
                     items: controller.crop,
                     selectedItem: controller.selectedCropType.value,
                     onChanged: (land) => controller.changeCrop(land!),
                     label: 'Crop*',
                     // disable: isEditing,
-                  );
-                }),
-                SizedBox(height: 8),
-                Obx(() {
-                  return MyDropdown<ActivityModel>(
+                  )),
+                const SizedBox(height: 8),
+                Obx(() => MyDropdown<ActivityModel>(
                     items: controller.activity,
                     selectedItem: controller.selectedActivityType.value,
                     onChanged: (land) => controller.changeActivity(land!),
                     label: 'Activity type *',
-                  );
-                }),
-                SizedBox(height: 8),
+                  )),
+                const SizedBox(height: 8),
                 // Schedule Date
                 Obx(
                   () => Container(
@@ -336,7 +320,7 @@ class TaskView extends GetView<TaskController> {
                 if (!isEditing)
                   Column(
                     children: [
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Obx(
                         () => CheckboxListTile(
                           title: const Text('Recurring Task'),
@@ -442,11 +426,11 @@ class TaskView extends GetView<TaskController> {
                                   ),
 
                                   (!controller.endDate.value)
-                                      ? Text(
+                                      ? const Text(
                                           "Please add End Date",
                                           style: TextStyle(color: Colors.red),
                                         )
-                                      : SizedBox(),
+                                      : const SizedBox(),
                                 ],
                               ),
                             ),
@@ -455,7 +439,7 @@ class TaskView extends GetView<TaskController> {
                       }),
                     ],
                   ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
 
                 // Description
                 Container(
@@ -468,7 +452,7 @@ class TaskView extends GetView<TaskController> {
                     vertical: 5,
                   ),
                   child: TextFormField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Description',
                       border: InputBorder.none,
                     ),
@@ -515,14 +499,12 @@ class TaskView extends GetView<TaskController> {
     );
   }
 
-  Widget _buildCalendarSection() {
-    return Card(
+  Widget _buildCalendarSection() => Card(
       margin: const EdgeInsets.all(8),
       elevation: 0,
       color: Get.theme.primaryColor.withAlpha(40),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Obx(() {
-        return TableCalendar(
+      child: Obx(() => TableCalendar(
           firstDay: DateTime.utc(2020, 1, 1),
           lastDay: DateTime.utc(2036, 12, 31),
           focusedDay: controller.focusedDay.value,
@@ -533,9 +515,7 @@ class TaskView extends GetView<TaskController> {
             controller.refreshData(month: focusedDay.month);
           },
           // Instead of selectedDay, use selectedDayPredicate:
-          selectedDayPredicate: (day) {
-            return isSameDay(day, controller.selectedDay.value);
-          },
+          selectedDayPredicate: (day) => isSameDay(day, controller.selectedDay.value),
 
           headerStyle: HeaderStyle(
             titleCentered: true,
@@ -566,9 +546,7 @@ class TaskView extends GetView<TaskController> {
             controller.selectedDay.value = selectedDay;
             controller.focusedDay.value = focusedDay;
           },
-          eventLoader: (day) {
-            return controller.getEventsForDay(day);
-          },
+          eventLoader: (day) => controller.getEventsForDay(day),
           calendarBuilders: CalendarBuilders(
             markerBuilder: (context, date, List<Event> events) {
               if (events.isEmpty) return const SizedBox.shrink();
@@ -578,8 +556,7 @@ class TaskView extends GetView<TaskController> {
                 bottom: 1,
                 child: Row(
                   children: [
-                    ...events.map((e) {
-                      return Container(
+                    ...events.map((e) => Container(
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           color: Get.theme.primaryColor,
@@ -592,22 +569,18 @@ class TaskView extends GetView<TaskController> {
                             fontSize: 10,
                           ),
                         ),
-                      );
-                    }),
+                      )),
                   ],
                 ),
               );
             },
           ),
-        );
-      }),
+        )),
     );
-  }
 
   
 
-  Widget _buildFilterSection() {
-    return Padding(
+  Widget _buildFilterSection() => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -623,10 +596,8 @@ class TaskView extends GetView<TaskController> {
         ),
       ),
     );
-  }
 
-  Widget _buildFilterChip(String label, String value) {
-    return Obx(() {
+  Widget _buildFilterChip(String label, String value) => Obx(() {
       final isSelected = controller.selectedFilter.value == value;
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -644,10 +615,8 @@ class TaskView extends GetView<TaskController> {
         ),
       );
     });
-  }
 
-  Widget _buildTaskListSection() {
-    return Obx(() {
+  Widget _buildTaskListSection() => Obx(() {
       final selectedDate = controller.selectedDay.value;
       final tasks = controller.getTasksForDay(selectedDate);
 
@@ -676,7 +645,6 @@ class TaskView extends GetView<TaskController> {
         ],
       );
     });
-  }
 }
 // lib/widgets/my_dropdown.dart
 
@@ -686,7 +654,7 @@ abstract class NamedItem {
 }
 
 class MyDropdown<T extends NamedItem> extends StatelessWidget {
-  @override
+
   final List<T> items;
   final String label;
   final bool disabled;
@@ -710,8 +678,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return InputCardStyle(
+  Widget build(BuildContext context) => InputCardStyle(
       // padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0),
       child: DropdownButtonFormField<T>(
         key: key,
@@ -722,19 +689,17 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
           // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         hint: hintText != null ? Text(hintText!) : null,
-        items: items.map((T item) {
-          return DropdownMenuItem<T>(
+        items: items.map((T item) => DropdownMenuItem<T>(
             value: item,
             child: Text(
               item.name,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(color: disabled ? Colors.grey : null),
             ),
-          );
-        }).toList(),
+          )).toList(),
         onChanged: disabled ? null : onChanged,
         isExpanded: true,
-        icon: Icon(Icons.keyboard_arrow_down),
+        icon: const Icon(Icons.keyboard_arrow_down),
         style: Theme.of(
           context,
         ).textTheme.titleMedium?.copyWith(color: disabled ? Colors.grey : null),
@@ -746,5 +711,4 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
         },
       ),
     );
-  }
 }

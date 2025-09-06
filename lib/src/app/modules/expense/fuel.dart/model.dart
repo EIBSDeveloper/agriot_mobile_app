@@ -31,8 +31,7 @@ class Machinery {
     // required this.documents,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'date_of_consumption': dateOfConsumption,
       'vendor': vendor,
       'inventory_type': inventoryType,
@@ -48,7 +47,6 @@ class Machinery {
       'description': description,
       // 'documents': documents.map((doc) => doc.toJson()).toList(),
     };
-  }
 }
 
 class Customer extends NamedItem {
@@ -60,13 +58,11 @@ class Customer extends NamedItem {
 
   Customer({required this.id, required this.name, this.shopName = ''});
 
-  factory Customer.fromJson(Map<String, dynamic> json) {
-    return Customer(
+  factory Customer.fromJson(Map<String, dynamic> json) => Customer(
       id: json['id'] ?? 0,
       name: json['name'] ?? json['customer_name'] ?? '',
       shopName: json['shop_name'] ?? '',
     );
-  }
 }
 
 class VehicleModel {
@@ -132,8 +128,7 @@ class VehicleModel {
     this.documents,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'farmer_id': farmerId,
       'date_of_consumption': dateOfConsumption.toIso8601String().split('T')[0],
       'vendor': vendor,
@@ -175,7 +170,6 @@ class VehicleModel {
       'description': description,
       'documents': documents?.map((x) => x.toJson()).toList(),
     };
-  }
 }
 
 class FuelEntryModel {
@@ -201,8 +195,7 @@ class FuelEntryModel {
     this.description,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'date_of_consumption': dateOfConsumption,
       'vendor': vendor,
       'inventory_type': inventoryType,
@@ -213,7 +206,6 @@ class FuelEntryModel {
       "paid_amount": paidAmount,
       'description': description,
     };
-  }
 }
 
 class DocumentModel {
@@ -222,16 +214,12 @@ class DocumentModel {
 
   DocumentModel({required this.fileType, required this.documents});
 
-  factory DocumentModel.fromJson(Map<String, dynamic> json) {
-    return DocumentModel(
+  factory DocumentModel.fromJson(Map<String, dynamic> json) => DocumentModel(
       fileType: json['file_type'],
       documents: List<String>.from(json['documents']),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {'file_type': fileType, 'documents': documents};
-  }
+  Map<String, dynamic> toJson() => {'file_type': fileType, 'documents': documents};
 }
 
 class FertilizerModel {
@@ -259,8 +247,7 @@ class FertilizerModel {
     this.description,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'date_of_consumption': dateOfConsumption,
       'vendor': vendor,
       'inventory_type': inventoryType,
@@ -272,7 +259,6 @@ class FertilizerModel {
       "paid_amount": paidAmount,
       'description': description,
     };
-  }
 }
 
 class FertilizerResponse {
@@ -281,12 +267,10 @@ class FertilizerResponse {
 
   FertilizerResponse({required this.success, required this.message});
 
-  factory FertilizerResponse.fromJson(Map<String, dynamic> json) {
-    return FertilizerResponse(
+  factory FertilizerResponse.fromJson(Map<String, dynamic> json) => FertilizerResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
     );
-  }
 }
 
 class InventoryCategory {
@@ -296,13 +280,11 @@ class InventoryCategory {
 
   InventoryCategory({required this.id, required this.name, required this.type});
 
-  factory InventoryCategory.fromJson(Map<String, dynamic> json) {
-    return InventoryCategory(
+  factory InventoryCategory.fromJson(Map<String, dynamic> json) => InventoryCategory(
       id: json['id'],
       name: json['name'],
       type: json['inventory_type']?['name'] ?? '',
     );
-  }
 }
 
 class InventoryItem {
@@ -311,9 +293,7 @@ class InventoryItem {
 
   InventoryItem({required this.id, required this.name});
 
-  factory InventoryItem.fromJson(Map<String, dynamic> json) {
-    return InventoryItem(id: json['id'], name: json['name']);
-  }
+  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(id: json['id'], name: json['name']);
 }
 
 class ConsumptionRecord {
@@ -333,8 +313,7 @@ class ConsumptionRecord {
     required this.availableQuantity,
   });
 
-  factory ConsumptionRecord.fromJson(Map<String, dynamic> json) {
-    return ConsumptionRecord(
+  factory ConsumptionRecord.fromJson(Map<String, dynamic> json) => ConsumptionRecord(
       id: json['id'],
       crop: json['crop_name'],
       quantityUtilized: double.tryParse(
@@ -345,7 +324,6 @@ class ConsumptionRecord {
       availableQuantity:
           double.tryParse(json['available_quans']?.toString() ?? '0') ?? 0,
     );
-  }
 }
 
 class PurchaseRecord {
@@ -367,8 +345,7 @@ class PurchaseRecord {
     required this.description,
   });
 
-  factory PurchaseRecord.fromJson(Map<String, dynamic> json) {
-    return PurchaseRecord(
+  factory PurchaseRecord.fromJson(Map<String, dynamic> json) => PurchaseRecord(
       id: json['id'],
       vendorName: json['vendor']?['name'] ?? 'Unknown',
       quantity: double.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
@@ -378,7 +355,6 @@ class PurchaseRecord {
       date: DateTime.parse(json['created_at']),
       description: json['description'] ?? '',
     );
-  }
 }
 
 class InventoryData {

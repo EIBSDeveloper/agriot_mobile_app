@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:argiot/src/app/modules/sales/model/dropdown_item.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail_response.dart';
@@ -9,8 +8,6 @@ import 'package:argiot/src/app/modules/sales/model/sales_list_response.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
@@ -144,23 +141,5 @@ class SalesRepository {
     }
   }
 
-  Future<String> uploadFile(File file, String fileType) async {
-    try {
-      final bytes = await file.readAsBytes();
-      final multipartFile = http.MultipartFile.fromBytes(
-        'document',
-        bytes,
-        filename: basename(file.path),
-      );
-
-      final response = await _httpService.post(
-        '/upload_document/',
-        MultipartBody(fields: {'file_type': fileType}, files: [multipartFile]),
-      );
-
-      return jsonDecode(response.body)['file_url'];
-    } catch (e) {
-      rethrow;
-    }
-  }
+  
 }

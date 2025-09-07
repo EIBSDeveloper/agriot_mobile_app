@@ -259,18 +259,7 @@ class SalesController extends GetxController {
     isAdding.value = true;
     try {
       // Upload documents first
-      final List<Map<String, dynamic>> fileData = [];
-      for (final file in documentFiles) {
-        final fileUrl = await _repository.uploadFile(
-          file,
-          '2',
-        ); // Assuming type 2 is for sales
-        fileData.add({
-          'file_type': 2,
-          'documents': [fileUrl],
-        });
-      }
-
+      
       final request = SalesAddRequest(
         datesOfSales: selectedDate.value,
         myCrop: selectedCropId.value,
@@ -283,7 +272,7 @@ class SalesController extends GetxController {
         description: descriptionController.text,
         amountPaid: paidAmountController.text,
         deductions: newDeductions.toList(),
-        fileData: fileData,
+        fileData: [],
       );
 
       final salesId = await _repository.addSales(request: request);
@@ -303,16 +292,7 @@ class SalesController extends GetxController {
     try {
       // Upload new documents first
       final List<Map<String, dynamic>> fileData = [];
-      for (final file in documentFiles) {
-        final fileUrl = await _repository.uploadFile(
-          file,
-          '2',
-        ); // Assuming type 2 is for sales
-        fileData.add({
-          'file_type': 2,
-          'documents': [fileUrl],
-        });
-      }
+   
 
       final request = SalesEditRequest(
         salesId: salesId,

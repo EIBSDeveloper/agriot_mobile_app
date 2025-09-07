@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-import '../../../../../utils.dart';
+import '../../../../service/utils/utils.dart';
 
 class PaymentScreen extends StatelessWidget {
   const PaymentScreen({super.key});

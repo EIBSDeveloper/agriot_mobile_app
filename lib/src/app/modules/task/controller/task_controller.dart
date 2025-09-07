@@ -11,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../../controller/app_controller.dart';
 import '../../near_me/model/models.dart';
-import '../model/model.dart';
+
 import '../repostory/task_repository.dart';
 import 'dart:async';
 

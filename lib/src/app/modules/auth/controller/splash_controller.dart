@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 import '../../../controller/storage_service.dart';
 
 class SplashController extends GetxController {

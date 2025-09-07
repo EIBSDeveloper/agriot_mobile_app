@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/guideline/model/guideline.dart';
 import 'package:argiot/src/app/modules/guideline/model/guideline_category.dart';
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 class GuidelineRepository {

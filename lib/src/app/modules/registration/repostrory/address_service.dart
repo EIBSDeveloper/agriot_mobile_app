@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:argiot/src/app/service/http/http_exception.dart';
 import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 
 String generateGoogleMapsUrl(double latitude, double longitude) => "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/app_images.dart';
-import '../../../../widgets/bg.dart';
+import '../../../../widgets/background_image.dart';
 import '../../../../widgets/primary_button.dart';
 import '../../controller/auth_controller.dart';
 import '../widgets/my_behavior.dart';

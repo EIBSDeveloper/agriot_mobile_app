@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 import '../model/land.dart';
 import '../repostroy/forming_repository.dart';
 

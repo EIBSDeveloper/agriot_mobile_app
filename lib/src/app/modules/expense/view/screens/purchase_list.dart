@@ -3,7 +3,7 @@ import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../utils.dart';
+import '../../../../service/utils/utils.dart';
 
 
 class PurchaseList extends StatelessWidget {

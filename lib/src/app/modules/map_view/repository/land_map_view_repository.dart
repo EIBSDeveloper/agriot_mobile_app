@@ -4,7 +4,7 @@ import 'package:argiot/src/app/modules/map_view/model/land_map_data.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 class LandMapViewRepository {

@@ -2,7 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 import '../controller/sales_controller.dart';
 
 class SalesListView extends GetView<SalesController> {

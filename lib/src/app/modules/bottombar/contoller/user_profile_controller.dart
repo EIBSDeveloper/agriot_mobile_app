@@ -1,7 +1,7 @@
 // controllers/user_profile_controller.dart
 import 'package:get/get.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../bottombar/model/user_profile_model.dart';
 
 class UserProfileController extends GetxController {

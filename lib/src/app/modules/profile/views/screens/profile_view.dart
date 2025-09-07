@@ -2,7 +2,7 @@
 import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../routes/app_routes.dart';
+import '../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/profile_controller.dart';

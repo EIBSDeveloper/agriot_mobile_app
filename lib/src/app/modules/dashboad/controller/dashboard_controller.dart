@@ -7,7 +7,7 @@ import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../../controller/user_limit.dart';
 import '../../near_me/model/models.dart';
 import '../model/widget_config.dart';

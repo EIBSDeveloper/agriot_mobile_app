@@ -8,7 +8,7 @@ import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 import '../../sales/model/unit.dart';

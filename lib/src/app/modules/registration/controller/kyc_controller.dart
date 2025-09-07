@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
 import '../model/address_model.dart';

@@ -15,7 +15,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../document/view/add_document_view.dart';
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../../widgets/input_card_style.dart';
 
 import '../../sales/model/unit.dart';

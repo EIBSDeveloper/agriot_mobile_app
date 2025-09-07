@@ -5,7 +5,7 @@ import 'package:argiot/src/app/modules/subscription/model/package_list_response.
 import 'package:argiot/src/app/modules/subscription/model/verify_payment_response.dart';
 
 import 'package:argiot/src/app/controller/app_controller.dart';
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 class SubscriptionRepository {

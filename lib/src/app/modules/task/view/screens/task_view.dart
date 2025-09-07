@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../../routes/app_routes.dart';
+import '../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/task_controller.dart';

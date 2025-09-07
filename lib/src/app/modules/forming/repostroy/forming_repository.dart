@@ -5,7 +5,7 @@ import 'package:argiot/src/app/modules/task/model/task_group.dart';
 import 'package:argiot/src/app/modules/task/model/task_response.dart';
 import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 import '../model/land.dart';
 
 class FormingRepository {

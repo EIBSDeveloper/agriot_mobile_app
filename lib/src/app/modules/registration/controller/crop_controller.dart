@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http show Response;
 import 'package:intl/intl.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
 import '../../near_me/model/models.dart';

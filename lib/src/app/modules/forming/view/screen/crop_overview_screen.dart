@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../guideline/model/guideline.dart';
-import '../../../../../routes/app_routes.dart';
-import '../../../../../utils.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 
 class CropOverviewScreen extends StatefulWidget {
   const CropOverviewScreen({super.key});

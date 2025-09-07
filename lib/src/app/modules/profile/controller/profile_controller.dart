@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:argiot/src/app/modules/profile/repository/profile_repository.dart';
-import 'package:argiot/src/routes/app_routes.dart';
+import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../model/profile_model.dart';
 
 class ProfileController extends GetxController {

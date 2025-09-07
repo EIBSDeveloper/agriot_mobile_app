@@ -2,7 +2,7 @@ import 'package:argiot/src/app/modules/expense/model/consumption_record.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../utils.dart';
+import '../../../../service/utils/utils.dart';
 
 class ConsumptionList extends StatelessWidget {
   final List<ConsumptionRecord> records;

@@ -10,7 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();

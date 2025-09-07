@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import 'package:pie_chart/pie_chart.dart';
 
-import '../../../routes/app_routes.dart';
+import '../../routes/app_routes.dart';
 import '../../widgets/input_card_style.dart';
 import '../../widgets/title_text.dart';
 

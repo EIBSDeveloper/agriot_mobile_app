@@ -3,7 +3,7 @@ import 'package:argiot/src/app/modules/vendor_customer/model/item.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 class VendorCustomerRepository {

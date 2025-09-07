@@ -10,7 +10,7 @@ import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class LandMapViewController extends GetxController {
   final LandMapViewRepository _repository = LandMapViewRepository();

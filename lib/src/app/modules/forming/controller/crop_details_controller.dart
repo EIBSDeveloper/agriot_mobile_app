@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class CropDetailsController extends GetxController {
   final FormingRepository _repository = Get.find();

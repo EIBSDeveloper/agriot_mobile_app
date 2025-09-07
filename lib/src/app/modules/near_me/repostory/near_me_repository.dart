@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 import '../model/models.dart';
 
 class NearMeRepository {

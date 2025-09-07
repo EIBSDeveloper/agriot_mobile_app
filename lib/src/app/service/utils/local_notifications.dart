@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../../app.dart';
+import '../../../app.dart';
 
 Future<void> showNotification({
   required String title,

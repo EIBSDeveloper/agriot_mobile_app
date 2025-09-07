@@ -2,8 +2,8 @@ import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../routes/app_routes.dart';
-import '../../../../../utils.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 import '../../model/land.dart';
 import 'crop_card.dart';
 

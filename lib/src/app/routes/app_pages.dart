@@ -35,24 +35,24 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_c
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';
 
-import '../app/modules/task/view/screens/schedule_details_page.dart';
-import '../app/modules/map_view/view/screens/land_map_view.dart';
-import '../app/modules/sales/view/new_sales_view.dart';
-import '../app/bindings/app_binding.dart';
-import '../app/modules/auth/view/screens/otp_page.dart';
-import '../app/modules/expense/binding/fuel_entry_binding.dart';
-import '../app/modules/expense/view/screens/fuel_entry_view.dart';
-import '../app/modules/expense/purchase_items_screen.dart';
-import '../app/modules/forming/controller/location_viewer_view.dart';
-import '../app/modules/forming/view/screen/document_viewer_view.dart';
-import '../app/modules/forming/view/screen/land_details_page.dart';
-import '../app/modules/near_me/views/screen/view.dart';
-import '../app/modules/notification/view/screen/notification_view.dart';
-import '../app/modules/profile/views/screens/profile_view.dart';
-import '../app/modules/registration/binding/registration_binding.dart';
-import '../app/modules/registration/view/screen/regisster.dart';
-import '../app/modules/sales/view/sales_list_view.dart';
-import '../app/modules/task/view/screens/task_view.dart';
+import '../modules/task/view/screens/schedule_details_page.dart';
+import '../modules/map_view/view/screens/land_map_view.dart';
+import '../modules/sales/view/new_sales_view.dart';
+import '../bindings/app_binding.dart';
+import '../modules/auth/view/screens/otp_page.dart';
+import '../modules/expense/binding/fuel_entry_binding.dart';
+import '../modules/expense/view/screens/fuel_entry_view.dart';
+import '../modules/expense/purchase_items_screen.dart';
+import '../modules/forming/controller/location_viewer_view.dart';
+import '../modules/forming/view/screen/document_viewer_view.dart';
+import '../modules/forming/view/screen/land_details_page.dart';
+import '../modules/near_me/views/screen/view.dart';
+import '../modules/notification/view/screen/notification_view.dart';
+import '../modules/profile/views/screens/profile_view.dart';
+import '../modules/registration/binding/registration_binding.dart';
+import '../modules/registration/view/screen/regisster.dart';
+import '../modules/sales/view/sales_list_view.dart';
+import '../modules/task/view/screens/task_view.dart';
 import 'app_routes.dart';
 
 class AppPages {

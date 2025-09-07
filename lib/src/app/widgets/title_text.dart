@@ -9,22 +9,24 @@ class TitleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => fit != BoxFit.none
-        ? FittedBox( alignment : Alignment.centerLeft,
-            fit: fit ?? BoxFit.scaleDown,
-            child: Text(
-              title,
-              textAlign: TextAlign.start,
-              style: Get.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color ?? Get.theme.primaryColor,
-              ),
-            ),
-          )
-        : Text(
-            title,  textAlign: TextAlign.start,
+      ? FittedBox(
+          alignment: Alignment.centerLeft,
+          fit: fit ?? BoxFit.scaleDown,
+          child: Text(
+            title,
+            textAlign: TextAlign.start,
             style: Get.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: color ?? Get.theme.primaryColor,
             ),
-          );
+          ),
+        )
+      : Text(
+          title,
+          textAlign: TextAlign.start,
+          style: Get.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: color ?? Get.theme.primaryColor,
+          ),
+        );
 }

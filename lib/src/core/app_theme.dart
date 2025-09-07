@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class FashionStoreTheme {
+class AppTheme {
   static ThemeData get lightTheme => ThemeData(
       useMaterial3: true,
       colorScheme: const ColorScheme.light(

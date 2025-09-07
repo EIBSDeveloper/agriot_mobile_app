@@ -7,8 +7,8 @@ import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../routes/app_routes.dart';
-import '../../../../../utils.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 
 class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   const ConsumptionPurchaseView({super.key});

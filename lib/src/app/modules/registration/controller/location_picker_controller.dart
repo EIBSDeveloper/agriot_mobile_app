@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class LocationPickerController extends GetxController {
   final Rx<LatLng?> selectedLocation = Rx<LatLng?>(null);

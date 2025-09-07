@@ -4,7 +4,7 @@ import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/guideline/model/guideline_category.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
-import 'package:argiot/src/utils.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

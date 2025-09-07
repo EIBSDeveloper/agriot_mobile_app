@@ -6,7 +6,7 @@ import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class ConsumptionPurchaseController extends GetxController {
   final ConsumptionPurchaseRepository _repository = Get.find();

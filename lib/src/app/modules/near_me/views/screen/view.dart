@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Worker;
 
-import '../../../../../routes/app_routes.dart';
+import '../../../../routes/app_routes.dart';
 import '../../controller/controllers.dart';
 import '../../model/models.dart';
 import '../widget/widgets.dart';

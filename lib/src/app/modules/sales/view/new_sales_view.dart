@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import '../../near_me/views/widget/widgets.dart';
 import '../../../../core/app_style.dart';
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 class NewSalesView extends StatefulWidget {
   const NewSalesView({super.key});
 

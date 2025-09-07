@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../document/view/add_document_view.dart';
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
 import '../../registration/model/dropdown_item.dart';

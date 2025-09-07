@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_images.dart';
-import '../../../../../routes/app_routes.dart';
-import '../../../../../utils.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../notification/controller/notification_controller.dart';
 import '../../contoller/user_profile_controller.dart';
 

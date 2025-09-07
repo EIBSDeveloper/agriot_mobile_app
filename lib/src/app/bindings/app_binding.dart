@@ -4,7 +4,7 @@ import 'package:argiot/src/app/modules/expense/expense_repository.dart';
 import 'package:argiot/src/app/controller/storage_service.dart';
 import 'package:argiot/src/app/modules/profile/controller/profile_edit_controller.dart';
 import 'package:argiot/src/app/modules/profile/repository/profile_repository.dart';
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:argiot/src/app/modules/task/controller/task_details_controller.dart';
 import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';

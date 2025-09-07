@@ -8,7 +8,7 @@ import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 import '../../near_me/model/models.dart';
 import '../model/widget_config.dart';
 

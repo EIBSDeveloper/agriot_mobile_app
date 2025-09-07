@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:argiot/src/app/bindings/app_binding.dart';
-import 'package:argiot/src/core/theme.dart';
-import 'package:argiot/src/routes/app_pages.dart';
+import 'package:argiot/src/core/app_theme.dart';
+import 'package:argiot/src/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'app/controller/localization/app_translations.dart';
-import 'routes/app_routes.dart';
+import 'app/routes/app_routes.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -21,9 +21,10 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final InitializationSettings initializationSettings = const InitializationSettings(
-    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-  );
+  final InitializationSettings initializationSettings =
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      );
 
   @override
   void initState() {
@@ -69,16 +70,16 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(
-      title: 'ARGIOT App',
-      theme: FashionStoreTheme.lightTheme,
-      darkTheme: FashionStoreTheme.darkTheme,
-      translations: AppTranslations(),
-      locale: Get.deviceLocale,
-      fallbackLocale: const Locale('en', 'US'),
-      initialBinding: AppBinding(),
-      // home: SignInDemo(),
-      initialRoute: Routes.splash,
-      getPages: AppPages.routes,
-      debugShowCheckedModeBanner: false,
-    );
+    title: 'ARGIOT App',
+    theme: AppTheme.lightTheme,
+    darkTheme: AppTheme.darkTheme,
+    translations: AppTranslations(),
+    locale: Get.deviceLocale,
+    fallbackLocale: const Locale('en', 'US'),
+    initialBinding: AppBinding(),
+
+    initialRoute: Routes.splash,
+    getPages: AppPages.routes,
+    debugShowCheckedModeBanner: false,
+  );
 }

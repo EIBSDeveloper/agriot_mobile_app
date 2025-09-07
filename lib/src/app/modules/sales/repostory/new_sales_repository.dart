@@ -1,4 +1,3 @@
-// models/sales_model.dart
 
 import 'dart:convert';
 import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
@@ -11,7 +10,7 @@ import 'package:argiot/src/app/modules/sales/model/rupee.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_list_response.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
-import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 class NewSalesRepository {

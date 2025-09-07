@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 class SalesRepository {
   final HttpService _httpService = Get.find();
 

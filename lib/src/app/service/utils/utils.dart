@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-import 'app/controller/user_limit.dart';
-import 'routes/app_routes.dart';
+import '../../controller/user_limit.dart';
+import '../../routes/app_routes.dart';
 
 void showError(final String message) {
   Fluttertoast.showToast(

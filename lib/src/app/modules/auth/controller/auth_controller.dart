@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 import '../../../controller/app_controller.dart';
 import '../../../controller/storage_service.dart';
-import '../../../widgets/local_notifications.dart';
+import '../../../service/utils/local_notifications.dart';
 import '../repository/auth_repository.dart';
 
 class AuthController extends GetxController {

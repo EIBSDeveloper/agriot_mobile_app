@@ -1,5 +1,5 @@
 import 'package:argiot/src/app/modules/subscription/model/package.dart';
-import 'package:argiot/src/routes/app_routes.dart';
+import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

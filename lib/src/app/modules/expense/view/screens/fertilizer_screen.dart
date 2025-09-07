@@ -2,7 +2,7 @@ import 'package:argiot/src/app/modules/expense/controller/purchases_add_controll
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../utils.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../near_me/views/widget/widgets.dart';
 
 class FertilizerScreen extends GetView<PurchasesAddController> {

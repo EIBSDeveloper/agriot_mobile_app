@@ -3,7 +3,7 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dar
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../utils.dart';
+import '../../../../service/utils/utils.dart';
 
 class VendorCustomerListView extends GetView<VendorCustomerController> {
   const VendorCustomerListView({super.key});

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class DocumentViewerController extends GetxController {
   final RxString documentUrl = ''.obs;

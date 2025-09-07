@@ -2,7 +2,7 @@ import 'package:argiot/src/app/modules/forming/model/crop.dart';
 import 'package:argiot/src/app/modules/guideline/model/guideline.dart';
 
 import 'package:argiot/src/app/modules/guideline/model/guideline_category.dart';
-import 'package:argiot/src/utils.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:get/get.dart';
 
 import '../repository/guideline_repository.dart';

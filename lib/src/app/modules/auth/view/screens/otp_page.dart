@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../../core/app_images.dart';
-import '../../../../widgets/bg.dart';
+import '../../../../widgets/background_image.dart';
 import '../../../../widgets/primary_button.dart';
 import '../../controller/auth_controller.dart';
 import '../widgets/my_behavior.dart';

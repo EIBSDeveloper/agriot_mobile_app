@@ -6,7 +6,7 @@ import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/activity_model.dart';
 import 'package:argiot/src/app/modules/task/model/task_request.dart';
 import 'package:argiot/src/app/modules/task/view/widget/add_schedule.dart';
-import 'package:argiot/src/utils.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';

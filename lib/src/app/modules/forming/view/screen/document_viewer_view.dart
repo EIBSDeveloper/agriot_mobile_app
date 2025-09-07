@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 
-import '../../../../../utils.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../near_me/views/widget/widgets.dart';
 
 class DocumentViewerView extends GetView<DocumentViewerController> {

@@ -7,7 +7,7 @@ import 'package:argiot/src/app/modules/profile/controller/profile_controller.dar
 import 'package:argiot/src/app/modules/profile/repository/profile_repository.dart';
 import 'package:argiot/src/app/modules/profile/model/profile_model.dart';
 import 'package:argiot/src/app/modules/registration/view/screen/landpicker.dart';
-import 'package:argiot/src/utils.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

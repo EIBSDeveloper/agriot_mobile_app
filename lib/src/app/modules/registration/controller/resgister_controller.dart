@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../routes/app_routes.dart';
+import '../../../routes/app_routes.dart';
 import '../../../controller/storage_service.dart';
 import '../view/screen/crop_view.dart';
 import '../view/screen/kyc_view.dart';

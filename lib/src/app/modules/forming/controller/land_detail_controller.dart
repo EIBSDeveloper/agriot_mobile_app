@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../../../routes/app_routes.dart';
-import '../../../../utils.dart';
+import '../../../routes/app_routes.dart';
+import '../../../service/utils/utils.dart';
 import '../repostroy/forming_repository.dart';
 
 class LandDetailController extends GetxController {

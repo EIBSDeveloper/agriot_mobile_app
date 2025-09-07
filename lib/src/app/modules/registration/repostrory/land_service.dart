@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 import '../../near_me/model/models.dart';
 import '../model/document_model.dart';
 import '../model/dropdown_item.dart';

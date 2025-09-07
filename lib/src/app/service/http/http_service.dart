@@ -2,16 +2,17 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:argiot/src/app/service/http/http_exception.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../controller/app_controller.dart';
 
-class MultipartBody {
-  final Map<String, String> fields;
-  final List<http.MultipartFile> files;
+// class MultipartBody {
+//   final Map<String, String> fields;
+//   final List<http.MultipartFile> files;
 
-  MultipartBody({required this.fields, this.files = const []});
-}
+//   MultipartBody({required this.fields, this.files = const []});
+// }
 
 class HttpService extends GetxService {
   final AppDataController appData = Get.put(AppDataController());
@@ -82,30 +83,15 @@ class HttpService extends GetxService {
           : '$endpoint?lang=ta';
       final url = Uri.parse(baseUrl + updatedEndpoint);
 
-      if (body is MultipartBody) {
-        final request = http.MultipartRequest('PUT', url);
-        request.headers.addAll(_headers(headers));
-        request.fields.addAll(body.fields);
-        request.files.addAll(body.files);
-
-        final streamedResponse = await request.send().timeout(
-          Duration(seconds: timeoutSeconds),
-        );
-        return await http.Response.fromStream(streamedResponse);
-      } else {
-        final response = await http
-            .put(url, headers: _headers(headers), body: jsonEncode(body))
-            .timeout(Duration(seconds: timeoutSeconds));
-        return _handleResponse(response);
-      }
+      final response = await http
+          .put(url, headers: _headers(headers), body: jsonEncode(body))
+          .timeout(Duration(seconds: timeoutSeconds));
+      return _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
   }
 
-  // Add this to your HttpService class in lib/app/services/http_service.dart
-
-  /// POST Request — supports both JSON and Multipart
   Future<http.Response> post(
     String endpoint,
     dynamic body, {
@@ -117,22 +103,10 @@ class HttpService extends GetxService {
           : '$endpoint?lang=ta';
       final url = Uri.parse(baseUrl + updatedEndpoint);
 
-      if (body is MultipartBody) {
-        final request = http.MultipartRequest('POST', url);
-        request.headers.addAll(_headers(headers));
-        request.fields.addAll(body.fields);
-        request.files.addAll(body.files);
-
-        final streamedResponse = await request.send().timeout(
-          Duration(seconds: timeoutSeconds),
-        );
-        return await http.Response.fromStream(streamedResponse);
-      } else {
-        final response = await http
-            .post(url, headers: _headers(headers), body: jsonEncode(body))
-            .timeout(Duration(seconds: timeoutSeconds));
-        return _handleResponse(response);
-      }
+      final response = await http
+          .post(url, headers: _headers(headers), body: jsonEncode(body))
+          .timeout(Duration(seconds: timeoutSeconds));
+      return _handleResponse(response);
     } catch (e) {
       throw _handleError(e);
     }
@@ -199,13 +173,3 @@ class HttpService extends GetxService {
   }
 }
 
-/// Custom HTTP exception
-class HttpException implements Exception {
-  final String message;
-  final int? statusCode;
-
-  HttpException({required this.message, this.statusCode});
-
-  @override
-  String toString() => message;
-}

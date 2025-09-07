@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../utils.dart';
+import '../../../service/utils/utils.dart';
 
 class ExpenseController extends GetxController {
   final ExpenseRepository _repository = Get.find<ExpenseRepository>();

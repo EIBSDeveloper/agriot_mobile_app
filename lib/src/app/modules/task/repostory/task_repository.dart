@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import '../../../controller/app_controller.dart';
-import '../../../utils/http/http_service.dart';
+import '../../../service/http/http_service.dart';
 import '../../near_me/model/models.dart';
 
 class TaskRepository {

@@ -1,7 +1,5 @@
-// models/sales_model.dart
-
 import 'package:argiot/src/app/modules/sales/controller/new_sales_controller.dart';
-import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
+import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
@@ -195,30 +193,3 @@ class AddDeductionView extends StatelessWidget {
     ),
   );
 }
-
-// class AddDocumentController extends GetxController {
-//   final AddDocumentRepository _salesRepository =
-//       Get.find<AddDocumentRepository>();
-//   Rx<AddDocumentModel?> documents = Rx<AddDocumentModel?>(null);
-//   RxBool isNewResion = false.obs;
-//   var docTypeList = <AppDropdownItem>[].obs;
-//   final Rx<AppDropdownItem> selectedResion = AppDropdownItem(
-//     id: 0,
-//     name: '',
-//   ).obs;
-//   Future<void> fetchReasons() async {
-//     try {
-//       final response = await _salesRepository.getDocumentTypes();
-//       docTypeList.assignAll(response);
-//       if (docTypeList.isNotEmpty) {
-//         selectedResion.value = docTypeList.first;
-//       }
-//     } catch (e) {
-//       Fluttertoast.showToast(msg: 'Failed to fetch reasons: $e');
-//     }
-//   }
-
-//   void changeResion(AppDropdownItem crop) {
-//     selectedResion.value = crop;
-//   }
-// }

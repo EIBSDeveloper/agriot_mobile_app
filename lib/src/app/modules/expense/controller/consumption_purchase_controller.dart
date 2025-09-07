@@ -1,6 +1,6 @@
-import 'package:argiot/consumption_model.dart';
+import 'package:argiot/src/app/modules/expense/model/consumption_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_purchase_repository.dart';
-import 'package:argiot/src/app/modules/expense/fuel.dart/purchases_add_repository.dart';
+import 'package:argiot/src/app/modules/expense/repostroy/purchases_add_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/consumption_record.dart';
 import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:fluttertoast/fluttertoast.dart';

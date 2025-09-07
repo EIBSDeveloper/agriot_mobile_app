@@ -1,17 +1,17 @@
 import 'package:argiot/src/app/modules/dashboad/model/product_price.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/scrollable_bar_chart.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
+import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/finance_line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../../guideline.dart';
+import '../../../guideline/model/guideline.dart';
 import '../../../../../payable/pages/payables_receivables/payables_receivables_screen.dart';
 import '../../../../../routes/app_routes.dart';
 import '../../../../../utils.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../bottombar/contoller/bottombar_contoller.dart';
 import '../../../near_me/views/widget/widgets.dart';
-import '../../../task/model/model.dart';
 import '../../controller/dashboard_controller.dart';
 
 

@@ -1,3 +1,9 @@
+import 'package:argiot/src/app/modules/task/model/activity_model.dart';
+import 'package:argiot/src/app/modules/task/model/crop_model.dart';
+import 'package:argiot/src/app/modules/task/model/task_details.dart';
+import 'package:argiot/src/app/modules/task/model/task_group.dart';
+import 'package:argiot/src/app/modules/task/model/task_request.dart';
+import 'package:argiot/src/app/modules/task/model/task_response.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -5,7 +11,6 @@ import 'dart:convert';
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
 import '../../near_me/model/models.dart';
-import '../model/model.dart';
 
 class TaskRepository {
   final HttpService _httpService = Get.put(HttpService());

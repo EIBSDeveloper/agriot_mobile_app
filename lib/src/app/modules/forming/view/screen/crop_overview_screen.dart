@@ -1,18 +1,19 @@
 import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
 import 'package:argiot/src/app/modules/forming/controller/crop_details_controller.dart';
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
-import 'package:argiot/src/app/modules/forming/view/screen/crop_model.dart';
+import 'package:argiot/src/app/modules/forming/model/schedule.dart';
+import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../../../guideline.dart';
+import '../../../guideline/model/guideline.dart';
 import '../../../../../routes/app_routes.dart';
 import '../../../../../utils.dart';
-import '../../../task/model/model.dart';
 
 class CropOverviewScreen extends StatefulWidget {
   const CropOverviewScreen({super.key});

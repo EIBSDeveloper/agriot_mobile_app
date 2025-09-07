@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import '../../dashboad/view/screens/dashboard_view.dart';
 import '../../forming/view/screen/forming_page.dart';
 import '../../inventory/view/inventory_overview.dart';
-import '../../task/view/screens/screen.dart';
+import '../../task/view/screens/task_view.dart';
 
 class BottomBarContoller extends GetxController {
   final RxList<Widget> pages = <Widget>[

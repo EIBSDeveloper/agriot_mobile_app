@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/farmer.dart';
-import 'package:argiot/src/app/modules/sales/model/model.dart';
+import 'package:argiot/src/app/modules/sales/model/unit.dart';
 
 class Sales {
   final int salesId;

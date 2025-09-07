@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
-import 'package:argiot/src/app/modules/forming/view/screen/crop_model.dart';
+import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
+import 'package:argiot/src/app/modules/task/model/task_group.dart';
+import 'package:argiot/src/app/modules/task/model/task_response.dart';
 import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
-import '../../task/model/model.dart';
 import '../model/land.dart';
 
 class FormingRepository {

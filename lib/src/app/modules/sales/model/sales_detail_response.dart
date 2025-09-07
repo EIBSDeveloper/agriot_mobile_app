@@ -1,10 +1,10 @@
-import 'package:argiot/src/app/modules/expense/fuel.dart/test.dart';
+import 'package:argiot/src/app/modules/expense/model/document_category.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/farmer.dart';
+import 'package:argiot/src/app/modules/forming/model/crop.dart';
 import 'package:argiot/src/app/modules/sales/model/deduction.dart';
-import 'package:argiot/src/app/modules/sales/model/model.dart';
+import 'package:argiot/src/app/modules/sales/model/unit.dart';
 
-import '../../forming/view/screen/crop_model.dart';
 
 class SalesDetailResponse {
   final int salesId;

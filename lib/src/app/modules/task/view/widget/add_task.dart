@@ -1,8 +1,8 @@
 // lib/app/modules/task/views/task_view.dart
 
-import 'package:argiot/src/app/modules/task/controller/controller.dart';
-import 'package:argiot/src/app/modules/task/model/model.dart';
-import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
+import 'package:argiot/src/app/modules/task/controller/task_controller.dart';
+import 'package:argiot/src/app/modules/task/model/activity_model.dart';
+import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/toggle_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

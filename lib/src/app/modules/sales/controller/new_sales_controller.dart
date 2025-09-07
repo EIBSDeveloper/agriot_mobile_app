@@ -1,13 +1,15 @@
-// models/sales_model.dart
-
-import 'package:argiot/doc.dart';
+import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
+import 'package:argiot/src/app/modules/document/view/add_document_view.dart';
+import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
+import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
+import 'package:argiot/src/app/modules/sales/repostory/new_sales_repository.dart';
+import 'package:argiot/src/app/modules/sales/model/sales_update_request.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/sales/model/reason.dart';
 import 'package:argiot/src/app/modules/sales/model/rupee.dart';
-import 'package:argiot/sales_detail.dart';
-import 'package:argiot/src/app/modules/sales/model/model.dart';
-import 'package:argiot/src/app/modules/task/model/model.dart';
-import 'package:argiot/test.dart';
+import 'package:argiot/src/app/modules/sales/model/sales_detail.dart';
+import 'package:argiot/src/app/modules/sales/model/unit.dart';
+import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +18,6 @@ class NewSalesController extends GetxController {
 
   // Reactive variables
   var isLoading = false.obs;
-  // var salesList = Rx<SalesListResponse?>(null);
   var salesDetail = Rx<SalesDetail?>(null);
   var reasonsList = <Reason>[].obs;
   var rupeesList = <Rupee>[].obs;
@@ -64,18 +65,6 @@ class NewSalesController extends GetxController {
     }
     await fetchSalesDetails(id);
   }
-
-  // Future<void> fetchSalesByCrop(int cropId, String type) async {
-  //   try {
-  //     isLoading(true);
-  //     final response = await _salesRepository.getSalesByCrop(cropId, type);
-  //     salesList(response);
-  //   } catch (e) {
-  //     Fluttertoast.showToast(msg: 'Failed to fetch sales: $e');
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
 
   Future<void> fetchCrop() async {
     final cropList = await _salesRepository.getCropList();
@@ -149,7 +138,7 @@ class NewSalesController extends GetxController {
   void addDocumentItem() {
     Get.to(
       const AddDocumentView(),
-      binding: NewDocumentBinding(),
+      binding: DocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {

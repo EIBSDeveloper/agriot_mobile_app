@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/expense/view/screens/consumption_list.dart';
 import 'package:argiot/src/app/modules/expense/controller/consumption_purchase_controller.dart';
-import 'package:argiot/src/app/modules/expense/fuel.dart/purchase_list.dart';
+import 'package:argiot/src/app/modules/expense/view/screens/purchase_list.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';

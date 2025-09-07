@@ -1,4 +1,7 @@
-import 'package:argiot/src/app/modules/forming/view/screen/crop_model.dart';
+import 'package:argiot/src/app/modules/forming/model/crop_guideline.dart';
+import 'package:argiot/src/app/modules/forming/model/crop_land.dart';
+import 'package:argiot/src/app/modules/forming/model/cropinfo.dart';
+import 'package:argiot/src/app/modules/forming/model/schedule.dart';
 
 class CropOverview {
   final int farmerId;

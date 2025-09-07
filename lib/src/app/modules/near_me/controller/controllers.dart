@@ -1,12 +1,9 @@
-// controllers/near_me_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Worker;
 
 import '../model/models.dart';
 import '../repostory/near_me_repository.dart';
 
-// controllers/near_me_controller.dart
-// ignore: deprecated_member_use
 class NearMeController extends GetxController
     with SingleGetTickerProviderMixin {
   final NearMeRepository _repository = Get.find();

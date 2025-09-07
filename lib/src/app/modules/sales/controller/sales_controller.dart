@@ -2,16 +2,18 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:argiot/src/app/modules/sales/model/deduction.dart';
+import 'package:argiot/src/app/modules/sales/model/dropdown_item.dart';
+import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_by_date.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail_response.dart';
+import 'package:argiot/src/app/modules/sales/model/sales_edit_request.dart';
+import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../utils.dart';
-import '../../task/model/model.dart';
-import '../model/model.dart';
-import 'repostroty.dart';
+import '../repostory/sales_repository.dart';
 
 class SalesController extends GetxController {
   final SalesRepository _repository = Get.find();

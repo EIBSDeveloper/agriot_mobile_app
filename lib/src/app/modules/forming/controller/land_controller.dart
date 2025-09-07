@@ -1,9 +1,11 @@
+import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
+import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../../doc.dart';
+import '../../document/view/add_document_view.dart';
 import '../../../../utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
@@ -196,7 +198,7 @@ class LandController extends GetxController {
   void addDocumentItem() {
     Get.to(
       const AddDocumentView(),
-      binding: NewDocumentBinding(),
+      binding: DocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {

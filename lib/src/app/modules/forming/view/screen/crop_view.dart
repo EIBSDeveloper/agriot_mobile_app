@@ -1,15 +1,15 @@
+import 'package:argiot/src/app/modules/forming/view/widget/survey_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../near_me/views/widget/widgets.dart';
-import '../../../registration/model/crop_model.dart';
 import '../../../registration/model/dropdown_item.dart';
 import '../../../registration/view/widget/searchable_dropdown.dart';
 import '../../controller/crop_controller.dart';
 
-class CropViewPage extends GetView<CropController> {
-  const CropViewPage({super.key});
+class CropView extends GetView<CropController> {
+  const CropView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -339,50 +339,6 @@ class CropViewPage extends GetView<CropController> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-}
-
-class SurveyDropdown extends StatelessWidget {
-  final List<CropSurveyDetail> surveys;
-  final CropSurveyDetail? selectedSurvey;
-  final bool addNew;
-  final Function(CropSurveyDetail?) onChanged;
-  final String label;
-
-  const SurveyDropdown({
-    super.key,
-    required this.surveys,
-    required this.selectedSurvey,
-    required this.onChanged,
-    this.addNew = false,
-    this.label = 'Survey No',
-  });
-
-  @override
-  Widget build(BuildContext context) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: DropdownButtonFormField<CropSurveyDetail>(
-        value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
-        
-                icon: const Icon(Icons.keyboard_arrow_down),
-        items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
-            value: survey,
-            child: Text(
-              '${survey.surveyNo} (${survey.surveyMeasurementValue} ${survey.surveyMeasurementUnit})',
-            ),
-          )).toList(),
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          hintText: label,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         ),
       ),
     );

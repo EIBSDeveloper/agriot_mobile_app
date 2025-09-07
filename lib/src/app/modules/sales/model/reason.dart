@@ -1,6 +1,4 @@
-// models/sales_model.dart
-
-import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
+import 'package:argiot/src/app/modules/task/model/named_item.dart';
 
 class Reason extends NamedItem {
   @override

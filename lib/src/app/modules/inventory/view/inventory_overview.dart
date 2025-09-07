@@ -1,4 +1,3 @@
-// lib/app/modules/guidelines/models/inventory_model.dart
 
 import 'package:argiot/src/app/modules/expense/inventory_controller.dart';
 import 'package:flutter/material.dart';

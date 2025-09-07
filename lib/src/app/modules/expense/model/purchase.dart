@@ -1,5 +1,8 @@
-import 'package:argiot/common.dart';
+
 import 'package:argiot/src/app/modules/expense/model/farmer.dart';
+import 'package:argiot/src/app/modules/expense/model/vendor.dart';
+
+import 'inventory_item.dart';
 
 class Purchase {
   final int id;

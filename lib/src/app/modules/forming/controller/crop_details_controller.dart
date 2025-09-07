@@ -1,12 +1,16 @@
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
-import 'package:argiot/src/app/modules/forming/view/screen/crop_model.dart';
+import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
 import 'package:argiot/src/app/modules/forming/repostroy/forming_repository.dart';
+import 'package:argiot/src/app/modules/task/model/c_task.dart';
+import 'package:argiot/src/app/modules/task/model/date_task.dart';
+import 'package:argiot/src/app/modules/task/model/event.dart';
+import 'package:argiot/src/app/modules/task/model/task_group.dart';
+import 'package:argiot/src/app/modules/task/model/task_response.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../utils.dart';
-import '../../task/model/model.dart';
 
 class CropDetailsController extends GetxController {
   final FormingRepository _repository = Get.find();

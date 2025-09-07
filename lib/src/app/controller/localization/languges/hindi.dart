@@ -1,0 +1,31 @@
+class Hindi {
+  static  Map<String, String> list =  {
+        'fuel': 'ईंधन',
+        'vehicle': 'वाहन',
+        'choose_language': 'भाषा चुनें',
+        "monthly_based_graph": "मासिक आधारित ग्राफ",
+        "sales": "बिक्री",
+        "expenses": "खर्च",
+        "no_finance_data": "कोई वित्त डेटा उपलब्ध नहीं",
+        "guidelines": "दिशानिर्देश",
+        "view_all": "सभी",
+        "no_guidelines": "कोई दिशानिर्देश उपलब्ध नहीं",
+        "unable_to_open_content": "सामग्री खोलने में असमर्थ",
+        "market_prices": "आस-पास के बाजार के दाम",
+        "no_data_available": "कोई डेटा उपलब्ध नहीं",
+        "error_message": "त्रुटि: {error}",
+        "trending_crops": "लोकप्रिय फसलें",
+        "tasks": "कार्य",
+        "no_tasks_available": "कोई कार्य उपलब्ध नहीं",
+        "widget_settings": "विजेट सेटिंग्स",
+        "weather_payments": "मौसम और भुगतान",
+        "finance_graph": "वित्त ग्राफ",
+        "cancel": "रद्द करें",
+        "save": "सहेजें",
+        "receivables": "प्राप्य",
+        "payables": "देय",
+        "humidity_percentage": "नमी: ",
+        "currency_symbol": "₹",
+      };
+    
+}

@@ -1,4 +1,4 @@
-import 'package:argiot/bestschedule.dart';
+import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/app/widgets/toggle_bar.dart';
 import 'package:flutter/material.dart';

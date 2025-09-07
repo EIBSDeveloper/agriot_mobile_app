@@ -1,23 +1,25 @@
 import 'dart:convert';
 
-import 'package:argiot/consumption_model.dart';
+import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
+import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
+import 'package:argiot/src/app/modules/expense/model/consumption_model.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
+import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../doc.dart';
+import '../../document/view/add_document_view.dart';
 import '../../../../utils.dart';
 import '../../../widgets/input_card_style.dart';
 
-import '../../sales/model/model.dart';
-import '../../task/view/screens/screen.dart';
-import '../fuel.dart/purchases_add_repository.dart';
+import '../../sales/model/unit.dart';
+import '../repostroy/purchases_add_repository.dart';
 
 class PurchasesAddController extends GetxController {
   final PurchasesAddRepository _repository = PurchasesAddRepository();
@@ -574,7 +576,7 @@ class PurchasesAddController extends GetxController {
   void addDocumentItem() {
     Get.to(
       const AddDocumentView(),
-      binding: NewDocumentBinding(),
+      binding: DocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {

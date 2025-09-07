@@ -8,7 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'app/controller/localization/crop_en_us.dart';
+import 'app/controller/localization/app_translations.dart';
 import 'routes/app_routes.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

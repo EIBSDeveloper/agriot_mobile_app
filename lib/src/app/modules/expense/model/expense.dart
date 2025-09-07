@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
+import 'package:argiot/src/app/modules/forming/model/crop.dart';
 
-import '../../forming/view/screen/crop_model.dart';
 import 'farmer.dart';
 
 class Expense {

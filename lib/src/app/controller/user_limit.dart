@@ -1,6 +1,7 @@
+import 'package:argiot/src/app/modules/subscription/model/farmer_usage_response.dart';
+import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:get/get.dart';
-import '../modules/subscription/package_model.dart';
-import '../modules/subscription/subscription_repository.dart';
+import '../modules/subscription/repository/subscription_repository.dart';
 
 class UserLimitController extends GetxController {
   final SubscriptionRepository repository = SubscriptionRepository();

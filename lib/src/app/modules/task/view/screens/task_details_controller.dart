@@ -155,7 +155,7 @@ class TaskDetailsController extends GetxController {
         myCrop: selectedCropType.value.id,
         startDate: scheduleDate.value,
         description: description.value,
-        scheduleStatus: task.value?.status ?? 0,
+        scheduleStatus: task.value?.status ?? 1,
       );
       if (response.isNotEmpty) {}
       await fetchTaskDetails(); // Refresh task details

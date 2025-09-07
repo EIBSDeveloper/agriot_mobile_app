@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
+import 'src/app/modules/forming/view/screen/crop_model.dart';
 class Guideline {
   Guideline({
     required this.id,
@@ -72,14 +74,6 @@ class GuidelineCategory {
   final String? description;
 }
 
-class Crop {
-  Crop({required this.id, required this.name});
-
-  factory Crop.fromJson(Map<String, dynamic> json) =>
-      Crop(id: json['id'], name: json['name']);
-  final int? id;
-  final String? name;
-}
 
 // lib/app/modules/guidelines/repositories/guideline_repository.dart
 
@@ -257,7 +251,7 @@ class GuidelinesView extends GetView<GuidelineController> {
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(title: 'guidelines_title'.tr),
     body: Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -319,6 +313,7 @@ class GuidelinesView extends GetView<GuidelineController> {
                     EdgeInsets.zero, // Optional: adjust vertical space
               ),
               hint: Text('select_category'.tr),
+              
               value: controller.selectedCategory.value,
               items: controller.categories
                   .map(
@@ -354,11 +349,11 @@ class GuidelinesView extends GetView<GuidelineController> {
 
   Widget _buildGuidelineCard(Guideline guideline) => Card(
     elevation: 1,
-    margin: const EdgeInsets.only(bottom: 16),
+    margin: const EdgeInsets.only(bottom: 8),
     child: InkWell(
       onTap: () => _handleGuidelineTap(guideline),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -381,7 +376,7 @@ class GuidelinesView extends GetView<GuidelineController> {
                   Text(
                     guideline.description,
                     style: Get.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey,
+                     
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

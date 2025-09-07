@@ -17,8 +17,8 @@ class ToggleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      width: 300.0,
-      height: 40.0,
+      
+      height: 50.0,
       decoration: AppStyle.decoration,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

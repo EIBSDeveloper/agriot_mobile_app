@@ -27,8 +27,9 @@ abstract class Routes {
 
   // Expenses
   static const expense = '/expense';
-  static const addExpense = '/addExpense';
+
   static const purchaseItems = '/purchaseItems';
+  static const addExpense = '/addExpense';
 
   // Vendor/Customer
   static const vendorCustomer = '/vendor-customer';
@@ -66,11 +67,6 @@ abstract class Routes {
   //
   static const inventory = '/inventory';
 
-  static const String fuelList = '/fuel-list';
-  static const String fuelPurchaseList = '/fuel-purchase-list';
-  static const String addFuelPurchase = '/add-fuel-purchase';
-  static const String editFuelPurchase = '/edit-fuel-purchase';
-  static const String fuelPurchaseDetails = '/fuel-purchase-details';
   static const String landEdit = '/land/edit';
   static const String fuelConsumption = '/fuel-consumption';
 

@@ -1,3 +1,5 @@
+import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
+import 'package:argiot/src/app/modules/auth/model/verify_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,9 +9,7 @@ import '../../../../routes/app_routes.dart';
 import '../../../controller/app_controller.dart';
 import '../../../controller/storage_service.dart';
 import '../../../widgets/local_notifications.dart';
-import '../model/auth_model.dart';
 import '../repository/auth_repository.dart';
-import '../model/otp.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository = Get.find();
@@ -70,12 +70,12 @@ class AuthController extends GetxController {
   }
 
   Future<void> signInWithGoogle() async {
-  await  signOutFromGoogle();
+    await signOutFromGoogle();
     try {
       final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
 
       if (signIn == null) {
-        debugPrint('⚠️ User cancelled Google Sign-In');
+        debugPrint(' User cancelled Google Sign-In');
         return;
       }
 
@@ -92,7 +92,7 @@ class AuthController extends GetxController {
       final user = userCredential.user;
 
       if (user != null) {
-        debugPrint('✅ Signed in as ${user.email}');
+        debugPrint('Signed in as ${user.email}');
 
         final response = await _authRepository.loginWithMobile(
           user.email!,
@@ -103,17 +103,18 @@ class AuthController extends GetxController {
         if (response.userId != null) {
           AppDataController appData = Get.put(AppDataController());
           appData.loginState.value = response;
-          appData.emailId.value = user.email??'';
-          appData.username.value = user.displayName??'';
+          appData.emailId.value = user.email ?? '';
+          appData.username.value = user.displayName ?? '';
           await authWrapper(response.userId);
         } else {
           throw Exception(response.message ?? 'Invalid OTP');
         }
       }
     } catch (e) {
-      debugPrint('🔥 Sign-in failed: $e');
+      debugPrint(' Sign-in failed: $e');
     }
   }
+
   Future<void> signOutFromGoogle() async {
     try {
       // Sign out from Firebase
@@ -126,12 +127,11 @@ class AuthController extends GetxController {
         await googleSignIn.signOut();
       }
 
-      debugPrint('✅ Successfully signed out from Google and Firebase');
+      debugPrint(' Successfully signed out from Google and Firebase');
     } catch (e) {
-      debugPrint('🔥 Sign-out failed: $e');
+      debugPrint(' Sign-out failed: $e');
     }
   }
-
 
   Future<void> verifyOtp() async {
     try {

@@ -428,7 +428,7 @@ class AppTranslations extends Translations {
     "engine_no_label": "Engine No",
     "chasis_no_label": "Chasis No",
     "paid_amount": "Paid Amount",
-    "running_km_label": "Running KM*",
+    "running_km_label": "Running KM",
     "service_frequency_label": "Service Frequency",
     "unit_label": "Unit",
     "fuel_capacity_label": "Fuel Capacity (in Litres)",

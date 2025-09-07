@@ -1,3 +1,6 @@
+import '../../forming/model/measurement_unit.dart';
+import '../../forming/model/soil_type.dart';
+
 class LandWithSurvey {
   final int landId;
   final String landName;
@@ -57,18 +60,12 @@ class SurveyDetail {
   };
 }
 
-// lib/common/models/land_detail_model.dart
 class LandDetail {
   final int id;
   final String name;
   final double measurementValue;
   final MeasurementUnit measurementUnit;
   final SoilType? soilType;
-  // final Country country;
-  // final State state;
-  // final City city;
-  // final Taluk taluk;
-  // final Village village;
   final String doorNo;
   final String locations;
   final double latitude;
@@ -150,24 +147,6 @@ class LandDetail {
           [],
       documents: json['documents'] ?? [],
     );
-}
-
-class SoilType {
-  final int? id;
-  final String? name;
-
-  SoilType({required this.id, required this.name});
-
-  factory SoilType.fromJson(Map<String, dynamic> json) => SoilType(id: json['id'], name: json['name']);
-}
-
-class MeasurementUnit {
-  final int id;
-  final String name;
-
-  MeasurementUnit({required this.id, required this.name});
-
-  factory MeasurementUnit.fromJson(Map<String, dynamic> json) => MeasurementUnit(id: json['id'] ?? 0, name: json['name'] ?? '');
 }
 
 class Country {

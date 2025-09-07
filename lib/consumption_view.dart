@@ -141,6 +141,8 @@ class ConsumptionView extends StatelessWidget {
             hintText: 'Inventory Type'.tr,
             border: InputBorder.none,
           ),
+          
+                icon: const Icon(Icons.keyboard_arrow_down),
           validator: (value) => value == null ? 'required_field'.tr : null,
           initialValue: _controller.selectedInventoryType.value,
           items: _controller.inventoryTypes
@@ -166,6 +168,7 @@ class ConsumptionView extends StatelessWidget {
             hintText: 'Inventory Category'.tr,
             border: InputBorder.none,
           ),
+          icon: const Icon(Icons.keyboard_arrow_down),
           validator: (value) => value == null ? 'required_field'.tr : null,
           initialValue: _controller.selectedInventoryCategory.value,
           items: _controller.inventoryCategories
@@ -193,6 +196,8 @@ class ConsumptionView extends StatelessWidget {
             hintText: 'Inventory Item'.tr,
             border: InputBorder.none,
           ),
+          
+                icon: const Icon(Icons.keyboard_arrow_down),
           validator: (value) => value == null ? 'required_field'.tr : null,
           initialValue: _controller.selectedInventoryItem.value,
           items: _controller.inventoryItems
@@ -318,21 +323,3 @@ class ConsumptionView extends StatelessWidget {
     );
 }
 
-String getType(int id) {
-  if (id == 6) {
-    return 'fuel';
-  } else if (id == 1) {
-    return 'vehicle';
-  } else if (id == 2) {
-    return 'machinery';
-  } else if (id == 3) {
-    return 'tools';
-  } else if (id == 4) {
-    return 'Pesticides';
-  } else if (id == 5) {
-    return 'fertilizers';
-  } else if (id == 7) {
-    return 'seeds';
-  }
-  return 'fuel';
-}

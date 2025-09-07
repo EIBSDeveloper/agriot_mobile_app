@@ -51,9 +51,7 @@ void warningSuccess(final String message) {
   );
 }
 
-double kelvinToCelsius(final double kelvin) {
-  return kelvin - 273.15;
-}
+double kelvinToCelsius(final double kelvin) => kelvin - 273.15;
 
 PackageUsage? findLimit() {
   UserLimitController limitController = Get.put(UserLimitController());
@@ -78,3 +76,39 @@ packageRefresh() {
     onCancel: Get.back,
   );
 }
+
+String getType(int id) {
+  if (id == 6) {
+    return 'fuel';
+  } else if (id == 1) {
+    return 'vehicle';
+  } else if (id == 2) {
+    return 'machinery';
+  } else if (id == 3) {
+    return 'tools';
+  } else if (id == 4) {
+    return 'Pesticides';
+  } else if (id == 5) {
+    return 'fertilizers';
+  } else if (id == 7) {
+    return 'seeds';
+  }
+  return 'fuel';
+}
+  String getMonthName(int month) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return months[month - 1];
+  }

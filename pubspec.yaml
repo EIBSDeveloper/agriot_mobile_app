@@ -35,7 +35,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   get: ^4.7.2
-  carousel_slider_plus: ^7.1.1
   intl: ^0.20.2
   google_maps_flutter: ^2.12.3
   geolocator: ^14.0.2
@@ -45,19 +44,15 @@ dependencies:
   geocoding: ^4.0.0
   connectivity_plus: ^6.1.4
   get_storage: ^2.1.1
-  flutter_map_line_editor: ^8.0.0
   fluttertoast: ^8.2.12
   pin_code_fields: ^8.0.1
-  app_links: ^6.4.0
   path: ^1.9.1
   path_provider: ^2.1.5
   permission_handler: ^12.0.1
-  edge_detection_plus: ^1.0.2
   http: ^1.4.0
   shimmer: ^3.0.0
   file_picker: ^10.2.0
   flutter_pdfview: ^1.4.1+1
-  syncfusion_flutter_gauges: ^30.1.42
   image_picker: ^1.1.2
   syncfusion_flutter_charts: ^30.1.42
   # fl_chart: ^1.0.0

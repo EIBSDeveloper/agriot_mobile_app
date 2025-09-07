@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'package:argiot/consumption_model.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
+import 'package:argiot/src/app/modules/expense/model/customer.dart';
+import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
+import 'package:argiot/src/app/modules/expense/model/fertilizer_response.dart';
+import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
+import 'package:argiot/src/app/modules/expense/model/machinery.dart';
+import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 
 import 'package:argiot/src/app/utils/http/http_service.dart';
 import 'package:get/get.dart';
 
-import '../../../../../test.dart' show Unit;
-import 'model.dart';
+import '../../sales/model/model.dart';
 
 class PurchasesAddRepository {
   final HttpService _httpService = Get.find<HttpService>();

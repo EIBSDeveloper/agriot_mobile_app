@@ -19,7 +19,7 @@ class LandPickerController extends GetxController {
 
   GoogleMapController? mapController;
 
-  void getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     isLoading.value = true;
 
     if (landPolylin.isNotEmpty || croppolyiline.isNotEmpty) {

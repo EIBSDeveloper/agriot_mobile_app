@@ -5,6 +5,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/registration/model/dropdown_item.dart';
 import 'package:argiot/src/app/modules/task/view/screens/screen.dart';
 import 'package:argiot/src/app/utils/http/http_service.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -38,7 +39,7 @@ class AddDocumentController extends GetxController {
   final AddDocumentRepository _documentRepository =
       Get.find<AddDocumentRepository>();
 
-  Rx<DocumentAdd?> documents = Rx<DocumentAdd?>(null);
+  Rx<AddDocumentModel?> documents = Rx<AddDocumentModel?>(null);
   RxBool isNewDocument = false.obs;
   var docTypeList = <AppDropdownItem>[].obs;
   final Rx<AppDropdownItem> selectedDocument = AppDropdownItem(
@@ -49,14 +50,10 @@ class AddDocumentController extends GetxController {
   /// Store as base64 instead of files
   RxList<String> uploadedDocs = <String>[].obs;
 
-  
-
   Future<void> fetchDocument(typeId) async {
     try {
       final response = await _documentRepository.getDocumentTypes();
-      docTypeList.assignAll(
-        response.where((doc) => typeId == doc.doctype),
-      );
+      docTypeList.assignAll(response.where((doc) => typeId == doc.doctype));
       if (docTypeList.isNotEmpty) {
         selectedDocument.value = docTypeList.first;
       }
@@ -114,79 +111,85 @@ class _AddDocumentViewState extends State<AddDocumentView> {
   final TextEditingController _textController = TextEditingController();
   @override
   void initState() {
-   final int typeId = Get.arguments['id'];
-   
+    final int typeId = Get.arguments['id'];
+
     controller.fetchDocument(typeId);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: const CustomAppBar(title: 'Add Document'),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Reason Input
-              _buildReasonInput(),
-              _buildDocumentUploadSection(),
-              const SizedBox(height: 16),
-              // Add Button
-              _buildAddButton(),
-            ],
-          ),
+    appBar: const CustomAppBar(title: 'Add Document'),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Reason Input
+            _buildReasonInput(),
+            _buildDocumentUploadSection(),
+            const SizedBox(height: 16),
+            // Add Button
+            _buildAddButton(),
+          ],
         ),
       ),
-    );
+    ),
+  );
 
-  Widget _buildDocumentUploadSection() => Obx(() => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: controller.pickFromGallery,
-                icon: const Icon(Icons.photo_library, color: Colors.blue),
-              ),
-              IconButton(
-                onPressed: controller.pickFromCamera,
-                icon: const Icon(Icons.camera_alt, color: Colors.green),
-              ),
-              const SizedBox(width: 8),
-              const Text("Upload Documents"),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: List.generate(controller.uploadedDocs.length, (index) {
-              final base64Str = controller.uploadedDocs[index];
+  Widget _buildDocumentUploadSection() => Obx(
+    () => Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+             InkWell(
+              onTap: controller.pickFromCamera,
+              child: Container(
+                decoration: AppStyle.decoration,
+                height: 92,width: 92,
+                margin: const EdgeInsets.symmetric(vertical: 8,horizontal: 4),
+                child: const Icon(Icons.camera_alt, color: Colors.green,size: 50,)),
+            ),
+            InkWell(
+              onTap:  controller.pickFromGallery,
+              child: Container(
+                decoration: AppStyle.decoration,
+                height: 92,width: 92,
+             margin: const EdgeInsets.symmetric(vertical: 8,horizontal: 4),
+               
+                child: const Icon(Icons.photo_library, color: Colors.blue,size: 50,)),
+            ),
+            ...List.generate(controller.uploadedDocs.length, (index) {
+            final base64Str = controller.uploadedDocs[index];
 
-              // decode only if it's image/*
-              final isImage = base64Str.startsWith("data:image");
-              final bytes = isImage
-                  ? base64Decode(base64Str.split(",").last)
-                  : null;
+            final isImage = base64Str.startsWith("data:image");
+            final bytes = isImage
+                ? base64Decode(base64Str.split(",").last)
+                : null;
 
-              return Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  ClipRRect(
+            return Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: isImage
                         ? Image.memory(
                             bytes!,
-                            width: 100,
-                            height: 100,
+                            width: 92,
+                            height: 92,
                             fit: BoxFit.cover,
                           )
                         : Container(
-                            width: 100,
-                            height: 100,
+                            width: 92,
+                            height: 92,
                             color: Colors.grey.shade300,
                             child: const Icon(
                               Icons.picture_as_pdf,
@@ -195,95 +198,96 @@ class _AddDocumentViewState extends State<AddDocumentView> {
                             ),
                           ),
                   ),
-                  GestureDetector(
-                    onTap: () => controller.removeDocument(index),
-                    child: const CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.red,
-                      child: Icon(Icons.close, size: 14, color: Colors.white),
-                    ),
+                ),
+                GestureDetector(
+                  onTap: () => controller.removeDocument(index),
+                  child: const CircleAvatar(
+                    radius: 12,
+                    backgroundColor: Colors.red,
+                    child: Icon(Icons.close, size: 14, color: Colors.white),
                   ),
-                ],
-              );
-            }),
-          ),
-        ],
-      ));
+                ),
+              ],
+            );
+          }),
+          ]
+        ),
+      ],
+    ),
+  );
 
-  Widget _buildReasonInput() => Obx(() => Row(
-        children: [
-          if (!controller.isNewDocument.value)
-            Expanded(
-              child: MyDropdown(
-                items: controller.docTypeList,
-                selectedItem: controller.selectedDocument.value,
-                onChanged: (land) {
-                  _textController.text = land!.name;
-                  controller.changeDocument(land);
-                },
-                label: 'Document type*',
-                // disable: isEditing,
+  Widget _buildReasonInput() => Obx(
+    () => Row(
+      children: [
+        if (!controller.isNewDocument.value)
+          Expanded(
+            child: MyDropdown(
+              items: controller.docTypeList,
+              selectedItem: controller.selectedDocument.value,
+              onChanged: (land) {
+                _textController.text = land!.name;
+                controller.changeDocument(land);
+              },
+              label: 'Select Document type',
+              // disable: isEditing,
+            ),
+          ),
+        if (controller.isNewDocument.value)
+          Expanded(
+            child: InputCardStyle(
+              child: TextFormField(
+                controller: _textController,
+                decoration: const InputDecoration(
+                  hintText: 'Enter Document type',
+                  border: InputBorder.none,
+                ),
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Please enter a document'
+                    : null,
               ),
             ),
-          if (controller.isNewDocument.value)
-            Expanded(
-              child: Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                height: 55,
-                child: TextFormField(
-                  controller: _textController,
-                  decoration: const InputDecoration(
-                    hintText: 'Document',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null || value.isEmpty
-                      ? 'Please enter a document'
-                      : null,
-                ),
-              ),
-            ),
-          IconButton.filled(
+          ),
+        Card(
+          color: Get.theme.primaryColor,
+          child: IconButton(
+            color: Colors.white,
             onPressed: () {
               _textController.clear();
               controller.isNewDocument.value = !controller.isNewDocument.value;
             },
-            icon: const Icon(Icons.add),
+            icon: Icon(
+              controller.isNewDocument.value ? Icons.close: Icons.add ,
+            ),
           ),
-        ],
-      ));
+        ),
+      ],
+    ),
+  );
 
   Widget _buildAddButton() => SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            final documents = DocumentAdd(
-              documents: controller.uploadedDocs.toList(),
-              fileType: controller.selectedDocument.value.id,
-              isNew: controller.isNewDocument.value,
-              newFileType: _textController.text.isEmpty
-                  ? controller.selectedDocument.value.name
-                  : _textController.text,
-            );
+    width: double.infinity,
+    child: ElevatedButton(
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          final documents = AddDocumentModel(
+            documents: controller.uploadedDocs.toList(),
+            fileType: controller.selectedDocument.value.id,
+            isNew: controller.isNewDocument.value,
+            newFileType: _textController.text.isEmpty
+                ? controller.selectedDocument.value.name
+                : _textController.text,
+          );
 
-            Get.back(result: documents);
-          }
-        },
-        child: const Text('Add Document'),
-      ),
-    );
+          Get.back(result: documents);
+        }
+      },
+      child: const Text('Add Document'),
+    ),
+  );
 }
 
-class DocumentAdd {
-
-  DocumentAdd({
+class AddDocumentModel {
+  AddDocumentModel({
     this.fileType,
     this.isNew = false,
     this.newFileType,

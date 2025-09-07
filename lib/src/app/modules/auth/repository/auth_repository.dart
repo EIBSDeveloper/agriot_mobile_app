@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
+import 'package:argiot/src/app/modules/auth/model/verify_otp.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/http/http_service.dart';
-import '../model/auth_model.dart';
-import '../model/otp.dart';
 
 class AuthRepository {
   final HttpService _httpService = Get.find();

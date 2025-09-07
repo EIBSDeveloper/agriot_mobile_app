@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:argiot/bestschedule.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
-import 'package:argiot/src/app/modules/dashboad/model/model.dart' hide Task;
+import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/registration/repostrory/crop_service.dart';
 import 'package:argiot/src/app/modules/task/model/model.dart';
@@ -152,7 +152,8 @@ class LandMapViewController extends GetxController {
     return LatLngBounds(northeast: LatLng(x1, y1), southwest: LatLng(x0, y0));
   }
 
-  List<ScheduleCrop> get cropsForSelectedLand => selectedLand.value?.crops ?? [];
+  List<ScheduleCrop> get cropsForSelectedLand =>
+      selectedLand.value?.crops ?? [];
 
   void changeMapType(MapType type) {
     mapType.value = type;
@@ -280,144 +281,117 @@ class _LandMapViewState extends State<LandMapView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: const CustomAppBar(title: 'Land Details'),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Stack(
-          children: [
-            Obx(() {
-              final cropMarkersFuture =
-                  controller.landMapDetails.value?.crops != null
-                  ? controller.buildCropMarkers(
-                      controller.landMapDetails.value!.crops!,
-                    )
-                  : Future.value(<Marker>{});
+    appBar: const CustomAppBar(title: 'Land Details'),
+    body: Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return Stack(
+        children: [
+          Obx(() {
+            final cropMarkersFuture =
+                controller.landMapDetails.value?.crops != null
+                ? controller.buildCropMarkers(
+                    controller.landMapDetails.value!.crops!,
+                  )
+                : Future.value(<Marker>{});
 
-              return FutureBuilder<Set<Marker>>(
-                future: cropMarkersFuture,
-                builder: (context, snapshot) => Obx(
-                    () => GoogleMap(
-                      mapType: controller.mapType.value, // reactive
-                      initialCameraPosition: controller.cameraPosition.value,
-                      onMapCreated: (GoogleMapController mapController) {
-                        controller.mapController = mapController;
-                        if (controller._pendingBounds != null) {
-                          controller.mapController!.animateCamera(
-                            CameraUpdate.newLatLngBounds(
-                              controller._pendingBounds!,
-                              60,
-                            ),
-                          );
-                          controller._pendingBounds = null;
-                        }
-                      },
-                      polygons: {
-                        if (controller.landpolyline.isNotEmpty)
-                          Polygon(
-                            polygonId: const PolygonId("land"),
-                            points: controller.landpolyline,
-                            fillColor: Colors.green.withOpacity(0.3),
-                            strokeColor: Colors.green,
-                            strokeWidth: 3,
+            return FutureBuilder<Set<Marker>>(
+              future: cropMarkersFuture,
+              builder: (context, snapshot) => Obx(
+                () => GoogleMap(
+                  mapType: controller.mapType.value, // reactive
+                  initialCameraPosition: controller.cameraPosition.value,
+                  onMapCreated: (GoogleMapController mapController) {
+                    controller.mapController = mapController;
+                    if (controller._pendingBounds != null) {
+                      controller.mapController!.animateCamera(
+                        CameraUpdate.newLatLngBounds(
+                          controller._pendingBounds!,
+                          60,
+                        ),
+                      );
+                      controller._pendingBounds = null;
+                    }
+                  },
+                  polygons: {
+                    if (controller.landpolyline.isNotEmpty)
+                      Polygon(
+                        polygonId: const PolygonId("land"),
+                        points: controller.landpolyline,
+                        fillColor: Colors.green.withOpacity(0.3),
+                        strokeColor: Colors.green,
+                        strokeWidth: 3,
+                      ),
+                    if (controller.landMapDetails.value?.crops != null)
+                      ...controller.landMapDetails.value!.crops!.map((crop) {
+                        final cropPoints = crop.geoMarks!
+                            .map(
+                              (e) => LatLng(e[0].toDouble(), e[1].toDouble()),
+                            )
+                            .toList();
+                        return Polygon(
+                          polygonId: PolygonId("crop_${crop.cropId}"),
+                          points: cropPoints,
+                          fillColor: Colors.orange.withOpacity(0.3),
+                          strokeColor: Colors.orange,
+                          strokeWidth: 2,
+                          consumeTapEvents: true,
+                          onTap: () => cropDetails(crop),
+                        );
+                      }),
+                  },
+                  markers: snapshot.data ?? {},
+                ),
+              ),
+            );
+          }),
+
+          Positioned(
+            top: 8,
+            right: 0,
+            left: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => Container(
+                        decoration: AppStyle.decoration.copyWith(
+                          color: const Color.fromARGB(137, 221, 234, 234),
+                          boxShadow: const [],
+                        ),
+
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: DropdownButtonFormField<ScheduleLand>(
+                          value: controller.selectedLand.value,
+
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items: controller.lands
+                              .map(
+                                (ScheduleLand land) =>
+                                    DropdownMenuItem<ScheduleLand>(
+                                      value: land,
+                                      child: Text(land.name),
+                                    ),
+                              )
+                              .toList(),
+                          onChanged: (ScheduleLand? land) {
+                            controller.selectLand(land);
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Land',
+                            border: InputBorder.none,
                           ),
-                        if (controller.landMapDetails.value?.crops != null)
-                          ...controller.landMapDetails.value!.crops!.map((
-                            crop,
-                          ) {
-                            final cropPoints = crop.geoMarks!
-                                .map(
-                                  (e) =>
-                                      LatLng(e[0].toDouble(), e[1].toDouble()),
-                                )
-                                .toList();
-                            return Polygon(
-                              polygonId: PolygonId("crop_${crop.cropId}"),
-                              points: cropPoints,
-                              fillColor: Colors.orange.withOpacity(0.3),
-                              strokeColor: Colors.orange,
-                              strokeWidth: 2,
-                              consumeTapEvents: true,
-                              onTap: () => cropDetails(crop),
-                            );
-                          }),
-                      },
-                      markers: snapshot.data ?? {},
+                        ),
+                      ),
                     ),
                   ),
-              );
-            }),
-
-            Positioned(
-              top: 8,
-              right: 0,
-              left: 0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      
-                      child: Obx(() => Container(
-                          decoration: AppStyle.decoration.copyWith(
-                            color: const Color.fromARGB(137, 221, 234, 234),
-                            boxShadow: const [],
-                          ),
-                         
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: DropdownButtonFormField<ScheduleLand>(
-                            value: controller.selectedLand.value,
-
-                            items: controller.lands.map((ScheduleLand land) => DropdownMenuItem<ScheduleLand>(
-                                value: land,
-                                child: Text(land.name),
-                              )).toList(),
-                            onChanged: (ScheduleLand? land) {
-                              controller.selectLand(land);
-                            },
-                            decoration: const InputDecoration(
-                              hintText: 'Land',
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        )),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Obx(() {
-                        if (controller.selectedLand.value == null) {
-                          return Container(
-                            decoration: AppStyle.decoration.copyWith(
-                              color: const Color.fromARGB(137, 221, 234, 234),
-                              boxShadow: const [],
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: DropdownButtonFormField<ScheduleCrop>(
-                              value: controller.selectedCrop.value,
-                              items: [
-                                DropdownMenuItem<ScheduleCrop>(
-                                  value: ScheduleCrop(id: 0, name: "All"),
-                                  child: const Text("All"),
-                                ),
-                                ...controller.cropsForSelectedLand.map((
-                                  ScheduleCrop crop,
-                                ) => DropdownMenuItem<ScheduleCrop>(
-                                    value: crop,
-                                    child: Text(crop.name),
-                                  )),
-                              ],
-                              onChanged: (ScheduleCrop? crop) {
-                                controller.selectCrop(crop);
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'Crop',
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          );
-                        }
-
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Obx(() {
+                      if (controller.selectedLand.value == null) {
                         return Container(
                           decoration: AppStyle.decoration.copyWith(
                             color: const Color.fromARGB(137, 221, 234, 234),
@@ -425,20 +399,21 @@ class _LandMapViewState extends State<LandMapView> {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonFormField<ScheduleCrop>(
-                            value: controller
-                                .selectedCrop
-                                .value, // will be either All or a real crop
+                            value: controller.selectedCrop.value,
+
+                            icon: const Icon(Icons.keyboard_arrow_down),
                             items: [
                               DropdownMenuItem<ScheduleCrop>(
-                                value: controller.allCrop, // ✅ same reference
+                                value: ScheduleCrop(id: 0, name: "All"),
                                 child: const Text("All"),
                               ),
-                              ...controller.cropsForSelectedLand.map((
-                                ScheduleCrop crop,
-                              ) => DropdownMenuItem<ScheduleCrop>(
-                                  value: crop,
-                                  child: Text(crop.name),
-                                )),
+                              ...controller.cropsForSelectedLand.map(
+                                (ScheduleCrop crop) =>
+                                    DropdownMenuItem<ScheduleCrop>(
+                                      value: crop,
+                                      child: Text(crop.name),
+                                    ),
+                              ),
                             ],
                             onChanged: (ScheduleCrop? crop) {
                               controller.selectCrop(crop);
@@ -449,53 +424,89 @@ class _LandMapViewState extends State<LandMapView> {
                             ),
                           ),
                         );
-                      }),
-                    ),
-                  ],
-                ),
+                      }
+
+                      return Container(
+                        decoration: AppStyle.decoration.copyWith(
+                          color: const Color.fromARGB(137, 221, 234, 234),
+                          boxShadow: const [],
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: DropdownButtonFormField<ScheduleCrop>(
+                          value: controller
+                              .selectedCrop
+                              .value, // will be either All or a real crop
+                          items: [
+                            DropdownMenuItem<ScheduleCrop>(
+                              value: controller.allCrop, // ✅ same reference
+                              child: const Text("All"),
+                            ),
+                            ...controller.cropsForSelectedLand.map(
+                              (ScheduleCrop crop) =>
+                                  DropdownMenuItem<ScheduleCrop>(
+                                    value: crop,
+                                    child: Text(crop.name),
+                                  ),
+                            ),
+                          ],
+
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          onChanged: (ScheduleCrop? crop) {
+                            controller.selectCrop(crop);
+                          },
+                          decoration: const InputDecoration(
+                            hintText: 'Crop',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
-            // Positioned(
-            //   bottom: 8,
-
-            //   left: 8,
-            //   child:  ),
-          ],
-        );
-      }),
-      floatingActionButtonLocation: ExpandableFab.location,
-      floatingActionButton: ExpandableFab(
-        distance: 80,
-
-        type: ExpandableFabType.fan,
-        pos: ExpandableFabPos.left,
-        children: [
-          FloatingActionButton.small(
-            heroTag: "hybrid",
-            onPressed: () => controller.changeMapType(MapType.hybrid),
-            child: const Icon(Icons.layers),
           ),
-          FloatingActionButton.small(
-            heroTag: "normal",
-            onPressed: () => controller.changeMapType(MapType.normal),
-            child: const Icon(Icons.map),
-          ),
-          FloatingActionButton.small(
-            heroTag: "satellite",
-            onPressed: () => controller.changeMapType(MapType.satellite),
-            child: const Icon(Icons.satellite_alt),
-          ),
+          // Positioned(
+          //   bottom: 8,
 
-          // FloatingActionButton.small(
-          //   heroTag: "terrain",
-          //   onPressed: () => controller.changeMapType(MapType.terrain),
-          //   child: const Icon(Icons.terrain),
-          // ),
+          //   left: 8,
+          //   child:  ),
         ],
-      ),
-    );
+      );
+    }),
+    floatingActionButtonLocation: ExpandableFab.location,
+    floatingActionButton: ExpandableFab(
+      distance: 80,
 
-  void cropDetails(CropMapData crop) async {
+      type: ExpandableFabType.fan,
+      pos: ExpandableFabPos.left,
+      children: [
+        FloatingActionButton.small(
+          heroTag: "hybrid",
+          onPressed: () => controller.changeMapType(MapType.hybrid),
+          child: const Icon(Icons.layers),
+        ),
+        FloatingActionButton.small(
+          heroTag: "normal",
+          onPressed: () => controller.changeMapType(MapType.normal),
+          child: const Icon(Icons.map),
+        ),
+        FloatingActionButton.small(
+          heroTag: "satellite",
+          onPressed: () => controller.changeMapType(MapType.satellite),
+          child: const Icon(Icons.satellite_alt),
+        ),
+
+        // FloatingActionButton.small(
+        //   heroTag: "terrain",
+        //   onPressed: () => controller.changeMapType(MapType.terrain),
+        //   child: const Icon(Icons.terrain),
+        // ),
+      ],
+    ),
+  );
+
+  void cropDetails(CropMapData crop) {
     Get.dialog(
       const Dialog(
         child: SizedBox(
@@ -506,7 +517,7 @@ class _LandMapViewState extends State<LandMapView> {
       ),
     );
 
-    await controller.fetchLandsAndCropsDetails(crop.cropId);
+    controller.fetchLandsAndCropsDetails(crop.cropId);
     Get.back();
     Get.bottomSheet(
       isScrollControlled: true,
@@ -572,9 +583,11 @@ class _LandMapViewState extends State<LandMapView> {
               ],
             ),
             const TitleText("Today task"),
-            Obx(() => Column(
+            Obx(
+              () => Column(
                 children: [
-                  ...controller.cropDetails.value!.tasks.map((task) => _buildTaskCard(
+                  ...controller.cropDetails.value!.tasks.map(
+                    (task) => _buildTaskCard(
                       Task(
                         id: task.id,
                         cropType: task.activityType,
@@ -583,9 +596,11 @@ class _LandMapViewState extends State<LandMapView> {
                         status: task.scheduleStatusName,
                       ),
                       crop.cropId,
-                    )),
+                    ),
+                  ),
                 ],
-              )),
+              ),
+            ),
             const SizedBox(height: 60),
           ],
         ),
@@ -749,34 +764,34 @@ class CropDetails {
   });
 
   factory CropDetails.fromJson(Map<String, dynamic> json) => CropDetails(
-      id: json['id'] ?? 0,
-      crop: json['crop'] ?? '',
-      type: json['type'] ?? '',
-      soilType: json['soil_type'] ?? '',
-      plantationDate: DateTime.parse(json['plantation_date'] ?? '2025-01-01'),
-      harvestingType: json['harvesting_type'] ?? '',
-      measurementValue: (json['measurement_value'] ?? 0).toDouble(),
-      measurementUnit: json['measurement_unit'] ?? '',
-      expense: (json['expense'] ?? 0).toDouble(),
-      sales: (json['sales'] ?? 0).toDouble(),
-      tasks: (json['task'] as List<dynamic>? ?? [])
-          .map((taskJson) => CropTask.fromJson(taskJson))
-          .toList(),
-    );
+    id: json['id'] ?? 0,
+    crop: json['crop'] ?? '',
+    type: json['type'] ?? '',
+    soilType: json['soil_type'] ?? '',
+    plantationDate: DateTime.parse(json['plantation_date'] ?? '2025-01-01'),
+    harvestingType: json['harvesting_type'] ?? '',
+    measurementValue: (json['measurement_value'] ?? 0).toDouble(),
+    measurementUnit: json['measurement_unit'] ?? '',
+    expense: (json['expense'] ?? 0).toDouble(),
+    sales: (json['sales'] ?? 0).toDouble(),
+    tasks: (json['task'] as List<dynamic>? ?? [])
+        .map((taskJson) => CropTask.fromJson(taskJson))
+        .toList(),
+  );
 
   Map<String, dynamic> toJson() => {
-      'id': id,
-      'crop': crop,
-      'type': type,
-      'soil_type': soilType,
-      'plantation_date': plantationDate.toIso8601String().split('T')[0],
-      'harvesting_type': harvestingType,
-      'measurement_value': measurementValue,
-      'measurement_unit': measurementUnit,
-      'expense': expense,
-      'sales': sales,
-      'task': tasks.map((task) => task.toJson()).toList(),
-    };
+    'id': id,
+    'crop': crop,
+    'type': type,
+    'soil_type': soilType,
+    'plantation_date': plantationDate.toIso8601String().split('T')[0],
+    'harvesting_type': harvestingType,
+    'measurement_value': measurementValue,
+    'measurement_unit': measurementUnit,
+    'expense': expense,
+    'sales': sales,
+    'task': tasks.map((task) => task.toJson()).toList(),
+  };
 }
 
 class CropTask {
@@ -795,18 +810,18 @@ class CropTask {
   });
 
   factory CropTask.fromJson(Map<String, dynamic> json) => CropTask(
-      id: json['id'] ?? 0,
-      activityType: json['activity_type'] ?? '',
-      description: json['description'] ?? '',
-      scheduleStatus: json['schedule_status'] ?? 0,
-      scheduleStatusName: json['schedule_status_name'] ?? '',
-    );
+    id: json['id'] ?? 0,
+    activityType: json['activity_type'] ?? '',
+    description: json['description'] ?? '',
+    scheduleStatus: json['schedule_status'] ?? 0,
+    scheduleStatusName: json['schedule_status_name'] ?? '',
+  );
 
   Map<String, dynamic> toJson() => {
-      'id': id,
-      'activity_type': activityType,
-      'description': description,
-      'schedule_status': scheduleStatus,
-      'schedule_status_name': scheduleStatusName,
-    };
+    'id': id,
+    'activity_type': activityType,
+    'description': description,
+    'schedule_status': scheduleStatus,
+    'schedule_status_name': scheduleStatusName,
+  };
 }

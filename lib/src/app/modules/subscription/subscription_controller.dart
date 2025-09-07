@@ -68,11 +68,7 @@ class SubscriptionController extends GetxController {
   }
 
   Future<void> proceedToPayment() async {
-    if (selectedPackage.value == null) {
-      throw Exception('No package selected');
-    }
-
-    // Implement payment flow here
+    if (selectedPackage.value == null) throw Exception('No package selected');
   }
 
   Future<void> handlePaymentSuccess(PaymentSuccessResponse response) async {

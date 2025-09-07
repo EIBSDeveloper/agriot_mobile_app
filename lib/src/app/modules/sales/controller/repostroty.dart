@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 // import 'dart:isolate';
 
+import 'package:argiot/src/app/modules/sales/model/sales_detail_response.dart';
+import 'package:argiot/src/app/modules/sales/model/sales_list_response.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;

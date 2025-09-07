@@ -2,31 +2,16 @@
 
 import 'dart:convert';
 
+import 'package:argiot/src/app/modules/expense/model/farmer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
+import '../model/inventory_item.dart';
 
-// Base Models
-class Farmer {
-  final int id;
-  final String name;
 
-  Farmer({required this.id, required this.name});
-
-  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class InventoryItem {
-  final int id;
-  final String name;
-
-  InventoryItem({required this.id, required this.name});
-
-  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
 
 class InventoryType {
   final int id;

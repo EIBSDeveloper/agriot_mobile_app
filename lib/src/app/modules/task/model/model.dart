@@ -17,7 +17,7 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) => Task(
       id: json['id'],
-      cropType: json['crop_type'],
+      cropType: json['crop_type']?? json['crop_name'],
       cropImage: json['crop_image'],
       description: json['description'] ?? " ",
       status: json['schedule_status_name'] ,

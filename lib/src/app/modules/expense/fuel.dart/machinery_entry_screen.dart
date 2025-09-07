@@ -1,5 +1,5 @@
 import 'package:argiot/src/app/modules/expense/fuel.dart/date_picker_field.dart';
-import 'package:argiot/src/app/modules/expense/fuel.dart/purchases_add_controller.dart';
+import 'package:argiot/src/app/modules/expense/controller/purchases_add_controller.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,7 +45,6 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
               const SizedBox(height: 16),
               _buildWarrantyEndDateField(),
               const SizedBox(height: 16),
-               const SizedBox(height: 16),
 
           controller.buildDocumentsSection(),
           const SizedBox(height: 24),

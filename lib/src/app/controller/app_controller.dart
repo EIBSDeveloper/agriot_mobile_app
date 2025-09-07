@@ -1,10 +1,8 @@
+import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
 import 'package:get/get.dart';
 
-import '../modules/auth/model/auth_model.dart';
 
 class AppDataController extends GetxController {
-
-  
   RxString userId = ''.obs;
   RxString emailId = ''.obs;
   RxString username = ''.obs;
@@ -14,7 +12,4 @@ class AppDataController extends GetxController {
   final Rx<GetOtp?> loginState = Rx<GetOtp?>(null);
   String weatherBaseUrl = 'https://api.openweathermap.org/data/2.5/weather';
   String weatherApiKey = 'f0dd3d4a11a1446a7e29124d1911268b';
-
-
-  
 }

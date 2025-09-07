@@ -1,5 +1,6 @@
-import 'package:argiot/land_details.dart';
-import 'package:argiot/src/app/modules/expense/expense_controller.dart';
+
+import 'package:argiot/src/app/modules/auth/controller/walkthrough_controller.dart';
+import 'package:argiot/src/app/modules/expense/controller/expense_controller.dart';
 import 'package:argiot/src/app/modules/expense/expense_repository.dart';
 import 'package:argiot/src/app/controller/storage_service.dart';
 import 'package:argiot/src/app/utils/http/http_service.dart';
@@ -11,15 +12,14 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../consumption_controller.dart';
 import '../controller/user_limit.dart';
-import '../modules/inventory/controller/inventory_controller.dart';
-import '../modules/auth/view/screens/walkthrough_model.dart';
+import '../modules/expense/inventory_controller.dart';
 import '../controller/app_controller.dart';
 import '../controller/network_contoller.dart';
 import '../modules/auth/controller/splash_controller.dart';
 import '../modules/auth/repository/auth_repository.dart';
 import '../modules/bottombar/contoller/bottombar_contoller.dart';
-import '../modules/dashboad/controller/controller.dart';
-import '../modules/dashboad/repostory/repostory.dart';
+import '../modules/dashboad/controller/dashboard_controller.dart';
+import '../modules/dashboad/repostory/dashboard_repository.dart';
 import '../modules/forming/controller/crop_controller.dart';
 import '../modules/forming/controller/crop_details_controller.dart';
 import '../modules/forming/controller/forming_controller.dart';
@@ -39,7 +39,7 @@ import '../modules/registration/controller/land_picker_controller.dart';
 import '../modules/registration/controller/location_picker_controller.dart';
 import '../modules/registration/repostrory/crop_service.dart';
 import '../modules/registration/repostrory/land_service.dart';
-import '../modules/sales/controller/controller.dart';
+import '../modules/sales/controller/sales_controller.dart';
 import '../modules/sales/controller/repostroty.dart';
 import '../modules/task/controller/controller.dart';
 import '../modules/task/repostory/task_repository.dart';
@@ -269,15 +269,15 @@ class InventoryBinding implements Bindings {
   }
 }
 
-class LandBinding implements Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => KycController());
-    Get.lazyPut(() => InventoryCommonController());
-    Get.lazyPut(() => LandRepository());
-    Get.lazyPut(() => LandEditController());
-  }
-}
+// class LandBinding implements Bindings {
+//   @override
+//   void dependencies() {
+//     Get.lazyPut(() => KycController());
+//     Get.lazyPut(() => InventoryCommonController());
+//     Get.lazyPut(() => LandRepository());
+//     // Get.lazyPut(() => LandEditController());
+//   }
+// }
 
 class ConsumptionBinding extends Bindings {
   @override

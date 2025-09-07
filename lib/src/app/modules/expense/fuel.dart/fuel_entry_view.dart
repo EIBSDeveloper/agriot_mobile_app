@@ -2,7 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'purchases_add_controller.dart';
+import '../controller/purchases_add_controller.dart';
 
 class FuelEntryView extends GetView<PurchasesAddController> {
   const FuelEntryView({super.key});
@@ -44,10 +44,12 @@ class FuelEntryForm extends GetView<PurchasesAddController> {
         controller.buildPurchaseAmountField(),
         const SizedBox(height: 16),
         controller.buildPaidAmountField(),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8), const Divider(),
+        const SizedBox(height: 8),
 
         controller.buildDocumentsSection(),
-        const SizedBox(height: 24),
+        const SizedBox(height: 8), const Divider(),
+        const SizedBox(height: 8),
 
         controller.buildDescriptionField(),
         const SizedBox(height: 24),
@@ -76,6 +78,5 @@ class FuelEntryForm extends GetView<PurchasesAddController> {
 }
 
 
-// Add to your existing AppPages class
 
 

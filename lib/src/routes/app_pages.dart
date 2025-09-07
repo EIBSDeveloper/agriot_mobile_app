@@ -1,7 +1,9 @@
+import 'package:argiot/src/app/modules/auth/view/screens/login_page.dart';
+import 'package:argiot/src/app/modules/expense/view/screens/add_expense_screen.dart';
+import 'package:argiot/src/app/modules/sales/view/add_deduction_view.dart';
 import 'package:argiot/consumption_view.dart';
-import 'package:argiot/land_details.dart';
-import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_purchase_binding.dart';
-import 'package:argiot/src/app/modules/expense/fuel.dart/consumption_purchase_view.dart';
+import 'package:argiot/src/app/modules/expense/binding/consumption_purchase_binding.dart';
+import 'package:argiot/src/app/modules/expense/view/screens/consumption_purchase_view.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/fertilizer_screen.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/machinery_entry_screen.dart';
 import 'package:argiot/src/app/modules/expense/fuel.dart/vehicle_view.dart';
@@ -9,11 +11,8 @@ import 'package:argiot/guideline.dart';
 import 'package:argiot/src/app/modules/subscription/payment_failed_screen.dart';
 import 'package:argiot/src/app/modules/subscription/payment_screen.dart';
 import 'package:argiot/src/app/modules/subscription/payment_success_screen.dart';
-import 'package:argiot/src/app/modules/expense/add_expense_screen.dart';
 import 'package:argiot/src/app/modules/expense/expense_overview_screen.dart';
-import 'package:argiot/src/app/modules/expense/purchase_items_screen.dart';
 import 'package:argiot/src/app/modules/forming/view/screen/crop_overview_screen.dart';
-import 'package:argiot/src/app/modules/auth/view/screens/login_screen.dart';
 import 'package:argiot/src/app/modules/auth/view/screens/splash_screen.dart';
 import 'package:argiot/src/app/modules/bottombar/views/screens/home.dart';
 import 'package:argiot/src/app/modules/forming/view/screen/crop_view.dart';
@@ -26,15 +25,14 @@ import 'package:argiot/src/app/modules/auth/view/screens/walkthrough_model.dart'
 import 'package:get/get.dart';
 
 import '../../bestschedule.dart';
-import '../../fuel.dart';
 import '../../map_view.dart';
 import '../../test.dart';
 import '../app/bindings/app_binding.dart';
-import '../app/modules/auth/view/screens/otp_screen.dart';
+import '../app/modules/auth/view/screens/otp_page.dart';
 import '../app/modules/expense/fuel.dart/fuel_entry_binding.dart';
 import '../app/modules/expense/fuel.dart/fuel_entry_view.dart';
 import '../app/modules/expense/fuel.dart/test.dart';
-import '../app/modules/expense/fuel.dart/test_new.dart';
+import '../app/modules/expense/purchase_items_screen.dart';
 import '../app/modules/forming/controller/location_viewer_view.dart';
 import '../app/modules/forming/view/screen/document_viewer_view.dart';
 import '../app/modules/forming/view/screen/land_details_page.dart';
@@ -104,11 +102,6 @@ class AppPages {
       name: Routes.sales,
       page: () => const SalesListView(),
       binding: SalesBinding(),
-      // children: [
-      //   GetPage(name: '/details', page: () => const SalesDetailView()),
-      //   // GetPage(name: '/add', page: () => SalesAddEditView(isEdit: false)),
-      //   // GetPage(name: '/edit', page: () => SalesAddEditView(isEdit: true)),
-      // ],
     ),
 
     GetPage(
@@ -148,11 +141,6 @@ class AppPages {
       name: Routes.addExpense,
       page: () => AddExpenseScreen(),
       binding: ExpenseBinding(),
-    ),
-    GetPage(
-      name: Routes.purchaseItems,
-      page: () => const PurchaseItemsScreen(),
-      binding: InventoryBinding(),
     ),
 
     // Vendor/Customer routes
@@ -215,9 +203,17 @@ class AppPages {
       page: () => const ProfileEditView(),
       binding: ProfileEditBinding(),
     ),
-
+  GetPage(
+      name: Routes.purchaseItems,
+      page: () => const PurchaseItemsScreen(),
+      binding: InventoryBinding(),
+    ),
     // Task routes
-    GetPage(name: Routes.task, page: () => const TaskView(), binding: TaskBinding()),
+    GetPage(
+      name: Routes.task,
+      page: () => const TaskView(),
+      binding: TaskBinding(),
+    ),
     GetPage(
       name: Routes.taskDetail,
       page: () => const TaskDetailView(),
@@ -248,34 +244,12 @@ class AppPages {
       name: Routes.paymentFailed,
       page: () => const PaymentFailedScreen(),
     ),
-   
 
-    GetPage(
-      name: Routes.fuelList,
-      page: () => FuelListScreen(),
-      binding: FuelBindings(),
-    ),
-    GetPage(
-      name: Routes.fuelPurchaseList,
-      page: () => FuelPurchaseListScreen(),
-    ),
-    GetPage(
-      name: Routes.addFuelPurchase,
-      page: () => AddEditFuelPurchaseScreen(isEditing: false),
-    ),
-    GetPage(
-      name: Routes.editFuelPurchase,
-      page: () => AddEditFuelPurchaseScreen(isEditing: true),
-    ),
-    GetPage(
-      name: Routes.fuelPurchaseDetails,
-      page: () => FuelPurchaseDetailsScreen(),
-    ),
-    GetPage(
-      name: Routes.landEdit,
-      page: () => const LandEditView(),
-      binding: LandBinding(),
-    ),
+    // GetPage(
+    //   name: Routes.landEdit,
+    //   page: () => const LandEditView(),
+    //   binding: LandBinding(),
+    // ),
     GetPage(
       name: Routes.fuelConsumption,
       page: () => ConsumptionView(),
@@ -331,10 +305,10 @@ class AppPages {
       page: () => const FuelInventoryView(),
       binding: FuelInventoryBinding(),
     ),
-    GetPage(
-      name: '/inventory/:type/:id',
-      page: () => const InventoryView(),
-      binding: InventoryDetailBinding(),
-    ),
+    // GetPage(
+    //   name: '/inventory/:type/:id',
+    //   page: () => const InventoryView(),
+    //   binding: InventoryDetailBinding(),
+    // ),
   ];
 }

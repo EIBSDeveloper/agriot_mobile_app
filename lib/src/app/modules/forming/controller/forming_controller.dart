@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
-import '../model/land_model.dart';
+import '../model/land.dart';
 import '../repostroy/forming_repository.dart';
 
 class FormingController extends GetxController {

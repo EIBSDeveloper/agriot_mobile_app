@@ -214,6 +214,8 @@ class CropView extends GetView<RegCropController> {
                   ),
                   child: DropdownButtonFormField<AppDropdownItem>(
                     isExpanded: true,
+                    
+                icon: const Icon(Icons.keyboard_arrow_down),
                     value: controller.selectedMeasurementUnit.value,
                     decoration: const InputDecoration(
                       labelText: 'Unit *',
@@ -343,6 +345,8 @@ class SurveyDropdown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: DropdownButtonFormField<CropSurveyDetail>(
         value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
+        
+                icon: const Icon(Icons.keyboard_arrow_down),
         items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
             value: survey,
             child: Text(

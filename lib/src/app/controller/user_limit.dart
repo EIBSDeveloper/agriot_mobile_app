@@ -18,10 +18,8 @@ class UserLimitController extends GetxController {
       final response = await repository.getFarmerUsage();
       usage.value = response;
       packageUsage.value = usage.value!.packageDetails;
-      // if(usage.value!.packageDetails.)
-    // ignore: empty_catches
     } catch (e) {
-
+      print("object");
     }
   }
 }

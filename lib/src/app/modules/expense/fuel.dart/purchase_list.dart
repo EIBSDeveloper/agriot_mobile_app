@@ -1,8 +1,8 @@
 
+import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'model.dart';
 
 class PurchaseList extends StatelessWidget {
   final List<PurchaseRecord> records;
@@ -24,7 +24,8 @@ class PurchaseList extends StatelessWidget {
             Get.toNamed('/fuel_inventory',arguments: {"id":record.id});
           },
           child: Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            elevation: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(

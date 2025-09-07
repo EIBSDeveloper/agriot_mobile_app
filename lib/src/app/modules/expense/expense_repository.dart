@@ -1,8 +1,12 @@
 // lib/modules/expenses/models/expense_model.dart
 
 import 'dart:convert';
-import 'package:argiot/src/app/modules/expense/expense_model.dart';
+import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
+import 'package:argiot/src/app/modules/expense/model/expense_response.dart';
+import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
+import 'package:argiot/src/app/modules/expense/model/file_type.dart';
+import 'package:argiot/src/app/modules/expense/model/total_expense.dart';
 import 'package:argiot/src/app/utils/http/http_service.dart';
 import 'package:get/get.dart';
 

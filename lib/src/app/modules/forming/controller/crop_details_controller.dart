@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
 import 'package:argiot/src/app/modules/forming/view/screen/crop_model.dart';
 import 'package:argiot/src/app/modules/forming/repostroy/forming_repository.dart';
 import 'package:get/get.dart';
@@ -232,12 +233,13 @@ class CropDetailsController extends GetxController {
         return tasks.where((task) => task.statusId == 2).toList();
       case 'waiting':
         return tasks.where((task) => task.statusId == 1).toList();
-      // case 'cancelled':
-      //   return tasks.where((task) => task.status == 'Cancelled').toList();
-      // case 'pending':
-      //   return tasks.where((task) => task.status == 'Pending').toList();
-      // case 'in_progress':
-      //   return tasks.where((task) => task.status == 'InProgress').toList();
+
+      case 'in_progress':
+        return tasks.where((task) => task.statusId == 3).toList();
+      case 'pending':
+        return tasks.where((task) => task.statusId == 4).toList();
+      case 'cancelled':
+        return tasks.where((task) => task.statusId == 5).toList();
       default:
         return tasks;
     }

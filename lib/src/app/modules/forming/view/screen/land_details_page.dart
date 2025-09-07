@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/forming/model/crop_card_model.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import '../../../../../routes/app_routes.dart';
 import '../../../../../utils.dart';
 import '../../../subscription/package_model.dart';
 import '../../controller/land_detail_controller.dart';
-import '../../model/land_detail_model.dart';
 import '../widget/crop_card.dart';
 
 class LandDetailView extends GetView<LandDetailController> {
@@ -19,7 +19,7 @@ class LandDetailView extends GetView<LandDetailController> {
           title: controller.landDetails['name'] ?? 'Loading...',
           showBackButton: true,
           actions: [
-            IconButton(
+            IconButton( color: Get.theme.primaryColor,
               onPressed: () {
                 final landId = Get.arguments as int;
                 Get.toNamed('/add-land', arguments: {'landId': landId})?.then((
@@ -34,7 +34,8 @@ class LandDetailView extends GetView<LandDetailController> {
               onPressed: () {
                 controller.deleteLandDetails(Get.arguments as int);
               },
-              icon: const Icon(Icons.delete),
+               color: Get.theme.primaryColor,
+              icon:  const Icon(Icons.delete),
             ),
           ],
         ),
@@ -85,14 +86,14 @@ class LandDetailView extends GetView<LandDetailController> {
           _buildSurveySection(),
           const SizedBox(height: 8),
 
-          const Divider(), const SizedBox(height: 8),
+          const Divider(), 
+              _buildDocumentsSection(),
+          const SizedBox(height: 8),
           // Crops
           _buildCropsSection(),
-          const SizedBox(height: 8),
-
-          const Divider(), const SizedBox(height: 8),
+         
           // Documents
-          _buildDocumentsSection(),
+      
           const SizedBox(height: 16),
         ],
       ),
@@ -180,28 +181,22 @@ class LandDetailView extends GetView<LandDetailController> {
     final documents = controller.landDetails['documents'] as List? ?? [];
     if (documents.isEmpty) return const SizedBox();
 
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const TitleText('Documents'),
-            const SizedBox(height: 8),
-            ...documents.map((doc) => Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: doc['documents'].map<Widget>((list) => ActionChip(
-                    avatar: const Icon(Icons.picture_as_pdf),
-                    label: Text(list['document_category']['name']),
-                    onPressed: () =>
-                        controller.viewDocument(list['upload_document']),
-                  )).toList(),
-              )),
-          ],
-        ),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const TitleText('Documents'),
+        const SizedBox(height: 8),
+        ...documents.map((doc) => Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: doc['documents'].map<Widget>((list) => ActionChip(
+                avatar: const Icon(Icons.picture_as_pdf),
+                label: Text(list['document_category']['name']),
+                onPressed: () =>
+                    controller.viewDocument(list['upload_document']),
+              )).toList(),
+          )),
+      ],
     );
   }
 

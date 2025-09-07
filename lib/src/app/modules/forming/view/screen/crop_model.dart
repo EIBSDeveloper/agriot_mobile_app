@@ -1,84 +1,5 @@
+import 'package:argiot/src/app/modules/forming/model/measurement_unit.dart';
 import 'package:argiot/src/app/modules/registration/model/land_model.dart';
-
-class CropOverview {
-  final int farmerId;
-  final CropLand land;
-  final Cropinfo crop;
-  final List<CropGuideline> guidelines;
-  final List<Schedule> schedules;
-
-  CropOverview({
-    required this.farmerId,
-    required this.land,
-    required this.crop,
-    required this.guidelines,
-    required this.schedules,
-  });
-
-  factory CropOverview.fromJson(Map<String, dynamic> json) => CropOverview(
-      farmerId: json['farmer_id'],
-      land: CropLand.fromJson(json['land']),
-      crop: Cropinfo.fromJson(json['crop']),
-      guidelines: List<CropGuideline>.from(
-        json['guidelines']?.map((x) => CropGuideline.fromJson(x)) ?? [],
-      ),
-      schedules: List<Schedule>.from(
-        json['schedules']?.map((x) => Schedule.fromJson(x)) ?? [],
-      ),
-    );
-}
-
-class CropDetails {
-  final CropLandDetails land;
-  final List<CropDetail> crops;
-
-  CropDetails({required this.land, required this.crops});
-
-  factory CropDetails.fromJson(Map<String, dynamic> json) => CropDetails(
-      land: CropLandDetails.fromJson(json),
-      crops: List<CropDetail>.from(
-        json['crop_details']?.map((x) => CropDetail.fromJson(x)) ?? [],
-      ),
-    );
-}
-
-class CropLandDetails {
-  final int id;
-  final String name;
-  final double measurementValue;
-  final MeasurementUnit measurementUnit;
-  final SoilType soilType;
-  final List<SurveyDetail> surveyDetails;
-  final String pattaNumber;
-  final double latitude;
-  final double longitude;
-
-  CropLandDetails({
-    required this.id,
-    required this.name,
-    required this.measurementValue,
-    required this.measurementUnit,
-    required this.soilType,
-    required this.surveyDetails,
-    required this.pattaNumber,
-    required this.latitude,
-    required this.longitude,
-  });
-
-  factory CropLandDetails.fromJson(Map<String, dynamic> json) => CropLandDetails(
-      id: json['id'],
-      name: json['name'],
-      measurementValue: json['measurement_value']?.toDouble() ?? 0.0,
-      measurementUnit: MeasurementUnit.fromJson(json['measurement_unit']),
-      soilType: SoilType.fromJson(json['soil_type']),
-      surveyDetails: List<SurveyDetail>.from(
-        json['survey_details']?.map((x) => SurveyDetail.fromJson(x)) ?? [],
-      ),
-      pattaNumber: json['patta_number'] ?? '',
-      latitude: json['latitude']?.toDouble() ?? 0.0,
-      longitude: json['longitude']?.toDouble() ?? 0.0,
-    );
-}
 
 class CropDetail {
   final int id;
@@ -233,35 +154,23 @@ class Schedule {
     );
 }
 
-class MeasurementUnit {
-  final int id;
-  final String name;
-
-  MeasurementUnit({required this.id, required this.name});
-
-  factory MeasurementUnit.fromJson(Map<String, dynamic> json) => MeasurementUnit(id: json['id'], name: json['name']);
-}
-
-class SoilType {
-  final int? id;
-  final String? name;
-
-  SoilType({required this.id, required this.name});
-
-  factory SoilType.fromJson(Map<String, dynamic> json) => SoilType(id: json['id'], name: json['name']);
-}
 
 class Crop {
-  int? id;
-  String? name;
+  final int id;
+  final String name;
+  final String img;
 
-  Crop({this.id, this.name});
+  Crop({required this.id, required this.name, required this.img});
 
-  factory Crop.fromJson(Map<String, dynamic> json) =>
-      Crop(id: json["id"], name: json["name"]);
-
+  factory Crop.fromJson(Map<String, dynamic> json) => Crop(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      img: json['img'] ?? '',
+    );
+    
   Map<String, dynamic> toJson() => {"id": id, "name": name};
 }
+
 
 class HarvestingType {
   final int id;

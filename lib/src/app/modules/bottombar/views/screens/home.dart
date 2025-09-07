@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../contoller/bottombar_contoller.dart';
-import '../widgets/test.dart';
+import '../widgets/profile_appbar.dart';
 
 class Home extends GetView<BottomBarContoller> {
   const Home({super.key});

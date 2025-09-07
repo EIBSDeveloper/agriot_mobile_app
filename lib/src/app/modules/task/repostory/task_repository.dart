@@ -46,7 +46,6 @@ class TaskRepository {
         'start_date': DateFormat('yyyy-MM-dd').format(startDate),
         'description': description,
         'schedule_status': scheduleStatus,
-        'schedule_choice': 0, // Assuming default value
       });
       return json.decode(response.body);
     } catch (e) {
@@ -162,7 +161,7 @@ class TaskRepository {
     int cropId,
     String startDate,
     String description,
-    int scheduleStatus
+    int scheduleStatus,
   ) async {
     final farmerId = _appDataController.userId;
     try {

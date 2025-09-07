@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/task/model/model.dart';
+import 'package:argiot/src/app/modules/task/view/widget/add_schedule.dart';
 import 'package:argiot/src/app/utils/http/http_service.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
-import 'package:argiot/src/app/widgets/toggle_bar.dart';
 import 'package:argiot/src/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+
+import 'src/app/widgets/title_text.dart';
 
 // lib/common/models/land_crop_model.dart
 class ScheduleLand {
@@ -258,8 +260,9 @@ class ScheduleController extends GetxController {
 
       await _repository.addTask(taskRequest);
 
-      Get..back(result: true)
-      ..back(result: true);
+      Get
+        ..back(result: true)
+        ..back(result: true);
       showSuccess('Task added successfully');
     } catch (e) {
       showError('Failed to add task: $e');
@@ -408,6 +411,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
                       onChanged: (ScheduleLand? land) {
                         controller.selectLand(land);
                       },
+                      icon: const Icon(Icons.keyboard_arrow_down),
                       decoration: const InputDecoration(
                         hintText: 'Land',
                         border: InputBorder.none,
@@ -450,6 +454,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
                       onChanged: (ScheduleCrop? crop) {
                         controller.selectCrop(crop);
                       },
+                      icon: const Icon(Icons.keyboard_arrow_down),
                       decoration: const InputDecoration(
                         hintText: 'Crop',
                         border: InputBorder.none,
@@ -519,25 +524,29 @@ class ScheduleCard extends StatelessWidget {
           errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
       ),
-      title: Text(schedule.crop),
-      subtitle: Text(schedule.activityType),
-      trailing: IconButton(
-        icon: const Icon(Icons.add),
-        onPressed: () async {
-          controller.setParameters(
-            lId: schedule.cropId,
-            cId: schedule.cropId,
-            sId: schedule.id,
-          );
-
-          // Delay execution until after the first build
-
-          await controller.fetchScheduleDetails();
-          addScheduleBottomSheet();
-        },
+      title: TitleText(schedule.crop),
+      subtitle: Text(schedule.activityType,maxLines: 1,overflow: TextOverflow.ellipsis,),
+      trailing: Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
+          icon: const Icon(Icons.add),
+          onPressed: () async {
+            controller.setParameters(
+              lId: schedule.cropId,
+              cId: schedule.cropId,
+              sId: schedule.id,
+            );
+        
+            // Delay execution until after the first build
+        
+            await controller.fetchScheduleDetails();
+            addScheduleBottomSheet();
+          },
+        ),
       ),
-      onTap: ()  {
-         Get.toNamed(
+      onTap: () {
+        Get.toNamed(
           '/schedule-details',
           arguments: {
             'landId': schedule.cropId,
@@ -618,7 +627,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Text(schedule.crop, style: Get.textTheme.headlineSmall),
+            TitleText(schedule.crop),
             const SizedBox(height: 10),
             _buildDetailItem('activity_type'.tr, schedule.activityType),
             _buildDetailItem('days'.tr, '${schedule.days}'),
@@ -657,194 +666,5 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
 }
 
 void addScheduleBottomSheet() {
-  final ScheduleController controller = Get.find<ScheduleController>();
-
-  controller.description.value = controller.selectedSchedule.value.description;
-  Get.bottomSheet(
-    Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Get.theme.scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: Form(
-        key: controller.formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Add Schedule',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-
-              Obx(
-                () => InputCardStyle(
-                  noHeight: true,
-                  child: ListTile(
-                    title: const Text('Schedule Date*'),
-                    subtitle: Text(
-                      '${controller.scheduleDate.value.day}/${controller.scheduleDate.value.month}/${controller.scheduleDate.value.year}',
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: Get.context!,
-                        initialDate: controller.scheduleDate.value,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-                      if (date != null) {
-                        controller.scheduleDate.value = date;
-                        if (controller.isRecurring.value) {
-                          controller.scheduleEndDate.value = null;
-                        }
-                      }
-                    },
-                  ),
-                ),
-              ),
-
-              Column(
-                children: [
-                  const SizedBox(height: 8),
-                  Obx(
-                    () => CheckboxListTile(
-                      title: const Text('Recurring Task'),
-                      value: controller.isRecurring.value,
-                      onChanged: (value) =>
-                          controller.isRecurring.value = value ?? false,
-                    ),
-                  ),
-
-                  Obx(() {
-                    if (!controller.isRecurring.value) {
-                      return const SizedBox();
-                    }
-
-                    return Column(
-                      children: [
-                        const SizedBox(height: 8),
-                        ToggleBar(
-                          onTap: (index) {
-                            controller.recurrenceType.value = index;
-                          },
-                          activePageIndex: controller.recurrenceType.value,
-                          buttonsList: const ["Daily", "Weekly ", "Monthly "],
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Weekly day selector
-                        if (controller.recurrenceType.value == 1)
-                          Wrap(
-                            spacing: 8,
-                            children: List.generate(7, (index) {
-                              final day = [
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat',
-                                'Sun',
-                              ][index];
-                              return FilterChip(
-                                label: Text(day),
-                                selected: controller.selectedDays.contains(
-                                  index + 1,
-                                ),
-                                onSelected: (selected) {
-                                  if (selected) {
-                                    controller.selectedDays.add(index + 1);
-                                  } else {
-                                    controller.selectedDays.remove(index + 1);
-                                  }
-                                },
-                              );
-                            }),
-                          ),
-
-                        // End date picker
-                        Obx(
-                          () => InputCardStyle(
-                            noHeight: true,
-                            child: ListTile(
-                              title: const Text('Schedule End Date*'),
-                              subtitle: Text(
-                                controller.scheduleEndDate.value == null
-                                    ? 'Not selected'
-                                    : '${controller.scheduleEndDate.value!.day}/${controller.scheduleEndDate.value!.month}/${controller.scheduleEndDate.value!.year}',
-                              ),
-                              trailing: const Icon(Icons.calendar_today),
-                              onTap: () async {
-                                final date = await showDatePicker(
-                                  context: Get.context!,
-                                  initialDate: controller.scheduleDate.value
-                                      .add(const Duration(days: 7)),
-                                  firstDate: controller.scheduleDate.value,
-                                  lastDate: DateTime.now().add(
-                                    const Duration(days: 365 * 2),
-                                  ),
-                                );
-                                if (date != null) {
-                                  controller.scheduleEndDate.value = date;
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
-                ],
-              ),
-              const SizedBox(height: 8),
-
-              // Description
-              InputCardStyle(
-                noHeight: true,
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Description*',
-                    border: InputBorder.none,
-                  ),
-                  initialValue: controller.description.value,
-                  maxLines: 2,
-                  onChanged: (value) => controller.description.value = value,
-                  validator: (value) => value?.isEmpty ?? true
-                      ? 'Please enter description'
-                      : null,
-                ),
-              ),
-
-              const SizedBox(height: 16),
-              Obx(
-                () => ElevatedButton(
-                  onPressed: controller.isLoading.value
-                      ? null
-                      : controller.addTask,
-                  child: controller.isLoading.value
-                      ? const CircularProgressIndicator()
-                      : const Text('Add Task Schedule'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-    isScrollControlled: true,
-  );
+  Get.bottomSheet(AddSchedule(), isScrollControlled: true);
 }

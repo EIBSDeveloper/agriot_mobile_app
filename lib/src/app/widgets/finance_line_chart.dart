@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'package:argiot/src/app/modules/dashboad/model/model.dart';
+import 'package:argiot/src/app/modules/dashboad/model/daily_data.dart';
+import 'package:argiot/src/app/modules/dashboad/model/finance_data.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 

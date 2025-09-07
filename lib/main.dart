@@ -1,5 +1,5 @@
 import 'package:argiot/firebase_options.dart';
-import 'package:argiot/src/app/modules/expense/expense_isolate.dart';
+import 'package:argiot/src/app/modules/expense/controller/expense_isolate.dart';
 import 'package:argiot/src/app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

@@ -114,7 +114,7 @@ class CropViewPage extends GetView<CropController> {
           labelText: label,
           border: InputBorder.none,
           isDense: true,
-          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
+          suffixIcon: readOnly ?  Icon(Icons.location_on, color: Get.theme.primaryColor,) : null,
         ),
         maxLines: maxLines ?? 1,
         validator: validator,
@@ -199,10 +199,10 @@ class CropViewPage extends GetView<CropController> {
   Widget _buildPlantationDateField(BuildContext context) => Obx(() => InputCardStyle(
         child: TextFormField(
           readOnly: true,
-          decoration: const InputDecoration(
+          decoration:  InputDecoration(
             labelText: 'Plantation Date *',
             border: InputBorder.none,
-            suffixIcon: Icon(Icons.calendar_today),
+            suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor,),
           ),
           controller: TextEditingController(
             text: controller.plantationDate.value != null
@@ -247,6 +247,8 @@ class CropViewPage extends GetView<CropController> {
                       hintText: 'Unit *',
                       border: InputBorder.none,
                     ),
+                    
+                icon: const Icon(Icons.keyboard_arrow_down),
                     isExpanded: true,
                     items: controller.landUnits.isNotEmpty
                         ? [
@@ -368,6 +370,8 @@ class SurveyDropdown extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: DropdownButtonFormField<CropSurveyDetail>(
         value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
+        
+                icon: const Icon(Icons.keyboard_arrow_down),
         items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
             value: survey,
             child: Text(

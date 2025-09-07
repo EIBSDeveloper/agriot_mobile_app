@@ -92,7 +92,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
           children: [
             if (item.shopName != null) Text(item.shopName!),
             if (item.businessName != null) Text(item.businessName!),
-            if (item.inventoryType != null) Text(item.inventoryType!),
+            if (item.inventoryType != null) Text(item.inventoryType!,maxLines: 1,overflow: TextOverflow.ellipsis,),
           ],
         ),
         trailing: IconButton(
@@ -205,6 +205,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           InputCardStyle(
             child: DropdownButtonFormField<Market>(
               isExpanded: true,
+              
+                icon: const Icon(Icons.keyboard_arrow_down),
               value: controller.selectedMarket.value,
               decoration: InputDecoration(
                 hintText: "${'select_market'.tr}*",

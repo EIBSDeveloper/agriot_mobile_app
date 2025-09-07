@@ -1,6 +1,6 @@
 // lib/app/modules/guidelines/models/inventory_model.dart
 
-import 'package:argiot/src/app/modules/inventory/controller/inventory_controller.dart';
+import 'package:argiot/src/app/modules/expense/inventory_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,10 +30,9 @@ class InventoryOverview extends GetView<InventoryController> {
           }
 
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 10),
                 child: TitleText("inventory".tr, fit: BoxFit.none),
               ),
               const SizedBox(height: 10),

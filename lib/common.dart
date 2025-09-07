@@ -76,8 +76,8 @@ class Vendor {
     );
   final int id;
   final String name;
-  final String businessName;
-  final String mobileNo;
+  final String? businessName;
+  final String? mobileNo;
 }
 
 class DocumentType {

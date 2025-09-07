@@ -147,7 +147,7 @@ class RegLandController extends GetxController {
 
         locationListController.text = location.toString();
 
-        !formKey.currentState!.validate();
+     
       }
       update();
     } catch (e) {

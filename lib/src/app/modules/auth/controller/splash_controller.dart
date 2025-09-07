@@ -10,7 +10,7 @@ class SplashController extends GetxController {
     _initSplash();
   }
 
-  void _initSplash() async {
+  Future<void> _initSplash() async {
     final StorageService storageService = Get.put(StorageService());
     storageService.getLoginState();
     if (storageService.isLoggedIn) {

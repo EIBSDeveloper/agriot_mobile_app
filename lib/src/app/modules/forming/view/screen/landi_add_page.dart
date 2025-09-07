@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
@@ -19,7 +20,7 @@ class LandViewPage extends GetView<LandController> {
       controller.landId.value = args['landId'];
     }
     return Scaffold(
-      appBar: AppBar(title: const Text('Land Details')),
+      appBar: const CustomAppBar(title:'Land Details'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(

@@ -1,7 +1,7 @@
+import 'package:argiot/src/app/modules/forming/model/crop_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../model/land_detail_model.dart';
 
 class CropCard extends StatelessWidget {
   final CropCardModel crop;

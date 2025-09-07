@@ -1,4 +1,3 @@
-import 'package:argiot/src/app/modules/registration/controller/kyc_controller.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -15,6 +14,7 @@ import '../../registration/repostrory/address_service.dart';
 import '../../registration/repostrory/crop_service.dart';
 import '../../registration/repostrory/land_service.dart';
 import '../../registration/view/screen/location_picker_view.dart';
+import '../model/measurement_unit.dart';
 
 class LandController extends GetxController {
   final LandService _landService = Get.find();
@@ -23,7 +23,6 @@ class LandController extends GetxController {
   final landIdController = TextEditingController();
   final pattaNoController = TextEditingController();
   final measurementController = TextEditingController();
-  // final locationController = TextEditingController();
   final locationListController = TextEditingController();
   final RxList<LatLng?> landCoordinates = <LatLng>[].obs;
   final RxList geoMarks = [].obs;
@@ -46,7 +45,7 @@ class LandController extends GetxController {
 
   // Dynamic lists
   final RxList<SurveyItem> surveyItems = <SurveyItem>[].obs;
-  final RxList<DocumentAdd> documentItems = <DocumentAdd>[].obs;
+  final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
   // Loading states
   final RxBool isLoadingLandUnits = false.obs;
@@ -61,11 +60,6 @@ class LandController extends GetxController {
     name: '',
     measurementValue: 0,
     measurementUnit: MeasurementUnit(id: 0, name: ''),
-    // country: Country(id: 0, name: ''),
-    // state: State(id: 0, name: ''),
-    // city: City(id: 0, name: ''),
-    // taluk: Taluk(id: 0, name: ''),
-    // village: Village(id: 0, name: ''),
     doorNo: '',
     locations: '',
     latitude: 0,
@@ -205,7 +199,7 @@ class LandController extends GetxController {
       binding: NewDocumentBinding(),
       arguments: {"id": 0},
     )?.then((result) {
-      if (result != null && result is DocumentAdd) {
+      if (result != null && result is AddDocumentModel) {
         documentItems.add(result);
       }
       print(documentItems.toString());
@@ -256,12 +250,14 @@ class LandController extends GetxController {
           return map;
         }).toList();
       } else {
-        surveyDetails = surveyItems.asMap().map((index, item) => MapEntry(
+        surveyDetails = surveyItems.asMap().map(
+          (index, item) => MapEntry(
             'survey_details_${index + 1}',
             'survey_no:${item.surveyNo},'
                 'survey_measurement_value:${item.measurement},'
                 'survey_measurement_unit_id:${item.unit?.id}',
-          ));
+          ),
+        );
       }
 
       final documentItemsList = documentItems.map((doc) {
@@ -278,12 +274,7 @@ class LandController extends GetxController {
         "measurement_unit": selectedLandUnit.value?.id,
         if (selectedSoilType.value?.id != null)
           "soil_type": selectedSoilType.value?.id,
-        "country": Get.find<KycController>().selectedCountry.value?.id,
-        "state": Get.find<KycController>().selectedState.value?.id,
-        "city": Get.find<KycController>().selectedCity.value?.id,
-        "taluk": Get.find<KycController>().selectedTaluk.value?.id,
-        "village": Get.find<KycController>().selectedVillage.value?.id,
-        "door_no": Get.find<KycController>().doorNoController.text.trim(),
+
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
 
         "l_status": 0,

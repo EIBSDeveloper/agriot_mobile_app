@@ -1,93 +1,12 @@
 import 'dart:convert';
 
+import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/app_controller.dart';
 import '../../../utils/http/http_service.dart';
-
-class FuelInventoryModel {
-  final int fuelId;
-  final double quantity;
-  final double purchaseAmount;
-  final String description;
-  final String date;
-  final Farmer farmer;
-  final InventoryItem inventoryItem;
-  final InventoryType inventoryType;
-  final InventoryCategory inventoryCategory;
-  final Vendor vendor;
-  final List<DocumentCategory> documents;
-
-  FuelInventoryModel({
-    required this.fuelId,
-    required this.quantity,
-    required this.purchaseAmount,
-    required this.description,
-    required this.date,
-    required this.farmer,
-    required this.inventoryItem,
-    required this.inventoryType,
-    required this.inventoryCategory,
-    required this.vendor,
-    required this.documents,
-  });
-
-  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) => FuelInventoryModel(
-      fuelId: json['fuel_id'] ?? 0,
-      quantity: (json['quantity'] ?? 0.0).toDouble(),
-      purchaseAmount: (json['purchase_amount'] ?? 0.0).toDouble(),
-      description: json['description'] ?? '',
-      date: json['date'] ?? '',
-      farmer: Farmer.fromJson(json['farmer'] ?? {}),
-      inventoryItem: InventoryItem.fromJson(json['inventory_item'] ?? {}),
-      inventoryType: InventoryType.fromJson(json['inventory_type'] ?? {}),
-      inventoryCategory: InventoryCategory.fromJson(
-        json['inventory_category'] ?? {},
-      ),
-      vendor: Vendor.fromJson(json['vendor'] ?? {}),
-      documents: (json['documents'] as List<dynamic>? ?? [])
-          .map((doc) => DocumentCategory.fromJson(doc))
-          .toList(),
-    );
-}
-
-class Farmer {
-  final int id;
-  final String name;
-
-  Farmer({required this.id, required this.name});
-
-  factory Farmer.fromJson(Map<String, dynamic> json) => Farmer(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class InventoryItem {
-  final int id;
-  final String name;
-
-  InventoryItem({required this.id, required this.name});
-
-  factory InventoryItem.fromJson(Map<String, dynamic> json) => InventoryItem(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class InventoryType {
-  final int id;
-  final String name;
-
-  InventoryType({required this.id, required this.name});
-
-  factory InventoryType.fromJson(Map<String, dynamic> json) => InventoryType(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class InventoryCategory {
-  final int id;
-  final String name;
-
-  InventoryCategory({required this.id, required this.name});
-
-  factory InventoryCategory.fromJson(Map<String, dynamic> json) => InventoryCategory(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
 
 class Vendor {
   final int id;

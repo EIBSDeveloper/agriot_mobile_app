@@ -789,7 +789,7 @@ class CustomerVendorDetailsPage extends StatefulWidget {
   final int id;
   final DetailsType? detailsType;
 
-const  CustomerVendorDetailsPage({
+  CustomerVendorDetailsPage({
     super.key,
     required this.id,
     required this.detailsType,
@@ -840,9 +840,9 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
                     'Vendor Receivables'.tr,
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  ...vendorReceivables.map(
-                    (vendor) => buildVendorReceivables(vendor),
-                  ),
+                  ...vendorReceivables
+                      .map((vendor) => buildVendorReceivables(vendor))
+                      ,
                 ],
                 if (customerReceivables.isNotEmpty) ...[
                   const SizedBox(height: 16),
@@ -918,17 +918,17 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
           children: [
             vendor.vendorImage.isNotEmpty
                 ? Image.network(
-                    vendor.vendorImage,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  )
+                  vendor.vendorImage,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                )
                 : Container(
-                    width: 60,
-                    height: 60,
-                    color: Colors.grey.shade300,
-                    child: const Icon(Icons.person, size: 40),
-                  ),
+                  width: 60,
+                  height: 60,
+                  color: Colors.grey.shade300,
+                  child: const Icon(Icons.person, size: 40),
+                ),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1224,17 +1224,17 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
           children: [
             vendor.vendorImage.isNotEmpty
                 ? Image.network(
-                    vendor.vendorImage,
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  )
+                  vendor.vendorImage,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                )
                 : Container(
-                    width: 60,
-                    height: 60,
-                    color: Colors.grey.shade300,
-                    child: const Icon(Icons.person, size: 40),
-                  ),
+                  width: 60,
+                  height: 60,
+                  color: Colors.grey.shade300,
+                  child: const Icon(Icons.person, size: 40),
+                ),
             const SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1566,88 +1566,89 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
     );
 
     return Column(
-      children: sales.map((sale) => buildPremiumCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children:
+          sales.map((sale) => buildPremiumCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Sales Date:".tr,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.add, color: Colors.blue),
-                        onPressed: () {
-                          showAddcustomerBottomSheet(
-                            isPayable: false,
-                            controller: customerAddController,
-                            customerId: customerId,
-                            customerName: customerName,
-                            currentAmount: sale.totalSalesAmount,
-                            salesId: sale.salesId,
-                            context: Get.context!,
-                          );
-                        },
+                      Text(
+                        "Sales Date:".tr,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.history, color: Colors.grey),
-                        onPressed: () {
-                          Get.to(
-                            () => HistoryDetailsPage(
-                              farmerId: 339,
-                              customerId: customerId,
-                              saleId: sale.salesId,
-                              isPayable: false,
-                            ),
-                          );
-                        },
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add, color: Colors.blue),
+                            onPressed: () {
+                              showAddcustomerBottomSheet(
+                                isPayable: false,
+                                controller: customerAddController,
+                                customerId: customerId,
+                                customerName: customerName,
+                                currentAmount: sale.totalSalesAmount,
+                                salesId: sale.salesId,
+                                context: Get.context!,
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.history, color: Colors.grey),
+                            onPressed: () {
+                              Get.to(
+                                () => HistoryDetailsPage(
+                                  farmerId: 339,
+                                  customerId: customerId,
+                                  saleId: sale.salesId,
+                                  isPayable: false,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(sale.salesDate),
+                  const SizedBox(height: 8),
+                  Text(
+                    "${'Crop:'.tr} ${sale.cropName}",
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${'Total:'.tr} ₹${sale.totalSalesAmount}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "${'Paid:'.tr} ₹${sale.amountPaid}",
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${'Received:'.tr} ₹${sale.receivedAmount}",
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                      Text(
+                        "${'To Pay:'.tr} ₹${sale.toPayAmount}",
+                        style: const TextStyle(color: Colors.redAccent),
                       ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text(sale.salesDate),
-              const SizedBox(height: 8),
-              Text(
-                "${'Crop:'.tr} ${sale.cropName}",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${'Total:'.tr} ₹${sale.totalSalesAmount}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "${'Paid:'.tr} ₹${sale.amountPaid}",
-                    style: const TextStyle(color: Colors.green),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${'Received:'.tr} ₹${sale.receivedAmount}",
-                    style: const TextStyle(color: Colors.blue),
-                  ),
-                  Text(
-                    "${'To Pay:'.tr} ₹${sale.toPayAmount}",
-                    style: const TextStyle(color: Colors.redAccent),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )).toList(),
+            )).toList(),
     );
   }
 
@@ -1662,88 +1663,89 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
     );
 
     return Column(
-      children: sales.map((sale) => buildPremiumCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children:
+          sales.map((sale) => buildPremiumCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Sales Date:".tr,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.add, color: Colors.red),
-                        onPressed: () {
-                          showAddcustomerBottomSheet(
-                            isPayable: true,
-                            controller: customerAddController,
-                            customerId: customerId,
-                            customerName: customerName,
-                            currentAmount: sale.totalSalesAmount,
-                            salesId: sale.salesId,
-                            context: Get.context!,
-                          );
-                        },
+                      Text(
+                        "Sales Date:".tr,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.history, color: Colors.grey),
-                        onPressed: () {
-                          Get.to(
-                            () => HistoryDetailsPage(
-                              farmerId: 339,
-                              customerId: customerId,
-                              saleId: sale.salesId,
-                              isPayable: true,
-                            ),
-                          );
-                        },
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add, color: Colors.red),
+                            onPressed: () {
+                              showAddcustomerBottomSheet(
+                                isPayable: true,
+                                controller: customerAddController,
+                                customerId: customerId,
+                                customerName: customerName,
+                                currentAmount: sale.totalSalesAmount,
+                                salesId: sale.salesId,
+                                context: Get.context!,
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.history, color: Colors.grey),
+                            onPressed: () {
+                              Get.to(
+                                () => HistoryDetailsPage(
+                                  farmerId: 339,
+                                  customerId: customerId,
+                                  saleId: sale.salesId,
+                                  isPayable: true,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(sale.salesDate),
+                  const SizedBox(height: 8),
+                  Text(
+                    "${'Crop:'.tr} ${sale.cropName}",
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${'Total:'.tr} ₹${sale.totalSalesAmount}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "${'Paid:'.tr} ₹${sale.amountPaid}",
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${'Received:'.tr} ₹${sale.receivedAmount}",
+                        style: const TextStyle(color: Colors.blue),
+                      ),
+                      Text(
+                        "${'To Pay:'.tr} ₹${sale.toPayAmount}",
+                        style: const TextStyle(color: Colors.redAccent),
                       ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text(sale.salesDate),
-              const SizedBox(height: 8),
-              Text(
-                "${'Crop:'.tr} ${sale.cropName}",
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${'Total:'.tr} ₹${sale.totalSalesAmount}",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "${'Paid:'.tr} ₹${sale.amountPaid}",
-                    style: const TextStyle(color: Colors.green),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${'Received:'.tr} ₹${sale.receivedAmount}",
-                    style: const TextStyle(color: Colors.blue),
-                  ),
-                  Text(
-                    "${'To Pay:'.tr} ₹${sale.toPayAmount}",
-                    style: const TextStyle(color: Colors.redAccent),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        )).toList(),
+            )).toList(),
     );
   }
 }
@@ -2560,14 +2562,15 @@ void showAddcustomerBottomSheet({
                   const SizedBox(height: 5),
                   Obx(
                     () => Column(
-                      children: controller.base64Files
-                          .map(
-                            (f) => ListTile(
-                              leading: const Icon(Icons.insert_drive_file),
-                              title: Text(f["fileName"] ?? "Document".tr),
-                            ),
-                          )
-                          .toList(),
+                      children:
+                          controller.base64Files
+                              .map(
+                                (f) => ListTile(
+                                  leading: const Icon(Icons.insert_drive_file),
+                                  title: Text(f["fileName"] ?? "Document".tr),
+                                ),
+                              )
+                              .toList(),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -2599,7 +2602,7 @@ void showAddcustomerBottomSheet({
                             paymentAmount: amountController.text,
                             description: descController.text,
                           );
-                         Get.back();
+                        Get.back();
 
                           // Go to Customer → Payables tab
                           Get.to(
@@ -2615,12 +2618,12 @@ void showAddcustomerBottomSheet({
                             saleId: salesId,
                             paymentAmount: amountController.text,
                             description: descController.text,
-                            documents: controller.base64Files
-                                .map((e) => e["base64"]!)
-                                .toList(),
+                            documents:
+                                controller.base64Files
+                                    .map((e) => e["base64"]!)
+                                    .toList(),
                           );
-                          // ignore: use_build_context_synchronously
-                          Navigator.pop(ctx);
+                         Get.back();
 
                           // Go to both → Payables tab
                           Get.to(

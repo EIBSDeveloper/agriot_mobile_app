@@ -1,16 +1,15 @@
-import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-import '../../../service/utils/utils.dart';
+import '../../../service/utils/enums.dart';
+
 
 class DocumentViewerController extends GetxController {
   final RxString documentUrl = ''.obs;
   final RxBool isLoading = true.obs;
   final RxString error = ''.obs;
+  final Rx<FileType> fileType = FileType.unsupported.obs;
 
   @override
   void onInit() {
@@ -29,6 +28,20 @@ class DocumentViewerController extends GetxController {
       if (response.statusCode != 200) {
         throw Exception('Document not available');
       }
+
+      // Determine file type by URL extension
+      final lowerUrl = documentUrl.value.toLowerCase();
+      if (lowerUrl.endsWith('.pdf')) {
+        fileType.value = FileType.pdf;
+      } else if (lowerUrl.endsWith('.png') ||
+                 lowerUrl.endsWith('.jpg') ||
+                 lowerUrl.endsWith('.jpeg') ||
+                 lowerUrl.endsWith('.gif')) {
+        fileType.value = FileType.image;
+      } else {
+        fileType.value = FileType.unsupported;
+        throw Exception('Unsupported file format');
+      }
     } catch (e) {
       error.value = e.toString();
     } finally {
@@ -36,22 +49,5 @@ class DocumentViewerController extends GetxController {
     }
   }
 
-  Future<void> downloadDocument() async {
-    try {
-      final status = await Permission.storage.request();
-      if (!status.isGranted) return;
-
-      final dir = await getApplicationDocumentsDirectory();
-      final file = File(
-        '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.pdf',
-      );
-
-      final response = await http.get(Uri.parse(documentUrl.value));
-      await file.writeAsBytes(response.bodyBytes);
-
-      showSuccess('Document downloaded ');
-    } catch (e) {
-      showError('Failed to download document');
-    }
-  }
+  // (Keep downloadDocument as is or enhance for other formats if needed)
 }

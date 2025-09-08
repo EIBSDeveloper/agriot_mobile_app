@@ -88,7 +88,7 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.fuelCapacityController,
       decoration: InputDecoration(
-        hintText: 'fuel_capacity'.tr,
+        hintText: "${'fuel_capacity'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
@@ -98,14 +98,14 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
 
   Widget _buildWarrantyStartDateField() => DatePickerField(
     controller: controller.warrantyStartDateController,
-    labelText: 'warranty_start'.tr,
+    labelText: "${'warranty_start'.tr} ",
     onChanged: (vlu) {},
   );
 
   Widget _buildWarrantyEndDateField() => DatePickerField(
     controller: controller.warrantyEndDateController,
     onChanged: (vlu) {},
-    labelText: 'warranty_end'.tr,
+    labelText: "${'warranty_end'.tr}  ",
     validator: (value) {
       if (value.isNotEmpty &&
           controller.warrantyStartDateController.text.isNotEmpty) {

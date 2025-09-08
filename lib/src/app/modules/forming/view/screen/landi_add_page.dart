@@ -1,5 +1,6 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
 import '../../../registration/controller/kyc_controller.dart';
@@ -20,7 +21,7 @@ class LandViewPage extends GetView<LandController> {
       controller.landId.value = args['landId'];
     }
     return Scaffold(
-      appBar: const CustomAppBar(title:'Land Details'),
+      appBar: const CustomAppBar(title: 'Land Details'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -38,6 +39,18 @@ class LandViewPage extends GetView<LandController> {
                 controller: controller.pattaNoController,
                 label: 'Patta Number',
                 // validator: (value) => value!.isEmpty ? 'Required field' : null,
+              ),
+              gap,
+              _buildTextField(
+                controller: controller.pincodeController,
+                label: 'Pincode *',
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required field' : null,
+                keyboardType: TextInputType.number,
               ),
               gap,
               Row(
@@ -103,149 +116,167 @@ class LandViewPage extends GetView<LandController> {
   }
 
   Widget _buildSurveyDetailsSection() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              'Survey Details',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            'Survey Details',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.add),
+              onPressed: controller.addSurveyItem,
+              tooltip: 'Add Survey Detail',
             ),
-              Card(
-              color: Get.theme.primaryColor,
-              child: IconButton(
-                color: Colors.white,
-                icon: const Icon(Icons.add),
-                onPressed: controller.addSurveyItem,
-                tooltip: 'Add Survey Detail',
-              ),
+          ),
+        ],
+      ),
+      Obx(() {
+        if (controller.surveyItems.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'No survey details added',
+              style: TextStyle(color: Colors.grey),
             ),
-          ],
-        ),
-        Obx(() {
-          if (controller.surveyItems.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                'No survey details added',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.surveyItems.length,
-            itemBuilder: (context, index) => SurveyItemWidget(
-                index: index,
-                item: controller.surveyItems[index],
-                areaUnits: controller.landUnits,
-                onRemove: () => controller.removeSurveyItem(index),
-                onChanged: (item) => controller.surveyItems[index] = item,
-              ),
           );
-        }),
-      ],
-    );
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.surveyItems.length,
+          itemBuilder: (context, index) => SurveyItemWidget(
+            index: index,
+            item: controller.surveyItems[index],
+            areaUnits: controller.landUnits,
+            onRemove: () => controller.removeSurveyItem(index),
+            onChanged: (item) => controller.surveyItems[index] = item,
+          ),
+        );
+      }),
+    ],
+  );
 
   Widget _buildDocumentsSection() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Land Documents',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Land Documents',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.add),
+              onPressed: controller.addDocumentItem,
+              tooltip: 'Add Document',
             ),
-            Card(
-              color: Get.theme.primaryColor,
-              child: IconButton(
-                color: Colors.white,
-                icon: const Icon(Icons.add),
-                onPressed: controller.addDocumentItem,
-                tooltip: 'Add Document',
-              ),
+          ),
+        ],
+      ),
+      Obx(() {
+        if (controller.documentItems.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'No documents added',
+              style: TextStyle(color: Colors.grey),
             ),
-          ],
-        ),
-        Obx(() {
-          if (controller.documentItems.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                'No documents added',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.documentItems.length,
-            itemBuilder: (context, index) => Column(
+          );
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: controller.documentItems.length,
+          itemBuilder: (context, index) => Column(
+            children: [
+              const SizedBox(height: 5),
+              Row(
                 children: [
                   Row(
                     children: [
-                      Text("${index+1}, ${controller.documentItems[index].newFileType!}"),
-                      const Icon(Icons.attach_file)
+                      Text(
+                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
+                      ),
+                      const Icon(Icons.attach_file),
                     ],
                   ),
-                  const SizedBox(height: 5,)
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      controller.removeDocumentItem(index);
+                    },
+                    color: Get.theme.primaryColor,
+                    icon: const Icon(Icons.delete),
+                  ),
                 ],
               ),
-          );
-        }),
-      ],
-    );
+              const SizedBox(height: 5),
+              const Divider(),
+            ],
+          ),
+        );
+      }),
+    ],
+  );
 
-  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
-        onPressed: controller.isSubmitting.value ? null : controller.submitForm,
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: controller.isSubmitting.value
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : const Text('Save Land Details'),
-      ));
+  Widget _buildSubmitButton() => Obx(
+    () => ElevatedButton(
+      onPressed: controller.isSubmitting.value ? null : controller.submitForm,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      child: controller.isSubmitting.value
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : const Text('Save Land Details'),
+    ),
+  );
 
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
     String? Function(String?)? validator,
+    List<TextInputFormatter>? inputFormatters,
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
   }) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
+    decoration: AppStyle.decoration.copyWith(
+      color: const Color.fromARGB(137, 221, 234, 234),
+      boxShadow: const [],
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    constraints: const BoxConstraints(minHeight: 55),
+    child: TextFormField(
+      controller: controller,
+      inputFormatters: inputFormatters,
+      decoration: InputDecoration(
+        labelText: label,
+        border: InputBorder.none,
+        isDense: true,
+        suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      constraints: const BoxConstraints(
-        minHeight: 55, // minimum height for all fields
-      ),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: InputBorder.none,
-          isDense: true,
-          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
-        ),
-        validator: validator,
-        keyboardType: keyboardType,
-        readOnly: readOnly,
-        onTap: onTap,
-      ),
-    );
+      validator: validator,
+      keyboardType: keyboardType,
+      readOnly: readOnly,
+      onTap: onTap,
+    ),
+  );
 }

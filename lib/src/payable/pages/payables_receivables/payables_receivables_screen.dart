@@ -413,8 +413,8 @@ import 'package:get/get.dart';
 
 import '../../controller/payables_receivables_controller/payables_receivables_controller.dart';
 import '../../repository/payables_receivables_repository/payables_receivables_repository.dart';
-import '../../widgets/payable_receivableswidget/payablesListWidget.dart';
-import '../../widgets/payable_receivableswidget/receivablesListWidget.dart';
+import '../../widgets/payable_receivableswidget/payables_list_widget.dart';
+import '../../widgets/payable_receivableswidget/receivables_list_widget.dart';
 
 class PayablesReceivablesPage extends StatefulWidget {
   final int initialTab;

@@ -6,22 +6,20 @@ class CustomerSalesModel {
   CustomerSalesModel({required this.payables, required this.receivables});
 
   factory CustomerSalesModel.fromJson(Map<String, dynamic> json) => CustomerSalesModel(
-      payables:
-          json['customer_sales']['payables'] != null
-              ? List<CustomerPayable>.from(
-                json['customer_sales']['payables'].map(
-                  (x) => CustomerPayable.fromJson(x),
-                ),
-              )
-              : [],
-      receivables:
-          json['customer_sales']['receivables'] != null
-              ? List<CustomerReceivable>.from(
-                json['customer_sales']['receivables'].map(
-                  (x) => CustomerReceivable.fromJson(x),
-                ),
-              )
-              : [],
+      payables: json['customer_sales']['payables'] != null
+          ? List<CustomerPayable>.from(
+              json['customer_sales']['payables'].map(
+                (x) => CustomerPayable.fromJson(x),
+              ),
+            )
+          : [],
+      receivables: json['customer_sales']['receivables'] != null
+          ? List<CustomerReceivable>.from(
+              json['customer_sales']['receivables'].map(
+                (x) => CustomerReceivable.fromJson(x),
+              ),
+            )
+          : [],
     );
 }
 

@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/enums.dart';
 import '../../model/payables_receivables_model/payables_receivables_model.dart';
 import '../../pages/customer/customer_sales_page.dart';
 import '../../pages/customer_vendor/customer_vendor_page.dart';
@@ -135,13 +137,13 @@ class PayablesList extends StatelessWidget {
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: Text(
-          '₹${amount.toStringAsFixed(2)}',
+          '- ₹${amount.toStringAsFixed(2)}',
           style: const TextStyle(
             color: Colors.red,
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: Icon(isCredit ? Icons.credit_card : Icons.money_off),
+        leading: Icon(isCredit ? Icons.credit_card : Icons.money),
       ),
     );
 }

@@ -19,7 +19,6 @@ class CustomerAddController extends GetxController {
 
   /// Add Payable
   Future<void> addCustomerPayable({
-   
     required int customerId,
     required String date,
     required int saleId,
@@ -36,8 +35,7 @@ class CustomerAddController extends GetxController {
         "description": description,
       };
 
-      final response = await repository.postPayable( customerId, body);
-
+      final response = await repository.postPayable(customerId, body);
 
       if (response.containsKey("detail")) {
         Get.snackbar("Info", response["detail"]);
@@ -53,7 +51,6 @@ class CustomerAddController extends GetxController {
 
   /// Add Receivable
   Future<void> addCustomerReceivable({
-   
     required int customerId,
     required String date,
     required int saleId,
@@ -75,13 +72,7 @@ class CustomerAddController extends GetxController {
         ],
       };
 
-
-      final response = await repository.postReceivable(
-      
-        customerId,
-        body,
-      );
-
+      final response = await repository.postReceivable(customerId, body);
 
       if (response.containsKey("detail")) {
         Get.snackbar("Info", response["detail"]);
@@ -113,12 +104,9 @@ class CustomerAddController extends GetxController {
             base64Files.add({"fileName": file.name, "base64": base64Str});
           }
         }
-      } else {
-      }
+      } else {}
     } catch (e) {
       Get.snackbar("Error", "Failed to pick files: $e");
     }
   }
-
-
 }

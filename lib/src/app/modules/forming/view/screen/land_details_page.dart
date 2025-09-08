@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/forming/model/crop_card_model.dart';
+import 'package:argiot/src/app/modules/forming/model/document_view.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
@@ -8,46 +9,48 @@ import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../controller/land_detail_controller.dart';
 import '../widget/crop_card.dart';
+import '../widget/document_section.dart';
 
 class LandDetailView extends GetView<LandDetailController> {
   const LandDetailView({super.key});
 
   @override
   Widget build(BuildContext context) => Obx(
-      () => Scaffold(
-        appBar: CustomAppBar(
-          title: controller.landDetails['name'] ?? 'Loading...',
-          showBackButton: true,
-          actions: [
-            IconButton( color: Get.theme.primaryColor,
-              onPressed: () {
-                final landId = Get.arguments as int;
-                Get.toNamed('/add-land', arguments: {'landId': landId})?.then((
-                  result,
-                ) {
-                  controller.loadData();
-                });
-              },
-              icon: const Icon(Icons.edit),
-            ),
-            IconButton(
-              onPressed: () {
-                controller.deleteLandDetails(Get.arguments as int);
-              },
-               color: Get.theme.primaryColor,
-              icon:  const Icon(Icons.delete),
-            ),
-          ],
-        ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            controller.loadData();
-            return;
-          },
-          child: _buildBody(),
-        ),
+    () => Scaffold(
+      appBar: CustomAppBar(
+        title: controller.landDetails['name'] ?? 'Loading...',
+        showBackButton: true,
+        actions: [
+          IconButton(
+            color: Get.theme.primaryColor,
+            onPressed: () {
+              final landId = Get.arguments as int;
+              Get.toNamed('/add-land', arguments: {'landId': landId})?.then((
+                result,
+              ) {
+                controller.loadData();
+              });
+            },
+            icon: const Icon(Icons.edit),
+          ),
+          IconButton(
+            onPressed: () {
+              controller.deleteLandDetails(Get.arguments as int);
+            },
+            color: Get.theme.primaryColor,
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
-    );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          controller.loadData();
+          return;
+        },
+        child: _buildBody(),
+      ),
+    ),
+  );
 
   Widget _buildBody() {
     if (controller.isLoading.value) {
@@ -86,14 +89,13 @@ class LandDetailView extends GetView<LandDetailController> {
           _buildSurveySection(),
           const SizedBox(height: 8),
 
-          const Divider(), 
-              _buildDocumentsSection(),
+          const Divider(),
+          _buildDocumentsSection(),
           const SizedBox(height: 8),
           // Crops
           _buildCropsSection(),
-         
+
           // Documents
-      
           const SizedBox(height: 16),
         ],
       ),
@@ -101,44 +103,44 @@ class LandDetailView extends GetView<LandDetailController> {
   }
 
   Widget _buildHeaderSection() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TitleText('Land Details'),
-        const SizedBox(height: 10),
-        _buildDetailRow(
-          'Soil Type',
-          controller.landDetails['soil_type']!['name'] ?? "",
-        ),
-        _buildDetailRow('Address', ' '),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const TitleText('Land Details'),
+      const SizedBox(height: 10),
+      _buildDetailRow(
+        'Soil Type',
+        controller.landDetails['soil_type']!['name'] ?? "",
+      ),
+      _buildDetailRow('Address', ' '),
 
-        _buildDetailRow(
-          'Patta No',
-          controller.landDetails['patta_number'] ?? 'Not available',
-        ),
-        _buildDetailRow(
-          'Measurement',
-          '${controller.landDetails['measurement_value']} ${controller.landDetails['measurement_unit']['name']}',
-        ),
-        if (controller.landDetails['description'] != null)
-          _buildDetailRow('Description', controller.landDetails['description']),
-        // Padding(
-        //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.end,
-        //     children: [
-        //       ElevatedButton.icon(
-        //         icon: Icon(Icons.map),
-        //         label: Text('Map'),
-        //         onPressed: () => controller.viewOnMap(
-        //           controller.landDetails['latitude'],
-        //           controller.landDetails['longitude'],
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-      ],
-    );
+      _buildDetailRow(
+        'Patta No',
+        controller.landDetails['patta_number'] ?? 'Not available',
+      ),
+      _buildDetailRow(
+        'Measurement',
+        '${controller.landDetails['measurement_value']} ${controller.landDetails['measurement_unit']['name']}',
+      ),
+      if (controller.landDetails['description'] != null)
+        _buildDetailRow('Description', controller.landDetails['description']),
+      // Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.end,
+      //     children: [
+      //       ElevatedButton.icon(
+      //         icon: Icon(Icons.map),
+      //         label: Text('Map'),
+      //         onPressed: () => controller.viewOnMap(
+      //           controller.landDetails['latitude'],
+      //           controller.landDetails['longitude'],
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
+    ],
+  );
 
   Widget _buildSurveySection() {
     final surveys = controller.landDetails['survey_details'] as List? ?? [];
@@ -181,23 +183,21 @@ class LandDetailView extends GetView<LandDetailController> {
     final documents = controller.landDetails['documents'] as List? ?? [];
     if (documents.isEmpty) return const SizedBox();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const TitleText('Documents'),
-        const SizedBox(height: 8),
-        ...documents.map((doc) => Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: doc['documents'].map<Widget>((list) => ActionChip(
-                avatar: const Icon(Icons.picture_as_pdf),
-                label: Text(list['document_category']['name']),
-                onPressed: () =>
-                    controller.viewDocument(list['upload_document']),
-              )).toList(),
-          )),
-      ],
-    );
+    List<DocumentView> allDocs = [];
+
+    for (var doc in documents) {
+      final List innerDocs = doc['documents'] ?? [];
+      allDocs.addAll(
+        innerDocs.map(
+          (e) => DocumentView(
+            lable: e['document_category']['name'],
+            url: e['upload_document'],
+          ),
+        ),
+      );
+    }
+
+    return DocumentSection(docs: allDocs);
   }
 
   Widget _buildCropsSection() {
@@ -231,47 +231,47 @@ class LandDetailView extends GetView<LandDetailController> {
   }
 
   Widget addNewCrop() => Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        OutlinedButton(
-          onPressed: () {
-            PackageUsage? package = findLimit();
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      OutlinedButton(
+        onPressed: () {
+          PackageUsage? package = findLimit();
 
-            if (package!.cropBalance > 0) {
-              Get.toNamed(
-                Routes.addCrop,
-                arguments: controller.landDetails['id'],
-              );
-            } else {
-              showDefaultGetXDialog("Crop");
-            }
-          },
-          child: Text(
-            "Add New Crop",
-            style: TextStyle(
-              color: Get.theme.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
+          if (package!.cropBalance > 0) {
+            Get.toNamed(
+              Routes.addCrop,
+              arguments: controller.landDetails['id'],
+            );
+          } else {
+            showDefaultGetXDialog("Crop");
+          }
+        },
+        child: Text(
+          "Add New Crop",
+          style: TextStyle(
+            color: Get.theme.primaryColor,
+            fontWeight: FontWeight.bold,
           ),
         ),
-      ],
-    );
+      ),
+    ],
+  );
 
   Widget _buildDetailRow(String label, String value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            '$label:',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(width: 8),
-          Expanded(child: Text(value)),
-        ],
-      ),
-    );
+        ),
+        const SizedBox(width: 8),
+        Expanded(child: Text(value)),
+      ],
+    ),
+  );
 }

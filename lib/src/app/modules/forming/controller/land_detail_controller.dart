@@ -52,13 +52,7 @@ class LandDetailController extends GetxController {
     }
   }
 
-  void viewDocument(String url) {
-    if (url.isNotEmpty) {
-      Get.toNamed(Routes.docViewer, arguments: url);
-    } else {
-      showError('Document not available');
-    }
-  }
+
 
   void viewOnMap(double latitude, double longitude) {
     if (latitude != 0 && longitude != 0) {

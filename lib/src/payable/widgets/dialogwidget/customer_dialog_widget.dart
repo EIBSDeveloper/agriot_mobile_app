@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../controller/customer_add_controller/customer_add_controller.dart';
 import '../../pages/payables_receivables/payables_receivables_screen.dart';
 
+
 void showPaymentBottomSheet({
   required BuildContext context,
   required bool isPayable,
@@ -67,11 +68,11 @@ void showPaymentBottomSheet({
                 Text(
                   isPayable
                       ? "current_payable".trParams({
-                        "amount": currentAmount.toStringAsFixed(2),
-                      })
+                          "amount": currentAmount.toStringAsFixed(2),
+                        })
                       : "current_receivable".trParams({
-                        "amount": currentAmount.toStringAsFixed(2),
-                      }),
+                          "amount": currentAmount.toStringAsFixed(2),
+                        }),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: isPayable ? Colors.red : Colors.green,
@@ -180,15 +181,14 @@ void showPaymentBottomSheet({
                   const SizedBox(height: 5),
                   Obx(
                     () => Column(
-                      children:
-                          controller.base64Files
-                              .map(
-                                (f) => ListTile(
-                                  leading: const Icon(Icons.insert_drive_file),
-                                  title: Text(f["fileName"] ?? "document".tr),
-                                ),
-                              )
-                              .toList(),
+                      children: controller.base64Files
+                          .map(
+                            (f) => ListTile(
+                              leading: const Icon(Icons.insert_drive_file),
+                              title: Text(f["fileName"] ?? "document".tr),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -235,10 +235,9 @@ void showPaymentBottomSheet({
                             saleId: salesId,
                             paymentAmount: amountController.text,
                             description: descController.text,
-                            documents:
-                                controller.base64Files
-                                    .map((e) => e["base64"]!)
-                                    .toList(),
+                            documents: controller.base64Files
+                                .map((e) => e["base64"]!)
+                                .toList(),
                           );
                           Get.back();
 

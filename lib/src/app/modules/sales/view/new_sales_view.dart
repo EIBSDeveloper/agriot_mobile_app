@@ -157,22 +157,35 @@ class _NewSalesViewState extends State<NewSalesView> {
           itemCount: controller.documentItems.length,
           itemBuilder: (context, index) => Column(
             children: [
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  Text(
-                    "${index + 1}, ${controller.documentItems[index].newFileType!}",
+                  Row(
+                    children: [
+                      Text(
+                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
+                      ),
+                      const Icon(Icons.attach_file),
+                    ],
                   ),
-                  const Icon(Icons.attach_file),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      controller.removeDocumentItem(index);
+                    },
+                    color: Get.theme.primaryColor,
+                    icon: const Icon(Icons.delete),
+                  ),
                 ],
               ),
               const SizedBox(height: 5),
+              const Divider(),
             ],
           ),
         );
       }),
     ],
   );
-
   Widget _buildProductDropdown() => Obx(
     () => MyDropdown(
       items: controller.crop,

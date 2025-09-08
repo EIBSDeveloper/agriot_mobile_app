@@ -25,6 +25,8 @@ class LandController extends GetxController {
   // Form controllers
   final landIdController = TextEditingController();
   final pattaNoController = TextEditingController();
+
+  final pincodeController = TextEditingController();
   final measurementController = TextEditingController();
   final locationListController = TextEditingController();
   final RxList<LatLng?> landCoordinates = <LatLng>[].obs;
@@ -279,7 +281,7 @@ class LandController extends GetxController {
           "soil_type": selectedSoilType.value?.id,
 
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
-
+        "pincode": pincodeController.text,
         "l_status": 0,
         "geo_marks": convertLatLngListToMap(landCoordinates),
         if (pattaNoController.text.isNotEmpty)
@@ -288,7 +290,7 @@ class LandController extends GetxController {
           "description": descriptionController.text.trim(),
         if (newSurveyItems.value && landId.value == 0) ...surveyDetails,
         if (landId.value == 0) "surveyDetails": surveyDetails,
-        "documents": documentItemsList,
+        "document": documentItemsList,
       };
 
       // Call appropriate API based on whether we're creating or editing

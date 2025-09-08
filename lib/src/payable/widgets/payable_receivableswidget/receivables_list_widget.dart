@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/enums.dart';
 import '../../model/payables_receivables_model/payables_receivables_model.dart';
 import '../../pages/customer/customer_sales_page.dart';
 import '../../pages/customer_vendor/customer_vendor_page.dart';
@@ -43,10 +45,9 @@ class ReceivablesList extends StatelessWidget {
             bothCustomerVendorReceivables!.isEmpty) {
           return Center(child: Text('no_receivables_found'.tr));
         }
-        items =
-            bothCustomerVendorReceivables!
-                .map(_buildBothReceivableTile)
-                .toList();
+        items = bothCustomerVendorReceivables!
+            .map(_buildBothReceivableTile)
+            .toList();
         break;
     }
 
@@ -136,9 +137,9 @@ class ReceivablesList extends StatelessWidget {
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: Text(
-          '₹${amount.toStringAsFixed(2)}',
+          '+ ₹${amount.toStringAsFixed(2)}',
           style: const TextStyle(
-            color: Colors.red,
+            color: Colors.green,
             fontWeight: FontWeight.bold,
           ),
         ),

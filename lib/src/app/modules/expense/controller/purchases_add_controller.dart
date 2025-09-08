@@ -503,8 +503,8 @@ class PurchasesAddController extends GetxController {
             child: TextFormField(
               decoration: InputDecoration(
                 hintText: selectedInventoryType.value == 6
-                    ? 'litre'.tr
-                    : 'quantity'.tr,
+                    ? "${'litre'.tr} *"
+                    : "${'quantity'.tr} *",
                 border: InputBorder.none,
                 // errorText: getErrorForField('litre'),
               ),
@@ -529,7 +529,7 @@ class PurchasesAddController extends GetxController {
       items: unit,
       selectedItem: selectedUnit.value,
       onChanged: (unit) => changeUnit(unit!),
-      label: 'Unit*',
+      label: 'Unit *',
       // disable: isEditing,
     ),
   );
@@ -552,7 +552,7 @@ class PurchasesAddController extends GetxController {
       child: TextFormField(
         validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         decoration: InputDecoration(
-          hintText: 'purchase_amount'.tr,
+          hintText: "${'purchase_amount'.tr} *",
           border: InputBorder.none,
           // errorText: ,
         ),
@@ -567,7 +567,7 @@ class PurchasesAddController extends GetxController {
     () => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: 'paid_amount'.tr,
+          hintText: "${'paid_amount'.tr} *",
           border: InputBorder.none,
           // errorText: ,
         ),
@@ -583,7 +583,7 @@ class PurchasesAddController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-    arguments: {"id": getDocTypeId(DocType.inventory)},
+      arguments: {"id": getDocTypeId(DocType.inventory)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);
@@ -633,20 +633,35 @@ class PurchasesAddController extends GetxController {
           itemCount: documentItems.length,
           itemBuilder: (context, index) => Column(
             children: [
+              const SizedBox(height: 5),
               Row(
                 children: [
-                  Text("${index + 1}, ${documentItems[index].newFileType!}"),
-                  const Icon(Icons.attach_file),
+                  Row(
+                    children: [
+                      Text(
+                        "${index + 1}, ${documentItems[index].newFileType!}",
+                      ),
+                      const Icon(Icons.attach_file),
+                    ],
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      removeDocumentItem(index);
+                    },
+                    color: Get.theme.primaryColor,
+                    icon: const Icon(Icons.delete),
+                  ),
                 ],
               ),
               const SizedBox(height: 5),
+              const Divider(),
             ],
           ),
         );
       }),
     ],
   );
-
   Widget buildDescriptionField() => InputCardStyle(
     noHeight: true,
     child: TextFormField(
@@ -703,7 +718,7 @@ class PurchasesAddController extends GetxController {
         InputCardStyle(
           child: DropdownButtonFormField<int>(
             decoration: InputDecoration(
-              hintText: 'Inventory Category'.tr,
+              hintText: "${'Inventory Category'.tr} *",
               border: InputBorder.none,
             ),
 
@@ -737,7 +752,7 @@ class PurchasesAddController extends GetxController {
       child: DropdownButtonFormField<int>(
         validator: (value) => value == null ? 'required_field'.tr : null,
         decoration: InputDecoration(
-          hintText: 'Inventory Item'.tr,
+          hintText:"${ 'Inventory Item'.tr} *",
           border: InputBorder.none,
         ),
         initialValue: selectedInventoryItem.value,
@@ -764,7 +779,7 @@ class PurchasesAddController extends GetxController {
             child: DropdownButtonFormField<int>(
               validator: (value) => value == null ? 'required_field'.tr : null,
               decoration: const InputDecoration(
-                hintText: 'Vendor*',
+                hintText: 'Vendor *',
                 border: InputBorder.none,
               ),
 

@@ -151,7 +151,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   Widget _buildDocumentsSection(SalesDetail salesDetail) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('Uploaded Documents', style: Get.textTheme.titleMedium),
+      Text('Documents', style: Get.textTheme.titleMedium),
       const SizedBox(height: 8),
       Wrap(
         spacing: 8,

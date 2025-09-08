@@ -20,8 +20,7 @@ class ConsumptionView extends StatelessWidget {
           child: Column(
             children: [
               _buildDatePicker(),
-              const SizedBox(height: 16),
-              _buildCropDropdown(),
+            
 
               const SizedBox(height: 16),
               _buildInventoryTypeDropdown(),
@@ -29,7 +28,8 @@ class ConsumptionView extends StatelessWidget {
               _buildInventoryCategoryDropdown(),
               const SizedBox(height: 16),
               _buildInventoryItemDropdown(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16),  
+              _buildCropDropdown(),const SizedBox(height: 16),
               Obx(
                 () => !_controller.requiresUsageHours
                     ? _buildQuantityField()
@@ -102,7 +102,7 @@ class ConsumptionView extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Date'.tr,
           border: InputBorder.none,
-          suffixIcon: const Icon(Icons.calendar_today),
+          suffixIcon:  Icon(Icons.calendar_today,color: Get.theme.primaryColor,),
         ),
         readOnly: true,
         controller: TextEditingController(
@@ -138,7 +138,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          hintText: 'Inventory Type'.tr,
+          hintText: "${'Inventory Type'.tr} *",
           border: InputBorder.none,
         ),
 
@@ -162,7 +162,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          hintText: 'Inventory Category'.tr,
+          hintText: "${'Inventory Category'.tr } *",
           border: InputBorder.none,
         ),
         icon: const Icon(Icons.keyboard_arrow_down),
@@ -189,7 +189,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          hintText: 'Inventory Item'.tr,
+          hintText: "${'Inventory Item'.tr} *",
           border: InputBorder.none,
         ),
 
@@ -217,7 +217,7 @@ class ConsumptionView extends StatelessWidget {
         child: InputCardStyle(
           child: TextFormField(
             decoration: InputDecoration(
-              hintText: 'Quantity'.tr,
+              hintText: "${'Quantity'.tr} *",
               border: InputBorder.none,
             ),
 

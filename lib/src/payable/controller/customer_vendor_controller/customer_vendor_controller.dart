@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/enums.dart';
 import '../../model/customer_history/customer_sales_history.dart';
 import '../../model/customer_vendor_model/customer_vendor_model.dart';
-import '../../pages/customer_vendor/customer_vendor_page.dart';
 import '../../repository/customer_vendor_repository/customer_vendor_repository.dart';
 
 class CustomerVendorController extends GetxController {

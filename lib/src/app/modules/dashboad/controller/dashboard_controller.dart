@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/dashboad/model/land_v_s_crop_model.dart';
 import 'package:argiot/src/app/modules/dashboad/model/market_price.dart';
 import 'package:argiot/src/app/modules/dashboad/model/payment_summary.dart';
 import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
-import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import '../../../service/utils/utils.dart';

@@ -428,9 +428,8 @@ class HistoryDetailsPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final list = isPayable
-            ? controller.historypayableList
-            : controller.historyList;
+        final list =
+            isPayable ? controller.historypayableList : controller.historyList;
 
         if (list.isEmpty) {
           return Center(
@@ -465,12 +464,16 @@ class HistoryDetailsPage extends StatelessWidget {
                   vertical: 16,
                   horizontal: 16,
                 ),
-                child: isPayable
-                    ? _buildPayableItem(item as PayableHistorymodel, context)
-                    : _buildReceivableItem(
-                        item as ReceivableHistorymodel,
-                        context,
-                      ),
+                child:
+                    isPayable
+                        ? _buildPayableItem(
+                          item as PayableHistorymodel,
+                          context,
+                        )
+                        : _buildReceivableItem(
+                          item as ReceivableHistorymodel,
+                          context,
+                        ),
               ),
             );
           },
@@ -505,14 +508,15 @@ class HistoryDetailsPage extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.remove_red_eye, color: Colors.black),
-              onPressed: () => _showHistoryDetailDialog(
-                context: context,
-                farmerId: farmerId,
-                customerId: customerId,
-                saleId: saleId,
-                outstandingId: item.id,
-                isPayable: false,
-              ),
+              onPressed:
+                  () => _showHistoryDetailDialog(
+                    context: context,
+                    farmerId: farmerId,
+                    customerId: customerId,
+                    saleId: saleId,
+                    outstandingId: item.id,
+                    isPayable: false,
+                  ),
             ),
           ],
         ),
@@ -567,14 +571,15 @@ class HistoryDetailsPage extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.remove_red_eye, color: Colors.black),
-              onPressed: () => _showHistoryDetailDialog(
-                context: context,
-                farmerId: farmerId,
-                customerId: customerId,
-                saleId: saleId,
-                outstandingId: item.id,
-                isPayable: true,
-              ),
+              onPressed:
+                  () => _showHistoryDetailDialog(
+                    context: context,
+                    farmerId: farmerId,
+                    customerId: customerId,
+                    saleId: saleId,
+                    outstandingId: item.id,
+                    isPayable: true,
+                  ),
             ),
           ],
         ),
@@ -620,9 +625,10 @@ class HistoryDetailsPage extends StatelessWidget {
       );
     }
 
-    final detail = isPayable
-        ? controller.selectedpayableHistory.value
-        : controller.selectedHistory.value;
+    final detail =
+        isPayable
+            ? controller.selectedpayableHistory.value
+            : controller.selectedHistory.value;
 
     if (detail == null) {
       Get.snackbar(
@@ -634,11 +640,12 @@ class HistoryDetailsPage extends StatelessWidget {
     }
 
     Widget buildHistoryRow(String label, dynamic value) {
-      String displayValue = value == null
-          ? "-"
-          : (value is double
-                ? "₹${value.toStringAsFixed(2)}"
-                : value.toString());
+      String displayValue =
+          value == null
+              ? "-"
+              : (value is double
+                  ? "₹${value.toStringAsFixed(2)}"
+                  : value.toString());
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(

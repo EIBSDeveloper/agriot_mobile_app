@@ -8,11 +8,12 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../controller/app_controller.dart';
 import '../../controller/user_limit.dart';
 import '../../modules/guideline/model/guideline.dart';
 import '../../routes/app_routes.dart';
 import 'enums.dart';
-
+ AppDataController appData = Get.find();
 void showError(final String message) {
   Fluttertoast.showToast(
     msg: message,
@@ -180,11 +181,13 @@ String? getYoutubeThumbnailUrl(
 void handleGuidelineTap(Guideline guideline) {
   if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
     // Open video player
-    // Get.toNamed('/video-player', arguments: guideline.videoUrl);
+
     openUrl(Uri.parse(guideline.videoUrl!));
   } else if (guideline.mediaType == 'document' && guideline.document != null) {
+   
     // Open document viewer
-    Get.toNamed('/document-viewer', arguments: guideline.document);
+    var arguments = "${appData.baseUrlWithoutAPi}${guideline.document}";
+    Get.toNamed(Routes.docViewer, arguments: arguments);
   } else {
     showError('Unable to open guideline content');
   }
@@ -201,7 +204,6 @@ bool isValidEmail(String input) {
   final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
   return emailRegex.hasMatch(input);
 }
-
 
 int getDocTypeId(DocType type) {
   if (type == DocType.land) {

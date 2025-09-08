@@ -38,12 +38,10 @@ class PurchasesAddController extends GetxController {
   final RxString litre = ''.obs;
   final RxString description = ''.obs;
   final RxList<String> documents = <String>[].obs;
-  // var inventoryTypes = <InventoryTypeModel>[].obs;
   var inventoryCategories = <InventoryCategoryModel>[].obs;
   var inventoryItems = <InventoryItemModel>[].obs;
   final machineryType = 'Fuel'.obs;
   final fuelCapacityController = TextEditingController();
-  // final purchaseAmountController = TextEditingController();
   final warrantyStartDateController = TextEditingController();
   final warrantyEndDateController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -78,25 +76,28 @@ class PurchasesAddController extends GetxController {
   final RxBool isInventoryLoading = false.obs;
   final RxList<Unit> unit = <Unit>[].obs;
   final Rx<Unit> selectedUnit = Unit(id: 0, name: '').obs;
-
+  final Rxn<int> inventoryType = Rxn<int>();
+  final Rxn<int> inventoryCategory = Rxn<int>();
+  final Rxn<int> inventoryItem = Rxn<int>();
   final isFuelCapacityVisible = false.obs;
   final RxMap<String, String> fieldErrors = <String, String>{}.obs;
   final errors = <String, String>{}.obs;
+
   @override
   void onInit() {
     super.onInit();
 
     var arguments = Get.arguments;
-    // if (arguments?["type"] != null) {
-    //   inventoryType.value = arguments?["type"];
-    // }
-    // if (arguments?["category"] != null) {
-    //   // inventoryCategory.value = arguments?["category"];
-    // }
-    // if (arguments?["item"] != null) {
-    //   inventoryItem.value = arguments?["item"];
-    // }
-    selectedType.value = getType(arguments['id']);
+    if (arguments?["id"] != null) {
+      inventoryType.value = arguments?["id"];
+    }
+    if (arguments?["category"] != null) {
+      inventoryCategory.value = arguments?["category"];
+    }
+    if (arguments?["item"] != null) {
+      inventoryItem.value = arguments?["item"];
+    }
+    selectedType.value = getType(arguments?['id'] ?? "");
     final DateTime picked = DateTime.now();
     selectedDate.value =
         "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
@@ -109,47 +110,6 @@ class PurchasesAddController extends GetxController {
   bool get requiresUnit {
     final typeId = selectedInventoryType.value;
     return typeId == 4 || typeId == 5 || typeId == 7;
-  }
-
-  Future<void> submitForm() async {
-    // if (!isFormValid.value) return;
-    if (!formKey.currentState!.validate()) return;
-    isLoading.value = true;
-
-    try {
-      final fuelEntry = FuelEntryModel(
-        dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value ?? 0,
-        inventoryType: selectedInventoryType
-            .value!, // Assuming fixed value based on API example
-        inventoryCategory: selectedInventoryCategory
-            .value!, // Assuming fixed value based on API example
-        inventoryItems: selectedInventoryItem
-            .value!, // Assuming fixed value based on API example
-        quantity: litre.value,
-        purchaseAmount: purchaseAmount.value,
-        paidAmount: paidAmount.value,
-        description: description.value.isNotEmpty ? description.value : null,
-      );
-
-      final response = await _repository.addFuelEntry(fuelEntry);
-
-      if (response['success'] == true) {
-        Get.back(result: true);
-        Get.toNamed(
-          '/consumption-purchase',
-          arguments: {"id": fuelEntry.inventoryType, 'tab': 1},
-          preventDuplicates: true,
-        );
-        Fluttertoast.showToast(msg: 'fuel_added_success'.tr);
-      } else {
-        Fluttertoast.showToast(msg: response['message'] ?? 'error_occurred'.tr);
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'network_error'.tr);
-    } finally {
-      isLoading.value = false;
-    }
   }
 
   void setInventoryType(int typeId) {
@@ -183,9 +143,12 @@ class PurchasesAddController extends GetxController {
         inventoryTypeId,
       );
       inventoryCategories.value = response;
-      if (inventoryCategories.isNotEmpty) {
+      if (inventoryCategory.value != null) {
+        selectedInventoryCategory.value = inventoryCategory.value;
+        inventoryCategoryUpdate(inventoryCategory.value);
+      } else if (inventoryCategories.isNotEmpty) {
         selectedInventoryCategory.value = inventoryCategories.first.id;
-        inventoryCategory(inventoryCategories.first.id);
+        inventoryCategoryUpdate(inventoryCategories.first.id);
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch inventory categories');
@@ -202,63 +165,12 @@ class PurchasesAddController extends GetxController {
       );
 
       inventoryItems.value = response;
+      if (inventoryItem.value != null) {
+        selectedInventoryItem.value = inventoryItem.value;
+      }
     } finally {
       isInventoryLoading(false);
     }
-  }
-
-  Future<void> submitMachineryForm() async {
-    if (!formKey.currentState!.validate()) return;
-    isLoading.value = true;
-
-    try {
-      final machinery = Machinery(
-        dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value!,
-        inventoryType:
-            selectedInventoryType.value!, // Map to your actual values
-        inventoryCategory: selectedInventoryCategory.value!,
-        inventoryItems: selectedInventoryItem.value!,
-        machineryType: machineryType.value == 'Fuel' ? '1' : '2',
-        fuelCapacity: int.tryParse(fuelCapacityController.text) ?? 0,
-        warrantyStartDate: warrantyStartDateController.text,
-        warrantyEndDate: warrantyEndDateController.text,
-        purchaseAmount: purchaseAmount.value,
-        paidAmount: paidAmount.value,
-        description: descriptionController.text,
-        // documents: documents,
-      );
-
-      final response = await _repository.addMachinery(machinery);
-
-      if (response['success'] == true) {
-        Get.back(result: true);
-        Get.toNamed(
-          '/consumption-purchase',
-          arguments: {"id": selectedInventoryType.value, 'tab': 1},
-          preventDuplicates: true,
-        );
-        Fluttertoast.showToast(msg: 'Machinery added successfully!'.tr);
-      } else {
-        Fluttertoast.showToast(
-          msg: response['message'] ?? 'Failed to add machinery'.tr,
-        );
-      }
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'Network error: ${e.toString()}'.tr);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  void clearForm() {
-    selectedDate.value = '';
-    selectedVendor.value = 0;
-    purchaseAmount.value = '';
-    litre.value = '';
-    description.value = '';
-    documents.clear();
-    fieldErrors.clear();
   }
 
   String? getErrorForField(String fieldName) => fieldErrors[fieldName];
@@ -295,7 +207,6 @@ class PurchasesAddController extends GetxController {
     }
   }
 
-  //vehicle start
   void toggleInsuranceDetails(bool? value) {
     showInsuranceDetails.value = value ?? false;
   }
@@ -304,25 +215,132 @@ class PurchasesAddController extends GetxController {
     serviceFrequencyUnit.value = unit;
   }
 
-  // Validation methods
-  String? validateRequired(String value, String fieldName) {
-    if (value.isEmpty) {
-      return '$fieldName is required';
+  Future<void> fetchUnit() async {
+    final unitList = await _repository.getUnitList();
+    unit.assignAll(unitList);
+
+    if (unitList.isNotEmpty) {
+      selectedUnit.value = unitList.first;
     }
-    return null;
   }
 
-  String? validateNumeric(String value, String fieldName) {
-    if (value.isNotEmpty) {
-      final numericValue = double.tryParse(value);
-      if (numericValue == null) {
-        return '$fieldName must be a number';
+  void addDocumentItem() {
+    Get.to(
+      const AddDocumentView(),
+      binding: DocumentBinding(),
+      arguments: {"id": getDocTypeId(DocType.inventory)},
+    )?.then((result) {
+      if (result != null && result is AddDocumentModel) {
+        documentItems.add(result);
       }
-      if (numericValue <= 0) {
-        return '$fieldName must be greater than 0';
+      // print(documentItems.toString());
+    });
+  }
+
+  void removeDocumentItem(int index) {
+    documentItems.removeAt(index);
+  }
+
+  void changeUnit(Unit crop) {
+    selectedUnit.value = crop;
+  }
+
+  void inventoryCategoryUpdate(int? value) {
+    setInventoryCategory(value!);
+    fetchInventoryItems(value);
+  }
+
+  //Submit Form
+
+  Future<void> submitFuelForm() async {
+    if (!formKey.currentState!.validate()) return;
+    isLoading.value = true;
+
+    try {
+      final fuelEntry = FuelEntryModel(
+        dateOfConsumption: selectedDate.value,
+        vendor: selectedVendor.value ?? 0,
+        inventoryType: selectedInventoryType.value!,
+        inventoryCategory: selectedInventoryCategory.value!,
+        inventoryItems: selectedInventoryItem.value!,
+        quantity: litre.value,
+        purchaseAmount: purchaseAmount.value,
+        paidAmount: paidAmount.value,
+        description: description.value.isNotEmpty ? description.value : null,
+      );
+
+      final response = await _repository.addFuelEntry(fuelEntry);
+
+      if (response['success'] == true) {
+        Get.back(result: true);
+        Get.toNamed(
+          '/consumption-purchase',
+          arguments: {
+            "id": fuelEntry.inventoryType,
+            'tab': 1,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
+          preventDuplicates: true,
+        );
+        Fluttertoast.showToast(msg: 'fuel_added_success'.tr);
+      } else {
+        Fluttertoast.showToast(msg: response['message'] ?? 'error_occurred'.tr);
       }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'network_error'.tr);
+    } finally {
+      isLoading.value = false;
     }
-    return null;
+  }
+
+  Future<void> submitMachineryForm() async {
+    if (!formKey.currentState!.validate()) return;
+    isLoading.value = true;
+
+    try {
+      final machinery = Machinery(
+        dateOfConsumption: selectedDate.value,
+        vendor: selectedVendor.value!,
+        inventoryType:
+            selectedInventoryType.value!, // Map to your actual values
+        inventoryCategory: selectedInventoryCategory.value!,
+        inventoryItems: selectedInventoryItem.value!,
+        machineryType: machineryType.value == 'Fuel' ? '1' : '2',
+        fuelCapacity: int.tryParse(fuelCapacityController.text) ?? 0,
+        warrantyStartDate: warrantyStartDateController.text,
+        warrantyEndDate: warrantyEndDateController.text,
+        purchaseAmount: purchaseAmount.value,
+        paidAmount: paidAmount.value,
+        description: descriptionController.text,
+        // documents: documents,
+      );
+
+      final response = await _repository.addMachinery(machinery);
+
+      if (response['success'] == true) {
+        Get.back(result: true);
+        Get.toNamed(
+          '/consumption-purchase',
+          arguments: {
+            "id": selectedInventoryType.value,
+            'tab': 1,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
+          preventDuplicates: true,
+        );
+        Fluttertoast.showToast(msg: 'Machinery added successfully!'.tr);
+      } else {
+        Fluttertoast.showToast(
+          msg: response['message'] ?? 'Failed to add machinery'.tr,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Network error: ${e.toString()}'.tr);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> submitVehicleForm() async {
@@ -331,10 +349,10 @@ class PurchasesAddController extends GetxController {
 
     try {
       final vehicle = VehicleModel(
-        farmerId: 1,
+        farmerId: appData.userId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
         vendor: selectedVendor.value ?? 0,
-        inventoryType: 1, // Assuming default value
+        inventoryType:  selectedInventoryCategory.value!, // Assuming default value
         inventoryCategory: selectedInventoryCategory.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
         registerNumber: regNoController.text,
@@ -398,10 +416,15 @@ class PurchasesAddController extends GetxController {
 
       var status = json.decode(response);
       if (status['success']) {
-        Get.back();
+        Get.back(result: true);
         Get.toNamed(
           '/consumption-purchase',
-          arguments: {"id": selectedInventoryType.value, 'tab': 1},
+          arguments: {
+            "id": selectedInventoryType.value,
+            'tab': 1,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
           preventDuplicates: true,
         );
         Fluttertoast.showToast(
@@ -411,7 +434,6 @@ class PurchasesAddController extends GetxController {
           backgroundColor: Colors.green,
           textColor: Colors.white,
         );
-        Get.back(result: true);
       } else {
         Fluttertoast.showToast(
           msg: response.message ?? "Failed to add vehicle",
@@ -463,7 +485,12 @@ class PurchasesAddController extends GetxController {
 
         Get.toNamed(
           '/consumption-purchase',
-          arguments: {"id": selectedInventoryType.value, 'tab': 1},
+          arguments: {
+            "id": selectedInventoryType.value,
+            'tab': 1,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
           preventDuplicates: true,
         );
         Fluttertoast.showToast(
@@ -492,9 +519,9 @@ class PurchasesAddController extends GetxController {
     }
   }
 
-  //
+  //Submit Form
 
-  //common start
+  //common Widget
   Widget buildLitreField() => Obx(
     () => Row(
       children: [
@@ -534,19 +561,6 @@ class PurchasesAddController extends GetxController {
     ),
   );
 
-  Future<void> fetchUnit() async {
-    final unitList = await _repository.getUnitList();
-    unit.assignAll(unitList);
-
-    if (unitList.isNotEmpty) {
-      selectedUnit.value = unitList.first;
-    }
-  }
-
-  void changeUnit(Unit crop) {
-    selectedUnit.value = crop;
-  }
-
   Widget buildPurchaseAmountField() => Obx(
     () => InputCardStyle(
       child: TextFormField(
@@ -578,23 +592,6 @@ class PurchasesAddController extends GetxController {
       ),
     ),
   );
-
-  void addDocumentItem() {
-    Get.to(
-      const AddDocumentView(),
-      binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocType.inventory)},
-    )?.then((result) {
-      if (result != null && result is AddDocumentModel) {
-        documentItems.add(result);
-      }
-      // print(documentItems.toString());
-    });
-  }
-
-  void removeDocumentItem(int index) {
-    documentItems.removeAt(index);
-  }
 
   Widget buildDocumentsSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -662,6 +659,7 @@ class PurchasesAddController extends GetxController {
       }),
     ],
   );
+
   Widget buildDescriptionField() => InputCardStyle(
     noHeight: true,
     child: TextFormField(
@@ -733,7 +731,7 @@ class PurchasesAddController extends GetxController {
                 )
                 .toList(),
             onChanged: (value) {
-              inventoryCategory(value);
+              inventoryCategoryUpdate(value);
             },
           ),
         ),
@@ -742,17 +740,12 @@ class PurchasesAddController extends GetxController {
     ),
   );
 
-  void inventoryCategory(int? value) {
-    setInventoryCategory(value!);
-    fetchInventoryItems(value);
-  }
-
   Widget buildInventoryItemDropdown() => Obx(
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         validator: (value) => value == null ? 'required_field'.tr : null,
         decoration: InputDecoration(
-          hintText:"${ 'Inventory Item'.tr} *",
+          hintText: "${'Inventory Item'.tr} *",
           border: InputBorder.none,
         ),
         initialValue: selectedInventoryItem.value,
@@ -815,7 +808,17 @@ class PurchasesAddController extends GetxController {
       ),
     ],
   );
-  //common  end
+  //common  Widget
+
+  void clearForm() {
+    selectedDate.value = '';
+    selectedVendor.value = 0;
+    purchaseAmount.value = '';
+    litre.value = '';
+    description.value = '';
+    documents.clear();
+    fieldErrors.clear();
+  }
 
   @override
   void onClose() {

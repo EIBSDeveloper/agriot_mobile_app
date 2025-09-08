@@ -774,6 +774,7 @@ import 'package:argiot/src/payable/repository/customer_add_repository/customer_a
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/enums.dart';
 import '../../controller/customer_add_controller/customer_add_controller.dart';
 import '../../controller/customer_vendor_controller/customer_vendor_controller.dart';
 import '../../controller/vendor_add_controller/vendor_add_controller.dart';
@@ -783,7 +784,7 @@ import '../../repository/vendor_add_repository/vendor_add_repository.dart';
 import '../payables_receivables/payables_receivables_screen.dart';
 import 'historydetailspage.dart';
 
-enum DetailsType { payables, receivables }
+
 
 class CustomerVendorDetailsPage extends StatefulWidget {
   final int id;

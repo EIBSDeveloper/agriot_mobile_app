@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -59,35 +58,35 @@ class ReceivablesList extends StatelessWidget {
   }
 
   Widget _buildCustomerReceivableTile(ReceivableCustomer item) => InkWell(
-      onTap: () {
-        Get.to(
-          () => CustomerSalesPage(
-            customerId: item.id,
-            customerName: item.customerName,
-            amount: item.openingBalance,
-            isPayable: false,
-          ),
-        );
-      },
-      child: _tile(
-        item.customerName,
-        '${'shop'.tr}: ${item.shopName}',
-        item.openingBalance,
-        item.isCredit,
-      ),
-    );
+    onTap: () {
+      Get.to(
+        () => CustomerSalesPage(
+          customerId: item.id,
+          customerName: item.customerName,
+          amount: item.openingBalance,
+          isPayable: false,
+        ),
+      );
+    },
+    child: _tile(
+      item.customerName,
+      '${'shop'.tr}: ${item.shopName}',
+      item.openingBalance,
+      item.isCredit,
+    ),
+  );
 
   Widget _buildVendorReceivableTile(ReceivableVendor item) => InkWell(
-      onTap: () {
-        Get.to(() => VendorPurchasePage(vendorId: item.id, isPayable: false));
-      },
-      child: _tile(
-        item.vendorName,
-        '${'business'.tr}: ${item.businessName}',
-        item.openingBalance,
-        item.isCredit,
-      ),
-    );
+    onTap: () {
+      Get.to(() => VendorPurchasePage(vendorId: item.id, isPayable: false));
+    },
+    child: _tile(
+      item.vendorName,
+      '${'business'.tr}: ${item.businessName}',
+      item.openingBalance,
+      item.isCredit,
+    ),
+  );
 
   Widget _buildBothReceivableTile(BothCustomerVendor item) {
     String title = 'unknown'.tr;
@@ -107,7 +106,7 @@ class ReceivablesList extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.to(
-          () => const CustomerVendorDetailsPage(
+          () => CustomerVendorDetailsPage(
             id: 339,
             detailsType: DetailsType.receivables,
           ),
@@ -117,33 +116,34 @@ class ReceivablesList extends StatelessWidget {
     );
   }
 
-  Widget _tile(String title, String subtitle, double amount, bool isCredit) => Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: Text(
-          '+ ₹${amount.toStringAsFixed(2)}',
-          style: const TextStyle(
-            color: Colors.green,
-            fontWeight: FontWeight.bold,
-          ),
+  Widget _tile(String title, String subtitle, double amount, bool isCredit) =>
+      Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+          borderRadius: BorderRadius.circular(8),
         ),
-        leading: Icon(isCredit ? Icons.credit_card : Icons.money_off),
-      ),
-    );
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(title),
+          subtitle: Text(subtitle),
+          trailing: Text(
+            '+ ₹${amount.toStringAsFixed(2)}',
+            style: const TextStyle(
+              color: Colors.green,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          leading: Icon(isCredit ? Icons.credit_card : Icons.money_off),
+        ),
+      );
 }

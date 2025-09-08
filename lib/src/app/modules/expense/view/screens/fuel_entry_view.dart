@@ -48,7 +48,7 @@ class FuelEntryView extends GetView<PurchasesAddController> {
             // Submit Button
             Obx(
               () => ElevatedButton(
-                onPressed: controller.submitForm,
+                onPressed: controller.submitFuelForm,
                 child: controller.isLoading.value
                     ? SizedBox(
                         height: 20,

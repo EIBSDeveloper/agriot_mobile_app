@@ -107,7 +107,7 @@ class PayablesList extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.to(
-          () => const CustomerVendorDetailsPage(
+          () =>  CustomerVendorDetailsPage(
             id: 339, // use actual ID
             detailsType: DetailsType.payables,
           ),

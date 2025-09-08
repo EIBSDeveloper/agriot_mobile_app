@@ -13,7 +13,8 @@ import '../../controller/user_limit.dart';
 import '../../modules/guideline/model/guideline.dart';
 import '../../routes/app_routes.dart';
 import 'enums.dart';
- AppDataController appData = Get.find();
+
+AppDataController appData = Get.find();
 void showError(final String message) {
   Fluttertoast.showToast(
     msg: message,
@@ -109,24 +110,22 @@ String getType(int id) {
   return 'fuel';
 }
 
-int getInventoryTypeId(String typeName) {
-  switch (typeName.toLowerCase()) {
-    case 'fuel':
+int getInventoryTypeId(InventoryTypes typeName) {
+  switch (typeName) {
+    case InventoryTypes.fuel:
       return 6;
-    case 'vehicle':
+    case InventoryTypes.vehicle:
       return 1;
-    case 'machinery':
+    case InventoryTypes.machinery:
       return 2;
-    case 'tools':
+    case InventoryTypes.tools:
       return 3;
-    case 'pesticides':
+    case InventoryTypes.pesticides:
       return 4;
-    case 'fertilizers':
+    case InventoryTypes.fertilizer:
       return 5;
-    case 'seeds':
+    case InventoryTypes.seeds:
       return 7;
-    default:
-      return 0;
   }
 }
 
@@ -184,7 +183,6 @@ void handleGuidelineTap(Guideline guideline) {
 
     openUrl(Uri.parse(guideline.videoUrl!));
   } else if (guideline.mediaType == 'document' && guideline.document != null) {
-   
     // Open document viewer
     var arguments = "${appData.baseUrlWithoutAPi}${guideline.document}";
     Get.toNamed(Routes.docViewer, arguments: arguments);

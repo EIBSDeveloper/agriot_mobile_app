@@ -2,7 +2,7 @@ import 'package:argiot/src/app/modules/expense/model/document_model.dart';
 
 class VehicleModel {
   final int? id;
-  final int farmerId;
+  final String farmerId;
   final DateTime dateOfConsumption;
   final int vendor;
   final int inventoryType;

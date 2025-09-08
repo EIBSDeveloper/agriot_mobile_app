@@ -44,7 +44,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/fuel-expenses-entry',
-                  arguments: {"id": inventory.fuel.id, "type": 'machinery'},
+                  arguments: {"id": inventory.fuel.id},
                 )?.then((res) {
                   controller.loadInventory();
                 });
@@ -64,7 +64,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/vehicle_entry',
-                  arguments: {"id": inventory.vehicle.id, "type": 'machinery'},
+                  arguments: {"id": inventory.vehicle.id},
                 )?.then((res) {
                   if (res ?? false) {
                     controller.loadInventory();
@@ -86,10 +86,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/machinery_entry',
-                  arguments: {
-                    "id": inventory.machinery.id,
-                    "type": 'machinery',
-                  },
+                  arguments: {"id": inventory.machinery.id},
                 )?.then((res) {
                   if (res ?? false) {
                     controller.loadInventory();
@@ -111,7 +108,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/fertilizer_entry',
-                  arguments: {"id": inventory.tools.id, "type": 'tools'},
+                  arguments: {"id": inventory.tools.id},
                 )?.then((res) {
                   if (res ?? false) {
                     controller.loadInventory();
@@ -133,10 +130,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/fertilizer_entry',
-                  arguments: {
-                    "id": inventory.pesticides.id,
-                    "type": 'pesticides',
-                  },
+                  arguments: {"id": inventory.pesticides.id},
                 )?.then((res) {
                   if (res ?? false) {
                     controller.loadInventory();
@@ -158,10 +152,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/fertilizer_entry',
-                  arguments: {
-                    "id": inventory.fertilizers.id,
-                    "type": 'fertilizers',
-                  },
+                  arguments: {"id": inventory.fertilizers.id},
                 )?.then((res) {
                   if (res ?? false) {
                     controller.loadInventory();
@@ -183,7 +174,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               onTap: () {
                 Get.toNamed(
                   '/fertilizer_entry',
-                  arguments: {"id": inventory.seeds.id, "type": 'seeds'},
+                  arguments: {"id": inventory.seeds.id},
                 )?.then((res) {
                   if (res ?? false) {
                     controller.loadInventory();

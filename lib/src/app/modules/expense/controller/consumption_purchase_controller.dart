@@ -24,35 +24,43 @@ class ConsumptionPurchaseController extends GetxController {
   final RxBool isinventoryLoading = false.obs;
   var inventoryCategories = <InventoryCategoryModel>[].obs;
   var inventoryItems = <InventoryItemModel>[].obs;
+  final Rxn<int> inventoryType = Rxn<int>();
+  final Rxn<int> inventoryCategory = Rxn<int>();
+  final Rxn<int> inventoryItem = Rxn<int>();
   @override
   void onInit() {
     super.onInit();
-    var argument = Get.arguments['id'];
-    var type = getType(argument);
+    var arguments = Get.arguments;
+
     var tab = Get.arguments["tab"];
     if (tab != null) {
       currentTabIndex.value = tab;
     }
-    selectedInventoryTypeName.value = type;
+    if (arguments?["id"] != null) {
+      inventoryType.value = arguments?["type"];
+    }
+    if (arguments?["category"] != null) {
+      inventoryCategory.value = arguments?["category"];
+    }
+    if (arguments?["item"] != null) {
+      inventoryItem.value = arguments?["item"];
+    }
+    selectedInventoryTypeName.value = getType(inventoryType.value ?? 0);
 
-    setInventoryType(argument);
-    fetchInventoryCategories(argument);
+    setInventoryType(inventoryType.value ?? 0);
   }
 
   void setInventoryType(int typeId) {
     selectedInventoryType.value = typeId;
     selectedInventoryCategory.value = null;
     selectedInventoryItem.value = null;
-  }
-
-  void inventoryCategory(int? value) {
-    setInventoryCategory(value!);
-    fetchInventoryItems(value);
+    fetchInventoryCategories(typeId);
   }
 
   void setInventoryCategory(int categoryId) {
     selectedInventoryCategory.value = categoryId;
     selectedInventoryItem.value = null;
+    fetchInventoryItems(categoryId);
   }
 
   void setInventoryItem(int itemId) {
@@ -68,9 +76,12 @@ class ConsumptionPurchaseController extends GetxController {
         inventoryTypeId,
       );
       inventoryCategories.value = response;
-      if (inventoryCategories.isNotEmpty) {
+      if (inventoryCategory.value != null) {
+        selectedInventoryCategory.value = inventoryCategory.value;
+        setInventoryCategory(inventoryCategory.value!);
+      } else if (inventoryCategories.isNotEmpty) {
         selectedInventoryCategory.value = inventoryCategories.first.id;
-        inventoryCategory(inventoryCategories.first.id);
+        setInventoryCategory(inventoryCategories.first.id);
       }
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch inventory categories');
@@ -100,7 +111,9 @@ class ConsumptionPurchaseController extends GetxController {
         inventoryCategoryId,
       );
       inventoryItems.value = response;
-      if (response.isNotEmpty) {
+      if (inventoryItem.value != null) {
+        setInventoryItem(inventoryItem.value!);
+      } else if (response.isNotEmpty) {
         setInventoryItem(response.first.id);
       }
     } finally {

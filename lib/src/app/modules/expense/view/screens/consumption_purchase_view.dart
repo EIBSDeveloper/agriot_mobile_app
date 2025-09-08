@@ -15,12 +15,12 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: CustomAppBar(
-        title: capitalizeFirstLetter(
-          controller.selectedInventoryTypeName.value,
-        ),
-      ),
-      body: Column(
+    appBar: CustomAppBar(
+      title: capitalizeFirstLetter(controller.selectedInventoryTypeName.value),
+    ),
+    body: RefreshIndicator(
+      onRefresh: controller.loadData,
+      child: Column(
         children: [
           // Filter Section
           Padding(
@@ -35,7 +35,8 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
           ),
 
           // Tab Bar
-          Obx(() => Container(
+          Obx(
+            () => Container(
               color: Get.theme.colorScheme.surface,
               child: TabBar(
                 controller: TabController(
@@ -55,7 +56,8 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   ),
                 ],
               ),
-            )),
+            ),
+          ),
 
           // Content Area
           Expanded(
@@ -73,7 +75,8 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               );
             }),
           ),
-          Obx(() => Container(
+          Obx(
+            () => Container(
               height: 60,
               width: double.infinity,
               decoration: AppStyle.inputDecoration.copyWith(
@@ -83,124 +86,157 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               margin: const EdgeInsets.only(right: 8, bottom: 15, left: 10),
               child: Center(
                 child: FittedBox(
-                  
                   child: Text(
                     " Available ${controller.selectedInventoryItemName} : 00",
                     style: Get.theme.textTheme.headlineMedium,
                   ),
                 ),
               ),
-            )),
+            ),
+          ),
         ],
       ),
+    ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Get.theme.primaryColor, 
-        onPressed: () {
-          if (controller.currentTabIndex.value == 0) {
+    floatingActionButton: FloatingActionButton(
+      backgroundColor: Get.theme.primaryColor,
+      onPressed: () {
+        if (controller.currentTabIndex.value == 0) {
+          Get.toNamed(
+            Routes.fuelConsumption,
+            arguments: {
+              "type": controller.selectedInventoryType.value,
+              "category": controller.selectedInventoryCategory.value,
+              "item": controller.selectedInventoryItem.value,
+            },
+          )?.then((result) {
+            refresh(result);
+          });
+        } else {
+          if (controller.selectedInventoryType.value == 6) {
             Get.toNamed(
-              Routes.fuelConsumption,
+              '/fuel-expenses-entry',
               arguments: {
-                "type": controller.selectedInventoryType.value,
+                "id": controller.selectedInventoryType.value,
                 "category": controller.selectedInventoryCategory.value,
                 "item": controller.selectedInventoryItem.value,
               },
-            )?.then((res) {});
+            )?.then((result) {
+              refresh(result);
+            });
+          } else if (controller.selectedInventoryType.value == 1) {
+            Get.toNamed(
+              '/vehicle_entry',
+              arguments: {
+                "id": controller.selectedInventoryType.value,
+                "category": controller.selectedInventoryCategory.value,
+                "item": controller.selectedInventoryItem.value,
+              },
+            )?.then((result) {
+              refresh(result);
+            });
+          } else if (controller.selectedInventoryType.value == 2) {
+            Get.toNamed(
+              '/machinery_entry',
+              arguments: {
+                "id": controller.selectedInventoryType.value,
+                "category": controller.selectedInventoryCategory.value,
+                "item": controller.selectedInventoryItem.value,
+              },
+            )?.then((result) {
+              refresh(result);
+            });
           } else {
-            if (controller.selectedInventoryType.value == 7) {
-              Get.toNamed(
-                '/fuel-expenses-entry',
-                arguments: {"id": controller.selectedInventoryType.value},
-              );
-            } else if (controller.selectedInventoryType.value == 1) {
-              Get.toNamed(
-                '/vehicle_entry',
-                arguments: {"id": controller.selectedInventoryType.value},
-              );
-            } else if (controller.selectedInventoryType.value == 2) {
-              Get.toNamed(
-                '/machinery_entry',
-                arguments: {"id": controller.selectedInventoryType.value},
-              );
-            } else {
-              Get.toNamed(
-                '/fertilizer_entry',
-                arguments: {"id": controller.selectedInventoryType.value},
-              );
-            }
+            Get.toNamed(
+              '/fertilizer_entry',
+              arguments: {
+                "id": controller.selectedInventoryType.value,
+                "category": controller.selectedInventoryCategory.value,
+                "item": controller.selectedInventoryItem.value,
+              },
+            )?.then((result) {
+              refresh(result);
+            });
           }
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+        }
+      },
+      child: const Icon(Icons.add),
+    ),
+  );
+
+  void refresh(result) {
+    if (result ?? false) {
+      controller.loadData();
+    }
+  }
 
   Widget buildInventoryCategoryDropdown() => Expanded(
-      child: Obx(
-        () => Column(
-          children: [
-            InputCardStyle(
-              child: DropdownButtonFormField<int>(
-                isExpanded: true,
-                decoration: InputDecoration(
-                  hintText: 'Inventory Category'.tr,
-                  border: InputBorder.none,
-                ),
-                
-                icon: const Icon(Icons.keyboard_arrow_down),
-                initialValue: controller.selectedInventoryCategory.value,
-                items: controller.inventoryCategories
-                    .map(
-                      (category) => DropdownMenuItem<int>(
-                        value: category.id,
-                        child: Text(
-                          category.name,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  controller.inventoryCategory(value);
-                },
+    child: Obx(
+      () => Column(
+        children: [
+          InputCardStyle(
+            child: DropdownButtonFormField<int>(
+              isExpanded: true,
+              decoration: InputDecoration(
+                hintText: 'Inventory Category'.tr,
+                border: InputBorder.none,
               ),
+
+              icon: const Icon(Icons.keyboard_arrow_down),
+              initialValue: controller.selectedInventoryCategory.value,
+              items: controller.inventoryCategories
+                  .map(
+                    (category) => DropdownMenuItem<int>(
+                      value: category.id,
+                      child: Text(
+                        category.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                controller.inventoryCategory(value);
+              },
             ),
-            //  ErrorText(error: getErrorForField('vendor')),
-          ],
-        ),
+          ),
+          //  ErrorText(error: getErrorForField('vendor')),
+        ],
       ),
-    );
+    ),
+  );
 
   Widget buildInventoryItemDropdown() => Expanded(
-      child: Obx(
-        () => InputCardStyle(
-          child: DropdownButtonFormField<int>(
-            isExpanded: true,
-            decoration: InputDecoration(
-              hintText: 'Inventory Item'.tr,
-              border: InputBorder.none,
-            ),
-            
-                icon: const Icon(Icons.keyboard_arrow_down),
-            initialValue: controller.selectedInventoryItem.value,
-            items: controller.inventoryItems
-                .map(
-                  (item) => DropdownMenuItem<int>(
-                    value: item.id,
-                    child: Text(
-                      item.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) =>
-                controller.selectedInventoryCategory.value != null
-                ? controller.setInventoryItem(value!)
-                : null,
+    child: Obx(
+      () => InputCardStyle(
+        child: DropdownButtonFormField<int>(
+          isExpanded: true,
+          decoration: InputDecoration(
+            hintText: 'Inventory Item'.tr,
+            border: InputBorder.none,
           ),
+
+          icon: const Icon(Icons.keyboard_arrow_down),
+          initialValue: controller.selectedInventoryItem.value,
+          items: controller.inventoryItems
+              .map(
+                (item) => DropdownMenuItem<int>(
+                  value: item.id,
+                  child: Text(
+                    item.name,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: (value) =>
+              controller.selectedInventoryCategory.value != null
+              ? controller.setInventoryItem(value!)
+              : null,
         ),
       ),
-    );
+    ),
+  );
 }

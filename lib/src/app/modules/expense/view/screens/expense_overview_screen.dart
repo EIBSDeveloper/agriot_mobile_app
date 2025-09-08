@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 
 import 'package:pie_chart/pie_chart.dart';
 
-import '../../routes/app_routes.dart';
-import '../../widgets/input_card_style.dart';
-import '../../widgets/title_text.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/title_text.dart';
 
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
@@ -118,10 +118,6 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
 
   Widget _buildSummarySection() => Row(
     children: [
-      // const Text(
-      //   "Expenses",
-      //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      // ),
       Expanded(
         child: InputCardStyle(
           child: Text(
@@ -340,17 +336,10 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             ),
           );
         } else {
-          return const SizedBox(); // Fallback for unexpected types
+          return const SizedBox();
         }
       },
     );
   }
 
-  // String _formatDate(String date) {
-  //   try {
-  //     return DateFormat('MMM dd').format(DateTime.parse(date));
-  //   } catch (e) {
-  //     return date;
-  //   }
-  // }
 }

@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
 import '../../near_me/model/models.dart';
+import '../model/task.dart';
 import '../model/widget_config.dart';
 
 class DashboardRepository {
@@ -33,14 +34,14 @@ class DashboardRepository {
     );
   }
 
-  Future<List<Task>> getTasks(int landId) async {
+  Future<List<DashBoardSchedule>> getTasks(int landId) async {
     final userId = _appDataController.userId;
     final response = await _httpService.get(
       '/dashboard_task_list/$userId/?land_id=$landId',
     );
     final data = json.decode(response.body);
-    return List<Task>.from(
-      data['schedules']?.map((x) => Task.fromJson(x)) ?? [],
+    return List<DashBoardSchedule>.from(
+      data['schedules']?.map((x) => DashBoardSchedule.fromJson(x)) ?? [],
     );
   }
 

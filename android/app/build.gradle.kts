@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.eibs.agriot"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -41,7 +41,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:/Users/Bala/Desktop/argiot/agriot.jks")
+            storeFile = file("C:/Users/Bala/Downloads/my_new/argiot/agriot.jks")
             storePassword = "EIBS@123"
             keyAlias = "myreleasekey"
             keyPassword = "EIBS@123"

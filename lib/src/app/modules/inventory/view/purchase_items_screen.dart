@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'inventory_controller.dart';
-import '../near_me/views/widget/widgets.dart';
+import '../controller/inventory_controller.dart';
+import '../../near_me/views/widget/widgets.dart';
 
 class PurchaseItemsScreen extends GetView<InventoryController> {
   const PurchaseItemsScreen({super.key});
@@ -42,7 +42,6 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                 );
               },
               onTap: () {
-                // Get.toNamed(Routes.fuelList);
                 Get.toNamed(
                   '/fuel-expenses-entry',
                   arguments: {"id": inventory.fuel.id, "type": 'machinery'},
@@ -67,7 +66,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                   '/vehicle_entry',
                   arguments: {"id": inventory.vehicle.id, "type": 'machinery'},
                 )?.then((res) {
-                  controller.loadInventory();
+                  if (res ?? false) {
+                    controller.loadInventory();
+                  }
                 });
               },
             ),
@@ -90,7 +91,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     "type": 'machinery',
                   },
                 )?.then((res) {
-                  controller.loadInventory();
+                  if (res ?? false) {
+                    controller.loadInventory();
+                  }
                 });
               },
             ),
@@ -110,7 +113,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                   '/fertilizer_entry',
                   arguments: {"id": inventory.tools.id, "type": 'tools'},
                 )?.then((res) {
-                  controller.loadInventory();
+                  if (res ?? false) {
+                    controller.loadInventory();
+                  }
                 });
               },
             ),
@@ -133,7 +138,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     "type": 'pesticides',
                   },
                 )?.then((res) {
-                  controller.loadInventory();
+                  if (res ?? false) {
+                    controller.loadInventory();
+                  }
                 });
               },
             ),
@@ -156,7 +163,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     "type": 'fertilizers',
                   },
                 )?.then((res) {
-                  controller.loadInventory();
+                  if (res ?? false) {
+                    controller.loadInventory();
+                  }
                 });
               },
             ),
@@ -176,7 +185,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                   '/fertilizer_entry',
                   arguments: {"id": inventory.seeds.id, "type": 'seeds'},
                 )?.then((res) {
-                  controller.loadInventory();
+                  if (res ?? false) {
+                    controller.loadInventory();
+                  }
                 });
               },
             ),

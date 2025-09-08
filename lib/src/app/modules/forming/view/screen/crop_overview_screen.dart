@@ -13,7 +13,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../guideline/model/guideline.dart';
 import '../../../../routes/app_routes.dart';
-import '../../../../service/utils/utils.dart';
+import '../../../guideline/model/guideline_category.dart';
+import '../../../guideline/view/widget/guideline_card.dart';
 
 class CropOverviewScreen extends StatefulWidget {
   const CropOverviewScreen({super.key});
@@ -47,7 +48,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     appBar: const CustomAppBar(title: 'Crop Details', showBackButton: true),
     body: RefreshIndicator(
       onRefresh: () async {
-         loadData();
+        loadData();
       },
       child: Obx(() {
         if (controller.isOverviewLoading.value) {
@@ -110,31 +111,36 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
   Widget _buildCropInfo(MyCropDetails? details) => Stack(
     children: [
-      Card(
-        elevation: 1,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 30,
-
-                backgroundImage: NetworkImage(details!.imageUrl!),
-                child: details.imageUrl!.isEmpty
-                    ? const Icon(Icons.agriculture, size: 30)
-                    : null,
-              ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TitleText(
-                    '${details.crop!.name} (Day - ${controller.getDaysSincePlantation(details.plantationDate)})',
-                  ),
-                  Text(details.land!.name),
-                ],
-              ),
-            ],
+      InkWell(
+        onTap: (){
+           controller.isCropExpended.value = !controller.isCropExpended.value;
+        },
+        child: Card(
+          elevation: 1,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+        
+                  backgroundImage: NetworkImage(details!.imageUrl!),
+                  child: details.imageUrl!.isEmpty
+                      ? const Icon(Icons.agriculture, size: 30)
+                      : null,
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TitleText(
+                      '${details.crop!.name} (Day - ${controller.getDaysSincePlantation(details.plantationDate)})',
+                    ),
+                    Text(details.land!.name),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -159,7 +165,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         right: 5,
         child: IconButton(
           onPressed: () {
-            controller.isCropExpended.value = !controller.isCropExpended.value;
+           controller.isCropExpended.value = !controller.isCropExpended.value;
           },
           iconSize: 30,
           icon: Obx(
@@ -331,22 +337,33 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
         const SizedBox(height: 10),
         SizedBox(
-          height: 80,
+          height: 100,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: overview.guidelines.length,
             itemBuilder: (context, index) {
               final guideline = overview.guidelines[index];
-              var guideline2 = Guideline(
-                id: guideline.id,
-                name: guideline.name,
-                guidelinestype: guideline.description,
-                guidelinescategory: null,
-                description: guideline.description,
-                status: 0,
-                mediaType: guideline.mediaType,
+
+              return SizedBox(
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: GuidelineCard(
+                    guideline: Guideline(
+                      id: guideline.id,
+                      name: guideline.name,
+                      guidelinestype: guideline.description,
+                      guidelinescategory: GuidelineCategory(
+                        name: guideline.description,
+                        id: 1,
+                      ),
+                      description: guideline.description,
+                      status: 0,
+                      mediaType: guideline.mediaType,
+                    ),
+                  ),
+                ),
               );
-              return _buildGuidelineCard(guideline2);
             },
           ),
         ),
@@ -354,83 +371,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     );
   }
 
-  void _handleGuidelineTap(Guideline guideline) {
-    if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
-      Get.toNamed('/video-player', arguments: guideline.videoUrl);
-    } else if (guideline.mediaType == 'document' &&
-        guideline.document != null) {
-      Get.toNamed('/document-viewer', arguments: guideline.document);
-    } else {
-      showError('Unable to open guideline content');
-    }
-  }
-
-  Widget _buildThumbnail(Guideline guideline) => Stack(
-    alignment: Alignment.center,
-    children: [
-      Container(
-        width: 50,
-        height: 50,
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(0, 238, 238, 238),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: guideline.mediaType == 'video'
-            ? const Icon(Icons.videocam, size: 40, color: Colors.grey)
-            : const Icon(Icons.insert_drive_file, size: 40, color: Colors.grey),
-      ),
-      if (guideline.mediaType == 'video')
-        const Icon(Icons.play_circle_fill, size: 40, color: Colors.white),
-    ],
-  );
-
-  Widget _buildGuidelineCard(Guideline guideline) => SizedBox(
-    width: 300,
-    child: Card(
-      color: const Color.fromARGB(255, 242, 240, 232), //rgb(242,240,232)
-      elevation: 0,
-      margin: const EdgeInsets.only(right: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: InkWell(
-          onTap: () => _handleGuidelineTap(guideline),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildThumbnail(guideline),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      guideline.guidelinestype,
-                      style: Get.textTheme.titleMedium?.copyWith(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      guideline.description,
-                      style: Get.textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 
   Widget _buildTasksSection(CropOverview overview) {
     if (overview.schedules.isEmpty) return const SizedBox();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/app_style.dart';
@@ -57,6 +58,10 @@ class KycView extends GetView<KycController> {
               _buildTextField(
                 controller: controller.pincodeController,
                 label: 'Pincode *',
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
                 validator: (value) => (value!.isEmpty)
                     ? ('Required field')
                     : (value.length != 6 ? "Ender 6 digit Pincode" : null),
@@ -84,51 +89,55 @@ class KycView extends GetView<KycController> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-
+    List<TextInputFormatter>? inputFormatters,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
   }) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      // height: height ?? 55,
-      constraints: const BoxConstraints(
-        minHeight: 55, // minimum height for all fields
-      ),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: label,
-          border: InputBorder.none,
-          isDense: true,
-          suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
-        ),
-        validator: validator,
-        keyboardType: keyboardType,
-        readOnly: readOnly,
-        onTap: onTap,
-      ),
-    );
+    decoration: AppStyle.decoration.copyWith(
+      color: const Color.fromARGB(137, 221, 234, 234),
+      boxShadow: const [],
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    // height: height ?? 55,
+    constraints: const BoxConstraints(
+      minHeight: 55, // minimum height for all fields
+    ),
 
-  Widget _buildSubmitButton() => Obx(() => ElevatedButton(
-        onPressed: controller.isSubmitting.value ? null : controller.submitForm,
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: const Color.fromARGB(255, 100, 120, 31),
-        ),
-        child: controller.isSubmitting.value
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white,
-                ),
-              )
-            : const Text('Save & Continue'),
-      ));
+    child: TextFormField(
+      controller: controller,
+      inputFormatters: inputFormatters,
+      decoration: InputDecoration(
+        hintText: label,
+        border: InputBorder.none,
+        isDense: true,
+        suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
+      ),
+      validator: validator,
+      keyboardType: keyboardType,
+      readOnly: readOnly,
+      onTap: onTap,
+    ),
+  );
+
+  Widget _buildSubmitButton() => Obx(
+    () => ElevatedButton(
+      onPressed: controller.isSubmitting.value ? null : controller.submitForm,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        backgroundColor: const Color.fromARGB(255, 100, 120, 31),
+      ),
+      child: controller.isSubmitting.value
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : const Text('Save & Continue'),
+    ),
+  );
 }

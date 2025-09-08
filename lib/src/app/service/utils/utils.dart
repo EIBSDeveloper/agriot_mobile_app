@@ -9,7 +9,9 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/user_limit.dart';
+import '../../modules/guideline/model/guideline.dart';
 import '../../routes/app_routes.dart';
+import 'enums.dart';
 
 void showError(final String message) {
   Fluttertoast.showToast(
@@ -20,6 +22,7 @@ void showError(final String message) {
     textColor: Colors.white,
   );
 }
+
 String capitalizeFirstLetter(final String input) {
   if (input.isEmpty) return input;
   return input[0].toUpperCase() + input.substring(1);
@@ -31,14 +34,14 @@ Future<void> openUrl(url) async {
   }
 }
 
-  Future<void> makePhoneCall(final String phoneNumber) async {
-    final Uri uri = Uri(scheme: 'tel', path: phoneNumber);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      throw 'Could not launch $uri';
-    }
+Future<void> makePhoneCall(final String phoneNumber) async {
+  final Uri uri = Uri(scheme: 'tel', path: phoneNumber);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri);
+  } else {
+    throw 'Could not launch $uri';
   }
+}
 
 void showSuccess(final String message) {
   Fluttertoast.showToast(
@@ -72,13 +75,13 @@ packageRefresh() {
   limitController.loadUsage();
 }
 
- void showDefaultGetXDialog(final String message) {
+void showDefaultGetXDialog(final String message) {
   Get.defaultDialog(
     title: 'Package Limit Reached',
     middleText: "You've reached your limit for adding new $message .",
     textConfirm: "Upgrade",
     textCancel: 'Close',
-    radius :10,
+    radius: 10,
     onConfirm: () async {
       await Get.toNamed(Routes.subscriptionUsage);
     },
@@ -104,28 +107,29 @@ String getType(int id) {
   }
   return 'fuel';
 }
-  int getInventoryTypeId(String typeName) {
-    switch (typeName.toLowerCase()) {
-      case 'fuel':
-        return 6;
-      case 'vehicle':
-        return 1;
-      case 'machinery':
-        return 2;
-      case 'tools':
-        return 3;
-      case 'pesticides':
-        return 4;
-      case 'fertilizers':
-        return 5;
-      case 'seeds':
-        return 7;
-      default:
-        return 0;
-    }
-  }
 
-  Future<Uint8List> getBytesFromUrl(String url, {int width = 100}) async {
+int getInventoryTypeId(String typeName) {
+  switch (typeName.toLowerCase()) {
+    case 'fuel':
+      return 6;
+    case 'vehicle':
+      return 1;
+    case 'machinery':
+      return 2;
+    case 'tools':
+      return 3;
+    case 'pesticides':
+      return 4;
+    case 'fertilizers':
+      return 5;
+    case 'seeds':
+      return 7;
+    default:
+      return 0;
+  }
+}
+
+Future<Uint8List> getBytesFromUrl(String url, {int width = 100}) async {
   final http.Response response = await http.get(Uri.parse(url));
   final Uint8List bytes = response.bodyBytes;
   final codec = await instantiateImageCodec(bytes, targetWidth: width);
@@ -136,21 +140,80 @@ String getType(int id) {
   return byteData!.buffer.asUint8List();
 }
 
+String getMonthName(int month) {
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  return months[month - 1];
+}
 
-  String getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return months[month - 1];
+String? getYoutubeVideoId(String? url) {
+  if (url == null) {
+    return null;
   }
+  final RegExp regExp = RegExp(r"(?:v=|\/)([0-9A-Za-z_-]{11})(?:\?|\&|$)");
+  final match = regExp.firstMatch(url);
+  return match?.group(1);
+}
+
+String? getYoutubeThumbnailUrl(
+  String? videoId, {
+  String quality = 'hqdefault',
+}) {
+  if (videoId == null) {
+    return null;
+  }
+  return 'https://img.youtube.com/vi/$videoId/$quality.jpg';
+}
+
+void handleGuidelineTap(Guideline guideline) {
+  if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
+    // Open video player
+    // Get.toNamed('/video-player', arguments: guideline.videoUrl);
+    openUrl(Uri.parse(guideline.videoUrl!));
+  } else if (guideline.mediaType == 'document' && guideline.document != null) {
+    // Open document viewer
+    Get.toNamed('/document-viewer', arguments: guideline.document);
+  } else {
+    showError('Unable to open guideline content');
+  }
+}
+
+bool isValidMobile(String input) {
+  // Check if input is exactly 10 digits
+  final mobileRegex = RegExp(r'^\d{10}$');
+  return mobileRegex.hasMatch(input);
+}
+
+bool isValidEmail(String input) {
+  // Simple email regex pattern
+  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+  return emailRegex.hasMatch(input);
+}
+
+
+int getDocTypeId(DocType type) {
+  if (type == DocType.land) {
+    return 0;
+  } else if (type == DocType.expense) {
+    return 1;
+  } else if (type == DocType.sales) {
+    return 2;
+  } else if (type == DocType.inventory) {
+    return 3;
+  } else if (type == DocType.payouts) {
+    return 4;
+  }
+  return 0;
+}

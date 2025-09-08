@@ -11,9 +11,10 @@ import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../bottombar/contoller/bottombar_contoller.dart';
+import '../../../guideline/model/guideline_category.dart';
+import '../../../guideline/view/widget/guideline_card.dart';
 import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/dashboard_controller.dart';
-
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -435,118 +436,46 @@ class DashboardView extends GetView<DashboardController> {
       ),
       Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 80,
-              child: Obx(() {
-                if (controller.guidelines.isEmpty) {
-                  return Center(child: Text('no_guidelines'.tr));
-                }
+        child: SizedBox(
+          height: 100,
+          child: Obx(() {
+            if (controller.guidelines.isEmpty) {
+              return Center(child: Text('no_guidelines'.tr));
+            }
 
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.guidelines.length,
-                  itemBuilder: (context, index) {
-                    final guideline = controller.guidelines[index];
-
-                    var guideline2 = Guideline(
-                      id: guideline.id,
-                      name: guideline.name,
-                      guidelinestype: guideline.description,
-                      guidelinescategory: null,
-                      description: guideline.description,
-                      status: 0,
-                      mediaType: guideline.mediaType,
-                    );
-                    return _buildGuidelineCard(guideline2);
-                  },
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: controller.guidelines.length,
+              itemBuilder: (context, index) {
+                final guideline = controller.guidelines[index];
+                return SizedBox(
+                  width: 300,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: GuidelineCard(
+                      guideline: Guideline(
+                        id: guideline.id,
+                        name: guideline.name,
+                        guidelinestype: guideline.description,
+                        guidelinescategory: GuidelineCategory(
+                          name: guideline.description,
+                          id: 1,
+                        ),
+                        description: guideline.description,
+                        status: 0,
+                        mediaType: guideline.mediaType,
+                      ),
+                    ),
+                  ),
                 );
-              }),
-            ),
-          ],
+              },
+            );
+          }),
         ),
       ),
     ],
   );
 
-  void _handleGuidelineTap(Guideline guideline) {
-    if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
-      Get.toNamed('/video-player', arguments: guideline.videoUrl);
-    } else if (guideline.mediaType == 'document' &&
-        guideline.document != null) {
-      Get.toNamed('/document-viewer', arguments: guideline.document);
-    } else {
-      showError('unable_to_open_content'.tr);
-    }
-  }
-
-  Widget _buildThumbnail(Guideline guideline) => Stack(
-    alignment: Alignment.center,
-    children: [
-      Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(0, 238, 238, 238),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: guideline.mediaType == 'video'
-            ? const Icon(Icons.videocam, size: 40, color: Colors.grey)
-            : const Icon(Icons.insert_drive_file, size: 40, color: Colors.grey),
-      ),
-      if (guideline.mediaType == 'video')
-        const Icon(Icons.play_circle_fill, size: 40, color: Colors.white),
-    ],
-  );
-
-  Widget _buildGuidelineCard(Guideline guideline) => SizedBox(
-    width: 300,
-    child: Card(
-      color: const Color.fromARGB(255, 242, 240, 232),
-      elevation: 0,
-      margin: const EdgeInsets.only(right: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: InkWell(
-          onTap: () => _handleGuidelineTap(guideline),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildThumbnail(guideline),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      guideline.guidelinestype.tr,
-                      style: Get.textTheme.titleMedium?.copyWith(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      guideline.description.tr,
-                      style: Get.textTheme.bodySmall?.copyWith(
-                        color: Colors.grey,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
 
   Widget _buildMarketPricesCard() => Center(
     child: Column(
@@ -752,8 +681,8 @@ class DashboardView extends GetView<DashboardController> {
                   Task(
                     id: task.id,
                     cropImage: task.cropImage,
-                    cropType: task.cropType,
-                    description: task.description,
+                    cropType: task.cropName,
+                    description: task.scheduleStatusName,
                   ),
                 );
               },

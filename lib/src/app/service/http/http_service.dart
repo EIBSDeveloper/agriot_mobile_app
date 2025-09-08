@@ -1,5 +1,3 @@
-// lib/app/services/http_service.dart
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:argiot/src/app/service/http/http_exception.dart';
@@ -7,12 +5,6 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../controller/app_controller.dart';
 
-// class MultipartBody {
-//   final Map<String, String> fields;
-//   final List<http.MultipartFile> files;
-
-//   MultipartBody({required this.fields, this.files = const []});
-// }
 
 class HttpService extends GetxService {
   final AppDataController appData = Get.put(AppDataController());
@@ -20,7 +12,7 @@ class HttpService extends GetxService {
   late final String baseUrl = appData.baseUrl.value;
   late final String baseUrlIWithodAPi = appData.baseUrlWithoutAPi.value;
   final int timeoutSeconds = 30;
-
+ late String languageCode = appData.appLanguage.value.languageCode;
   /// GET Request
   Future<http.Response> getWithodAPi(
     String endpoint, {
@@ -45,9 +37,10 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
+     
       final updatedEndpoint = endpoint.contains('?')
-          ? '$endpoint&lang=ta'
-          : '$endpoint?lang=ta';
+          ? '$endpoint&lang=$languageCode'
+          : '$endpoint?lang=$languageCode';
       final response = await http
           .get(Uri.parse(baseUrl + updatedEndpoint), headers: _headers(headers))
           .timeout(Duration(seconds: timeoutSeconds));
@@ -79,8 +72,8 @@ class HttpService extends GetxService {
   }) async {
     try {
       final updatedEndpoint = endpoint.contains('?')
-          ? '$endpoint&lang=ta'
-          : '$endpoint?lang=ta';
+          ? '$endpoint&lang=$languageCode'
+          : '$endpoint?lang=$languageCode';
       final url = Uri.parse(baseUrl + updatedEndpoint);
 
       final response = await http
@@ -99,8 +92,8 @@ class HttpService extends GetxService {
   }) async {
     try {
       final updatedEndpoint = endpoint.contains('?')
-          ? '$endpoint&lang=ta'
-          : '$endpoint?lang=ta';
+          ? '$endpoint&lang=$languageCode'
+          : '$endpoint?lang=$languageCode}';
       final url = Uri.parse(baseUrl + updatedEndpoint);
 
       final response = await http

@@ -1,32 +1,80 @@
-// class Task {
-//   final int id;
-//   final String name;
-//   final String startDate;
-//   final String endDate;
-//   final String status;
-//   final String landName;
-//   final String cropName;
-//   final String cropImage;
+class DashBoardSchedule {
+  int id;
+  String schedule;
+  String startDate;
+  String endDate;
+  int scheduleStatus;
+  String scheduleStatusName;
+  dynamic comment;
+  int scheduleChoice;
+  DateTime createdAt;
+  DateTime updatedAt;
+  int myLandId;
+  String landName;
+  int farmerId;
+  String farmerName;
+  int cropId;
+  String cropName;
+  String cropImage;
 
-//   Task({
-//     required this.id,
-//     required this.name,
-//     required this.startDate,
-//     required this.endDate,
-//     required this.status,
-//     required this.landName,
-//     required this.cropName,
-//     required this.cropImage,
-//   });
+  DashBoardSchedule({
+    required this.id,
+    required this.schedule,
+    required this.startDate,
+    required this.endDate,
+    required this.scheduleStatus,
+    required this.scheduleStatusName,
+    required this.comment,
+    required this.scheduleChoice,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.myLandId,
+    required this.landName,
+    required this.farmerId,
+    required this.farmerName,
+    required this.cropId,
+    required this.cropName,
+    required this.cropImage,
+  });
 
-//   factory Task.fromJson(Map<String, dynamic> json) => Task(
-//     id: json['id'],
-//     name: json['schedule'] ?? " ",
-//     startDate: json['start_date'],
-//     endDate: json['end_date'],
-//     status: json['schedule_status_name'],
-//     landName: json['land_name'],
-//     cropName: json['crop_name'],
-//     cropImage: json['crop_image'],
-//   );
-// }
+  factory DashBoardSchedule.fromJson(Map<String, dynamic> json) =>
+      DashBoardSchedule(
+        id: json["id"],
+        schedule: json["schedule"],
+        startDate: json["start_date"],
+        endDate: json["end_date"],
+        scheduleStatus: json["schedule_status"],
+        scheduleStatusName: json["schedule_status_name"],
+        comment: json["comment"],
+        scheduleChoice: json["schedule_choice"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        myLandId: json["my_land_id"],
+        landName: json["land_name"],
+        farmerId: json["farmer_id"],
+        farmerName: json["farmer_name"],
+        cropId: json["crop_id"],
+        cropName: json["crop_name"],
+        cropImage: json["crop_image"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "schedule": schedule,
+    "start_date": startDate,
+    "end_date": endDate,
+    "schedule_status": scheduleStatus,
+    "schedule_status_name": scheduleStatusName,
+    "comment": comment,
+    "schedule_choice": scheduleChoice,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "my_land_id": myLandId,
+    "land_name": landName,
+    "farmer_id": farmerId,
+    "farmer_name": farmerName,
+    "crop_id": cropId,
+    "crop_name": cropName,
+    "crop_image": cropImage,
+  };
+}

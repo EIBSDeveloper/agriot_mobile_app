@@ -98,6 +98,9 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
                 onChanged: (value) {
                   controller.otp.value = value;
                 },
+                onCompleted: (vlu) {
+                  controller.verifyOtp();
+                },
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
                   borderRadius: BorderRadius.circular(8),
@@ -127,7 +130,7 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
                       Fluttertoast.showToast(
                         msg: 'Please enter 4-digit OTP',
                         backgroundColor: Colors.orangeAccent,
-                        gravity: ToastGravity.TOP,
+                   
                       );
                     }
                   },

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../core/app_images.dart';
+import '../../../../../core/app_style.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../../widgets/background_image.dart';
 import '../../../../widgets/primary_button.dart';
 import '../../controller/auth_controller.dart';
@@ -72,90 +74,112 @@ class _LoginPageState extends State<LoginPage>
           child: SingleChildScrollView(
             child: SizedBox(
               height: size.height,
-              child: Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(top: size.height * 0.3),
-                child: Opacity(
-                  opacity: _opacity.value,
-                  child: Transform.scale(
-                    scale: _transform.value,
-                    child: Stack(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: isTablet ? 400 : size.width * 0.9,
-                              height: size.height * 0.8,
+              child: Form(
+                key: controller.formKey,
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: size.height * 0.3),
+                  child: Opacity(
+                    opacity: _opacity.value,
+                    child: Transform.scale(
+                      scale: _transform.value,
+                      child: Stack(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: isTablet ? 400 : size.width * 0.9,
+                                height: size.height * 0.8,
 
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 28,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Column(
-                                // mainAxisAlignment:
-                                //     MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  const SizedBox(height: 150),
-                                  TextFormField(
-                                    decoration: const InputDecoration(
-                                      labelText: 'Mobile Number OR Email',
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 28,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Column(
+                                  // mainAxisAlignment:
+                                  //     MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    const SizedBox(height: 150),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        boxShadow: AppStyle.boxShadow,
+                                        border: Border.all(
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      ),
+                                      child: TextFormField(
+                                        decoration: const InputDecoration(
+                                          labelText: 'Mobile Number OR Email',
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: mobileNumber,
+                                        onChanged: (phone) {
+                                          controller.mobileNumber.value = phone;
+                                        },
+                                        validator: (value) {
+                                          if (isValidMobile(value!) ||
+                                              isValidEmail(value)) {
+                                            return null;
+                                          } else {
+                                            return 'Invalid input';
+                                          }
+                                        },
+                                        maxLines: 1,
+                                      ),
                                     ),
-                                    controller: mobileNumber,
-                                    onChanged: (phone) {
-                                      controller.mobileNumber.value = phone;
-                                    },
-                                    maxLines: 1,
-                                  ),
-                                  const SizedBox(height: 30),
-                                  Obx(
-                                    () => PrimaryButton(
-                                      text: 'Continue',
-                                      isLoading: controller.isLoading.value,
-                                      onPressed: () {
-                                        if (controller
-                                            .mobileNumber
-                                            .value
-                                            .isNotEmpty) {
+                                    const SizedBox(height: 30),
+                                    Obx(
+                                      () => PrimaryButton(
+                                        text: 'Continue',
+                                        isLoading: controller.isLoading.value,
+                                        onPressed: () {
                                           controller.sendOtp();
-                                        }
-                                      },
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 60),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 40,
+                                    const SizedBox(height: 60),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 40,
+                                      ),
+                                      child: GoogleSignInButton(
+                                        onPressed: () async {
+                                          controller.signInWithGoogle();
+                                        },
+                                      ),
                                     ),
-                                    child: GoogleSignInButton(
-                                      onPressed: () async {
-                                        controller.signInWithGoogle();
-                                      },
-                                    ),
-                                  ),
 
-                                  const SizedBox(),
-                                ],
+                                    const SizedBox(),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 200,
-                              height: 100,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(AppImages.logo),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                height: 100,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(AppImages.logo),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -167,4 +191,3 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 }
-

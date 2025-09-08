@@ -9,6 +9,7 @@ import '../../../routes/app_routes.dart';
 import '../../../controller/app_controller.dart';
 import '../../../controller/storage_service.dart';
 import '../../../service/utils/local_notifications.dart';
+import '../../../service/utils/utils.dart';
 import '../repository/auth_repository.dart';
 
 class AuthController extends GetxController {
@@ -19,21 +20,18 @@ class AuthController extends GetxController {
   final RxString mobileNumber = ''.obs;
   final RxString otp = ''.obs;
   final RxInt currentStep = 0.obs;
-
+  final formKey = GlobalKey<FormState>();
   final RxString name = ''.obs;
   Rx<bool?> isEmail = Rx<bool?>(null);
 
   Future<void> sendOtp() async {
+    if (!formKey.currentState!.validate()) return;
     if (isValidMobile(mobileNumber.value)) {
       isEmail.value = false;
     } else if (isValidEmail(mobileNumber.value)) {
       isEmail.value = true;
     } else if (!isValidMobile(mobileNumber.value) &&
         !isValidEmail(mobileNumber.value)) {
-      Fluttertoast.showToast(
-        msg: 'Invalid input',
-        backgroundColor: Colors.orange,
-      );
       return;
     }
 
@@ -178,17 +176,5 @@ class AuthController extends GetxController {
         Get.offAllNamed(Routes.home);
       }
     });
-  }
-
-  bool isValidMobile(String input) {
-    // Check if input is exactly 10 digits
-    final mobileRegex = RegExp(r'^\d{10}$');
-    return mobileRegex.hasMatch(input);
-  }
-
-  bool isValidEmail(String input) {
-    // Simple email regex pattern
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    return emailRegex.hasMatch(input);
   }
 }

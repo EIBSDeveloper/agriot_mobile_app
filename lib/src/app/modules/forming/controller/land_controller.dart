@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../service/utils/enums.dart';
 import '../../document/view/add_document_view.dart';
 import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
@@ -199,7 +200,7 @@ class LandController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": 0},
+      arguments: {"id": getDocTypeId(DocType.land)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

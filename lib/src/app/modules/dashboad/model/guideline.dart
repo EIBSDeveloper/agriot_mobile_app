@@ -28,7 +28,7 @@ class Guideline {
     category: json['guidelines_category']['name'],
     crop: json['crop']['name'],
     description: json['description'],
-    videoUrl: "json['video_url']",
+    videoUrl: json['video_url']?["full"]??"",
     document: json['document'],
     mediaType: json['media_type'],
   );

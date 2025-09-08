@@ -1,5 +1,5 @@
 
-import 'package:argiot/src/app/modules/expense/inventory_controller.dart';
+import 'package:argiot/src/app/modules/inventory/controller/inventory_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

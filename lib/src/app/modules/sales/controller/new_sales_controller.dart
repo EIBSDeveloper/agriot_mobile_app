@@ -13,6 +13,9 @@ import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../../service/utils/enums.dart';
+import '../../../service/utils/utils.dart';
+
 class NewSalesController extends GetxController {
   final NewSalesRepository _salesRepository = Get.find<NewSalesRepository>();
 
@@ -139,7 +142,7 @@ class NewSalesController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": 0},
+      arguments: {"id": getDocTypeId(DocType.sales)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

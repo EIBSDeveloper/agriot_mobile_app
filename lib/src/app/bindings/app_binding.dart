@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/auth/controller/walkthrough_controller.dart';
 import 'package:argiot/src/app/modules/expense/controller/expense_controller.dart';
-import 'package:argiot/src/app/modules/expense/expense_repository.dart';
+import 'package:argiot/src/app/modules/expense/repostroy/expense_repository.dart';
 import 'package:argiot/src/app/controller/storage_service.dart';
 import 'package:argiot/src/app/modules/profile/controller/profile_edit_controller.dart';
 import 'package:argiot/src/app/modules/profile/repository/profile_repository.dart';
@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../modules/expense/controller/consumption_controller.dart';
 import '../controller/user_limit.dart';
-import '../modules/expense/inventory_controller.dart';
+import '../modules/inventory/controller/inventory_controller.dart';
 import '../controller/app_controller.dart';
 import '../controller/network_contoller.dart';
 import '../modules/auth/controller/splash_controller.dart';

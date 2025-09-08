@@ -20,7 +20,6 @@ class DocumentController extends GetxController {
     name: '',
   ).obs;
 
-  /// Store as base64 instead of files
   RxList<String> uploadedDocs = <String>[].obs;
 
   Future<void> fetchDocument(typeId) async {

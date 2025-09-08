@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../service/utils/utils.dart';
 import '../../../controller/user_limit.dart';
 import '../../near_me/model/models.dart';
+import '../model/task.dart';
 import '../model/widget_config.dart';
 import '../repostory/dashboard_repository.dart';
 
@@ -24,7 +25,7 @@ class DashboardController extends GetxController {
   // Data observables
   final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);
   final RxList<Guideline> guidelines = <Guideline>[].obs;
-  final RxList<Task> tasks = <Task>[].obs;
+  final RxList<DashBoardSchedule> tasks = <DashBoardSchedule>[].obs;
   final Rx<FinanceData?> financeData = Rx<FinanceData?>(null);
   final Rx<Position?> position = Rx<Position?>(null);
 

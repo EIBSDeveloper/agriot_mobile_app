@@ -2,7 +2,7 @@
 
 import 'package:argiot/src/app/modules/expense/model/expense.dart';
 import 'package:argiot/src/app/modules/expense/model/chart.dart';
-import 'package:argiot/src/app/modules/expense/expense_repository.dart';
+import 'package:argiot/src/app/modules/expense/repostroy/expense_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_summary.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
 import 'package:argiot/src/app/modules/expense/model/file_type.dart';

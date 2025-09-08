@@ -14,6 +14,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../service/utils/enums.dart';
 import '../../document/view/add_document_view.dart';
 import '../../../service/utils/utils.dart';
 import '../../../widgets/input_card_style.dart';
@@ -495,42 +496,43 @@ class PurchasesAddController extends GetxController {
 
   //common start
   Widget buildLitreField() => Obx(
-      () => Row(
-        children: [
-          Expanded(
-            child: InputCardStyle(
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: selectedInventoryType.value == 6
-                      ? 'litre'.tr
-                      : 'quantity'.tr,
-                  border: InputBorder.none,
-                  // errorText: getErrorForField('litre'),
-                ),
-                keyboardType: TextInputType.number,
-                initialValue: litre.value,
-                validator: (value) =>
-                    value!.isEmpty ? 'required_field'.tr : null,
-                onChanged: litre.call,
+    () => Row(
+      children: [
+        Expanded(
+          child: InputCardStyle(
+            child: TextFormField(
+              decoration: InputDecoration(
+                hintText: selectedInventoryType.value == 6
+                    ? 'litre'.tr
+                    : 'quantity'.tr,
+                border: InputBorder.none,
+                // errorText: getErrorForField('litre'),
               ),
+              keyboardType: TextInputType.number,
+              initialValue: litre.value,
+              validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+              onChanged: litre.call,
             ),
           ),
+        ),
 
-          if (requiresUnit) ...[
-            const SizedBox(width: 10),
-            Expanded(child: buildUnitDropdown()),
-          ],
+        if (requiresUnit) ...[
+          const SizedBox(width: 10),
+          Expanded(child: buildUnitDropdown()),
         ],
-      ),
-    );
+      ],
+    ),
+  );
 
-  Widget buildUnitDropdown() => Obx(() => MyDropdown(
-        items: unit,
-        selectedItem: selectedUnit.value,
-        onChanged: (unit) => changeUnit(unit!),
-        label: 'Unit*',
-        // disable: isEditing,
-      ));
+  Widget buildUnitDropdown() => Obx(
+    () => MyDropdown(
+      items: unit,
+      selectedItem: selectedUnit.value,
+      onChanged: (unit) => changeUnit(unit!),
+      label: 'Unit*',
+      // disable: isEditing,
+    ),
+  );
 
   Future<void> fetchUnit() async {
     final unitList = await _repository.getUnitList();
@@ -545,39 +547,43 @@ class PurchasesAddController extends GetxController {
     selectedUnit.value = crop;
   }
 
-  Widget buildPurchaseAmountField() => Obx(() => InputCardStyle(
-        child: TextFormField(
-          validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-          decoration: InputDecoration(
-            hintText: 'purchase_amount'.tr,
-            border: InputBorder.none,
-            // errorText: ,
-          ),
-          keyboardType: TextInputType.number,
-          onChanged: purchaseAmount.call,
-          initialValue: purchaseAmount.value,
+  Widget buildPurchaseAmountField() => Obx(
+    () => InputCardStyle(
+      child: TextFormField(
+        validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+        decoration: InputDecoration(
+          hintText: 'purchase_amount'.tr,
+          border: InputBorder.none,
+          // errorText: ,
         ),
-      ));
+        keyboardType: TextInputType.number,
+        onChanged: purchaseAmount.call,
+        initialValue: purchaseAmount.value,
+      ),
+    ),
+  );
 
-  Widget buildPaidAmountField() => Obx(() => InputCardStyle(
-        child: TextFormField(
-          decoration: InputDecoration(
-            hintText: 'paid_amount'.tr,
-            border: InputBorder.none,
-            // errorText: ,
-          ),
-          validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-          initialValue: paidAmount.value,
-          keyboardType: TextInputType.number,
-          onChanged: paidAmount.call,
+  Widget buildPaidAmountField() => Obx(
+    () => InputCardStyle(
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: 'paid_amount'.tr,
+          border: InputBorder.none,
+          // errorText: ,
         ),
-      ));
+        validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+        initialValue: paidAmount.value,
+        keyboardType: TextInputType.number,
+        onChanged: paidAmount.call,
+      ),
+    ),
+  );
 
   void addDocumentItem() {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": 0},
+    arguments: {"id": getDocTypeId(DocType.inventory)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);
@@ -591,137 +597,135 @@ class PurchasesAddController extends GetxController {
   }
 
   Widget buildDocumentsSection() => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Land Documents',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Land Documents',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.add),
+              onPressed: addDocumentItem,
+              tooltip: 'Add Document',
             ),
-            Card(
-              color: Get.theme.primaryColor,
-              child: IconButton(
-                color: Colors.white,
-                icon: const Icon(Icons.add),
-                onPressed: addDocumentItem,
-                tooltip: 'Add Document',
-              ),
+          ),
+        ],
+      ),
+      Obx(() {
+        if (documentItems.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'No documents added',
+              style: TextStyle(color: Colors.grey),
             ),
-          ],
-        ),
-        Obx(() {
-          if (documentItems.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              child: Text(
-                'No documents added',
-                style: TextStyle(color: Colors.grey),
-              ),
-            );
-          }
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: documentItems.length,
-            itemBuilder: (context, index) => Column(
+          );
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: documentItems.length,
+          itemBuilder: (context, index) => Column(
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${index + 1}, ${documentItems[index].newFileType!}",
-                      ),
-                      const Icon(Icons.attach_file),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
+                  Text("${index + 1}, ${documentItems[index].newFileType!}"),
+                  const Icon(Icons.attach_file),
                 ],
               ),
-          );
-        }),
-      ],
-    );
+              const SizedBox(height: 5),
+            ],
+          ),
+        );
+      }),
+    ],
+  );
 
   Widget buildDescriptionField() => InputCardStyle(
-      noHeight: true,
-      child: TextFormField(
-        decoration: InputDecoration(
-          hintText: 'description'.tr,
-          border: InputBorder.none,
+    noHeight: true,
+    child: TextFormField(
+      decoration: InputDecoration(
+        hintText: 'description'.tr,
+        border: InputBorder.none,
 
-          // counterText: '${description.value.length}/250',
-        ),
-        // maxLength: 250,
-        initialValue: description.value,
-        maxLines: 3,
-        onChanged: description.call,
+        // counterText: '${description.value.length}/250',
       ),
-    );
+      // maxLength: 250,
+      initialValue: description.value,
+      maxLines: 3,
+      onChanged: description.call,
+    ),
+  );
 
   Widget buildDateField() => Obx(
-      () => Column(
-        children: [
-          InputCardStyle(
-            child: InkWell(
-              onTap: () => selectDate1(),
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  hintText: 'date'.tr,
-                  border: InputBorder.none,
-                  // errorText: getErrorForField('date'),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      selectedDate.isNotEmpty
-                          ? selectedDate.value
-                          : 'select_date'.tr,
-                      style: Get.theme.textTheme.bodyLarge,
-                    ),
-                    Icon(
-                      Icons.calendar_today,
-                      color: Get.theme.colorScheme.primary,
-                    ),
-                  ],
-                ),
+    () => Column(
+      children: [
+        InputCardStyle(
+          child: InkWell(
+            onTap: () => selectDate1(),
+            child: InputDecorator(
+              decoration: InputDecoration(
+                hintText: 'date'.tr,
+                border: InputBorder.none,
+                // errorText: getErrorForField('date'),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    selectedDate.isNotEmpty
+                        ? selectedDate.value
+                        : 'select_date'.tr,
+                    style: Get.theme.textTheme.bodyLarge,
+                  ),
+                  Icon(
+                    Icons.calendar_today,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
 
   Widget buildInventoryCategoryDropdown() => Obx(
-      () => Column(
-        children: [
-          InputCardStyle(
-            child: DropdownButtonFormField<int>(
-              decoration: InputDecoration(
-                hintText: 'Inventory Category'.tr,
-                border: InputBorder.none,
-              ),
-              
-                icon: const Icon(Icons.keyboard_arrow_down),
-              initialValue: selectedInventoryCategory.value,
-              items: inventoryCategories
-                  .map(
-                    (category) => DropdownMenuItem<int>(
-                      value: category.id,
-                      child: Text(category.name),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                inventoryCategory(value);
-              },
+    () => Column(
+      children: [
+        InputCardStyle(
+          child: DropdownButtonFormField<int>(
+            decoration: InputDecoration(
+              hintText: 'Inventory Category'.tr,
+              border: InputBorder.none,
             ),
+
+            icon: const Icon(Icons.keyboard_arrow_down),
+            initialValue: selectedInventoryCategory.value,
+            items: inventoryCategories
+                .map(
+                  (category) => DropdownMenuItem<int>(
+                    value: category.id,
+                    child: Text(category.name),
+                  ),
+                )
+                .toList(),
+            onChanged: (value) {
+              inventoryCategory(value);
+            },
           ),
-          //  ErrorText(error: getErrorForField('vendor')),
-        ],
-      ),
-    );
+        ),
+        //  ErrorText(error: getErrorForField('vendor')),
+      ],
+    ),
+  );
 
   void inventoryCategory(int? value) {
     setInventoryCategory(value!);
@@ -729,70 +733,73 @@ class PurchasesAddController extends GetxController {
   }
 
   Widget buildInventoryItemDropdown() => Obx(
-      () => InputCardStyle(
-        child: DropdownButtonFormField<int>(
-          validator: (value) => value == null ? 'required_field'.tr : null,
-          decoration: InputDecoration(
-            hintText: 'Inventory Item'.tr,
-            border: InputBorder.none,
-          ),
-          initialValue: selectedInventoryItem.value,
-
-                icon: const Icon(Icons.keyboard_arrow_down),
-          items: inventoryItems
-              .map(
-                (item) => DropdownMenuItem<int>(
-                  value: item.id,
-                  child: Text(item.name),
-                ),
-              )
-              .toList(),
-          onChanged: (value) => selectedInventoryCategory.value != null
-              ? setInventoryItem(value!)
-              : null,
+    () => InputCardStyle(
+      child: DropdownButtonFormField<int>(
+        validator: (value) => value == null ? 'required_field'.tr : null,
+        decoration: InputDecoration(
+          hintText: 'Inventory Item'.tr,
+          border: InputBorder.none,
         ),
+        initialValue: selectedInventoryItem.value,
+
+        icon: const Icon(Icons.keyboard_arrow_down),
+        items: inventoryItems
+            .map(
+              (item) =>
+                  DropdownMenuItem<int>(value: item.id, child: Text(item.name)),
+            )
+            .toList(),
+        onChanged: (value) => selectedInventoryCategory.value != null
+            ? setInventoryItem(value!)
+            : null,
       ),
-    );
+    ),
+  );
 
   Widget buildVendorDropdown() => Row(
-      children: [
-        Expanded(
-          child: Obx(() => InputCardStyle(
-              child: DropdownButtonFormField<int>(
-                validator: (value) =>
-                    value == null ? 'required_field'.tr : null,
-                decoration: const InputDecoration(
-                  hintText: 'Vendor*',
-                  border: InputBorder.none,
-                ),
-                
-                icon: const Icon(Icons.keyboard_arrow_down),
-                initialValue: selectedVendor.value,
-                onChanged: (value) => selectedVendor.value = value,
-                items: vendorList.map((customer) => DropdownMenuItem<int>(
-                    value: customer.id,
-                    child: Text(customer.name),
-                  )).toList(),
+    children: [
+      Expanded(
+        child: Obx(
+          () => InputCardStyle(
+            child: DropdownButtonFormField<int>(
+              validator: (value) => value == null ? 'required_field'.tr : null,
+              decoration: const InputDecoration(
+                hintText: 'Vendor*',
+                border: InputBorder.none,
               ),
-            )),
-        ),
-        Card(
-          color: Get.theme.primaryColor,
-          child: IconButton(
-            color: Colors.white,
-            onPressed: () {
-              Get.toNamed(
-                '/add-vendor-customer',
-                arguments: {"type": 'vendor'},
-              )?.then((result) {
-                fetchVendorList();
-              });
-            },
-            icon: const Icon(Icons.add),
+
+              icon: const Icon(Icons.keyboard_arrow_down),
+              initialValue: selectedVendor.value,
+              onChanged: (value) => selectedVendor.value = value,
+              items: vendorList
+                  .map(
+                    (customer) => DropdownMenuItem<int>(
+                      value: customer.id,
+                      child: Text(customer.name),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ),
-      ],
-    );
+      ),
+      Card(
+        color: Get.theme.primaryColor,
+        child: IconButton(
+          color: Colors.white,
+          onPressed: () {
+            Get.toNamed(
+              '/add-vendor-customer',
+              arguments: {"type": 'vendor'},
+            )?.then((result) {
+              fetchVendorList();
+            });
+          },
+          icon: const Icon(Icons.add),
+        ),
+      ),
+    ],
+  );
   //common  end
 
   @override

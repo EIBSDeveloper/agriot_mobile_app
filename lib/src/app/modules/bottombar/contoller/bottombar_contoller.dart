@@ -1,4 +1,4 @@
-import 'package:argiot/src/app/modules/expense/expense_overview_screen.dart';
+import 'package:argiot/src/app/modules/expense/view/screens/expense_overview_screen.dart';
 import 'package:argiot/src/core/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

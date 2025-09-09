@@ -4,6 +4,7 @@ import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_custome
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../subscription/model/package_usage.dart';
 
 class VendorCustomerListView extends GetView<VendorCustomerController> {
   const VendorCustomerListView({super.key});
@@ -36,7 +37,14 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Get.theme.primaryColor,
-        onPressed: () => _showAddDialog(context),
+        onPressed: () {
+              PackageUsage? package = findLimit();
+              if (package!.customerBalance > 0) {
+                _showAddDialog();
+              } else {
+                showDefaultGetXDialog("Vendor/Customer");
+              }
+            },
         child: const Icon(Icons.add),
       ),
     );
@@ -85,8 +93,9 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (item.shopName != null) Text(item.shopName!),
-            if (item.businessName != null) Text(item.businessName!),
+            if (item.shopName != null &&item.shopName != '') Text(item.shopName!),
+            if (item.businessName != null &&item.businessName != '') Text(item.businessName!),
+            if (item.market != null&&item.market != '') Text(item.market!),
             if (item.inventoryType != null) Text(item.inventoryType!,maxLines: 1,overflow: TextOverflow.ellipsis,),
           ],
         ),
@@ -101,7 +110,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
       ),
     );
 
-  void _showAddDialog(BuildContext context) {
+  void _showAddDialog() {
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(16),

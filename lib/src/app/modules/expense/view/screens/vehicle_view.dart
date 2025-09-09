@@ -55,7 +55,6 @@ class VehicleView extends GetView<PurchasesAddController> {
             controller.buildDocumentsSection(),
             const SizedBox(height: 24),
 
-           
             _buildInsuranceCheckbox(),
             Obx(
               () => controller.showInsuranceDetails.value
@@ -64,7 +63,7 @@ class VehicleView extends GetView<PurchasesAddController> {
             ),
             const SizedBox(height: 16), controller.buildDescriptionField(),
 
-               const SizedBox(height: 16),
+            const SizedBox(height: 16),
             _buildSubmitButton(),
             const SizedBox(height: 24),
           ],
@@ -103,7 +102,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       },
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
       decoration: InputDecoration(
-        hintText: 'date_of_reg_label'.tr,
+        hintText: "${'date_of_reg_label'.tr} *",
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
       ),
@@ -118,7 +117,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       onTap: () =>
           controller.selectDate(controller.regValidTillController, context),
       decoration: InputDecoration(
-        hintText: 'reg_valid_till_label'.tr,
+        hintText: "${'reg_valid_till_label'.tr} *",
 
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),

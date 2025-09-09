@@ -6,8 +6,8 @@ import '../../../../service/utils/utils.dart';
 
 class ConsumptionList extends StatelessWidget {
   final List<ConsumptionRecord> records;
-
-  const ConsumptionList({super.key, required this.records});
+final int type;
+  const ConsumptionList({super.key, required this.records, required this.type});
 
   @override
   Widget build(BuildContext context) {

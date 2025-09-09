@@ -24,7 +24,10 @@ class ResgisterController extends GetxController {
       pageIndex.value++;
     }
   }
-
+skip()async{
+    await _storageService.updateLoginState(true);
+      Get.offAllNamed((Routes.home));
+}
   movePage(int index) {
     pageIndex.value = index;
   }

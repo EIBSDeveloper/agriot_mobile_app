@@ -69,8 +69,14 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               return IndexedStack(
                 index: controller.currentTabIndex.value,
                 children: [
-                  ConsumptionList(records: controller.consumptionData),
-                  PurchaseList(records: controller.purchaseData),
+                  ConsumptionList(
+                    records: controller.consumptionData,
+                    type: controller.inventoryType.value!,
+                  ),
+                  PurchaseList(
+                    records: controller.purchaseData,
+                    type: controller.inventoryType.value!,
+                  ),
                 ],
               );
             }),
@@ -197,7 +203,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   )
                   .toList(),
               onChanged: (value) {
-                controller.inventoryCategory(value);
+                controller.setInventoryCategory(value!);
               },
             ),
           ),

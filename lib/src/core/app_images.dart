@@ -1,6 +1,7 @@
 class AppImages {
  static  const String logo = "assets/image/agri_logo.webp"; 
  static  const String logo2 = "assets/image/agri_icon.png"; 
+ static  const String landMark = "assets/image/land_mark.jpg"; 
  static  const String bg = "assets/image/bg.jpg"; 
  static  const String schedule = "assets/image/schedule.png"; 
  static  const String splash = "assets/image/splash.jpg"; 

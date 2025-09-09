@@ -1,5 +1,3 @@
-import 'package:argiot/src/app/modules/expense/model/document_model.dart';
-
 class VehicleModel {
   final int? id;
   final String farmerId;
@@ -29,7 +27,7 @@ class VehicleModel {
   final DateTime? insuranceRenewalDate;
   final String paidAmount;
   final String? description;
-  final List<DocumentModel>? documents;
+  final List? documents;
 
   VehicleModel({
     this.id,
@@ -64,45 +62,43 @@ class VehicleModel {
   });
 
   Map<String, dynamic> toJson() => {
-      'farmer_id': farmerId,
-      'date_of_consumption': dateOfConsumption.toIso8601String().split('T')[0],
-      'vendor': vendor,
-      'inventory_type': inventoryType,
-      'inventory_category': inventoryCategory,
-      'inventory_items': inventoryItems,
-      'register_number': registerNumber,
-      'owner_name': ownerName,
-      'date_of_registration': dateOfRegistration?.toIso8601String().split(
-        'T',
-      )[0],
-      'registration_valid_till': registrationValidTill?.toIso8601String().split(
-        'T',
-      )[0],
+    'farmer_id': farmerId,
+    'date_of_consumption': dateOfConsumption.toIso8601String().split('T')[0],
+    'vendor': vendor,
+    'inventory_type': inventoryType,
+    'inventory_category': inventoryCategory,
+    'inventory_items': inventoryItems,
+    'register_number': registerNumber,
+    'owner_name': ownerName,
+    'date_of_registration': dateOfRegistration?.toIso8601String().split('T')[0],
+    'registration_valid_till': registrationValidTill?.toIso8601String().split(
+      'T',
+    )[0],
 
-      'engine_number': engineNumber,
-      'chasis_number': chasisNumber,
-      'running_kilometer': runningKilometer,
-      'service_frequency': serviceFrequency,
-      'service_frequency_unit': serviceFrequencyUnit,
-      'fuel_capacity': fuelCapacity ?? 0,
-      'average_mileage': averageMileage ?? 0,
-      'purchase_amount': purchaseAmount,
-      "paid_amount": paidAmount,
-      'insurance': insurance,
-      if (insurance) 'company_name': companyName,
-      if (insurance) 'insurance_no': insuranceNo,
-      if (insurance) 'insurance_amount': insuranceAmount,
-      if (insurance)
-        'insurance_start_date': insuranceStartDate?.toIso8601String().split(
-          'T',
-        )[0],
-      if (insurance)
-        'insurance_end_date': insuranceEndDate?.toIso8601String().split('T')[0],
-      if (insurance)
-        'insurance_renewal_date': insuranceRenewalDate?.toIso8601String().split(
-          'T',
-        )[0],
-      'description': description,
-      'documents': documents?.map((x) => x.toJson()).toList(),
-    };
+    'engine_number': engineNumber,
+    'chasis_number': chasisNumber,
+    'running_kilometer': runningKilometer,
+    'service_frequency': serviceFrequency,
+    'service_frequency_unit': serviceFrequencyUnit,
+    'fuel_capacity': fuelCapacity ?? 0,
+    'average_mileage': averageMileage ?? 0,
+    'purchase_amount': purchaseAmount,
+    "paid_amount": paidAmount,
+    'insurance': insurance,
+    if (insurance) 'company_name': companyName,
+    if (insurance) 'insurance_no': insuranceNo,
+    if (insurance) 'insurance_amount': insuranceAmount,
+    if (insurance)
+      'insurance_start_date': insuranceStartDate?.toIso8601String().split(
+        'T',
+      )[0],
+    if (insurance)
+      'insurance_end_date': insuranceEndDate?.toIso8601String().split('T')[0],
+    if (insurance)
+      'insurance_renewal_date': insuranceRenewalDate?.toIso8601String().split(
+        'T',
+      )[0],
+    'description': description,
+    'documents': documents,
+  };
 }

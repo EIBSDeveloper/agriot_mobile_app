@@ -1,5 +1,3 @@
-// lib/app/modules/guidelines/models/inventory_model.dart
-
 class InventoryModel {
   final InventoryFuel fuel;
   final InventoryVehicle vehicle;

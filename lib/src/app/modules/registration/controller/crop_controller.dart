@@ -33,17 +33,22 @@ class RegCropController extends GetxController {
   // for test-Bala
   var selectedLand = Land(id: 0, name: '').obs;
   var lands = <Land>[].obs;
-  var selectedSurvey = Rxn<CropSurveyDetail>();
+
+  var selectedSurvey = RxList<CropSurveyDetail>();
   var surveyList = <CropSurveyDetail>[].obs;
 
   // Selected values
   final Rx<DateTime?> plantationDate = Rx<DateTime?>(null);
   final Rx<AppDropdownItem?> selectedCropType = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedCrop = Rx<AppDropdownItem?>(null);
-  final Rx<AppDropdownItem?> selectedHarvestFrequency = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedHarvestFrequency = Rx<AppDropdownItem?>(
+    null,
+  );
   // final Rx<LandWithSurvey?> selectedLand = Rx<LandWithSurvey?>(null);
   // final Rx<SurveyDetail?> selectedSurvey = Rx<SurveyDetail?>(null);
-  final Rx<AppDropdownItem?> selectedMeasurementUnit = Rx<AppDropdownItem?>(null);
+  final Rx<AppDropdownItem?> selectedMeasurementUnit = Rx<AppDropdownItem?>(
+    null,
+  );
 
   var polylinePoints = <LatLng>[].obs;
   final locationController = TextEditingController();
@@ -187,10 +192,6 @@ class RegCropController extends GetxController {
 
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
-    // if (selectedSurvey.value == null) {
-    //   showError('Please select land and survey details');
-    //   return;
-    // }
 
     try {
       isSubmitting(true);
@@ -204,8 +205,8 @@ class RegCropController extends GetxController {
         "harvesting_type": selectedHarvestFrequency.value!.id,
         "plantation_date": formattedDate,
         "land": selectedLand.value.id,
-        if (selectedSurvey.value?.id != null)
-          "survey_details": [selectedSurvey.value?.id],
+        if (selectedSurvey.isNotEmpty)
+          "survey_details": [...selectedSurvey.map((e) => e.id)],
         "taluk": 1,
         "village": 1,
         "status": 0,
@@ -218,15 +219,14 @@ class RegCropController extends GetxController {
       final http.Response response = await _cropService.addCrop(request);
       if (response.statusCode == 200 || response.statusCode == 201) {
         // Get.back();
-      ResgisterController registerController = Get.find();
-      registerController.moveNextPage();
+        ResgisterController registerController = Get.find();
+        registerController.moveNextPage();
         showSuccess('Success');
       } else {
         showError(json.decode(response.body)["message"]);
       }
 
       // // Navigate to next screen or back
-
     } catch (e) {
       showError('Error');
     } finally {

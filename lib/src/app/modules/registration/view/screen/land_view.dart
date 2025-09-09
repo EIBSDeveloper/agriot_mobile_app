@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -5,7 +6,6 @@ import '../../../../../core/app_style.dart';
 import '../../controller/kyc_controller.dart';
 import '../../controller/land_controller.dart';
 import '../../model/dropdown_item.dart';
-import '../widget/document_item_widget.dart';
 import '../widget/searchable_dropdown.dart';
 import '../widget/survey_item_widget.dart';
 
@@ -33,10 +33,11 @@ class LandView extends GetView<RegLandController> {
         CustomTextField(
           controller: controller.pattaNoController,
           label: 'Patta Number',
-        ),     gap,
+        ),
+        gap,
         CustomTextField(
-          controller: controller.pattaNoController,
-          label: 'Patta Number',
+          controller: controller.pinCode,
+          label: 'Pincode *',
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(6),
@@ -156,10 +157,14 @@ class LandView extends GetView<RegLandController> {
             'Survey Details',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: controller.addSurveyItem,
-            tooltip: 'Add Survey Detail',
+          Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.add),
+              onPressed: controller.addSurveyItem,
+              tooltip: 'Add Survey Detail',
+            ),
           ),
         ],
       ),
@@ -200,13 +205,17 @@ class LandView extends GetView<RegLandController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Land Documents',
+            'Documents',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: controller.addDocumentItem,
-            tooltip: 'Add Document',
+          Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.add),
+              onPressed: controller.addDocumentItem,
+              tooltip: 'Add Document',
+            ),
           ),
         ],
       ),
@@ -224,13 +233,32 @@ class LandView extends GetView<RegLandController> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: controller.documentItems.length,
-          itemBuilder: (context, index) => DocumentItemWidget(
-            index: index,
-            item: controller.documentItems[index],
-            documentTypes: controller.documentTypes,
-            onRemove: () => controller.removeDocumentItem(index),
-            onChanged: (item) => controller.documentItems[index] = item,
-            onPickDocument: () => controller.pickDocument(index),
+          itemBuilder: (context, index) => Column(
+            children: [
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
+                      ),
+                      const Icon(Icons.attach_file),
+                    ],
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      controller.removeDocumentItem(index);
+                    },
+                    color: Get.theme.primaryColor,
+                    icon: const Icon(Icons.delete),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              const Divider(),
+            ],
           ),
         );
       }),
@@ -255,40 +283,6 @@ class LandView extends GetView<RegLandController> {
           : const Text('Save Land Details'),
     ),
   );
-
-  // Widget _buildTextField({
-  //   required TextEditingController controller,
-  //   required String label,
-  //   String? Function(String?)? validator,
-  //   TextInputType? keyboardType,
-  //   bool readOnly = false,
-  //   VoidCallback? onTap,
-  // }) {
-  //   return Container(
-  //     decoration: AppStyle.decoration.copyWith(
-  //       color: const Color.fromARGB(137, 221, 234, 234),
-  //       boxShadow: const [],
-  //     ),
-  //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-  //     height: 55,
-  //     child: TextFormField(
-  //       controller: controller,
-  //       decoration: InputDecoration(
-  //         labelText: label,
-  //         border: InputBorder.none,
-  //         isDense: true,
-  //         suffixIcon: readOnly ? Icon(Icons.location_on) : null,
-  //       ),
-  //       validator: validator,
-  //       onChanged: (value){
-  //         controller.text =value;
-  //       },
-  //       keyboardType: keyboardType,
-  //       readOnly: readOnly,
-  //       onTap: onTap,
-  //     ),
-  //   );
-  // }
 }
 
 class CustomTextField extends StatelessWidget {
@@ -313,15 +307,7 @@ class CustomTextField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-    decoration: AppStyle.decoration.copyWith(
-      color: const Color.fromARGB(137, 221, 234, 234),
-      boxShadow: const [],
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    constraints: const BoxConstraints(
-      minHeight: 55, // minimum height for all fields
-    ),
+  Widget build(BuildContext context) => InputCardStyle(
     child: TextFormField(
       controller: controller,
       onChanged: onChanged,

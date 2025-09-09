@@ -106,7 +106,7 @@ class ReceivablesList extends StatelessWidget {
     return InkWell(
       onTap: () {
         Get.to(
-          () => CustomerVendorDetailsPage(
+          () => const CustomerVendorDetailsPage(
             id: 339,
             detailsType: DetailsType.receivables,
           ),

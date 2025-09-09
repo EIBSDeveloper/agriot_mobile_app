@@ -8,15 +8,17 @@ class FuelInventoryController extends GetxController {
   final FuelInventoryRepository repository = FuelInventoryRepository();
 
   final RxInt fuelId = 0.obs;
+  final RxInt inventoryType = 0.obs;
 
   final isLoading = true.obs;
-  final fuelInventory = Rx<FuelInventoryModel?>(null);
+  final fuelInventory = Rx<PurchaseDetailModel?>(null);
   final error = RxString('');
 
   @override
   void onInit() {
     super.onInit();
     fuelId.value = Get.arguments['id'];
+    inventoryType.value = Get.arguments['type'];
     loadFuelInventoryDetail();
   }
 
@@ -24,7 +26,7 @@ class FuelInventoryController extends GetxController {
     try {
       isLoading.value = true;
       error.value = '';
-      final result = await repository.getFuelInventoryDetail(fuelId.value);
+      final result = await repository.getFuelInventoryDetail(fuelId.value ,inventoryType.value);
       fuelInventory.value = result;
     } catch (e) {
       error.value = e.toString();

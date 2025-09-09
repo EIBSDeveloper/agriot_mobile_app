@@ -790,7 +790,7 @@ class CustomerVendorDetailsPage extends StatefulWidget {
   final int id;
   final DetailsType? detailsType;
 
-  CustomerVendorDetailsPage({
+const  CustomerVendorDetailsPage({
     super.key,
     required this.id,
     required this.detailsType,

@@ -127,7 +127,7 @@ class _NewSalesViewState extends State<NewSalesView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Land Documents',
+            'Documents',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Card(

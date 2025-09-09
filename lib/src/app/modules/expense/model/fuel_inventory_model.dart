@@ -6,8 +6,8 @@ import 'inventory_category.dart';
 import 'inventory_item.dart';
 import 'vendor.dart';
 
-class FuelInventoryModel {
-  final int fuelId;
+class PurchaseDetailModel {
+  final int id;
   final double quantity;
   final double purchaseAmount;
   final String description;
@@ -18,8 +18,8 @@ class FuelInventoryModel {
   final Vendor vendor;
   final List<DocumentCategory> documents;
 
-  FuelInventoryModel({
-    required this.fuelId,
+  PurchaseDetailModel({
+    required this.id,
     required this.quantity,
     required this.purchaseAmount,
     required this.description,
@@ -31,8 +31,8 @@ class FuelInventoryModel {
     required this.documents,
   });
 
-  factory FuelInventoryModel.fromJson(Map<String, dynamic> json) => FuelInventoryModel(
-      fuelId: json['fuel_id'] ?? 0,
+  factory PurchaseDetailModel.fromJson(Map<String, dynamic> json) => PurchaseDetailModel(
+      id: json['fuel_id'] ?? 0,
       quantity: (json['quantity'] ?? 0.0).toDouble(),
       purchaseAmount: (json['purchase_amount'] ?? 0.0).toDouble(),
       description: json['description'] ?? '',

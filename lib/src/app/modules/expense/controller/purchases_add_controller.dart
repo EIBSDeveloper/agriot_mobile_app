@@ -255,7 +255,10 @@ class PurchasesAddController extends GetxController {
   Future<void> submitFuelForm() async {
     if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
-
+    final documentItemsList = documentItems.map((doc) {
+      var json = doc.toJson();
+      return json;
+    }).toList();
     try {
       final fuelEntry = FuelEntryModel(
         dateOfConsumption: selectedDate.value,
@@ -267,6 +270,7 @@ class PurchasesAddController extends GetxController {
         purchaseAmount: purchaseAmount.value,
         paidAmount: paidAmount.value,
         description: description.value.isNotEmpty ? description.value : null,
+        document: documentItemsList,
       );
 
       final response = await _repository.addFuelEntry(fuelEntry);
@@ -297,7 +301,10 @@ class PurchasesAddController extends GetxController {
   Future<void> submitMachineryForm() async {
     if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
-
+    final documentItemsList = documentItems.map((doc) {
+      var json = doc.toJson();
+      return json;
+    }).toList();
     try {
       final machinery = Machinery(
         dateOfConsumption: selectedDate.value,
@@ -313,7 +320,7 @@ class PurchasesAddController extends GetxController {
         purchaseAmount: purchaseAmount.value,
         paidAmount: paidAmount.value,
         description: descriptionController.text,
-        // documents: documents,
+        documents: documentItemsList,
       );
 
       final response = await _repository.addMachinery(machinery);
@@ -346,13 +353,17 @@ class PurchasesAddController extends GetxController {
   Future<void> submitVehicleForm() async {
     if (!formKey.currentState!.validate()) return;
     isLoading.value = true;
-
+    final documentItemsList = documentItems.map((doc) {
+      var json = doc.toJson();
+      return json;
+    }).toList();
     try {
       final vehicle = VehicleModel(
         farmerId: appData.userId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
         vendor: selectedVendor.value ?? 0,
-        inventoryType:  selectedInventoryCategory.value!, // Assuming default value
+        inventoryType:
+            selectedInventoryType.value!, // Assuming default value
         inventoryCategory: selectedInventoryCategory.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
         registerNumber: regNoController.text,
@@ -409,7 +420,8 @@ class PurchasesAddController extends GetxController {
         description: descriptionController.text.isNotEmpty
             ? descriptionController.text
             : null,
-        documents: null, // You would need to handle file uploads separately
+        documents:
+            documentItemsList, // You would need to handle file uploads separately
       );
 
       final response = await _repository.addVehicle(vehicle);
@@ -460,7 +472,10 @@ class PurchasesAddController extends GetxController {
     if (!formKey.currentState!.validate()) return;
 
     isLoading.value = true;
-
+    final documentItemsList = documentItems.map((doc) {
+      var json = doc.toJson();
+      return json;
+    }).toList();
     try {
       final fertilizer = FertilizerModel(
         dateOfConsumption: selectedDate.value,
@@ -476,6 +491,7 @@ class PurchasesAddController extends GetxController {
         description: descriptionController.text.isNotEmpty
             ? descriptionController.text
             : null,
+        documents: documentItemsList,
       );
 
       final response = await _repository.addFertilizer(fertilizer);
@@ -600,7 +616,7 @@ class PurchasesAddController extends GetxController {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Land Documents',
+            'Documents',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Card(

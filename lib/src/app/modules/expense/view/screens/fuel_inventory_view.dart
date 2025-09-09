@@ -1,5 +1,7 @@
 import 'package:argiot/src/app/modules/expense/controller/fuel_inventory_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +10,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(),
+      appBar: CustomAppBar(title: getType(Get.arguments?['type']??'')),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -39,7 +41,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
       }),
     );
 
-  Widget _buildFuelDetailContent(FuelInventoryModel fuel) => SingleChildScrollView(
+  Widget _buildFuelDetailContent(PurchaseDetailModel fuel) => SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,7 +65,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
           const Divider(height: 32),
 
           // Uploaded Documents
-          Text('uploaded_documents'.tr, style: Get.textTheme.titleMedium),
+          Text('documents'.tr, style: Get.textTheme.titleMedium),
           const SizedBox(height: 16),
           _buildDocumentsSection(fuel),
 
@@ -88,7 +90,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
       ),
     );
 
-  Widget _buildDocumentsSection(FuelInventoryModel fuel) {
+  Widget _buildDocumentsSection(PurchaseDetailModel fuel) {
     final allDocuments = fuel.documents
         .expand((category) => category.documents)
         .toList();

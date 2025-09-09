@@ -12,6 +12,7 @@ final AppDataController appDeta = Get.put(AppDataController());
 
 class VendorPurchaseRepository {
   final farmerId = appDeta.userId;
+  final baseURl = appDeta.baseUrl;
   Future<VendorPurchaseResponse> fetchVendorPayables(int vendorId) async {
     final url =
         'http://147.93.19.253:5000/Api/vendor_purchase_payables_list/$farmerId?vendor_id=$vendorId';

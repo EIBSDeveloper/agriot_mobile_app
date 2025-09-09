@@ -35,7 +35,7 @@ class CropController extends GetxController {
 
   var selectedLand = Land(id: 0, name: '').obs;
   var parameterLandID = 0.obs;
-  var selectedSurvey = Rxn<CropSurveyDetail>();
+  var selectedSurveys = RxList<CropSurveyDetail>();
   var surveyList = <CropSurveyDetail>[].obs;
 
   final Rx<DateTime?> plantationDate = Rx<DateTime?>(null);
@@ -105,13 +105,13 @@ class CropController extends GetxController {
         (e) => e.id == data["harvesting_type"]["id"],
       );
 
-      selectedLand.value =
-          lands.firstWhereOrNull((e) => e.id == data["land"]["id"]) ??
-          lands.first;
-      await loadSurveyDetails(selectedLand.value.id);
-      selectedSurvey.value = surveyList.firstWhereOrNull(
-        (e) => e.id == data["survey_details"].first["id"],
-      );
+      // selectedLand.value =
+      //     lands.firstWhereOrNull((e) => e.id == data["land"]["id"]) ??
+      //     lands.first;
+      // await loadSurveyDetails(selectedLand.value.id);
+      // selectedSurveys.value = surveyList.where(
+      //   (e) => e.id == data["survey_details"].first["id"],
+      // ).toList();
 
       selectedMeasurementUnit.value = landUnits.firstWhereOrNull(
         (e) => e.id == data["measurement_unit"]["id"],
@@ -181,7 +181,7 @@ class CropController extends GetxController {
     surveyList.value = land[0];
     landCoordinates.value = land[1];
     priviesCropCoordinates.value = land[2];
-    if (surveyList.isNotEmpty) selectedSurvey.value = surveyList.first;
+    if (surveyList.isNotEmpty) selectedSurveys.value = surveyList;
   }
 
   Future<void> selectPlantationDate(BuildContext context) async {
@@ -244,8 +244,8 @@ class CropController extends GetxController {
         "harvesting_type": selectedHarvestFrequency.value!.id,
         "plantation_date": formattedDate,
         "land": selectedLand.value.id,
-        if (selectedSurvey.value?.id != null)
-          "survey_details": [selectedSurvey.value!.id],
+        if (selectedSurveys.isNotEmpty)
+          "survey_details": [...selectedSurveys.map((e)=> e.id)],
         "status": 0,
         "description": descriptionController.text.trim(),
         "measurement_value": measurementController.text.trim(),

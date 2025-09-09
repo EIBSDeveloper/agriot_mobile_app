@@ -9,6 +9,7 @@ class FertilizerModel {
   final String purchaseAmount;
   final String paidAmount;
   final String? description;
+  final List? documents;
 
   FertilizerModel({
     required this.dateOfConsumption,
@@ -21,6 +22,7 @@ class FertilizerModel {
     required this.paidAmount,
     required this.purchaseAmount,
     this.description,
+    this.documents,
   });
 
   Map<String, dynamic> toJson() => {
@@ -34,5 +36,6 @@ class FertilizerModel {
       'purchase_amount': purchaseAmount,
       "paid_amount": paidAmount,
       'description': description,
+      'documents': documents,
     };
 }

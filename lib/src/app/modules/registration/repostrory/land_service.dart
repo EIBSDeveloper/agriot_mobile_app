@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
 import '../../near_me/model/models.dart';
-import '../model/document_model.dart';
 import '../model/dropdown_item.dart';
 import '../model/land_model.dart';
 
@@ -87,7 +86,6 @@ class LandService extends GetxService {
 
   Future<Map<String, dynamic>> addLand({
     required Map<dynamic, dynamic> request,
-    required List<DocumentItem> documents,
   }) async {
     // Convert all request values to strings
     final requestFields = request.map<String, dynamic>(
@@ -101,7 +99,6 @@ class LandService extends GetxService {
 
   Future<Map<String, dynamic>> editLand({
     required Map<dynamic, dynamic> request,
-    required List<DocumentItem> documents,
   }) async {
     final farmerId = appDeta.userId;
     // Convert all request values to strings

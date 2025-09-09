@@ -67,7 +67,9 @@ class VendorCustomer {
     this.customerImg,
   });
 
-  factory VendorCustomer.fromJson(Map<String, dynamic> json) => VendorCustomer(
+  factory VendorCustomer.fromJson(Map<String, dynamic> json) {
+    var market = (json['markets'] is List )?json['markets'].map((e)=>e['market']).toString():"";
+    return VendorCustomer(
       id: json['id'],
       farmerId: json['farmer_id'] ?? 0,
       farmer: json['farmer'] ?? '',
@@ -96,11 +98,10 @@ class VendorCustomer {
       // description: json['description'][0]??" ",
       isCustomerIsVendor: json['is_customer_is_vendor'] ?? false,
       marketId: json['market_id'],
-      market: json['market'] is List
-          ? (json['market'] as List).join(', ')
-          : json['market'],
+      market: market,
       inventoryType: json['inventory_type'],
       vendorImage: json['vendor_image'],
       customerImg: json['customer_img'],
     );
+  }
 }

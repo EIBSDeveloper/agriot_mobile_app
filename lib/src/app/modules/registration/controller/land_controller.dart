@@ -1,14 +1,16 @@
 import 'package:argiot/src/app/modules/registration/controller/kyc_controller.dart';
 import 'package:argiot/src/app/modules/registration/controller/resgister_controller.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../service/utils/enums.dart';
 import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
-import '../model/document_model.dart';
+import '../../document/binding/document_binding.dart';
+import '../../document/model/add_document_model.dart';
+import '../../document/view/add_document_view.dart';
 import '../model/dropdown_item.dart';
 import '../model/survey_model.dart';
 import '../repostrory/address_service.dart';
@@ -22,6 +24,7 @@ class RegLandController extends GetxController {
   // Form controllers
   final landIdController = TextEditingController();
   final pattaNoController = TextEditingController();
+  final pinCode = TextEditingController();
   final measurementController = TextEditingController();
   // final locationController = TextEditingController();
   final locationListController = TextEditingController();
@@ -44,7 +47,7 @@ class RegLandController extends GetxController {
 
   // Dynamic lists
   final RxList<SurveyItem> surveyItems = <SurveyItem>[].obs;
-  final RxList<DocumentItem> documentItems = <DocumentItem>[].obs;
+  final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
   // Loading states
   final RxBool isLoadingLandUnits = false.obs;
@@ -121,9 +124,16 @@ class RegLandController extends GetxController {
   }
 
   void addDocumentItem() {
-    documentItems.add(
-      DocumentItem(type: documentTypes.firstOrNull, file: null),
-    );
+    Get.to(
+      const AddDocumentView(),
+      binding: DocumentBinding(),
+      arguments: {"id": getDocTypeId(DocType.land)},
+    )?.then((result) {
+      if (result != null && result is AddDocumentModel) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
   }
 
   void removeDocumentItem(int index) {
@@ -146,8 +156,6 @@ class RegLandController extends GetxController {
         longitude.value = location[0][1];
 
         locationListController.text = location.toString();
-
-     
       }
       update();
     } catch (e) {
@@ -155,51 +163,27 @@ class RegLandController extends GetxController {
     }
   }
 
-  Future<void> pickDocument(int index) async {
-    try {
-      // Implement file picking logic
-      final file = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
-      );
-
-      if (file != null) {
-        documentItems[index] = documentItems[index].copyWith(
-          file: file.files.single,
-        );
-      }
-    } catch (e) {
-      showError('Failed to pick document');
-    }
-  }
-
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
-    // if (surveyItems.isEmpty) {
-    //   Fluttertoast.showToast(
-    //     msg: 'Please add survey detail',
-    //     backgroundColor: Colors.orangeAccent,
-    //     gravity: ToastGravity.TOP,
-    //   );
-
-    //   return;
-    // }
 
     try {
       isSubmitting(true);
 
       // Prepare survey details
-      final surveyDetails = surveyItems.asMap().map((index, item) => MapEntry(
+      final surveyDetails = surveyItems.asMap().map(
+        (index, item) => MapEntry(
           'survey_details_${index + 1}',
           'survey_no:${item.surveyNo},'
-              'survey_measurement_value:${item.measurement},'
-              'survey_measurement_unit_id:${item.unit?.id}',
-        ));
+          'survey_measurement_value:${item.measurement},'
+        'survey_measurement_unit_id:${item.unit?.id}',
+        ),
+      );
 
       // Prepare documents
-      final documents = documentItems
-          .where((item) => item.file != null)
-          .toList();
+      final documentItemsList = documentItems.map((doc) {
+        var json = doc.toJson();
+        return json;
+      }).toList();
 
       final AppDataController appDeta = Get.put(AppDataController());
       final request = {
@@ -220,13 +204,11 @@ class RegLandController extends GetxController {
         if (pattaNoController.text.isNotEmpty)
           "patta_number": pattaNoController.text.trim(),
         if (surveyItems.isNotEmpty) ...surveyDetails,
+        "document": documentItemsList,
       };
 
       // Call API
-      final response = await _landService.addLand(
-        request: request,
-        documents: documents,
-      );
+      final response = await _landService.addLand(request: request);
       if (response.isNotEmpty) {
         showSuccess('Land added successfully');
         ResgisterController resgisterController = Get.find();

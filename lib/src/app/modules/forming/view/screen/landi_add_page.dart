@@ -66,7 +66,7 @@ class LandViewPage extends GetView<LandController> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  Expanded(
+                Obx(()=> Expanded(
                     flex: 2,
                     child: SearchableDropdown<AppDropdownItem>(
                       label: 'Unit *',
@@ -78,7 +78,7 @@ class LandViewPage extends GetView<LandController> {
                       // validator: (value) =>
                       //     value == null ? 'Required field' : null,
                     ),
-                  ),
+                  ))
                 ],
               ),
               gap,
@@ -170,7 +170,7 @@ class LandViewPage extends GetView<LandController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Land Documents',
+            'Documents',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Card(

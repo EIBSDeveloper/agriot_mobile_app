@@ -8,8 +8,8 @@ import '../../../../service/utils/utils.dart';
 
 class PurchaseList extends StatelessWidget {
   final List<PurchaseRecord> records;
-
-  const PurchaseList({super.key, required this.records});
+final int type;
+  const PurchaseList({super.key, required this.records, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class PurchaseList extends StatelessWidget {
         final record = records[index];
         return InkWell(
           onTap: (){
-            Get.toNamed('/fuel_inventory',arguments: {"id":record.id});
+            Get.toNamed('/fuel_inventory',arguments: {"id":record.id,'type': type});
           },
           child: Card(
             elevation: 1,

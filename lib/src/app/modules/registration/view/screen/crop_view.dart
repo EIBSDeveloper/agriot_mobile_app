@@ -2,9 +2,9 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
+import '../../../forming/view/widget/survey_dropdown.dart';
 import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/crop_controller.dart';
-import '../../model/crop_model.dart';
 import '../../model/dropdown_item.dart';
 import '../widget/searchable_dropdown.dart';
 
@@ -42,9 +42,9 @@ class CropView extends GetView<RegCropController> {
           const SizedBox(height: 16),
           Obx(() {
             if (controller.surveyList.isNotEmpty) {
-              return SurveyDropdown(
+              return SurveyMultiSelect(
                 surveys: controller.surveyList,
-                selectedSurvey: controller.selectedSurvey.value,
+                selectedSurveys: controller.selectedSurvey,
                 onChanged: (value) => controller.selectedSurvey.value = value,
               );
             }
@@ -321,44 +321,44 @@ class CropView extends GetView<RegCropController> {
 
 }
 
-class SurveyDropdown extends StatelessWidget {
-  final List<CropSurveyDetail> surveys;
-  final CropSurveyDetail? selectedSurvey;
-  final Function(CropSurveyDetail?) onChanged;
-  final String label;
+// class SurveyDropdown extends StatelessWidget {
+//   final List<CropSurveyDetail> surveys;
+//   final CropSurveyDetail? selectedSurvey;
+//   final Function(CropSurveyDetail?) onChanged;
+//   final String label;
 
-  const SurveyDropdown({
-    super.key,
-    required this.surveys,
-    required this.selectedSurvey,
-    required this.onChanged,
-    this.label = 'Survey No',
-  });
+//   const SurveyDropdown({
+//     super.key,
+//     required this.surveys,
+//     required this.selectedSurvey,
+//     required this.onChanged,
+//     this.label = 'Survey No',
+//   });
 
-  @override
-  Widget build(BuildContext context) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      height: 55,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: DropdownButtonFormField<CropSurveyDetail>(
-        value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
+//   @override
+//   Widget build(BuildContext context) => Container(
+//       decoration: AppStyle.decoration.copyWith(
+//         color: const Color.fromARGB(137, 221, 234, 234),
+//         boxShadow: const [],
+//       ),
+//       height: 55,
+//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+//       child: DropdownButtonFormField<CropSurveyDetail>(
+//         value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
         
-                icon: const Icon(Icons.keyboard_arrow_down),
-        items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
-            value: survey,
-            child: Text(
-              '${survey.surveyNo} (${survey.surveyMeasurementValue} ${survey.surveyMeasurementUnit})',
-            ),
-          )).toList(),
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          labelText: label,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        ),
-      ),
-    );
-}
+//                 icon: const Icon(Icons.keyboard_arrow_down),
+//         items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
+//             value: survey,
+//             child: Text(
+//               '${survey.surveyNo} (${survey.surveyMeasurementValue} ${survey.surveyMeasurementUnit})',
+//             ),
+//           )).toList(),
+//         onChanged: onChanged,
+//         decoration: InputDecoration(
+//           labelText: label,
+//           border: InputBorder.none,
+//           contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+//         ),
+//       ),
+//     );
+// }

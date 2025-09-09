@@ -19,6 +19,7 @@ class CropSurveyDetail {
       surveyMeasurementValue: json['survey_measurement_value'].toString(),
       surveyMeasurementUnit: json['survey_measurement_unit'].toString(),
     );
+    
 
   @override
   bool operator ==(Object other) =>

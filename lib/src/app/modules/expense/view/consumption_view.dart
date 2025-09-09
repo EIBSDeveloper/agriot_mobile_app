@@ -86,6 +86,10 @@ class ConsumptionView extends StatelessWidget {
                     : const SizedBox.shrink(),
               ),
 
+ const Divider(),
+              _buildDocumentsSection(),
+              const SizedBox(height: 24),
+              const Divider(),
               _buildDescriptionField(),
               const SizedBox(height: 24),
               _buildSaveButton(),
@@ -94,6 +98,72 @@ class ConsumptionView extends StatelessWidget {
         ),
       ),
     ),
+  );
+  Widget _buildDocumentsSection() => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'Documents',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
+              color: Colors.white,
+              icon: const Icon(Icons.add),
+              onPressed: _controller.addDocumentItem,
+              tooltip: 'Add Document',
+            ),
+          ),
+        ],
+      ),
+      Obx(() {
+        if (_controller.documentItems.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text(
+              'No documents added',
+              style: TextStyle(color: Colors.grey),
+            ),
+          );
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _controller.documentItems.length,
+          itemBuilder: (context, index) => Column(
+            children: [
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        "${index + 1}, ${_controller.documentItems[index].newFileType!}",
+                      ),
+                      const Icon(Icons.attach_file),
+                    ],
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () {
+                      _controller.removeDocumentItem(index);
+                    },
+                    color: Get.theme.primaryColor,
+                    icon: const Icon(Icons.delete),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              const Divider(),
+            ],
+          ),
+        );
+      }),
+    ],
   );
 
   Widget _buildDatePicker() => Obx(
@@ -236,7 +306,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildUsageHoursField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: 'Usage Hours'.tr,
+        hintText: "${'Usage Hours'.tr} *",
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -247,7 +317,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildStartKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: 'Start Kilometer'.tr,
+        hintText:"${ 'Start Kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -259,7 +329,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildEndKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: 'End Kilometer'.tr,
+        hintText: "${'End Kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -299,7 +369,7 @@ class ConsumptionView extends StatelessWidget {
               final success = await _controller.submitConsumption();
               if (success) {
                 Get
-                  ..back()
+                  ..back(result: true)
                   ..toNamed(
                     '/consumption-purchase',
                     arguments: {"id": _controller.selectedInventoryType.value},

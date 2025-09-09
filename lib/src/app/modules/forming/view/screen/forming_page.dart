@@ -13,84 +13,106 @@ class FormingView extends GetView<FormingController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    body: Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        if (controller.error.isNotEmpty) {
-          return Center(child: Text(controller.error.value));
-        }
+      if (controller.error.isNotEmpty) {
+        return Center(child: Text(controller.error.value));
+      }
 
-        return RefreshIndicator(
-          onRefresh: controller.fetchLands,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 0,
-                ),
-                child: Row(
-                  children: [
-                    TitleText("Lands".tr),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () {
-                        Get.toNamed(Routes.landMapView);
-                      },
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: Image.asset(AppIcons.map),
-                      ),
+      return RefreshIndicator(
+        onRefresh: controller.fetchLands,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+              child: Row(
+                children: [
+                  TitleText("Lands".tr),
+                  const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.landMapView);
+                    },
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.asset(AppIcons.map),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: controller.lands.length,
-                  itemBuilder: (context, index) {
-                    final land = controller.lands[index];
+            ),
+            Obx(
+              () => controller.lands.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 160),
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            PackageUsage? package = findLimit();
 
-                    return Obx(
-                      () => LandCard(
-                        key: ValueKey(
-                          land.id,
-                        ), // Important for state preservation
-                        land: land,
-                        isExpanded: controller.expandedLandId.value == land.id,
-                        onExpand: () => controller.toggleExpandLand(land.id),
-                        onTap: () => controller.navigateToLandDetail(land.id),
-                        refresh: (){
-                          controller.fetchLands();
-                        },
+                            if (package!.landBalance > 0) {
+                              Get.toNamed(Routes.addLand)?.then((result) {
+                                if (result ?? false) {
+                                  controller.fetchLands();
+                                }
+                              });
+                            } else {
+                              showDefaultGetXDialog("Land");
+                            }
+                          },
+                          child: const Text("Add Land"),
+                        ),
                       ),
-                    );
-                  },
-                ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: controller.lands.length,
+                itemBuilder: (context, index) {
+                  final land = controller.lands[index];
+
+                  return Obx(
+                    () => LandCard(
+                      key: ValueKey(
+                        land.id,
+                      ), // Important for state preservation
+                      land: land,
+                      isExpanded: controller.expandedLandId.value == land.id,
+                      onExpand: () => controller.toggleExpandLand(land.id),
+                      onTap: () => controller.navigateToLandDetail(land.id),
+                      refresh: () {
+                        controller.fetchLands();
+                      },
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
-        );
-      }),
+            ),
+          ],
+        ),
+      );
+    }),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Get.theme.primaryColor,
-        onPressed: () {
-          PackageUsage? package = findLimit();
+    floatingActionButton: FloatingActionButton(
+      backgroundColor: Get.theme.primaryColor,
+      onPressed: () {
+        PackageUsage? package = findLimit();
 
-          if (package!.landBalance > 0) {
-            Get.toNamed(Routes.addLand)?.then((result){
-              controller.fetchLands();
-            });
-          } else {
-            showDefaultGetXDialog("Land");
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+        if (package!.landBalance > 0) {
+          Get.toNamed(Routes.addLand)?.then((result) {
+            controller.fetchLands();
+          });
+        } else {
+          showDefaultGetXDialog("Land");
+        }
+      },
+      child: const Icon(Icons.add),
+    ),
+  );
 }

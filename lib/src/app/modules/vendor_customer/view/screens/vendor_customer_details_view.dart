@@ -19,7 +19,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
 
     if (item == null) {
       return Scaffold(
-        appBar: AppBar(title: Text('details_not_found'.tr)),
+        appBar: CustomAppBar(title: 'details_not_found'.tr),
         body: Center(child: Text('item_not_found'.tr)),
       );
     }
@@ -58,97 +58,97 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
   }
 
   Widget _buildVendorDetails(VendorCustomer item) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TitleText('vendor_details'.tr),
-        const SizedBox(height: 8),
-        if (item.businessName != null)
-          _buildDetailRow('business_name'.tr, item.businessName!),
-        if (item.inventoryType != null)
-          _buildDetailRow('inventory_type'.tr, item.inventoryType!),
-        const Divider(),
-      ],
-    );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      TitleText('vendor_details'.tr),
+      const SizedBox(height: 8),
+      if (item.businessName != null)
+        _buildDetailRow('business_name'.tr, item.businessName!),
+      if (item.inventoryType != null)
+        _buildDetailRow('inventory_type'.tr, item.inventoryType!),
+      const Divider(),
+    ],
+  );
 
   Widget _buildCustomerDetails(VendorCustomer item) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TitleText('customer_details'.tr),
-        const SizedBox(height: 8),
-        if (item.shopName != null)
-          _buildDetailRow('shop_name'.tr, item.shopName!),
-        if (item.market != null) _buildDetailRow('market'.tr, item.market!),
-        const Divider(),
-      ],
-    );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      TitleText('details'.tr),
+      const SizedBox(height: 8),
+      if (item.shopName != null)
+        _buildDetailRow('shop_name'.tr, item.shopName!),
+      if (item.market != null) _buildDetailRow('market'.tr, item.market!),
+      const Divider(),
+    ],
+  );
 
   Widget _buildCommonDetails(VendorCustomer item) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildDetailRow('mobile_number'.tr, item.mobileNo),
-        if (item.email != null) _buildDetailRow('email'.tr, item.email!),
-        if (item.doorNo != null) _buildDetailRow('address'.tr, item.doorNo!),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _buildDetailRow('mobile_number'.tr, item.mobileNo),
+      if (item.email != null) _buildDetailRow('email'.tr, item.email!),
+      if (item.doorNo != null) _buildDetailRow('address'.tr, item.doorNo!),
 
-        _buildDetailRow('pincode'.tr, item.postCode.toString()),
-        if (item.gstNo != null) _buildDetailRow('gst_number'.tr, item.gstNo!),
-        if (item.taxNo != null) _buildDetailRow('tax_number'.tr, item.taxNo!),
-        _buildDetailRow(
-          'opening_balance'.tr,
-          '${item.isCredit ? ' + ' : ' - '}${item.openingBalance}',
-          color: item.isCredit ? Colors.green : Colors.red,
-        ),
-        if (item.description != null)
-          _buildDetailRow('description'.tr, item.description!),
-      ],
-    );
+      _buildDetailRow('pincode'.tr, item.postCode.toString()),
+      if (item.gstNo != null) _buildDetailRow('gst_number'.tr, item.gstNo!),
+      if (item.taxNo != null) _buildDetailRow('tax_number'.tr, item.taxNo!),
+      _buildDetailRow(
+        'opening_balance'.tr,
+        '${item.isCredit ? ' + ' : ' - '}${item.openingBalance}',
+        color: item.isCredit ? Colors.green : Colors.red,
+      ),
+      if (item.description != null)
+        _buildDetailRow('description'.tr, item.description!),
+    ],
+  );
 
   Widget _buildDetailRow(String label, String value, {Color? color}) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: Get.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(value, style: TextStyle(color: color)),
-          ),
-        ],
-      ),
-    );
-
-  Widget _buildActionButtons(VendorCustomer item) => Row(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Expanded(
-        //   child: ElevatedButton.icon(
-        //     onPressed: () =>,
-        //     icon: const Icon(Icons.call),
-        //     label: Text('call'.tr),
-        //     style: ElevatedButton.styleFrom(
-        //       padding: const EdgeInsets.symmetric(vertical: 16),
-        //     ),
-        //   ),
-        // ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: OutlinedButton.icon(
-            onPressed: () => _navigateToEdit(item),
-            icon: const Icon(Icons.edit),
-            label: Text('edit'.tr),
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+        SizedBox(
+          width: 120,
+          child: Text(
+            label,
+            style: Get.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(value, style: TextStyle(color: color)),
+        ),
       ],
-    );
+    ),
+  );
+
+  Widget _buildActionButtons(VendorCustomer item) => Row(
+    children: [
+      // Expanded(
+      //   child: ElevatedButton.icon(
+      //     onPressed: () =>,
+      //     icon: const Icon(Icons.call),
+      //     label: Text('call'.tr),
+      //     style: ElevatedButton.styleFrom(
+      //       padding: const EdgeInsets.symmetric(vertical: 16),
+      //     ),
+      //   ),
+      // ),
+      const SizedBox(width: 16),
+      Expanded(
+        child: OutlinedButton.icon(
+          onPressed: () => _navigateToEdit(item),
+          icon: const Icon(Icons.edit),
+          label: Text('edit'.tr),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+        ),
+      ),
+    ],
+  );
 
   void _navigateToEdit(VendorCustomer item) {
     // Populate the form with existing data

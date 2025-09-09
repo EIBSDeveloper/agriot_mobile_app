@@ -230,30 +230,28 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
 
         child: ExpansionTile(
+          
           title: Text('Survey Details (${details.surveyDetails!.length})'),
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: DataTable(
-                columns: [
-                  const DataColumn(label: Text('Survey No')),
-                  const DataColumn(label: Text('Area')),
-                ],
-                rows: details.surveyDetails!
-                    .map(
-                      (survey) => DataRow(
-                        cells: [
-                          DataCell(Text(survey.surveyNo!)),
-                          DataCell(
-                            Text(
-                              '${survey.measurementValue} ${survey.measurementUnit}',
-                            ),
+            DataTable(
+              columns: [
+                const DataColumn(label: Text('Survey No')),
+                const DataColumn(label: Text('Area')),
+              ],
+              rows: details.surveyDetails!
+                  .map(
+                    (survey) => DataRow(
+                      cells: [
+                        DataCell(Text(survey.surveyNo!)),
+                        DataCell(
+                          Text(
+                            '${survey.measurementValue} ${survey.measurementUnit}',
                           ),
-                        ],
-                      ),
-                    )
-                    .toList(),
-              ),
+                        ),
+                      ],
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),

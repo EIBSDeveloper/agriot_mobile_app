@@ -82,9 +82,9 @@ class DashboardController extends GetxController {
 
       // Load widget configuration
       widgetConfig.value = await _repository.getWidgetConfig();
-      if (position.value == null) {
-        position.value = await Geolocator.getCurrentPosition();
-      }
+      // if (position.value == null) {
+      //   position.value = await Geolocator.getCurrentPosition();
+      // }
       await loadData();
 
       // fetchWeatherData(position.value!.latitude, position.value!.longitude);
@@ -117,7 +117,7 @@ class DashboardController extends GetxController {
       if (widgetConfig.value.guidelines!) {
         await fetchGuidelines();
       }
-      fetchWeatherData(position.value!.latitude, position.value!.longitude);
+      // fetchWeatherData(position.value!.latitude, position.value!.longitude);
     } catch (e) {
       showError('Failed to load dashboard data');
     } finally {

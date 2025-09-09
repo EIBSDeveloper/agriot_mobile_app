@@ -8,6 +8,7 @@ class FuelEntryModel {
   final String purchaseAmount;
   final String paidAmount;
   final String? description;
+  final List? document;
 
   FuelEntryModel({
     required this.dateOfConsumption,
@@ -19,17 +20,19 @@ class FuelEntryModel {
     required this.purchaseAmount,
     required this.paidAmount,
     this.description,
+    required this.document,
   });
 
   Map<String, dynamic> toJson() => {
-      'date_of_consumption': dateOfConsumption,
-      'vendor': vendor,
-      'inventory_type': inventoryType,
-      'inventory_category': inventoryCategory,
-      'inventory_items': inventoryItems,
-      'quantity': quantity,
-      'purchase_amount': purchaseAmount,
-      "paid_amount": paidAmount,
-      'description': description,
-    };
+    'date_of_consumption': dateOfConsumption,
+    'vendor': vendor,
+    'inventory_type': inventoryType,
+    'inventory_category': inventoryCategory,
+    'inventory_items': inventoryItems,
+    'quantity': quantity,
+    'purchase_amount': purchaseAmount,
+    "paid_amount": paidAmount,
+    'description': description,
+    'documents': document,
+  };
 }

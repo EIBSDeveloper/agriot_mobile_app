@@ -126,7 +126,7 @@ class KycView extends GetView<KycController> {
       onPressed: controller.isSubmitting.value ? null : controller.submitForm,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        backgroundColor: const Color.fromARGB(255, 100, 120, 31),
+        backgroundColor: Get.theme.primaryColor,
       ),
       child: controller.isSubmitting.value
           ? const SizedBox(

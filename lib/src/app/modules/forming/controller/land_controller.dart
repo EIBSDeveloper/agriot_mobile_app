@@ -121,10 +121,10 @@ class LandController extends GetxController {
     descriptionController.text = landDetail.value.description ?? '';
 
     // Set selected dropdown values
-    selectedLandUnit.value = AppDropdownItem(
-      id: landDetail.value.measurementUnit.id,
-      name: landDetail.value.measurementUnit.name,
-    );
+    // selectedLandUnit.value = AppDropdownItem(
+    //   id: landDetail.value.measurementUnit.id,
+    //   name: landDetail.value.measurementUnit.name,
+    // );
 
     if (landDetail.value.soilType != null &&
         landDetail.value.soilType!.id != null) {
@@ -140,7 +140,10 @@ class LandController extends GetxController {
     // Set location data
     latitude.value = landDetail.value.latitude;
     longitude.value = landDetail.value.longitude;
-
+    selectedLandUnit.value = AppDropdownItem(
+      id: landDetail.value.measurementUnit.id,
+      name: landDetail.value.measurementUnit.name,
+    );
     // Populate survey items
     surveyItems.clear();
     for (var survey in landDetail.value.surveyDetails) {
@@ -159,7 +162,12 @@ class LandController extends GetxController {
       isLoadingLandUnits(true);
       final result = await _landService.getLandUnits();
       landUnits.assignAll(result);
-      if (result.isNotEmpty) {
+
+      if (landDetail.value.id != 0) {
+        selectedLandUnit.value = result.firstWhereOrNull(
+          (e) => e.id == landDetail.value.measurementUnit.id,
+        );
+      } else if (result.isNotEmpty) {
         selectedLandUnit.value = result.first;
       }
     } finally {
@@ -250,7 +258,7 @@ class LandController extends GetxController {
             if (survey.id != null) "id": survey.id,
             "survey_no": survey.surveyNo,
             "survey_measurement_value": survey.measurement,
-            "survey_measurement_unit": survey.unit,
+            "survey_measurement_unit": survey.unit?.id,
           };
           return map;
         }).toList();
@@ -289,21 +297,21 @@ class LandController extends GetxController {
         if (descriptionController.text.isNotEmpty)
           "description": descriptionController.text.trim(),
         if (newSurveyItems.value && landId.value == 0) ...surveyDetails,
-        if (landId.value == 0) "surveyDetails": surveyDetails,
+        if (landId.value != 0) "surveyDetails": surveyDetails,
         "document": documentItemsList,
       };
 
       // Call appropriate API based on whether we're creating or editing
       if (landId.value == 0) {
         // Create new land
-        await _landService.addLand(request: request, documents: []);
+        await _landService.addLand(request: request);
 
-        Get.back();
+        Get.back(result: true);
         showSuccess('Land added successfully');
       } else {
         // Edit existing land
-        await _landService.editLand(request: request, documents: []);
-        Get.back();
+        await _landService.editLand(request: request);
+        Get.back(result: true);
         showSuccess('Land updated successfully');
       }
     } catch (e) {

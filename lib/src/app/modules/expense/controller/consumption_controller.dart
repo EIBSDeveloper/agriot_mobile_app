@@ -9,6 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../../service/utils/enums.dart';
+import '../../../service/utils/utils.dart';
+import '../../document/binding/document_binding.dart';
+import '../../document/model/add_document_model.dart';
+import '../../document/view/add_document_view.dart';
 
 class ConsumptionController extends GetxController {
   final ConsumptionRepository _repository = ConsumptionRepository();
@@ -17,7 +22,8 @@ class ConsumptionController extends GetxController {
   final formKey = GlobalKey<FormState>();
   // Observable variables
   RxList<InventoryTypeModel> inventoryTypes = <InventoryTypeModel>[].obs;
-  RxList<InventoryCategoryModel> inventoryCategories = <InventoryCategoryModel>[].obs;
+  RxList<InventoryCategoryModel> inventoryCategories =
+      <InventoryCategoryModel>[].obs;
   RxList<InventoryItemModel> inventoryItems = <InventoryItemModel>[].obs;
   RxBool isLoading = false.obs;
   RxBool isCategoryLoading = false.obs;
@@ -29,6 +35,7 @@ class ConsumptionController extends GetxController {
   Rx<DateTime> selectedDate = DateTime.now().obs;
   final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;
   final RxList<CropModel> crop = <CropModel>[].obs;
+  final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
   Rxn<int> selectedInventoryType = Rxn<int>();
   Rxn<String> selectedInventoryTypeName = Rxn<String>();
@@ -110,6 +117,23 @@ class ConsumptionController extends GetxController {
     await fetchInventoryItems(categoryId);
   }
 
+  void removeDocumentItem(int index) {
+    documentItems.removeAt(index);
+  }
+
+  void addDocumentItem() {
+    Get.to(
+      const AddDocumentView(),
+      binding: DocumentBinding(),
+      arguments: {"id": getDocTypeId(DocType.inventory)},
+    )?.then((result) {
+      if (result != null && result is AddDocumentModel) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
+  }
+
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
     if (inventoryItem.value != null) {
@@ -143,13 +167,10 @@ class ConsumptionController extends GetxController {
     toolItems.value = value;
   }
 
- 
-
   void changeCrop(CropModel crop) {
     selectedCropType.value = crop;
   }
 
- 
   Future<void> fetchInventoryTypes() async {
     final farmerId = _appDataController.userId.value;
     try {
@@ -259,7 +280,6 @@ class ConsumptionController extends GetxController {
       }
 
       // Add documents if any
-      
 
       final success = await _repository.submitConsumption(requestBody);
 
@@ -268,7 +288,6 @@ class ConsumptionController extends GetxController {
         // clearForm();
         return true;
       } else {
-        
         Fluttertoast.showToast(msg: 'Failed to record consumption'.tr);
         return false;
       }
@@ -294,7 +313,6 @@ class ConsumptionController extends GetxController {
     startKilometer.value = '';
     endKilometer.value = '';
     toolItems.value = '';
-    
   }
 
   bool get isFormValid {

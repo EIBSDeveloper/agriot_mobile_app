@@ -37,7 +37,7 @@ class ConsumptionPurchaseController extends GetxController {
       currentTabIndex.value = tab;
     }
     if (arguments?["id"] != null) {
-      inventoryType.value = arguments?["type"];
+      inventoryType.value = arguments?["id"];
     }
     if (arguments?["category"] != null) {
       inventoryCategory.value = arguments?["category"];
@@ -65,7 +65,6 @@ class ConsumptionPurchaseController extends GetxController {
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
-
     loadData();
   }
 

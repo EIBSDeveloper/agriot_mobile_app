@@ -66,7 +66,7 @@ class LandDetailView extends GetView<LandDetailController> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () =>
-                  controller.fetchLandDetails(Get.arguments as int),
+                  controller.fetchLandDetails(),
               child: const Text('Retry'),
             ),
           ],
@@ -219,7 +219,9 @@ class LandDetailView extends GetView<LandDetailController> {
                   'cropId': crop.id,
                 },
               )?.then((result) {
-                controller.loadData();
+               if(result??false){
+                 controller.loadData();
+               }
               });
             },
             child: CropCard(crop: crop),

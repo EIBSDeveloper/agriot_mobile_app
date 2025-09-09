@@ -252,7 +252,7 @@ class CropView extends GetView<CropController> {
             child: Obx(
               () => InputCardStyle(
                 child: DropdownButtonFormField<AppDropdownItem>(
-                  value: controller.selectedMeasurementUnit.value,
+                  initialValue: controller.selectedMeasurementUnit.value,
                   decoration: const InputDecoration(
                     hintText: 'Unit *',
                     border: InputBorder.none,

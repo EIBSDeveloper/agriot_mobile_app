@@ -11,7 +11,7 @@ class PayablesReceivablesRepository {
   Future<PayablesReceivablesList> fetchPayablesReceivablesList() async {
     final farmerId = appDeta.userId;
     final url = Uri.parse(
-      'http://147.93.19.253:5000/Api/payables_receivables_list/$farmerId',
+      '${appDeta.baseUrl.value}/payables_receivables_list/$farmerId',
     );
     final response = await http.get(url);
 

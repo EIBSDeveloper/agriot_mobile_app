@@ -20,14 +20,14 @@ class LandDetailController extends GetxController {
   }
 
   void loadData() {
-    fetchLandDetails(landId.value);
+    fetchLandDetails();
   }
 
-  Future<void> fetchLandDetails(int landId) async {
+  Future<void> fetchLandDetails() async {
     try {
       isLoading(true);
       error('');
-      final result = await _repository.getLandDetails(landId);
+      final result = await _repository.getLandDetails(landId.value);
       landDetails.assignAll(result);
     } catch (e) {
       error(e.toString());

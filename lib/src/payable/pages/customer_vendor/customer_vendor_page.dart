@@ -787,12 +787,11 @@ import 'historydetailspage.dart';
 
 
 class CustomerVendorDetailsPage extends StatefulWidget {
-  final int id;
+
   final DetailsType? detailsType;
 
 const  CustomerVendorDetailsPage({
     super.key,
-    required this.id,
     required this.detailsType,
   });
 
@@ -809,7 +808,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.loadReceivables(widget.id, widget.detailsType);
+      controller.loadReceivables(widget.detailsType);
     });
   }
 
@@ -897,7 +896,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withAlpha(150),
             spreadRadius: 2,
             blurRadius: 8,
             offset: const Offset(0, 4),
@@ -1600,7 +1599,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
                             onPressed: () {
                               Get.to(
                                 () => HistoryDetailsPage(
-                                  farmerId: 339,
+                               
                                   customerId: customerId,
                                   saleId: sale.salesId,
                                   isPayable: false,
@@ -1697,7 +1696,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
                             onPressed: () {
                               Get.to(
                                 () => HistoryDetailsPage(
-                                  farmerId: 339,
+                            
                                   customerId: customerId,
                                   saleId: sale.salesId,
                                   isPayable: true,

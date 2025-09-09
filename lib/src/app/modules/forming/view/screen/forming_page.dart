@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/forming/view/widget/empty_land_card.dart';
 import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
@@ -47,29 +48,10 @@ class FormingView extends GetView<FormingController> {
               ),
             ),
             Obx(
-              () => controller.lands.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 160),
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            PackageUsage? package = findLimit();
-
-                            if (package!.landBalance > 0) {
-                              Get.toNamed(Routes.addLand)?.then((result) {
-                                if (result ?? false) {
-                                  controller.fetchLands();
-                                }
-                              });
-                            } else {
-                              showDefaultGetXDialog("Land");
-                            }
-                          },
-                          child: const Text("Add Land"),
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+              () => EmptyLandCard(
+                view: controller.lands.isEmpty,
+                refresh: controller.fetchLands,
+              ),
             ),
             Expanded(
               child: ListView.builder(

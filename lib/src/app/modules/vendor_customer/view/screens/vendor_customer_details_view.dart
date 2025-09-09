@@ -32,6 +32,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
             onPressed: () {
               controller.deleteDetails(item.id, item.type);
             },
+            color: Get.theme.primaryColor,
             icon: const Icon(Icons.delete),
           ),
         ],
@@ -73,7 +74,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
   Widget _buildCustomerDetails(VendorCustomer item) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      TitleText('details'.tr),
+      TitleText('Details'.tr),
       const SizedBox(height: 8),
       if (item.shopName != null)
         _buildDetailRow('shop_name'.tr, item.shopName!),

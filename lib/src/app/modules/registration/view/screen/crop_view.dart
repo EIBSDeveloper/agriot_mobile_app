@@ -216,7 +216,7 @@ class CropView extends GetView<RegCropController> {
                     isExpanded: true,
                     
                 icon: const Icon(Icons.keyboard_arrow_down),
-                    value: controller.selectedMeasurementUnit.value,
+                    initialValue: controller.selectedMeasurementUnit.value,
                     decoration: const InputDecoration(
                       labelText: 'Unit *',
                       border: InputBorder.none,

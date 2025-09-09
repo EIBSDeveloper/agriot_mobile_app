@@ -6,9 +6,9 @@ import 'package:get/get.dart';
 
 class GuidelineThunbnail extends StatelessWidget {
   GuidelineThunbnail({super.key, required this.guideline});
-  Guideline guideline;
+  final Guideline guideline;
 
-  AppDataController appData = Get.find();
+  final AppDataController appData = Get.find();
 
   @override
   Widget build(BuildContext context) {

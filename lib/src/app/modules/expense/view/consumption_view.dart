@@ -200,7 +200,7 @@ class ConsumptionView extends StatelessWidget {
       items: _controller.crop,
       selectedItem: _controller.selectedCropType.value,
       onChanged: (land) => _controller.changeCrop(land!),
-      label: 'crop'.tr,
+      label: "${'crop'.tr} *",
     ),
   );
 

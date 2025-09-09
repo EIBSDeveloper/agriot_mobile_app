@@ -129,7 +129,7 @@ class AddDeductionView extends StatelessWidget {
   Widget _buildTypeSelector() => Obx(
     () => InputCardStyle(
       child: DropdownButtonFormField<String>(
-        value: _selectedType.value,
+        initialValue: _selectedType.value,
         onChanged: (String? newValue) {
           _selectedType.value = newValue!;
         },

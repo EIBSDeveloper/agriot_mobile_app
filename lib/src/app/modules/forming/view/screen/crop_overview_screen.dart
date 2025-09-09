@@ -616,7 +616,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
               shape: BoxShape.circle,
             ),
             todayDecoration: BoxDecoration(
-              color: Get.theme.primaryColor.withOpacity(0.3),
+              color: Get.theme.primaryColor.withAlpha(150),
               shape: BoxShape.circle,
             ),
           ),

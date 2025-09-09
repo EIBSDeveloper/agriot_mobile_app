@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../app/controller/app_controller.dart';
-
-class CustomerAddRepository {
-  final String baseUrl = "http://147.93.19.253:5000/Api";
-
   final AppDataController appDeta = Get.put(AppDataController());
+class CustomerAddRepository {
+  final String baseUrl = appDeta.baseUrl.value;
+
+
   /// POST Payable API
   Future<Map<String, dynamic>> postPayable(
    

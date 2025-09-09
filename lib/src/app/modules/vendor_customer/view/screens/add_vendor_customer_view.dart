@@ -46,7 +46,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             isExpanded: true,
 
             icon: const Icon(Icons.keyboard_arrow_down),
-            value: controller.selectedMarket.value,
+            initialValue: controller.selectedMarket.value,
             decoration: InputDecoration(
               hintText: "${'select_market'.tr}*",
               border: InputBorder.none,
@@ -178,8 +178,8 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             hintText:
                 controller.selectedType.value == 'customer' ||
                     controller.selectedType.value == 'both'
-                ? 'shop_name'.tr
-                : 'business_name'.tr,
+                ? "${'shop_name'.tr} *"
+                : "${'business_name'.tr} *",
             border: InputBorder.none,
           ),
         ),
@@ -283,7 +283,9 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
 
   Widget _buildSubmitButton() => Obx(
     () => ElevatedButton(
-      onPressed: controller.isSubmitting.value ? null : controller.submitForm,
+      onPressed: controller.isSubmitting.value ? null :(){
+         controller.submitForm(id:  Get.arguments?["id"]);
+      },
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
         backgroundColor: Get.theme.primaryColor,

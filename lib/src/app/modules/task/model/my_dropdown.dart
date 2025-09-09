@@ -32,7 +32,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
     // padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0),
     child: DropdownButtonFormField<T>(
       key: key,
-      value: selectedItem,
+      initialValue: selectedItem,
       decoration: InputDecoration(
         hintText: label,
         border: InputBorder.none,

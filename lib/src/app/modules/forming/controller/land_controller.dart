@@ -13,7 +13,6 @@ import '../../../controller/app_controller.dart';
 import '../../registration/model/dropdown_item.dart';
 import '../../registration/model/land_model.dart';
 import '../../registration/model/survey_model.dart';
-import '../../registration/repostrory/address_service.dart';
 import '../../registration/repostrory/crop_service.dart';
 import '../../registration/repostrory/land_service.dart';
 import '../../registration/view/screen/location_picker_view.dart';
@@ -139,6 +138,7 @@ class LandController extends GetxController {
     locationListController.text = landDetail.value.geoMarks.toString();
     // Set location data
     latitude.value = landDetail.value.latitude;
+    pincodeController.text= "0";
     longitude.value = landDetail.value.longitude;
     selectedLandUnit.value = AppDropdownItem(
       id: landDetail.value.measurementUnit.id,

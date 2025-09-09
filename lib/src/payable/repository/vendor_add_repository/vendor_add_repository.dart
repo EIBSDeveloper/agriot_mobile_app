@@ -9,7 +9,7 @@ import '../../model/vendor_add_model/vendor_add_model.dart';
 final AppDataController appDeta = Get.put(AppDataController());
 
 class VendorAddRepository {
-  final String baseUrl = "http://147.93.19.253:5000/Api";
+  final String baseUrl = appDeta.baseUrl.value;
   final farmerId = appDeta.userId;
   /*  // Create Payable
   Future<VendorPaymentResponse?> createVendorPayable({

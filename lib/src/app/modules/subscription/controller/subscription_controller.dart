@@ -6,12 +6,13 @@ import 'package:argiot/src/app/modules/subscription/repository/subscription_repo
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+import '../../../service/utils/utils.dart';
 import '../../profile/controller/profile_controller.dart';
 
 class SubscriptionController extends GetxController {
   final SubscriptionRepository repository = SubscriptionRepository();
-  final Rx<PackageListResponse?> packages = Rx<PackageListResponse?>(null);
   final Rx<FarmerUsageResponse?> usage = Rx<FarmerUsageResponse?>(null);
+  final Rx<PackageListResponse?> packages = Rx<PackageListResponse?>(null);
   final Rx<Package?> selectedPackage = Rx<Package?>(null);
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
@@ -87,6 +88,7 @@ class SubscriptionController extends GetxController {
       ProfileController profile = Get.find();
       await profile.fetchProfile();
       // await loadData();
+        packageRefresh();
       Get.back();
       Get.back();
     } catch (e) {

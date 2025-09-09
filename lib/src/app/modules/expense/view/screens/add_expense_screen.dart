@@ -81,7 +81,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 ),
                 height: 55,
                 child: DropdownButtonFormField<ExpenseType>(
-                  value: controller.selectedExpenseType.value.id == 0
+                  initialValue: controller.selectedExpenseType.value.id == 0
                       ? null
                       : controller.selectedExpenseType.value,
 
@@ -139,7 +139,6 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                   },
                 ),
               ),
-              const SizedBox(height: 16),
 
               const SizedBox(height: 16),
               Container(

@@ -59,30 +59,30 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
     ),
   );
 
-  Widget _buildMachineryTypeRadio() => Obx(
-    () => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('type'.tr, style: Get.textTheme.bodyLarge),
-        Row(
-          children: [
-            Radio<String>(
-              value: 'Fuel',
-              groupValue: controller.machineryType.value,
-              onChanged: (value) => controller.machineryType.value = value!,
+Widget _buildMachineryTypeRadio() => Obx(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('type'.tr, style: Get.textTheme.bodyLarge),
+          RadioGroup<String>(
+           groupValue: controller.machineryType.value,
+            onChanged: (value) {
+              if (value != null) {
+                controller.machineryType.value = value;
+              }
+            },
+            child: Row(
+              children: [
+                const Radio<String>(value: 'Fuel'),
+                Text('fuel'.tr),
+                const Radio<String>(value: 'Manual'),
+                Text('manual'.tr),
+              ],
             ),
-            Text('fuel'.tr),
-            Radio<String>(
-              value: 'Manual',
-              groupValue: controller.machineryType.value,
-              onChanged: (value) => controller.machineryType.value = value!,
-            ),
-            Text('manual'.tr),
-          ],
-        ),
-      ],
-    ),
-  );
+          ),
+        ],
+      ),
+    );
 
   Widget _buildFuelCapacityField() => InputCardStyle(
     child: TextFormField(

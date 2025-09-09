@@ -13,7 +13,7 @@ class LandView extends GetView<RegLandController> {
   LandView({super.key});
 
   final kycController = Get.find<KycController>();
-  var gap = const SizedBox(height: 14);
+  final gap = const SizedBox(height: 14);
   @override
   Widget build(BuildContext context) => Form(
     key: controller.formKey,

@@ -82,7 +82,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               ),
               onTap: () {
                 Get.back();
-
+                controller.fetchCrop();
                 Get.toNamed(Routes.addExpense)?.then((res) {
                   if (res ?? false) {
                     controller.loadExpenseData();
@@ -341,5 +341,4 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       },
     );
   }
-
 }

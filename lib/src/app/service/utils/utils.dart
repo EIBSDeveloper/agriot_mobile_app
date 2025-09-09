@@ -71,6 +71,7 @@ PackageUsage? findLimit() {
   UserLimitController limitController = Get.put(UserLimitController());
   return limitController.packageUsage.value;
 }
+String generateGoogleMapsUrl(double latitude, double longitude) => "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
 
 packageRefresh() {
   UserLimitController limitController = Get.put(UserLimitController());

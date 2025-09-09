@@ -159,7 +159,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         Expanded(
           child: InputCardStyle(
             child: DropdownButtonFormField<int>(
-              value: controller.selectedValue.value,
+              initialValue: controller.selectedValue.value,
               icon: const Icon(Icons.keyboard_arrow_down),
               decoration: const InputDecoration(
                 hintText: "Status",

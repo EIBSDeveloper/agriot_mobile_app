@@ -108,7 +108,7 @@ class PayablesList extends StatelessWidget {
       onTap: () {
         Get.to(
           () =>  const CustomerVendorDetailsPage(
-            id: 339, // use actual ID
+           
             detailsType: DetailsType.payables,
           ),
         );
@@ -124,7 +124,7 @@ class PayablesList extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withAlpha(150),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 3),

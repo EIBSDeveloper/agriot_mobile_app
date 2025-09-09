@@ -68,7 +68,7 @@ class MinimalHorizontalStepper extends StatelessWidget {
                     top: (circleSize - lineHeight) / 2,
                     child: Container(
                       height: lineHeight,
-                      color: inactiveColor.withOpacity(0.3),
+                      color: inactiveColor.withAlpha(150),
                     ),
                   ),
 
@@ -99,7 +99,7 @@ class MinimalHorizontalStepper extends StatelessWidget {
                           border: Border.all(
                             color: isActive || isCompleted
                                 ? activeColor
-                                : inactiveColor.withOpacity(0.5),
+                                : inactiveColor.withAlpha(150),
                             width: 2,
                           ),
                           shape: BoxShape.circle,

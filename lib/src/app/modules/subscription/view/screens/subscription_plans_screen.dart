@@ -49,12 +49,14 @@ class SubscriptionPlansScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              ...packages.packages.map((package) => _buildPackageCard(
+              ...packages.packages.map(
+                (package) => _buildPackageCard(
                   package,
                   isSelected:
                       package.id == controller.selectedPackage.value?.id,
                   onSelect: () => controller.selectPackage(package),
-                )),
+                ),
+              ),
               const SizedBox(height: 16),
             ],
           ),
@@ -62,62 +64,64 @@ class SubscriptionPlansScreen extends StatelessWidget {
       }),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Obx(() => ElevatedButton(
+        child: Obx(
+          () => ElevatedButton(
             onPressed: controller.selectedPackage.value != null
                 ? () => Get.toNamed(Routes.subscriptionPayment)
                 : null,
             child: Text('proceed_to_payment'.tr),
-          )),
+          ),
+        ),
       ),
     );
   }
-
 
   Widget _buildPackageCard(
     Package package, {
     bool isSelected = false,
     VoidCallback? onSelect,
   }) => Card(
-      margin: const EdgeInsets.only(bottom: 16),
+    margin: const EdgeInsets.only(bottom: 16),
 
-      color: isSelected ? Get.theme.colorScheme.primary : null,
-      child: InkWell(
-        onTap: onSelect,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TitleText(package.name,color:     isSelected
-                          ? Colors.white
-                          : null,),
-                  Radio<Package>(
-                    value: package,
-                    groupValue: isSelected ? package : null,
-                    onChanged: (p) => onSelect?.call(),
-                    activeColor: isSelected
-                        ? Get.theme.colorScheme.onPrimary
-                        : Get.theme.colorScheme.primary,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '${package.formattedPrice} • ${package.durationText}',
-                style: Get.textTheme.titleMedium?.copyWith(
-                  color: isSelected ? Get.theme.colorScheme.onPrimary : null,
+    color: isSelected ? Get.theme.colorScheme.primary : null,
+    child: InkWell(
+      onTap: onSelect,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TitleText(
+                  package.name,
+                  color: isSelected ? Colors.white : null,
                 ),
+                Radio<Package>(
+                  value: package,
+                  groupValue: isSelected ? package : null,
+                  onChanged: (p) => onSelect?.call(),
+                  activeColor: isSelected
+                      ? Get.theme.colorScheme.onPrimary
+                      : Get.theme.colorScheme.primary,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${package.formattedPrice} • ${package.durationText}',
+              style: Get.textTheme.titleMedium?.copyWith(
+                color: isSelected ? Get.theme.colorScheme.onPrimary : null,
               ),
-              const SizedBox(height: 16),
-              ..._buildFeatureList(package, isSelected),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+            ..._buildFeatureList(package, isSelected),
+          ],
         ),
       ),
-    );
+    ),
+  );
   // {
 
   List<Widget> _buildFeatureList(Package package, bool isSelected) {
@@ -223,19 +227,19 @@ class SubscriptionPlansScreen extends StatelessWidget {
     bool isAvailable,
     Color? textColor,
   ) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(
-            isAvailable ? Icons.check_circle : Icons.cancel,
-            color: isAvailable ? Colors.green : Colors.red,
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(title, style: TextStyle(color: textColor)),
-          ),
-          Text(limit.toString(), style: TextStyle(color: textColor)),
-        ],
-      ),
-    );
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      children: [
+        Icon(
+          isAvailable ? Icons.check_circle : Icons.cancel,
+          color: isAvailable ? Colors.green : Colors.red,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(title, style: TextStyle(color: textColor)),
+        ),
+        Text(limit.toString(), style: TextStyle(color: textColor)),
+      ],
+    ),
+  );
 }

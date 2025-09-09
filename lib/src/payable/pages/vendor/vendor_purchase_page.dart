@@ -750,7 +750,7 @@ class VendorPurchasePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
+            color: Colors.grey.withAlpha(150),
             blurRadius: 12,
             spreadRadius: 2,
             offset: const Offset(0, 6),
@@ -868,7 +868,7 @@ class VendorPurchasePage extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withAlpha(150),
               blurRadius: 6,
               offset: const Offset(0, 3),
             ),

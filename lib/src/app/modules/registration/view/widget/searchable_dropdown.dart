@@ -15,7 +15,7 @@ class SearchableDropdown<T> extends StatefulWidget {
   final bool isDense;
   final InputBorder? border;
 
-  const  SearchableDropdown({
+  const SearchableDropdown({
     super.key,
     required this.label,
     this.hintText,
@@ -59,21 +59,21 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
 
   @override
   Widget build(BuildContext context) => InputCardStyle(
-      child: TextFormField(
-        controller: _displayController,
-        readOnly: true,
-        decoration: InputDecoration(
-          labelText: widget.hintText ?? widget.label,
-          border: InputBorder.none,
-          isDense: widget.isDense,
-          contentPadding: EdgeInsets.zero,
-          suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
-          errorStyle: const TextStyle(height: 0),
-        ),
-        onTap: _showSearchDialog,
-        validator: (value) => widget.validator?.call(widget.selectedItem),
+    child: TextFormField(
+      controller: _displayController,
+      readOnly: true,
+      decoration: InputDecoration(
+        labelText: widget.hintText ?? widget.label,
+        border: InputBorder.none,
+        isDense: widget.isDense,
+        contentPadding: EdgeInsets.zero,
+        suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
+        errorStyle: const TextStyle(height: 0),
       ),
-    );
+      onTap: _showSearchDialog,
+      validator: (value) => widget.validator?.call(widget.selectedItem),
+    ),
+  );
 
   Future<void> _showSearchDialog() async {
     final T? selectedItem = await showModalBottomSheet<T>(
@@ -81,12 +81,12 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) => _SearchBottomSheet<T>(
-          items: widget.items,
-          displayItem: widget.displayItem,
-          label: widget.label,
-          validator: widget.validator,
-          initialSearchText: _displayController.text,
-        ),
+        items: widget.items,
+        displayItem: widget.displayItem,
+        label: widget.label,
+        validator: widget.validator,
+        initialSearchText: _displayController.text,
+      ),
     );
 
     if (selectedItem != null) {
@@ -159,93 +159,91 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
 
   @override
   Widget build(BuildContext context) => DraggableScrollableSheet(
-      expand: false,
-      maxChildSize: 0.9,
-      minChildSize: 0.4,
-      initialChildSize: 0.7,
-      builder: (context, scrollController) => GestureDetector(
-          onTap: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Container(
-            decoration: AppStyle.decoration.copyWith(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
+    expand: false,
+    maxChildSize: 0.9,
+    minChildSize: 0.4,
+    initialChildSize: 0.7,
+    builder: (context, scrollController) => GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Container(
+        decoration: AppStyle.decoration.copyWith(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            Center(
+              child: Container(
+                width: 60,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-            padding: const EdgeInsets.all(12),
-            child: Column(
+            const SizedBox(height: 20),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 8),
-                Center(
+                Expanded(
                   child: Container(
-                    width: 60,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
+                    decoration: AppStyle.decoration.copyWith(
+                      color: const Color.fromARGB(137, 221, 234, 234),
+                      boxShadow: const [],
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search ${widget.label}',
+                        prefixIcon: const Icon(Icons.search),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: AppStyle.decoration.copyWith(
-                          color: const Color.fromARGB(137, 221, 234, 234),
-                          boxShadow: const [],
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 5,
-                        ),
-                        margin: const EdgeInsets.symmetric(horizontal: 15),
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search ${widget.label}',
-                            prefixIcon: const Icon(Icons.search),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (widget.addNew != null)
-                      ElevatedButton(
-                        onPressed: widget.addNew,
-                        child: const Text("Add New"),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                _filteredItems.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text('No matching items found.'),
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: _filteredItems.length,
-                          itemBuilder: (context, index) {
-                            final item = _filteredItems[index];
-                            return ListTile(
-                              title: Text(widget.displayItem(item)),
-                              onTap: () {
-                                widget.validator?.call(item);
-                                Navigator.pop(context, item);
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                if (widget.addNew != null)
+                  ElevatedButton(
+                    onPressed: widget.addNew,
+                    child: const Text("Add New"),
+                  ),
               ],
             ),
-          ),
+            const SizedBox(height: 10),
+            _filteredItems.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('No matching items found.'),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: _filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final item = _filteredItems[index];
+                        return ListTile(
+                          title: Text(widget.displayItem(item)),
+                          onTap: () {
+                            widget.validator?.call(item);
+                            Navigator.pop(context, item);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+          ],
         ),
-    );
+      ),
+    ),
+  );
 
   @override
   void dispose() {

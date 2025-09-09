@@ -155,7 +155,8 @@ class PaymentScreen extends StatelessWidget {
         'description': package.name,
         'order_id': order.orderId,
         'theme': {
-          'color': Get.theme.colorScheme.primary.value.toRadixString(16),
+          'color':Get.theme.colorScheme.primary.toARGB32().toRadixString(16)
+,
         },
       };
 

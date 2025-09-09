@@ -90,6 +90,24 @@ class VendorCustomerRepository {
       throw Exception('Error adding customer: $e');
     }
   }
+  Future<int> editCustomer(VendorCustomerFormData formData) async {
+    final farmerId = _appDataController.userId;
+    try {
+      var json2 = formData.toJson();
+      final response = await _httpService.put(
+        '/update_customer/$farmerId/',
+        json2,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Get.back();
+        return json.decode(response.body)['id'] ?? 0;
+      } else {
+        throw Exception('Failed to add customer');
+      }
+    } catch (e) {
+      throw Exception('Error adding customer: $e');
+    }
+  }
 
   Future<int> addVendor(VendorCustomerFormData formData) async {
     final farmerId = _appDataController.userId.value;
@@ -107,6 +125,22 @@ class VendorCustomerRepository {
     }
   }
 
+  Future<int>editVendor(VendorCustomerFormData formData) async {
+    final farmerId = _appDataController.userId.value;
+    try {
+      var json2 = formData.toJson();
+      json2['farmer'] = farmerId;
+      final response = await _httpService.put('/update_vendor/$farmerId/', json2);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body)['id'] ?? 0;
+      } else {
+        throw Exception('Failed to add vendor');
+      }
+    } catch (e) {
+      throw Exception('Error adding vendor: $e');
+    }
+  }
+
   Future<int> addBoth(VendorCustomerFormData formData) async {
     final farmerId = _appDataController.userId;
     try {
@@ -114,7 +148,27 @@ class VendorCustomerRepository {
       json2["is_customer_is_vendor"] = "yes";
 
       final response = await _httpService.post(
-        '/add_customer/$farmerId',
+        '/add_customer/$farmerId/',
+        json2,
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var decode = json.decode(response.body);
+        return decode['id'] ?? 0;
+      } else {
+        throw Exception('Failed to add customer/vendor');
+      }
+    } catch (e) {
+      throw Exception('Error adding customer/vendor: $e');
+    }
+  }
+  Future<int> editBoth(VendorCustomerFormData formData) async {
+    final farmerId = _appDataController.userId;
+    try {
+      var json2 = formData.toJson();
+      json2["is_customer_is_vendor"] = "yes";
+
+      final response = await _httpService.put(
+        '/update_manage_customer/$farmerId/${formData.id}',
         json2,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {

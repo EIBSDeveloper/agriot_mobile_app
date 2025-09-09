@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../../core/app_images.dart';
+
 LatLng calculateCenter(List<LatLng> points) {
   if (points.isEmpty) {
     throw ArgumentError('Points list cannot be empty');
@@ -51,124 +53,146 @@ class _LandPickerViewState extends State<LandPickerView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Location'),
-        actions: [IconButton(icon: const Icon(Icons.info_outline), onPressed: () {})],
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Stack(
-          children: [
-            GoogleMap(
-              initialCameraPosition: controller.cameraPosition.value,
-              onMapCreated: (GoogleMapController mapController) {
-                controller.mapController = mapController;
-              },
-              onTap: controller.onMapTap,
+    appBar: AppBar(
+      title: const Text('Select Location'),
+      actions: [
+        IconButton(icon: const Icon(Icons.info_outline), onPressed: infoImage),
+      ],
+    ),
+    body: Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      return Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: controller.cameraPosition.value,
+            onMapCreated: (GoogleMapController mapController) {
+              controller.mapController = mapController;
+            },
+            onTap: controller.onMapTap,
 
-              markers: controller.selectedLocation.value != null
-                  ? {
-                      Marker(
-                        markerId: const MarkerId('select'),
-                        position: controller.selectedLocation.value!,
-                      ),
-                    }
-                  : {},
-              polygons: {
-                if (controller.landPolylin.isNotEmpty)
-                  Polygon(
+            markers: controller.selectedLocation.value != null
+                ? {
+                    Marker(
+                      markerId: const MarkerId('select'),
+                      position: controller.selectedLocation.value!,
+                    ),
+                  }
+                : {},
+            polygons: {
+              if (controller.landPolylin.isNotEmpty)
+                Polygon(
+                  consumeTapEvents: false,
+                  polygonId: const PolygonId("test"),
+                  points: controller.landPolylin,
+                  fillColor: Colors.green.withAlpha(50),
+                  strokeColor: Colors.green,
+                  geodesic: true,
+                  strokeWidth: 4,
+                ),
+              if (controller.priviesCropCoordinates.isNotEmpty)
+                ...controller.priviesCropCoordinates.map(
+                  (polygon) => Polygon(
                     consumeTapEvents: false,
-                    polygonId: const PolygonId("test"),
-                    points: controller.landPolylin,
-                    fillColor: Colors.green.withAlpha(50),
-                    strokeColor: Colors.green,
+                    polygonId: const PolygonId("crop"),
+                    points: polygon!,
+                    fillColor: Colors.orange.withAlpha(50),
+                    strokeColor: Colors.orange,
                     geodesic: true,
                     strokeWidth: 4,
                   ),
-                if (controller.priviesCropCoordinates.isNotEmpty)
-                  ...controller.priviesCropCoordinates.map((polygon) => Polygon(
-                      consumeTapEvents: false,
-                      polygonId: const PolygonId("crop"),
-                      points: polygon!,
-                      fillColor: Colors.orange.withAlpha(50),
-                      strokeColor: Colors.orange,
-                      geodesic: true,
-                      strokeWidth: 4,
-                    )),
-              },
-              polylines: {
+                ),
+            },
+            polylines: {
+              Polyline(
+                polylineId: const PolylineId("drawn_path"),
+                color: Colors.red,
+                width: 4,
+                points: controller.polylinePoints,
+              ),
+              if (controller.polylinePoints.isNotEmpty)
                 Polyline(
-                  polylineId: const PolylineId("drawn_path"),
-                  color: Colors.red,
-                  width: 4,
-                  points: controller.polylinePoints,
+                  polylineId: const PolylineId("end"),
+                  color: Colors.grey,
+                  width: 3,
+                  points: [
+                    controller.polylinePoints.first,
+                    controller.polylinePoints.last,
+                  ],
+                  patterns: [PatternItem.dash(10), PatternItem.gap(10)],
                 ),
-                if (controller.polylinePoints.isNotEmpty)
-                  Polyline(
-                    polylineId: const PolylineId("end"),
-                    color: Colors.grey,
-                    width: 3,
-                    points: [
-                      controller.polylinePoints.first,
-                      controller.polylinePoints.last,
-                    ],
-                    patterns: [PatternItem.dash(10), PatternItem.gap(10)],
-                  ),
-              },
-              myLocationEnabled: true,
+            },
+            myLocationEnabled: true,
 
-              myLocationButtonEnabled: false,
-            ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 60,
-              child: Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: controller.confirmSelection,
-                          child: const Text('Confirm Location'),
-                        ),
+            myLocationButtonEnabled: false,
+          ),
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 60,
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: controller.confirmSelection,
+                        child: const Text('Confirm Location'),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Positioned(
-              right: 20,
-              bottom: 250,
-              child: FloatingActionButton(
-                heroTag: "current_location",
-                backgroundColor: Get.theme.primaryColor,
-                onPressed: controller.getCurrentLocation,
-                child: const Icon(Icons.my_location),
-              ),
+          ),
+          Positioned(
+            right: 20,
+            bottom: 250,
+            child: FloatingActionButton(
+              heroTag: "current_location",
+              backgroundColor: Get.theme.primaryColor,
+              onPressed: controller.getCurrentLocation,
+              child: const Icon(Icons.my_location),
             ),
-            Positioned(
-              right: 20,
-              bottom: 180,
-              child: FloatingActionButton(
-                heroTag: "clear_polyline",
-                backgroundColor: Colors.red,
-                onPressed: controller.clearPolyline,
-                child: const Icon(Icons.clear),
-              ),
+          ),
+          Positioned(
+            right: 20,
+            bottom: 180,
+            child: FloatingActionButton(
+              heroTag: "clear_polyline",
+              backgroundColor: Colors.red,
+              onPressed: controller.clearPolyline,
+              child: const Icon(Icons.clear),
             ),
-          ],
-        );
-      }),
-    );
+          ),
+        ],
+      );
+    }),
+  );
+
+  infoImage() => Get.defaultDialog(
+    title: "Mark your land boundarie",
+    content: Image.asset(
+      AppImages.landMark,
+      width: 300,
+      height: 250,
+      fit: BoxFit.fill,
+    ),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text("Close"),
+      ),
+    ],
+  );
 }

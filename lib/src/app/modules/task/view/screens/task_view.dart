@@ -7,10 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../routes/app_routes.dart';
-import '../../../../service/utils/utils.dart';
 import '../../../../widgets/title_text.dart';
+import '../../../forming/view/widget/empty_land_card.dart';
 import '../../../near_me/views/widget/widgets.dart';
-import '../../../subscription/model/package_usage.dart';
 import '../../controller/task_controller.dart';
 
 class TaskView extends GetView<TaskController> {
@@ -129,34 +128,12 @@ class TaskView extends GetView<TaskController> {
             ),
           ),
           Obx(
-            () => controller.lands.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 160),
-                    child: Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          PackageUsage? package = findLimit();
-
-                          if (package!.landBalance > 0) {
-                            Get.toNamed(Routes.addLand)
-                                ?.then((result) {
-                                  controller.fetchLands();
-                                })
-                                .then((result) {
-                                  if (result != null) {
-                                    controller.fetchLands();
-                                  }
-                                });
-                          } else {
-                            showDefaultGetXDialog("Land");
-                          }
-                        },
-                        child: const Text("Add Land"),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
+            () => EmptyLandCard(
+              view: controller.lands.isEmpty,
+              refresh: controller.fetchLands,
+            ),
           ),
+
           Obx(() {
             if (controller.lands.isEmpty) {
               return const SizedBox();
@@ -314,7 +291,7 @@ class TaskView extends GetView<TaskController> {
               shape: BoxShape.circle,
             ),
             todayDecoration: BoxDecoration(
-              color: Get.theme.primaryColor.withOpacity(0.3),
+              color: Get.theme.primaryColor.withAlpha(130),
               shape: BoxShape.circle,
             ),
           ),

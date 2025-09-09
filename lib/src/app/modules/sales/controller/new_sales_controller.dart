@@ -56,15 +56,15 @@ class NewSalesController extends GetxController {
   Future<void> loadData() async {
     var id = Get.arguments?["id"];
     var isNew = Get.arguments?["new"];
-    if (id == null) {
-      return;
-    }
+   
     if (isNew != null) {
       await fetchReasons();
       await fetchRupees();
       await fetchCrop();
       await fetchUnit();
       await fetchCustomerList();
+    } if (id == null) {
+      return;
     }
     await fetchSalesDetails(id);
   }

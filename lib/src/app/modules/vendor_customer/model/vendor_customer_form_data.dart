@@ -1,4 +1,5 @@
 class VendorCustomerFormData {
+  int? id;
   String? customerName;
   String? vendorName;
   String? shopName;
@@ -18,6 +19,7 @@ class VendorCustomerFormData {
   String type;
 
   VendorCustomerFormData({
+   required this.id,
     this.customerName,
     this.vendorName,
     this.shopName,
@@ -38,6 +40,9 @@ class VendorCustomerFormData {
   });
 
   Map<String, dynamic> toJson() => {
+    if (type == 'customer'&& id != null) 'customer_id': id,
+    if (type == 'vendor' &&id != null ) 'vendor_id': id,
+    // if (type == 'both') 'customer_name': id,
       if (type == 'customer' || type == 'both') 'customer_name': customerName,
       if (type == 'vendor') 'name': vendorName,
       'shop_name': shopName,

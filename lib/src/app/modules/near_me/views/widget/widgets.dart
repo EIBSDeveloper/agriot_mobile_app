@@ -25,7 +25,7 @@ class LandDropdown extends StatelessWidget {
   Widget build(BuildContext context) => InputCardStyle(
      
       child: DropdownButtonFormField<Land>(
-        value: selectedLand,
+        initialValue: selectedLand,
         items: lands.map((Land land) => DropdownMenuItem<Land>(value: land, child: Text(land.name))).toList(),
         icon: const Icon(Icons.keyboard_arrow_down_rounded),
         onChanged: onChanged,

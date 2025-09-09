@@ -52,49 +52,39 @@ class ProfileAppBar extends GetView<UserProfileController>
     Get.defaultDialog(
       title: 'choose_language'.tr,
       content: StatefulBuilder(
-        builder: (context, setState) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile(
-              title: const Text('English'),
-              value: 'en',
-              groupValue: selectedValue,
-              onChanged: (value) {
-                setState(() => selectedValue = value!);
+        builder: (context, setState) => RadioGroup<String>(
+          groupValue: selectedValue,
+          onChanged: (value) {
+            if (value != null) {
+              setState(() => selectedValue = value);
 
-                const locale = Locale('en', 'US');
-                Get.updateLocale(locale);
-                appData.appLanguage(locale);
-                Get.back();
-              },
-            ),
-            RadioListTile(
-              title: const Text('Tamil'),
-              value: 'ta',
-              groupValue: selectedValue,
-              onChanged: (value) {
-                setState(() => selectedValue = value!);
+              Locale locale;
+              switch (value) {
+                case 'ta':
+                  locale = const Locale('ta', 'IN');
+                  break;
+                case 'hi':
+                  locale = const Locale('hi', 'IN');
+                  break;
+                case 'en':
+                default:
+                  locale = const Locale('en', 'US');
+                  break;
+              }
 
-                const locale = Locale('ta', 'IN');
-                Get.updateLocale(locale);
-                appData.appLanguage(locale);
-                Get.back();
-              },
-            ),
-            RadioListTile(
-              title: const Text('Hindi'),
-              value: 'hi',
-              groupValue: selectedValue,
-              onChanged: (value) {
-                setState(() => selectedValue = value!);
-
-                const locale = Locale('hi', 'IN');
-                Get.updateLocale(locale);
-                appData.appLanguage(locale);
-                Get.back();
-              },
-            ),
-          ],
+              Get.updateLocale(locale);
+              appData.appLanguage(locale);
+              Get.back();
+            }
+          },
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(title: Text('English'), value: 'en'),
+              RadioListTile<String>(title: Text('Tamil'), value: 'ta'),
+              RadioListTile<String>(title: Text('Hindi'), value: 'hi'),
+            ],
+          ),
         ),
       ),
     );

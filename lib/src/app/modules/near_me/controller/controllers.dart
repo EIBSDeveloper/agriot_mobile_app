@@ -4,8 +4,7 @@ import 'package:get/get.dart' hide Worker;
 import '../model/models.dart';
 import '../repostory/near_me_repository.dart';
 
-class NearMeController extends GetxController
-    with SingleGetTickerProviderMixin {
+class NearMeController extends GetxController with GetSingleTickerProviderStateMixin {
   final NearMeRepository _repository = Get.find();
   // Add TabController
   late TabController tabController;

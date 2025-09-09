@@ -1,4 +1,3 @@
-import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,7 @@ class Registration extends GetView<ResgisterController> {
          Obx((){
            if(controller.pageIndex.value >0) {
              return  Container(
-            decoration: AppStyle.decoration!.copyWith(
+            decoration: AppStyle.decoration.copyWith(
               color: Get.theme.primaryColor
             ),
             padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 8),

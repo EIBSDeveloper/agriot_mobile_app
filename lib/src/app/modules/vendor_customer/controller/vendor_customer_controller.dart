@@ -47,7 +47,6 @@ class VendorCustomerController extends GetxController {
   final RxList<TalukModel> taluks = <TalukModel>[].obs;
   final RxList<VillageModel> villages = <VillageModel>[].obs;
 
-
   // Loading states
   final markets = <Market>[].obs;
   final selectedMarket = Rxn<Market>();
@@ -69,7 +68,6 @@ class VendorCustomerController extends GetxController {
     loadMarkets();
     loadPurchaseList();
   }
-
 
   Future<void> deleteDetails(int id, String type) async {
     try {
@@ -187,8 +185,6 @@ class VendorCustomerController extends GetxController {
       if (pickedFile != null) {
         isImageUploading.value = true;
         imagePath.value = pickedFile.path;
-        // Convert to base64 (you'll need to implement this)
-        // imageBase64.value = await convertImageToBase64(pickedFile.path);
       }
     } catch (e) {
       showError('Failed to pick image');
@@ -197,13 +193,14 @@ class VendorCustomerController extends GetxController {
     }
   }
 
-  Future<void> submitForm() async {
+  Future<void> submitForm({int? id}) async {
     if (!formKey.currentState!.validate()) return;
 
     try {
       isSubmitting.value = true;
 
       final formData = VendorCustomerFormData(
+        id: id,
         type: selectedType.value,
         customerName:
             selectedType.value == 'customer' || selectedType.value == 'both'
@@ -240,14 +237,23 @@ class VendorCustomerController extends GetxController {
             : null,
         // imageBase64: imageBase64.value,
       );
-
-      int newId;
-      if (selectedType.value == 'customer') {
-        newId = await _repository.addCustomer(formData);
-      } else if (selectedType.value == 'vendor') {
-        newId = await _repository.addVendor(formData);
+      int newId = 0;
+      if (id != null) {
+        if (selectedType.value == 'customer') {
+          newId = await _repository.editCustomer(formData);
+        } else if (selectedType.value == 'vendor') {
+          newId = await _repository.editVendor(formData);
+        } else {
+          newId = await _repository.editBoth(formData);
+        }
       } else {
-        newId = await _repository.addBoth(formData);
+        if (selectedType.value == 'customer') {
+          newId = await _repository.addCustomer(formData);
+        } else if (selectedType.value == 'vendor') {
+          newId = await _repository.addVendor(formData);
+        } else {
+          newId = await _repository.addBoth(formData);
+        }
       }
 
       if (newId > 0) {

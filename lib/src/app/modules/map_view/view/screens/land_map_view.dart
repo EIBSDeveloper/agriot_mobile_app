@@ -64,7 +64,7 @@ class _LandMapViewState extends State<LandMapView> {
                       Polygon(
                         polygonId: const PolygonId("land"),
                         points: controller.landpolyline,
-                        fillColor: Colors.green.withOpacity(0.3),
+                        fillColor: Colors.green.withAlpha(150),
                         strokeColor: Colors.green,
                         strokeWidth: 3,
                       ),
@@ -78,7 +78,7 @@ class _LandMapViewState extends State<LandMapView> {
                         return Polygon(
                           polygonId: PolygonId("crop_${crop.cropId}"),
                           points: cropPoints,
-                          fillColor: Colors.orange.withOpacity(0.3),
+                          fillColor: Colors.orange.withAlpha(150),
                           strokeColor: Colors.orange,
                           strokeWidth: 2,
                           consumeTapEvents: true,
@@ -110,7 +110,7 @@ class _LandMapViewState extends State<LandMapView> {
 
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: DropdownButtonFormField<ScheduleLand>(
-                          value: controller.selectedLand.value,
+                          initialValue: controller.selectedLand.value,
 
                           icon: const Icon(Icons.keyboard_arrow_down),
                           items: controller.lands
@@ -144,7 +144,7 @@ class _LandMapViewState extends State<LandMapView> {
                           ),
                           padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: DropdownButtonFormField<ScheduleCrop>(
-                            value: controller.selectedCrop.value,
+                            initialValue: controller.selectedCrop.value,
 
                             icon: const Icon(Icons.keyboard_arrow_down),
                             items: [
@@ -178,7 +178,7 @@ class _LandMapViewState extends State<LandMapView> {
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: DropdownButtonFormField<ScheduleCrop>(
-                          value: controller
+                          initialValue: controller
                               .selectedCrop
                               .value, 
                           items: [

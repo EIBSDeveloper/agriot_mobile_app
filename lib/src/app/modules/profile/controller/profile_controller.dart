@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:argiot/src/app/modules/profile/repository/profile_repository.dart';
@@ -10,11 +9,13 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../controller/app_controller.dart';
 import '../../../service/utils/utils.dart';
 import '../model/profile_model.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository _profileRepository = Get.find();
+  final AppDataController appData = Get.find();
   final Rx<ProfileModel?> profile = Rx<ProfileModel?>(null);
   final RxBool isLoading = false.obs;
 
@@ -28,22 +29,17 @@ class ProfileController extends GetxController {
     try {
       isLoading.value = true;
 
-      // final response = await _repository.logout();
-
-      // if (response.success) {
-      // Clear storage and navigate to login
       signOutFromGoogle();
       await GetStorage().erase();
-
+      appData.userId.value='';
+      appData.username.value='';
+      appData.emailId.value='';
       Get.offAllNamed(Routes.login);
-      // } else {
-      //   Fluttertoast.showToast();
-      // }
     } catch (e) {
       Fluttertoast.showToast(
         msg: 'Failed to logout',
         backgroundColor: Colors.redAccent,
-        // gravity: ToastGravity.CENTER,
+
         fontSize: 16.0,
       );
     } finally {

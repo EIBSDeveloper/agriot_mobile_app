@@ -380,14 +380,13 @@ import '../../model/customer_history/customer_sales_history.dart';
 import '../../repository/customer_vendor_repository/customer_vendor_repository.dart';
 
 class HistoryDetailsPage extends StatelessWidget {
-  final int farmerId;
+
   final int customerId;
   final int saleId;
   final bool isPayable;
 
   HistoryDetailsPage({
     super.key,
-    required this.farmerId,
     required this.customerId,
     required this.saleId,
     required this.isPayable,
@@ -401,9 +400,9 @@ class HistoryDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (isPayable) {
-        controller.loadpayableHistory(farmerId, customerId, saleId);
+        controller.loadpayableHistory( customerId, saleId);
       } else {
-        controller.loadReceivableHistory(farmerId, customerId, saleId);
+        controller.loadReceivableHistory( customerId, saleId);
       }
     });
 
@@ -511,7 +510,6 @@ class HistoryDetailsPage extends StatelessWidget {
               onPressed:
                   () => _showHistoryDetailDialog(
                     context: context,
-                    farmerId: farmerId,
                     customerId: customerId,
                     saleId: saleId,
                     outstandingId: item.id,
@@ -574,7 +572,7 @@ class HistoryDetailsPage extends StatelessWidget {
               onPressed:
                   () => _showHistoryDetailDialog(
                     context: context,
-                    farmerId: farmerId,
+                  
                     customerId: customerId,
                     saleId: saleId,
                     outstandingId: item.id,
@@ -603,7 +601,7 @@ class HistoryDetailsPage extends StatelessWidget {
 
   Future<void> _showHistoryDetailDialog({
     required BuildContext context,
-    required int farmerId,
+ 
     required int customerId,
     required int saleId,
     required int outstandingId,
@@ -611,14 +609,14 @@ class HistoryDetailsPage extends StatelessWidget {
   }) async {
     if (isPayable) {
       await controller.loadSinglepayableHistory(
-        farmerId,
+ 
         customerId,
         saleId,
         outstandingId,
       );
     } else {
       await controller.loadSingleReceivableHistory(
-        farmerId,
+ 
         customerId,
         saleId,
         outstandingId,

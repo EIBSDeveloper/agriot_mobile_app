@@ -178,7 +178,7 @@ class VehicleView extends GetView<PurchasesAddController> {
         flex: 2,
         child: InputCardStyle(
           child: DropdownButtonFormField<String>(
-            value: controller.serviceFrequencyUnit.value,
+            initialValue: controller.serviceFrequencyUnit.value,
 
             icon: const Icon(Icons.keyboard_arrow_down),
             items: ['KM', 'Days']

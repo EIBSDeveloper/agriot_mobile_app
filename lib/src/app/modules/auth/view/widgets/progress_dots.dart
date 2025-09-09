@@ -21,7 +21,7 @@ class ProgressDots extends StatelessWidget {
             shape: BoxShape.circle,
             color: controller.currentPage.value == index
                 ? Get.theme.colorScheme.primary
-                : Get.theme.colorScheme.onSurface.withOpacity(0.2),
+                : Get.theme.colorScheme.onSurface..withAlpha(120),
           ),
         ),
       ),

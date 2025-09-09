@@ -151,7 +151,7 @@ class NotificationView extends GetView<NotificationController> {
                   color:
                       notification.isRead
                           ? Colors.grey.withAlpha(50)
-                          : Get.theme.primaryColor.withOpacity(0.1),
+                          : Get.theme.primaryColor.withAlpha(100),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

@@ -89,7 +89,7 @@ class NetworkController extends GetxController {
       "connection_lost_title".tr,
       "connection_lost_message".tr,
      
-      backgroundColor: Colors.red.withOpacity(0.9),
+      backgroundColor: Colors.red.withAlpha(180),
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 3),
@@ -103,7 +103,7 @@ class NetworkController extends GetxController {
     Get.snackbar(
       "connection_restored_title".tr,
       "connection_restored_message".tr,
-      backgroundColor: Colors.green.withOpacity(0.9),
+      backgroundColor: Colors.green.withAlpha(180),
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 2),
@@ -117,7 +117,7 @@ class NetworkController extends GetxController {
     Get.snackbar(
       "connection_error_title".tr,
       "connection_error_message".tr,
-      backgroundColor: Colors.orange.withOpacity(0.9),
+      backgroundColor: Colors.orange.withAlpha(180),
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 4),

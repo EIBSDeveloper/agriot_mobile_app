@@ -128,7 +128,7 @@ class LandMapViewController extends GetxController {
       if (crop.cropImage != null && crop.cropImage!.isNotEmpty) {
         try {
           final bytes = await getBytesFromUrl(crop.cropImage!, width: 120);
-          icon = BitmapDescriptor.fromBytes(bytes);
+          icon = BitmapDescriptor.bytes(bytes);
         } catch (e) {
           print("Failed to load crop image: $e");
         }

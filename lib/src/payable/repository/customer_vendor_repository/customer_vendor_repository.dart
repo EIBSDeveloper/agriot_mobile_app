@@ -1,16 +1,18 @@
 import 'dart:convert';
 
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../app/controller/app_controller.dart';
 import '../../model/customer_history/customer_sales_history.dart';
 import '../../model/customer_vendor_model/customer_vendor_model.dart';
 
-class CustomerVendorRepository {
-  final String baseUrl = "http://147.93.19.253:5000/Api";
+class CustomerVendorRepository {  
+  final AppDataController appDeta = Get.put(AppDataController());
 
   /// Fetch payables list for a given user ID
-  Future<VendorCustomerResponse> fetchPayables(int userId) async {
-    final url = Uri.parse('$baseUrl/customer_vendor_payables_list/$userId');
+  Future<VendorCustomerResponse> fetchPayables() async {
+    final url = Uri.parse('${appDeta.baseUrl.value}/customer_vendor_payables_list/${appDeta.userId.value}');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -24,8 +26,8 @@ class CustomerVendorRepository {
   }
 
   /// Fetch receivables list for a given user ID
-  Future<VendorCustomerResponse> fetchReceivables(int userId) async {
-    final url = Uri.parse('$baseUrl/customer_vendor_receivables_list/$userId');
+  Future<VendorCustomerResponse> fetchReceivables() async {
+    final url = Uri.parse('${appDeta.baseUrl.value}/customer_vendor_receivables_list/${appDeta.userId.value}');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -40,12 +42,12 @@ class CustomerVendorRepository {
 
   /// Fetch full receivable history for a sale
   Future<List<ReceivableHistorymodel>> fetchReceivableHistory(
-    int farmerId,
+  
     int customerId,
     int saleId,
   ) async {
     final url = Uri.parse(
-      "$baseUrl/get_farmer_both_receivables_outstanding_history/$farmerId/"
+      "${appDeta.baseUrl.value}/get_farmer_both_receivables_outstanding_history/${appDeta.userId.value}/"
       "?customer_id=$customerId&sale_id=$saleId",
     );
     print("📡 Fetching history: $url");
@@ -71,13 +73,13 @@ class CustomerVendorRepository {
 
   /// Fetch single receivable history record
   Future<ReceivableHistorymodel> fetchReceivableSingleHistory(
-    int farmerId,
+  
     int customerId,
     int saleId,
     int outstandingId,
   ) async {
     final url = Uri.parse(
-      "$baseUrl/get_farmer_both_receivables_outstanding_history/$farmerId/"
+      "${appDeta.baseUrl.value}/get_farmer_both_receivables_outstanding_history/${appDeta.userId.value}/"
       "?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
 
@@ -100,12 +102,12 @@ class CustomerVendorRepository {
 
   /// Fetch full payable history for a sale
   Future<List<PayableHistorymodel>> fetchpayablehistory(
-    int farmerId,
+   
     int customerId,
     int saleId,
   ) async {
     final url = Uri.parse(
-      "$baseUrl/get_farmer_both_payables_outstanding_history/$farmerId/"
+      "${appDeta.baseUrl.value}/get_farmer_both_payables_outstanding_history/${appDeta.userId.value}/"
       "?customer_id=$customerId&sale_id=$saleId",
     );
     print("📡 Fetching history: $url");
@@ -131,13 +133,13 @@ class CustomerVendorRepository {
 
   /// Fetch single payable history record
   Future<PayableHistorymodel> fetchpayablesinglehistory(
-    int farmerId,
+
     int customerId,
     int saleId,
     int outstandingId,
   ) async {
     final url = Uri.parse(
-      "$baseUrl/get_farmer_both_payables_outstanding_history/$farmerId/"
+      "${appDeta.baseUrl.value}/get_farmer_both_payables_outstanding_history/${appDeta.userId.value}/"
       "?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
 

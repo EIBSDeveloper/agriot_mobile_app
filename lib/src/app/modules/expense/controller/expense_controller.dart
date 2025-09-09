@@ -63,12 +63,7 @@ class ExpenseController extends GetxController {
       isLoading(true);
       final total = await _repository.getTotalExpense(selectedPeriod.value);
       totalExpense(total.expenseAmount);
-      final cropList = await _repository.getCropList();
-      crop.assignAll(cropList);
-
-      if (cropList.isNotEmpty) {
-        selectedCrop.value = cropList.first;
-      }
+      await fetchCrop();
       // final summary = await _repository.getExpenseSummary(selectedPeriod.value);
       // expenseSummary.assignAll(summary);
     
@@ -89,6 +84,15 @@ class ExpenseController extends GetxController {
      showError('Error', );
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> fetchCrop() async {
+       final cropList = await _repository.getCropList();
+    crop.assignAll(cropList);
+    
+    if (cropList.isNotEmpty) {
+      selectedCrop.value = cropList.first;
     }
   }
 

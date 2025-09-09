@@ -21,15 +21,15 @@ class CustomerVendorController extends GetxController {
   var error = ''.obs;
 
   /// Load Receivables (Vendor side)
-  Future<void> loadReceivables(int userId, DetailsType? detailsType) async {
+  Future<void> loadReceivables( DetailsType? detailsType) async {
     try {
       isLoading.value = true;
       error.value = '';
       final VendorCustomerResponse result;
       if (DetailsType.receivables == detailsType) {
-        result = await repository.fetchReceivables(userId);
+        result = await repository.fetchReceivables();
       } else {
-        result = await repository.fetchPayables(userId);
+        result = await repository.fetchPayables();
       }
       // assign vendor and customer data
       vendorReceivables.assignAll(result.data.vendorReceivables);
@@ -49,14 +49,14 @@ class CustomerVendorController extends GetxController {
 
   /// Load full receivable history
   Future<void> loadReceivableHistory(
-    int farmerId,
+
     int customerId,
     int saleId,
   ) async {
     try {
       isLoading.value = true;
       final data = await repository.fetchReceivableHistory(
-        farmerId,
+   
         customerId,
         saleId,
       );
@@ -70,7 +70,7 @@ class CustomerVendorController extends GetxController {
 
   /// Load single receivable history record
   Future<void> loadSingleReceivableHistory(
-    int farmerId,
+   
     int customerId,
     int saleId,
     int outstandingId,
@@ -78,7 +78,7 @@ class CustomerVendorController extends GetxController {
     try {
       isLoading.value = true;
       final data = await repository.fetchReceivableSingleHistory(
-        farmerId,
+ 
         customerId,
         saleId,
         outstandingId,
@@ -99,14 +99,14 @@ class CustomerVendorController extends GetxController {
 
   /// Load full payable history
   Future<void> loadpayableHistory(
-    int farmerId,
+ 
     int customerId,
     int saleId,
   ) async {
     try {
       isLoading.value = true;
       final data = await repository.fetchpayablehistory(
-        farmerId,
+       
         customerId,
         saleId,
       );
@@ -120,7 +120,7 @@ class CustomerVendorController extends GetxController {
 
   /// Load single payable history record
   Future<void> loadSinglepayableHistory(
-    int farmerId,
+    
     int customerId,
     int saleId,
     int outstandingId,
@@ -128,7 +128,7 @@ class CustomerVendorController extends GetxController {
     try {
       isLoading.value = true;
       final data = await repository.fetchpayablesinglehistory(
-        farmerId,
+    
         customerId,
         saleId,
         outstandingId,

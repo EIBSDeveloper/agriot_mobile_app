@@ -5,6 +5,7 @@ import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/finance_line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../forming/view/widget/empty_land_card.dart';
 import '../../../guideline/model/guideline.dart';
 import '../../../../../payable/pages/payables_receivables/payables_receivables_screen.dart';
 import '../../../../routes/app_routes.dart';
@@ -35,7 +36,12 @@ class DashboardView extends GetView<DashboardController> {
             // Land selection dropdown
             _buildLandDropdown(),
             const SizedBox(height: 5),
-
+            Obx(
+              () => EmptyLandCard(
+                view: controller.lands.isEmpty,
+                refresh: controller.fetchLands,
+              ),
+            ),
             // Widgets based on configuration
             if (controller.widgetConfig.value.weatherAndPayments) ...[
               _buildWeatherAndPaymentsCard(),
@@ -475,7 +481,6 @@ class DashboardView extends GetView<DashboardController> {
       ),
     ],
   );
-
 
   Widget _buildMarketPricesCard() => Center(
     child: Column(

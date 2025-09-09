@@ -24,7 +24,7 @@ class WalkthroughPage extends StatelessWidget {
           height: 300,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Get.theme.colorScheme.primary.withOpacity(0.1),
+            color: Get.theme.colorScheme.primary..withAlpha(100),
             image: DecorationImage(
               image: AssetImage(imagePath),
               fit: BoxFit.fill,

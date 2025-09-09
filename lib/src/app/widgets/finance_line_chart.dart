@@ -77,7 +77,7 @@ class FinanceLineChart extends StatelessWidget {
                     tooltipPadding: const EdgeInsets.all(8),
                     tooltipMargin: 8,
                     maxContentWidth: 150,
-                    getTooltipColor: (spot) => Colors.blueGrey.withOpacity(0.8),
+                    getTooltipColor: (spot) => Colors.blueGrey.withAlpha(180),
                     getTooltipItems: (touchedSpots) => touchedSpots.map((spot) {
                         final style = TextStyle(
                           color: spot.bar.color,
@@ -143,7 +143,7 @@ class FinanceLineChart extends StatelessWidget {
                 borderData: FlBorderData(
                   show: true,
                   border: Border.all(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Colors.grey.withAlpha(150),
                     width: 1,
                   ),
                 ),

@@ -236,8 +236,8 @@ class LandDetailView extends GetView<LandDetailController> {
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
       OutlinedButton(
-        onPressed: () {
-          PackageUsage? package = findLimit();
+        onPressed: () async {
+          PackageUsage? package =await findLimit();
 
           if (package!.cropBalance > 0) {
             Get.toNamed(

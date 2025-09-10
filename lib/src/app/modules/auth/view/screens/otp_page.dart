@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../../core/app_images.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../../widgets/background_image.dart';
 import '../../../../widgets/primary_button.dart';
 import '../../controller/auth_controller.dart';
@@ -132,10 +133,9 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
                     if (controller.otp.value.length == 4) {
                       controller.verifyOtp();
                     } else {
-                      Fluttertoast.showToast(
-                        msg: 'Please enter 4-digit OTP',
-                        backgroundColor: Colors.orangeAccent,
-                      );
+                     showWarning(
+                      'Please enter 4-digit OTP',
+                     );
                     }
                   },
                 ),

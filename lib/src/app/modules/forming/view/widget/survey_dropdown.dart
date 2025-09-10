@@ -44,7 +44,7 @@ class _SurveyMultiSelectState extends State<SurveyMultiSelect> {
                           if (checked == true) {
                             tempSelected.add(survey);
                           } else {
-                            tempSelected.remove(survey); // ✅ works with == override
+                            tempSelected.remove(survey); 
                           }
                         });
                       },

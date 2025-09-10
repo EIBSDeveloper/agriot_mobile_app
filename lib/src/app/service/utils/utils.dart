@@ -24,7 +24,25 @@ void showError(final String message) {
     textColor: Colors.white,
   );
 }
+void showSuccess(final String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.green,
+    textColor: Colors.white,
+  );
+}
 
+void showWarning(final String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.BOTTOM,
+    backgroundColor: Colors.orangeAccent,
+    textColor: Colors.white,
+  );
+}
 String capitalizeFirstLetter(final String input) {
   if (input.isEmpty) return input;
   return input[0].toUpperCase() + input.substring(1);
@@ -45,37 +63,22 @@ Future<void> makePhoneCall(final String phoneNumber) async {
   }
 }
 
-void showSuccess(final String message) {
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.green,
-    textColor: Colors.white,
-  );
-}
 
-void warningSuccess(final String message) {
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.orangeAccent,
-    textColor: Colors.white,
-  );
-}
 
 double kelvinToCelsius(final double kelvin) => kelvin - 273.15;
 
-PackageUsage? findLimit() {
+Future<PackageUsage?> findLimit() async {
   UserLimitController limitController = Get.put(UserLimitController());
+  await limitController.loadUsage();
   return limitController.packageUsage.value;
 }
-String generateGoogleMapsUrl(double latitude, double longitude) => "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
 
-packageRefresh() {
+String generateGoogleMapsUrl(double latitude, double longitude) =>
+    "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
+
+packageRefresh() async {
   UserLimitController limitController = Get.put(UserLimitController());
-  limitController.loadUsage();
+  await limitController.loadUsage();
 }
 
 void showDefaultGetXDialog(final String message) {

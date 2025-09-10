@@ -37,8 +37,8 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
     ),
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
-      onPressed: () {
-        PackageUsage? package = findLimit();
+      onPressed: () async {
+        PackageUsage? package = await findLimit();
         if (package!.customerBalance > 0) {
           _showAddDialog();
         } else {

@@ -284,7 +284,7 @@ class ConsumptionController extends GetxController {
       final success = await _repository.submitConsumption(requestBody);
 
       if (success) {
-        Fluttertoast.showToast(msg: 'Consumption recorded successfully'.tr);
+        showSuccess( 'Consumption recorded successfully'.tr);
         // clearForm();
         return true;
       } else {

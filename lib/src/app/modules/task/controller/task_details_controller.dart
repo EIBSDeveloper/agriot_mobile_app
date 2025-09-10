@@ -9,12 +9,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../service/utils/utils.dart';
+
 class TaskDetailsController extends GetxController {
   final TaskRepository _taskRepository = TaskRepository();
   final Rx<TaskDetails?> task = Rx<TaskDetails?>(null);
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
-   int taskId =0;
+  int taskId = 0;
   final formKey = GlobalKey<FormState>();
   final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;
   final Rx<ActivityModel> selectedActivityType = ActivityModel(
@@ -40,7 +42,7 @@ class TaskDetailsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    taskId = Get.arguments['taskId'] ;
+    taskId = Get.arguments['taskId'];
     fetchTaskDetails();
   }
 
@@ -163,10 +165,10 @@ class TaskDetailsController extends GetxController {
       if (response.isNotEmpty) {}
       await fetchTaskDetails(); // Refresh task details
       Get.back(); // Close the edit sheet
-      Fluttertoast.showToast(msg: 'Task updated successfully');
+      showSuccess('Task updated successfully');
     } catch (e) {
       errorMessage(e.toString());
-      Fluttertoast.showToast(msg: 'Failed to update task: ${e.toString()}');
+      showError('Failed to update task: ${e.toString()}');
     } finally {
       isLoadingEdit(false);
     }

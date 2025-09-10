@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
+import '../../../service/utils/utils.dart';
+
 class DocumentController extends GetxController {
   final DocumentRepository _documentRepository =
       Get.find<DocumentRepository>();
@@ -30,7 +32,7 @@ class DocumentController extends GetxController {
         selectedDocument.value = docTypeList.first;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to fetch reasons: $e');
+     showError('Failed to fetch reasons: $e');
     }
   }
 

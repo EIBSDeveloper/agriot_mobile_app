@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 
 import '../../../service/utils/utils.dart';
 
-class ConsumptionPurchaseController extends GetxController with GetSingleTickerProviderStateMixin {
+class ConsumptionPurchaseController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   final ConsumptionPurchaseRepository _repository = Get.find();
   final PurchasesAddRepository purchasesrepository = PurchasesAddRepository();
   // Observables
@@ -34,12 +35,8 @@ class ConsumptionPurchaseController extends GetxController with GetSingleTickerP
 
   @override
   void onInit() {
-    super.onInit(); 
-    tabController = TabController(
-      length: 2,
-      vsync: this,
-      initialIndex: 0,
-    );
+    super.onInit();
+    tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     var arguments = Get.arguments;
 
     var tab = Get.arguments["tab"];
@@ -152,16 +149,10 @@ class ConsumptionPurchaseController extends GetxController with GetSingleTickerP
       purchaseData.assignAll(data.purchaseRecords);
 
       if (consumptionData.isEmpty && purchaseData.isEmpty) {
-        Fluttertoast.showToast(
-          msg: 'no_records_found'.tr,
-          toastLength: Toast.LENGTH_SHORT,
-        );
+        showWarning('no_records_found'.tr);
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'failed_to_load_data'.tr,
-        toastLength: Toast.LENGTH_SHORT,
-      );
+      showError('failed_to_load_data'.tr);
     } finally {
       isLoading(false);
     }

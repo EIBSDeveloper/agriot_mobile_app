@@ -1,9 +1,9 @@
-
 import 'package:argiot/src/payable/pages/customer/customer_historydetails.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/utils.dart';
 import '../../controller/customer_add_controller/customer_add_controller.dart';
 import '../../controller/customercontroller/customer_salaes_controller.dart';
 import '../../repository/customer_add_repository/customer_add_repository.dart';
@@ -73,79 +73,81 @@ class CustomerSalesPage extends StatelessWidget {
     dynamic customer,
     bool isPayable,
   ) => Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Customer Info
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: customer.customerImage.isNotEmpty
-                      ? NetworkImage(customer.customerImage)
-                      : const AssetImage('assets/images/user_placeholder.png')
-                            as ImageProvider,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        customer.customerName,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+    elevation: 4,
+    margin: const EdgeInsets.symmetric(vertical: 10),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Customer Info
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: customer.customerImage.isNotEmpty
+                    ? NetworkImage(customer.customerImage)
+                    : const AssetImage('assets/images/user_placeholder.png')
+                          as ImageProvider,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      customer.customerName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        customer.shopName,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      customer.shopName,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const Divider(height: 20, thickness: 1.2),
+              ),
+            ],
+          ),
+          const Divider(height: 20, thickness: 1.2),
 
-            // Sales Info
-            Column(
-              children: customer.sales.map<Widget>((sale) => Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blueGrey.shade50,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${sale.cropName} (${sale.salesDate})",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+          // Sales Info
+          Column(
+            children: customer.sales
+                .map<Widget>(
+                  (sale) => Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey.shade50,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${sale.cropName} (${sale.salesDate})",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "${'total'.tr}: ₹${sale.totalSalesAmount} | ${'paid'.tr}: ₹${sale.amountPaid}",
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ],
+                              const SizedBox(height: 4),
+                              Text(
+                                "${'total'.tr}: ₹${sale.totalSalesAmount} | ${'paid'.tr}: ₹${sale.amountPaid}",
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      /*IconButton(
+                        /*IconButton(
                         icon: const Icon(
                           Icons.add_circle,
                           color: Colors.green,
@@ -165,71 +167,55 @@ class CustomerSalesPage extends StatelessWidget {
                           );
                         },
                       ),*/
-                      IconButton(
-                        icon: const Icon(
-                          Icons.add_circle,
-                          color: Colors.green,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          print(
-                            "🔎 Opening balance for ${customer.customerName}: $amount",
-                          );
+                        IconButton(
+                          icon: const Icon(
+                            Icons.add_circle,
+                            color: Colors.green,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            if (amount <= 0) {
+                              showError("No outstanding left");
+                              return;
+                            }
 
-                          if (amount <= 0) {
-                            print(
-                              "❌ No outstanding left → cannot open bottom sheet",
-                            );
-                            Fluttertoast.showToast(
-                              msg: "No outstanding left",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0,
-                            );
-                            return;
-                          }
-
-                          print(
-                            "✅ Opening balance available → opening payment bottom sheet",
-                          );
-
-                          showPaymentBottomSheet(
-                            context: context,
-                            isPayable: isPayable,
-                            controller: addController,
-                            customerId: customer.customerId,
-                            customerName: customer.customerName,
-                            currentAmount:
-                                amount, // 🔥 always use amount from page
-                            salesId: sale.salesId,
-                          );
-                        },
-                      ),
-
-                      IconButton(
-                        icon: const Icon(
-                          Icons.history,
-                          color: Colors.blue,
-                          size: 26,
-                        ),
-                        onPressed: () {
-                          Get.to(
-                            () => HistoryPage(
-                              customerId: customer.customerId,
-                              saleId: sale.salesId,
+                            showPaymentBottomSheet(
+                              context: context,
                               isPayable: isPayable,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                              controller: addController,
+                              customerId: customer.customerId,
+                              customerName: customer.customerName,
+                              currentAmount:
+                                  amount, // 🔥 always use amount from page
+                              salesId: sale.salesId,
+                            );
+                          },
+                        ),
+
+                        IconButton(
+                          icon: const Icon(
+                            Icons.history,
+                            color: Colors.blue,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Get.to(
+                              () => HistoryPage(
+                                customerId: customer.customerId,
+                                saleId: sale.salesId,
+                                isPayable: isPayable,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                )).toList(),
-            ),
-          ],
-        ),
+                )
+                .toList(),
+          ),
+        ],
       ),
-    );
+    ),
+  );
 }

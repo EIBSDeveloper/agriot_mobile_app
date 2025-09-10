@@ -52,19 +52,15 @@ class AuthController extends GetxController {
       if (response.user != null) {
         AppDataController appData = Get.put(AppDataController());
         appData.loginState.value = response;
-         tempOtp.value = (response.otp??'').toString();
+        tempOtp.value = (response.otp ?? '').toString();
 
         Get.toNamed(Routes.otp);
-        Fluttertoast.showToast(msg: "OTP sent to your mobile", fontSize: 16.0);
+        showSuccess("OTP sent to your mobile");
       } else {
         throw Exception(response.message ?? 'Failed to send OTP');
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: e.toString(),
-        backgroundColor: Colors.redAccent,
-        fontSize: 16.0,
-      );
+      showError(e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -151,12 +147,7 @@ class AuthController extends GetxController {
         throw Exception(response.message ?? 'Invalid OTP');
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: e.toString(),
-        backgroundColor: Colors.redAccent,
-        // gravity: ToastGravity.CENTER,
-        fontSize: 16.0,
-      );
+      showError(e.toString());
     } finally {
       isLoading.value = false;
     }

@@ -230,8 +230,8 @@ class _NewSalesViewState extends State<NewSalesView> {
         color: Get.theme.primaryColor,
         child: IconButton(
           color: Colors.white,
-          onPressed: () {
-            PackageUsage? package = findLimit();
+          onPressed: () async {
+            PackageUsage? package = await findLimit();
             if (package!.customerBalance > 0) {
               Get.toNamed('/add-vendor-customer')?.then((result) {
                 controller.fetchCustomerList();

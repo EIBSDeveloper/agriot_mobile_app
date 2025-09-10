@@ -128,8 +128,8 @@ class LandCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () {
-                          PackageUsage? package = findLimit();
+                        onPressed: () async {
+                          PackageUsage? package = await findLimit();
                           if (package!.cropBalance > 0) {
                             Get.toNamed(
                               Routes.addCrop,

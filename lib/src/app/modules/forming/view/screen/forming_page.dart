@@ -83,8 +83,8 @@ class FormingView extends GetView<FormingController> {
 
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
-      onPressed: () {
-        PackageUsage? package = findLimit();
+      onPressed: () async {
+        PackageUsage? package = await findLimit();
 
         if (package!.landBalance > 0) {
           Get.toNamed(Routes.addLand)?.then((result) {

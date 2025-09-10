@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/forming/model/crop_card_model.dart';
 import 'package:argiot/src/app/modules/forming/model/document_view.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
@@ -190,7 +190,7 @@ class LandDetailView extends GetView<LandDetailController> {
       allDocs.addAll(
         innerDocs.map(
           (e) => DocumentView(
-            lable: e['document_category']['name'],
+            label: e['document_category']['name'],
             url: e['upload_document'],
           ),
         ),
@@ -213,7 +213,7 @@ class LandDetailView extends GetView<LandDetailController> {
           (crop) => InkWell(
             onTap: () {
               Get.toNamed(
-                '/crop-overview',
+                Routes.cropOverview,
                 arguments: {
                   'landId': controller.landDetails['id'],
                   'cropId': crop.id,

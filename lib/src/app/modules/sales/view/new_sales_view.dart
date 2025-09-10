@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/sales/controller/new_sales_controller.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/utils.dart';
-import '../../near_me/views/widget/widgets.dart';
 import '../../../../core/app_style.dart';
 import '../../../routes/app_routes.dart';
 import '../../subscription/model/package_usage.dart';
@@ -188,6 +188,8 @@ class _NewSalesViewState extends State<NewSalesView> {
       }),
     ],
   );
+
+
   Widget _buildProductDropdown() => Obx(
     () => MyDropdown(
       items: controller.crop,

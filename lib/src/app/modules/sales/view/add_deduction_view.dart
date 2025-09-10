@@ -1,9 +1,11 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/sales/controller/new_sales_controller.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 
 class AddDeductionView extends StatelessWidget {
   final NewSalesController controller = Get.find<NewSalesController>();
@@ -16,12 +18,9 @@ class AddDeductionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => Get.back(),
-      ),
-      title: const Text('Add Deduction'),
+    appBar: const CustomAppBar(
+      
+      title: 'Add Deduction',
     ),
     body: Padding(
       padding: const EdgeInsets.all(16),

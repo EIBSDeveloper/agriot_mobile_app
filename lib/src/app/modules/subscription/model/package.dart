@@ -11,15 +11,15 @@ class Package {
   final double? percentage;
   final double? subAmount;
   final int status;
-  final int mylandCount;
-  final int mycropsCount;
-  final int myexpenseCount;
-  final int mysaleCount;
+  final int myLandCount;
+  final int myCropsCount;
+  final int myExpenseCount;
+  final int mySaleCount;
   final int customerCount;
-  final bool isMyvechicle;
-  final int myvechicleCount;
+  final bool isMyVechicle;
+  final int myVechicleCount;
   final bool isMymachinery;
-  final int mymachineryCount;
+  final int myMachineryCount;
   final bool isMytools;
   final int mytoolsCount;
   final bool isMyinventory;
@@ -43,15 +43,15 @@ class Package {
     this.percentage,
     this.subAmount,
     required this.status,
-    required this.mylandCount,
-    required this.mycropsCount,
-    required this.myexpenseCount,
-    required this.mysaleCount,
+    required this.myLandCount,
+    required this.myCropsCount,
+    required this.myExpenseCount,
+    required this.mySaleCount,
     required this.customerCount,
-    required this.isMyvechicle,
-    required this.myvechicleCount,
+    required this.isMyVechicle,
+    required this.myVechicleCount,
     required this.isMymachinery,
-    required this.mymachineryCount,
+    required this.myMachineryCount,
     required this.isMytools,
     required this.mytoolsCount,
     required this.isMyinventory,
@@ -76,15 +76,15 @@ class Package {
       percentage: json['percentage']?.toDouble(),
       subAmount: json['sub_amount']?.toDouble(),
       status: json['status'] ?? 0,
-      mylandCount: json['myland_count'] ?? 0,
-      mycropsCount: json['mycrops_count'] ?? 0,
-      myexpenseCount: json['myexpense_count'] ?? 0,
-      mysaleCount: json['mysale_count'] ?? 0,
+      myLandCount: json['myland_count'] ?? 0,
+      myCropsCount: json['mycrops_count'] ?? 0,
+      myExpenseCount: json['myexpense_count'] ?? 0,
+      mySaleCount: json['mysale_count'] ?? 0,
       customerCount: json['customer_count'] ?? 0,
-      isMyvechicle: json['is_myvechicle'] ?? false,
-      myvechicleCount: json['myvechicle_count'] ?? 0,
+      isMyVechicle: json['is_myvechicle'] ?? false,
+      myVechicleCount: json['myvechicle_count'] ?? 0,
       isMymachinery: json['is_mymachinery'] ?? false,
-      mymachineryCount: json['mymachinery_count'] ?? 0,
+      myMachineryCount: json['mymachinery_count'] ?? 0,
       isMytools: json['is_mytools'] ?? false,
       mytoolsCount: json['mytools_count'] ?? 0,
       isMyinventory: json['is_myinventory'] ?? false,

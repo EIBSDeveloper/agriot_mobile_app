@@ -63,10 +63,10 @@ class SalesController extends GetxController {
   final RxList<DropdownItem> customers = <DropdownItem>[].obs;
   final RxList<DropdownItem> units = <DropdownItem>[].obs;
   var crop = <CropModel>[].obs;
-
+  RxInt cropId = 0.obs;
   var selectedCropType = CropModel(id: 0, name: '').obs;
-  void changeCrop(CropModel land) {
-    selectedCropType.value = land;
+  void changeCrop(CropModel crop) {
+    selectedCropType.value = crop;
     fetchSalesList();
   }
 
@@ -76,7 +76,7 @@ class SalesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // cropId.value = Get.arguments['crop_id'];
+    cropId.value = Get.arguments?['crop_id']??0;
     loadInitialData();
   }
 
@@ -89,7 +89,7 @@ class SalesController extends GetxController {
       fetchRupees();
       // ]);
     } catch (e) {
-    showError( 'Failed to load initial data');
+      showError('Failed to load initial data');
     } finally {}
   }
 
@@ -98,7 +98,15 @@ class SalesController extends GetxController {
     final croplist = await _repository.getCropList();
     crop.assignAll(croplist);
     if (croplist.isNotEmpty) {
-      selectedCropType.value = croplist.first;
+      if (cropId.value != 0) {
+        selectedCropType.value = croplist.firstWhere(
+          (crop) => crop.id == cropId.value,
+        );
+        // changeCrop( selectedCropType.value);
+      }else{
+   selectedCropType.value = croplist.first;
+      }
+   
     }
     isLoading.value = false;
     return;
@@ -117,7 +125,7 @@ class SalesController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      showError( 'Failed to fetch sales list');
+      showError('Failed to fetch sales list');
       rethrow;
     }
   }
@@ -128,7 +136,7 @@ class SalesController extends GetxController {
       final response = await _repository.getSalesDetails(salesId: salesId);
       salesDetail.value = response;
     } catch (e) {
-     showError( 'Failed to fetch sales details');
+      showError('Failed to fetch sales details');
       rethrow;
     } finally {
       isLoading.value = false;
@@ -140,7 +148,7 @@ class SalesController extends GetxController {
       final response = await _repository.getReasons();
       reasons.assignAll(response);
     } catch (e) {
-    showError( 'Failed to fetch reasons');
+      showError('Failed to fetch reasons');
       rethrow;
     }
   }
@@ -157,7 +165,7 @@ class SalesController extends GetxController {
       final response = await _repository.getRupees();
       rupees.assignAll(response);
     } catch (e) {
-      showError( 'Failed to fetch rupee types');
+      showError('Failed to fetch rupee types');
       rethrow;
     }
   }
@@ -183,7 +191,7 @@ class SalesController extends GetxController {
         documentFiles.add(File(pickedFile.path));
       }
     } catch (e) {
-      showError( 'Failed to pick document');
+      showError('Failed to pick document');
     }
   }
 
@@ -259,7 +267,7 @@ class SalesController extends GetxController {
     isAdding.value = true;
     try {
       // Upload documents first
-      
+
       final request = SalesAddRequest(
         datesOfSales: selectedDate.value,
         myCrop: selectedCropId.value,
@@ -278,9 +286,9 @@ class SalesController extends GetxController {
       final salesId = await _repository.addSales(request: request);
 
       Get.back(result: {'success': true, 'sales_id': salesId});
-    showSuccess( 'Sales added successfully');
+      showSuccess('Sales added successfully');
     } catch (e) {
-       showError('Failed to add sales');
+      showError('Failed to add sales');
       rethrow;
     } finally {
       isAdding.value = false;
@@ -292,7 +300,6 @@ class SalesController extends GetxController {
     try {
       // Upload new documents first
       final List<Map<String, dynamic>> fileData = [];
-   
 
       final request = SalesEditRequest(
         salesId: salesId,
@@ -316,9 +323,9 @@ class SalesController extends GetxController {
       );
 
       Get.back(result: {'success': true, 'sales_id': updatedId});
-       showSuccess( 'Sales updated successfully');
+      showSuccess('Sales updated successfully');
     } catch (e) {
-      showError( 'Failed to update sales');
+      showError('Failed to update sales');
       rethrow;
     } finally {
       isUpdating.value = false;
@@ -343,9 +350,9 @@ class SalesController extends GetxController {
       }
 
       Get.back();
-     showSuccess( 'Sales deleted successfully');
+      showSuccess('Sales deleted successfully');
     } catch (e) {
-      showError( 'Failed to delete sales');
+      showError('Failed to delete sales');
       rethrow;
     } finally {
       isDeleting.value = false;

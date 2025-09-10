@@ -1,3 +1,5 @@
+import 'package:geocoding/geocoding.dart';
+import 'package:geocoding/geocoding.dart' as geolocator;
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,11 +13,17 @@ class LocationPickerController extends GetxController {
   );
   final RxBool isLoading = true.obs;
   final RxString address = ''.obs;
-
+  GoogleMapController? mapController;
   @override
   void onInit() {
     super.onInit();
     getCurrentLocation();
+  }
+
+  @override
+  void onClose() {
+    mapController?.dispose();
+    super.onClose();
   }
 
   Future<void> getCurrentLocation() async {
@@ -44,7 +52,7 @@ class LocationPickerController extends GetxController {
         zoom: 15,
       );
     } catch (e) {
-   showError('Error', );
+      showError('Error');
     } finally {
       isLoading(false);
     }
@@ -57,14 +65,14 @@ class LocationPickerController extends GetxController {
 
   Future<void> getAddressFromLatLng(LatLng latLng) async {
     try {
-      // List<Placemark> placemarks = await Geolocator.placemarkFromCoordinates(
-      //   latLng.latitude,
-      //   latLng.longitude,
-      // );
-      // if (placemarks.isNotEmpty) {
-      //   Placemark place = placemarks.first;
-      //   address.value = '${place.street}, ${place.locality}, ${place.country}';
-      // }
+      List<Placemark> placemarks = await geolocator.placemarkFromCoordinates(
+        latLng.latitude,
+        latLng.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        address.value = '${place.street}, ${place.locality}, ${place.country}';
+      }
     } catch (e) {
       address.value = 'Coordinates: ${latLng.latitude}, ${latLng.longitude}';
     }
@@ -72,13 +80,15 @@ class LocationPickerController extends GetxController {
 
   void confirmSelection() {
     if (selectedLocation.value != null) {
-      Get.back(result: {
-        'latitude': selectedLocation.value!.latitude,
-        'longitude': selectedLocation.value!.longitude,
-        'address': address.value,
-      });
+      Get.back(
+        result: {
+          'latitude': selectedLocation.value!.latitude,
+          'longitude': selectedLocation.value!.longitude,
+          'address': address.value,
+        },
+      );
     } else {
-    showError( 'Please select a location');
+      showError('Please select a location');
     }
   }
 }

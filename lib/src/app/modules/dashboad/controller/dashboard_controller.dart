@@ -4,6 +4,7 @@ import 'package:argiot/src/app/modules/dashboad/model/land_v_s_crop_model.dart';
 import 'package:argiot/src/app/modules/dashboad/model/market_price.dart';
 import 'package:argiot/src/app/modules/dashboad/model/payment_summary.dart';
 import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
+import 'package:argiot/src/app/modules/dashboad/view/widgets/widget_settings.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import '../../../service/utils/utils.dart';
@@ -48,6 +49,10 @@ class DashboardController extends GetxController {
     fetchLands();
   }
 
+  void showWidgetSettings() {
+    Get.bottomSheet(const WidgetSettings());
+  }
+
   Future<void> fetchLands() async {
     try {
       isLoading(true);
@@ -82,9 +87,9 @@ class DashboardController extends GetxController {
 
       // Load widget configuration
       widgetConfig.value = await _repository.getWidgetConfig();
-      if (position.value == null) {
-        position.value = await Geolocator.getCurrentPosition();
-      }
+      // if (position.value == null) {
+      //   position.value = await Geolocator.getCurrentPosition();
+      // }
       await loadData();
 
       // fetchWeatherData(position.value!.latitude, position.value!.longitude);
@@ -117,7 +122,7 @@ class DashboardController extends GetxController {
       if (widgetConfig.value.guidelines!) {
         await fetchGuidelines();
       }
-      fetchWeatherData(position.value!.latitude, position.value!.longitude);
+      // fetchWeatherData(position.value!.latitude, position.value!.longitude);
     } catch (e) {
       showError('Failed to load dashboard data');
     } finally {

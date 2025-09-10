@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/expense/view/screens/consumption_list.dart';
 import 'package:argiot/src/app/modules/expense/controller/consumption_purchase_controller.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/purchase_list.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,9 @@ import '../../../../service/utils/utils.dart';
 
 class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   const ConsumptionPurchaseView({super.key});
+
+
+
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -39,11 +42,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             () => Container(
               color: Get.theme.colorScheme.surface,
               child: TabBar(
-                controller: TabController(
-                  length: 2,
-                  initialIndex: controller.currentTabIndex.value,
-                  vsync: Navigator.of(context),
-                ),
+                controller: controller.tabController,
                 onTap: controller.changeTab,
                 tabs: [
                   Tab(
@@ -58,16 +57,14 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               ),
             ),
           ),
-
-          // Content Area
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              return IndexedStack(
-                index: controller.currentTabIndex.value,
+              return TabBarView(
+                controller: controller.tabController,
                 children: [
                   ConsumptionList(
                     records: controller.consumptionData,
@@ -81,6 +78,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               );
             }),
           ),
+
           Obx(
             () => Container(
               height: 60,

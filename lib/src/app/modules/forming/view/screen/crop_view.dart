@@ -1,9 +1,10 @@
 import 'package:argiot/src/app/modules/forming/view/widget/survey_dropdown.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_style.dart';
 import '../../../../widgets/input_card_style.dart';
-import '../../../near_me/views/widget/widgets.dart';
 import '../../../registration/model/dropdown_item.dart';
 import '../../../registration/view/widget/searchable_dropdown.dart';
 import '../../controller/crop_controller.dart';

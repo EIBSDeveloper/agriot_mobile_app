@@ -1,5 +1,5 @@
 import 'package:argiot/src/app/modules/expense/controller/consumption_controller.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';

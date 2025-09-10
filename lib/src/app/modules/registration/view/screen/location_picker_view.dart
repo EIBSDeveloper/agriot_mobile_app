@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/registration/controller/land_picker_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,8 +54,8 @@ class _LandPickerViewState extends State<LandPickerView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      title: const Text('Select Location'),
+    appBar: CustomAppBar(
+      title: 'Select Location',
       actions: [
         IconButton(icon: const Icon(Icons.info_outline), onPressed: infoImage),
       ],

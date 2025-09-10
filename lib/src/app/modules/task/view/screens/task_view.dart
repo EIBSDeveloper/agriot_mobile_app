@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:argiot/src/app/modules/task/model/event.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/modules/task/view/widget/add_task.dart';
@@ -9,7 +10,6 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
-import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/task_controller.dart';
 
 class TaskView extends GetView<TaskController> {
@@ -129,7 +129,7 @@ class TaskView extends GetView<TaskController> {
           ),
           Obx(
             () => EmptyLandCard(
-              view: controller.lands.isEmpty,
+              view:(!controller.isLoading.value&& controller.lands.isEmpty),
               refresh: controller.fetchLands,
             ),
           ),

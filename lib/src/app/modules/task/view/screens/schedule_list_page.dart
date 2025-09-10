@@ -1,8 +1,8 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/view/widget/schedule_card.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_crop.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

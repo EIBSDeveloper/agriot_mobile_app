@@ -1,6 +1,7 @@
 import 'package:argiot/src/app/modules/dashboad/model/product_price.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/scrollable_bar_chart.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/finance_line_chart.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,6 @@ import '../../../../widgets/title_text.dart';
 import '../../../bottombar/contoller/bottombar_contoller.dart';
 import '../../../guideline/model/guideline_category.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
-import '../../../near_me/views/widget/widgets.dart';
 import '../../controller/dashboard_controller.dart';
 
 class DashboardView extends GetView<DashboardController> {
@@ -90,7 +90,7 @@ class DashboardView extends GetView<DashboardController> {
           Icons.widgets_outlined,
           color: Color.fromARGB(199, 0, 0, 0),
         ),
-        onPressed: () => _showWidgetSettings(),
+        onPressed: () => controller.showWidgetSettings(),
       ),
     ],
   );
@@ -550,8 +550,8 @@ class DashboardView extends GetView<DashboardController> {
 
           // Build header row widgets
           final headerCells = <Widget>[
-            _buildHeaderCell('trending_crops'.tr),
-            for (var market in displayMarkets) _buildHeaderCell(market.tr),
+            TitleText('trending_crops'.tr),
+            for (var market in displayMarkets) TitleText(market.tr),
           ];
 
           // Build data rows dynamically for each product
@@ -593,19 +593,6 @@ class DashboardView extends GetView<DashboardController> {
           );
         }),
       ],
-    ),
-  );
-
-  Widget _buildHeaderCell(String text) => Padding(
-    padding: const EdgeInsets.all(5.0),
-    child: FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        maxLines: 1,
-        style: const TextStyle(color: Colors.black),
-      ),
     ),
   );
 
@@ -728,139 +715,4 @@ class DashboardView extends GetView<DashboardController> {
       ),
     );
   }
-
-  void _showWidgetSettings() {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                'widget_settings'.tr,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Obx(
-              () => Column(
-                children: [
-                  _buildWidgetToggle(
-                    'weather_payments'.tr,
-                    controller.widgetConfig.value.weatherAndPayments,
-                    (value) {
-                      controller.widgetConfig.update((val) {
-                        val?.weatherAndPayments = value;
-                      });
-                    },
-                  ),
-                  _buildWidgetToggle(
-                    'finance_graph'.tr,
-                    controller.widgetConfig.value.expensesSales,
-                    (value) {
-                      controller.widgetConfig.update((val) {
-                        val?.expensesSales = value;
-                      });
-                    },
-                  ),
-                  _buildWidgetToggle(
-                    'guidelines'.tr,
-                    controller.widgetConfig.value.guidelines!,
-                    (value) {
-                      controller.widgetConfig.update((val) {
-                        val?.guidelines = value;
-                      });
-                    },
-                  ),
-                  _buildWidgetToggle(
-                    'market_prices'.tr,
-                    controller.widgetConfig.value.marketPrice,
-                    (value) {
-                      controller.widgetConfig.update((val) {
-                        val?.marketPrice = value;
-                      });
-                    },
-                  ),
-                  _buildWidgetToggle(
-                    'tasks'.tr,
-                    controller.widgetConfig.value.scheduleTask,
-                    (value) {
-                      controller.widgetConfig.update((val) {
-                        val?.scheduleTask = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // ElevatedButton(
-                //   onPressed: () => Get.back(),
-                //   child: FittedBox(
-                //     fit: BoxFit.scaleDown,
-                //     child: Text('close'.tr),
-                //   ),
-                // ),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.updateWidgetConfiguration(
-                      controller.widgetConfig.value,
-                    );
-                    Get.back();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text('save'.tr),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWidgetToggle(
-    String title,
-    bool value,
-    Function(bool) onChanged,
-  ) => SwitchListTile(
-    title: FittedBox(
-      fit: BoxFit.scaleDown,
-      alignment: Alignment.centerLeft,
-      child: Text(title, textAlign: TextAlign.start),
-    ),
-    // activeThumbColor: Get.theme.primaryColor,
-    inactiveThumbColor: Get.theme.primaryColor,
-    activeTrackColor: Get.theme.primaryColor.withAlpha(150),
-    value: value,
-    onChanged: onChanged,
-  );
 }

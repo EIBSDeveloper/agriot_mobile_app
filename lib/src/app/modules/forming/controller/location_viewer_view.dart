@@ -1,8 +1,8 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../near_me/views/widget/widgets.dart';
 import 'location_viewer_controller.dart';
 
 class LocationViewerView extends GetView<LocationViewerController> {

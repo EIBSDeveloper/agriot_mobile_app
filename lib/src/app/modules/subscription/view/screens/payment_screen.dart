@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/subscription/model/package.dart';
 import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class PaymentScreen extends StatelessWidget {
     final controller = Get.find<SubscriptionController>();
 
     return Scaffold(
-      appBar: AppBar(title: Text('payment'.tr)),
+      appBar: CustomAppBar(title: 'payment'.tr),
       body: Obx(() {
         final selectedPackage = controller.selectedPackage.value;
         if (selectedPackage == null) {

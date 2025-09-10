@@ -1,5 +1,5 @@
 class DocumentView {
-  String lable;
+  String label;
   String url;
-  DocumentView({required this.lable, required this.url});
+  DocumentView({required this.label, required this.url});
 }

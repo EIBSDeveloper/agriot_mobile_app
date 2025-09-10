@@ -3,15 +3,17 @@ import 'package:argiot/src/app/modules/expense/repostroy/consumption_purchase_re
 import 'package:argiot/src/app/modules/expense/repostroy/purchases_add_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/consumption_record.dart';
 import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/utils.dart';
 
-class ConsumptionPurchaseController extends GetxController {
+class ConsumptionPurchaseController extends GetxController with GetSingleTickerProviderStateMixin {
   final ConsumptionPurchaseRepository _repository = Get.find();
   final PurchasesAddRepository purchasesrepository = PurchasesAddRepository();
   // Observables
+
   var isLoading = false.obs;
   var selectedInventoryType = Rxn<int>();
   var selectedInventoryCategory = Rxn<int>();
@@ -19,7 +21,9 @@ class ConsumptionPurchaseController extends GetxController {
   final selectedInventoryTypeName = 'Fuel'.obs;
   var consumptionData = <ConsumptionRecord>[].obs;
   var purchaseData = <PurchaseRecord>[].obs;
-  var currentTabIndex = 0.obs; // 0 = Consumption, 1 = Purchase
+  var currentTabIndex = 0.obs;
+  late TabController tabController;
+  // 0 = Consumption, 1 = Purchase
   final RxBool isCategoryLoading = false.obs;
   final RxBool isinventoryLoading = false.obs;
   var inventoryCategories = <InventoryCategoryModel>[].obs;
@@ -27,9 +31,15 @@ class ConsumptionPurchaseController extends GetxController {
   final Rxn<int> inventoryType = Rxn<int>();
   final Rxn<int> inventoryCategory = Rxn<int>();
   final Rxn<int> inventoryItem = Rxn<int>();
+
   @override
   void onInit() {
-    super.onInit();
+    super.onInit(); 
+    tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: 0,
+    );
     var arguments = Get.arguments;
 
     var tab = Get.arguments["tab"];

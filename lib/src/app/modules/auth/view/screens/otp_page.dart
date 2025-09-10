@@ -20,10 +20,11 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacity;
   late Animation<double> _transform;
-
+  TextEditingController otp = TextEditingController();
   AuthController controller = Get.put(AuthController());
   @override
   void initState() {
+    super.initState();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -44,7 +45,10 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
     );
 
     _controller.forward();
-    super.initState();
+
+    Future.delayed(const Duration(seconds: 2), () {
+      otp.text = controller.tempOtp.value;
+    });
   }
 
   @override
@@ -93,6 +97,7 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: PinCodeTextField(
+                controller: otp,
                 appContext: context,
                 length: 4,
                 onChanged: (value) {
@@ -130,7 +135,6 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
                       Fluttertoast.showToast(
                         msg: 'Please enter 4-digit OTP',
                         backgroundColor: Colors.orangeAccent,
-                   
                       );
                     }
                   },

@@ -3,7 +3,7 @@ import 'package:argiot/src/app/modules/forming/controller/crop_details_controlle
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
 import 'package:argiot/src/app/modules/forming/model/schedule.dart';
 import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../../core/app_icons.dart';
 import '../../../guideline/model/guideline.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../guideline/model/guideline_category.dart';
@@ -88,7 +89,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     if (controller.details.value == null) {
-      return const Center(child: Text('No crop details available'));
+      return const SizedBox.shrink();
     }
 
     final crop = controller.details.value;
@@ -112,8 +113,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
   Widget _buildCropInfo(MyCropDetails? details) => Stack(
     children: [
       InkWell(
-        onTap: (){
-           controller.isCropExpended.value = !controller.isCropExpended.value;
+        onTap: () {
+          controller.isCropExpended.value = !controller.isCropExpended.value;
         },
         child: Card(
           elevation: 1,
@@ -123,7 +124,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
               children: [
                 CircleAvatar(
                   radius: 30,
-        
+
                   backgroundImage: NetworkImage(details!.imageUrl!),
                   child: details.imageUrl!.isEmpty
                       ? const Icon(Icons.agriculture, size: 30)
@@ -136,7 +137,19 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                     TitleText(
                       '${details.crop!.name} (Day - ${controller.getDaysSincePlantation(details.plantationDate)})',
                     ),
-                    Text(details.land!.name),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.landDetail,
+                          arguments: landId,
+                          preventDuplicates: true,
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(details.land!.name),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -165,7 +178,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         right: 5,
         child: IconButton(
           onPressed: () {
-           controller.isCropExpended.value = !controller.isCropExpended.value;
+            controller.isCropExpended.value = !controller.isCropExpended.value;
           },
           iconSize: 30,
           icon: Obx(
@@ -188,7 +201,21 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TitleText('Crop Details'),
+          Row(
+            children: [
+              const TitleText('Crop Details'), const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.landMapView,arguments: {'landId': landId, 'cropId': cropId});
+                    },
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.asset(AppIcons.map),
+                    ),
+                  ),
+            ],
+          ),
           const SizedBox(height: 10),
           _buildDetailRow('Crop Type', details!.cropType!.name),
           _buildDetailRow('Harvest Frequency', details.harvestingType!.name),
@@ -230,7 +257,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
 
         child: ExpansionTile(
-          
           title: Text('Survey Details (${details.surveyDetails!.length})'),
           children: [
             DataTable(
@@ -305,17 +331,31 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                     ),
                   ],
                 ),
-                Column(
-                  children: [
-                    Text('sales'.tr, style: Get.textTheme.titleMedium),
-                    Text(
-                      '₹${(overview.crop.totalSales ?? 0).toStringAsFixed(0)}k',
-                      style: Get.textTheme.headlineSmall?.copyWith(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
+                InkWell(
+                  onTap: () {
+                    // if (controller.details.value?.crop?.id != null) {
+                      Get.toNamed(
+                        Routes.sales,
+                        arguments: {
+                          "crop_id": Get.arguments['cropId'],
+                        },
+                      );
+                    // }else{
+                    //   warningSuccess("Crop details are loading, please wait..");
+                    // }
+                  },
+                  child: Column(
+                    children: [
+                      Text('sales'.tr, style: Get.textTheme.titleMedium),
+                      Text(
+                        '₹${(overview.crop.totalSales ?? 0).toStringAsFixed(0)}k',
+                        style: Get.textTheme.headlineSmall?.copyWith(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -368,7 +408,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       ],
     );
   }
-
 
   Widget _buildTasksSection(CropOverview overview) {
     if (overview.schedules.isEmpty) return const SizedBox();

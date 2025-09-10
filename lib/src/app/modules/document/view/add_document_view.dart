@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/controller/document_controller.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';

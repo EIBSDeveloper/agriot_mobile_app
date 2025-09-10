@@ -1,5 +1,6 @@
 import 'package:argiot/src/app/modules/expense/controller/expense_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +14,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => Get.back(),
-      ),
-      title: Text('Add New Expenses'.tr),
-    ),
+    appBar: CustomAppBar(title: 'Add New Expenses'.tr),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(10),
       child: Form(

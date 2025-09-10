@@ -19,6 +19,7 @@ class AuthController extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString mobileNumber = ''.obs;
   final RxString otp = ''.obs;
+  final RxString tempOtp = ''.obs;
   final RxInt currentStep = 0.obs;
   final formKey = GlobalKey<FormState>();
   final RxString name = ''.obs;
@@ -51,6 +52,8 @@ class AuthController extends GetxController {
       if (response.user != null) {
         AppDataController appData = Get.put(AppDataController());
         appData.loginState.value = response;
+         tempOtp.value = (response.otp??'').toString();
+
         Get.toNamed(Routes.otp);
         Fluttertoast.showToast(msg: "OTP sent to your mobile", fontSize: 16.0);
       } else {
@@ -68,8 +71,9 @@ class AuthController extends GetxController {
   }
 
   Future<void> signInWithGoogle() async {
-    await signOutFromGoogle();
     try {
+      isLoading.value = true;
+      await signOutFromGoogle();
       final GoogleSignInAccount? signIn = await GoogleSignIn().signIn();
 
       if (signIn == null) {
@@ -110,6 +114,8 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       debugPrint(' Sign-in failed: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 

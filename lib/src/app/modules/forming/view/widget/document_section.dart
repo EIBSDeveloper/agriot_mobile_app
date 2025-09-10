@@ -22,7 +22,7 @@ class DocumentSection extends StatelessWidget {
         children: List.generate(docs.length, (index) {
           final DocumentView doc = docs[index];
           final url = doc.url;
-          final categoryName = doc.lable;
+          final categoryName = doc.label;
 
           final lowerUrl = url.toString().toLowerCase();
           final isImage =

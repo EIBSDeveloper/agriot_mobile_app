@@ -1,6 +1,6 @@
 // lib/app/modules/task/models/task_model.dart
 
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/controller/task_details_controller.dart';
 import 'package:argiot/src/app/modules/task/view/widget/edit_task.dart';
 import 'package:flutter/material.dart';

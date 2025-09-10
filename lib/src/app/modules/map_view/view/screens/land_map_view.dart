@@ -1,8 +1,8 @@
 import 'package:argiot/src/app/modules/map_view/model/crop_map_data.dart';
 import 'package:argiot/src/app/modules/map_view/controller/land_map_view_controller.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_crop.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
 
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
@@ -178,12 +178,10 @@ class _LandMapViewState extends State<LandMapView> {
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: DropdownButtonFormField<ScheduleCrop>(
-                          initialValue: controller
-                              .selectedCrop
-                              .value, 
+                          initialValue: controller.selectedCrop.value,
                           items: [
                             DropdownMenuItem<ScheduleCrop>(
-                              value: controller.allCrop, 
+                              value: controller.allCrop,
                               child: const Text("All"),
                             ),
                             ...controller.cropsForSelectedLand.map(
@@ -225,33 +223,51 @@ class _LandMapViewState extends State<LandMapView> {
 
       type: ExpandableFabType.fan,
       pos: ExpandableFabPos.left,
+      openButtonBuilder: FloatingActionButtonBuilder(
+        size: 56.0, // 🔸 Standard FAB size
+        builder: (context, onPressed, progress) => FloatingActionButton(
+          backgroundColor:  Get.theme.primaryColor,
+          onPressed: onPressed,
+          child: const Icon(Icons.menu,color:  Colors.white,),
+        ),
+      ),
+
+      closeButtonBuilder: FloatingActionButtonBuilder(
+        size: 56.0,
+        builder: (context, onPressed, progress) => FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: onPressed,
+          child:  Icon(Icons.close, color:  Get.theme.primaryColor,),
+        ),
+      ),
+
       children: [
         FloatingActionButton.small(
           heroTag: "hybrid",
+          backgroundColor: Get.theme.primaryColor.withAlpha(150),
+          elevation: 0,
           onPressed: () => controller.changeMapType(MapType.hybrid),
           child: const Icon(Icons.layers),
         ),
         FloatingActionButton.small(
           heroTag: "normal",
+          backgroundColor: Get.theme.primaryColor.withAlpha(150),
+          elevation: 0,
           onPressed: () => controller.changeMapType(MapType.normal),
           child: const Icon(Icons.map),
         ),
         FloatingActionButton.small(
           heroTag: "satellite",
+          backgroundColor: Get.theme.primaryColor.withAlpha(150),
+          elevation: 0,
           onPressed: () => controller.changeMapType(MapType.satellite),
           child: const Icon(Icons.satellite_alt),
         ),
-
-        // FloatingActionButton.small(
-        //   heroTag: "terrain",
-        //   onPressed: () => controller.changeMapType(MapType.terrain),
-        //   child: const Icon(Icons.terrain),
-        // ),
       ],
     ),
   );
 
-  void cropDetails(CropMapData crop) {
+  Future<void> cropDetails(CropMapData crop) async {
     Get.dialog(
       const Dialog(
         child: SizedBox(
@@ -262,7 +278,7 @@ class _LandMapViewState extends State<LandMapView> {
       ),
     );
 
-    controller.fetchLandsAndCropsDetails(crop.cropId);
+    await controller.fetchLandsAndCropsDetails(crop.cropId);
     Get.back();
     Get.bottomSheet(
       isScrollControlled: true,
@@ -278,7 +294,6 @@ class _LandMapViewState extends State<LandMapView> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TitleText(crop.cropName ?? "Crop"),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -288,13 +303,108 @@ class _LandMapViewState extends State<LandMapView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Type: ${crop.cropType ?? ""}"),
-                    Text('Expense:  ₹${controller.cropDetails.value!.expense}'),
-                    Text('Sales:  ₹${controller.cropDetails.value!.sales}'),
+                    Row(
+                      children: [
+                        TitleText(crop.cropName ?? "Crop"),
+                        Text(
+                          crop.cropType != null ? "(${crop.cropType})" : "",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    Row(
+                      children: [
+                        const Text(
+                          'Expense: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.toNamed(
+                              Routes.cropOverview,
+                              arguments: {
+                                'landId': controller.selectedLand.value!.id,
+                                'cropId': crop.cropId,
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '₹${controller.cropDetails.value!.expense}  ',
+                                  style: TextStyle(
+                                    color: Colors.green.shade700,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.open_in_new,
+                                  color: Colors.green.shade700,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      children: [
+                        const Text(
+                          'Sales: ',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.toNamed(
+                              Routes.sales,
+                              arguments: {"crop_id": crop.cropId},
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '₹${controller.cropDetails.value!.sales}  ',
+                                  style: TextStyle(
+                                    color: Colors.green.shade700,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.open_in_new,
+                                  color: Colors.green.shade700,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ],
             ),
+            const SizedBox(height: 5),
+            const Divider(height: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -327,7 +437,9 @@ class _LandMapViewState extends State<LandMapView> {
                 ),
               ],
             ),
-            const TitleText("Today task"),
+            const Divider(height: 1),
+            if (controller.cropDetails.value!.tasks.isNotEmpty)
+              const TitleText("Today task"),
             Obx(
               () => Column(
                 children: [
@@ -402,4 +514,3 @@ class _LandMapViewState extends State<LandMapView> {
     );
   }
 }
-

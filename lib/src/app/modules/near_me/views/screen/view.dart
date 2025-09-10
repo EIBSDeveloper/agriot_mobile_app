@@ -1,10 +1,18 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/count_card.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_search_bar.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/man_power_agent_card.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/market_card.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/place_detail_card.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/rental_detail_card.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/worker_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Worker;
 
 import '../../../../routes/app_routes.dart';
 import '../../controller/controllers.dart';
 import '../../model/models.dart';
-import '../widget/widgets.dart';
 
 class NearMeScreen extends StatelessWidget {
   final NearMeController controller = Get.find();

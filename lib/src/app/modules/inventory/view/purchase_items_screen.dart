@@ -1,9 +1,9 @@
 // lib/modules/expenses/models/expense_model.dart
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/inventory_controller.dart';
-import '../../near_me/views/widget/widgets.dart';
 
 class PurchaseItemsScreen extends GetView<InventoryController> {
   const PurchaseItemsScreen({super.key});

@@ -33,9 +33,15 @@ class LandMapViewController extends GetxController {
 
   GoogleMapController? mapController;
   LatLngBounds? pendingBounds;
+
+  final RxInt landId = 0.obs;
+  final RxInt cropId = 0.obs;
   @override
   void onInit() {
     super.onInit();
+    landId.value = Get.arguments?['landId'] ?? 0;
+
+    cropId.value = Get.arguments?['cropId'] ?? 0;
     fetchLandsAndCrops();
   }
 
@@ -83,9 +89,17 @@ class LandMapViewController extends GetxController {
       lands.assignAll(result);
 
       if (result.isNotEmpty) {
-        selectedLand.value = result.first;
-        selectedCrop.value = allCrop;
-        await fetchLandsAndCropMap();
+        if (landId.value != 0) {
+          selectedLand.value = result.firstWhere(
+            (land) => land.id == landId.value,
+          );
+          selectedCrop.value = allCrop;
+          await fetchLandsAndCropMap();
+        } else {
+          selectedLand.value = result.first;
+          selectedCrop.value = allCrop;
+          await fetchLandsAndCropMap();
+        }
       }
     } finally {
       isLoading(false);
@@ -171,6 +185,13 @@ class LandMapViewController extends GetxController {
             .toList();
         updateCameraToPolygon(poly);
       }
+    }
+    if (cropId.value != 0) {
+      ScheduleCrop crop = cropsForSelectedLand.firstWhere(
+        (crop) => crop.id == cropId.value,
+      );
+      selectCrop(crop);
+      cropId.value=0;
     }
   }
 

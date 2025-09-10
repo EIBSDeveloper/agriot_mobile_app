@@ -56,14 +56,15 @@ class NewSalesController extends GetxController {
   Future<void> loadData() async {
     var id = Get.arguments?["id"];
     var isNew = Get.arguments?["new"];
-   
+
     if (isNew != null) {
       await fetchReasons();
       await fetchRupees();
       await fetchCrop();
       await fetchUnit();
       await fetchCustomerList();
-    } if (id == null) {
+    }
+    if (id == null) {
       return;
     }
     await fetchSalesDetails(id);
@@ -97,9 +98,23 @@ class NewSalesController extends GetxController {
         name: response.myCrop.name,
       );
       salesQuantity.value = response.salesQuantity;
+
+      quantityAmount.value = response.quantityAmount;
+
+      salesAmount.value = (quantityAmount.value * salesQuantity.value!);
+      deductions.clear();
+      for (var dedu in response.deductions) {
+        final deduction = {
+          "id": dedu.deductionId,
+          "reason": dedu.reason.id,
+          "charges": dedu.charges,
+          "rupee": dedu.rupee.id.toString(),
+        };
+        addDeduction(deduction);
+      }
+
       amountPaid.value = response.amountPaid.toString();
       selectedCustomer.value = response.myCustomer.id;
-      quantityAmount.value = response.quantityAmount;
       selectedDate.value = DateTime.parse(response.createdAt);
     } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to fetch sales details: $e');

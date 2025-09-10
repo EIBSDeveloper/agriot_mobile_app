@@ -1,11 +1,11 @@
 import 'package:argiot/src/app/modules/forming/controller/document_viewer_controller.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 
 import '../../../../service/utils/enums.dart';
 import '../../../../service/utils/utils.dart';
-import '../../../near_me/views/widget/widgets.dart';
 
 class DocumentViewerView extends GetView<DocumentViewerController> {
   const DocumentViewerView({super.key});

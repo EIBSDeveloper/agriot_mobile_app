@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../../../core/app_images.dart';
 import '../../../../../core/app_style.dart';
@@ -148,16 +149,24 @@ class _LoginPageState extends State<LoginPage>
                                       ),
                                     ),
                                     const SizedBox(height: 60),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 40,
-                                      ),
-                                      child: GoogleSignInButton(
-                                        onPressed: () async {
-                                          controller.signInWithGoogle();
-                                        },
-                                      ),
-                                    ),
+                                    Obx(() {
+                                      if (controller.isLoading.value) {
+                                        return LoadingAnimationWidget.waveDots(
+                                          color: Get.theme.primaryColor,
+                                          size: 100,
+                                        );
+                                      }
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 40,
+                                        ),
+                                        child: GoogleSignInButton(
+                                          onPressed: () async {
+                                            controller.signInWithGoogle();
+                                          },
+                                        ),
+                                      );
+                                    }),
 
                                     const SizedBox(),
                                   ],

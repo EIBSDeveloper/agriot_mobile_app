@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/subscription/model/package.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/title_text.dart';
-import '../../../near_me/views/widget/widgets.dart';
 
 class SubscriptionPlansScreen extends StatelessWidget {
   const SubscriptionPlansScreen({super.key});
@@ -98,13 +98,16 @@ class SubscriptionPlansScreen extends StatelessWidget {
                   package.name,
                   color: isSelected ? Colors.white : null,
                 ),
-                Radio<Package>(
-                  value: package,
+                RadioGroup(
                   groupValue: isSelected ? package : null,
                   onChanged: (p) => onSelect?.call(),
-                  activeColor: isSelected
-                      ? Get.theme.colorScheme.onPrimary
-                      : Get.theme.colorScheme.primary,
+                  child: Radio<Package>(
+                    value: package,
+
+                    activeColor: isSelected
+                        ? Get.theme.colorScheme.onPrimary
+                        : Get.theme.colorScheme.primary,
+                  ),
                 ),
               ],
             ),
@@ -130,26 +133,26 @@ class SubscriptionPlansScreen extends StatelessWidget {
     return [
       _buildFeatureItem(
         'land_management'.tr,
-        package.mylandCount,
-        package.mylandCount > 0,
+        package.myLandCount,
+        package.myLandCount > 0,
         textColor,
       ),
       _buildFeatureItem(
         'crops_management'.tr,
-        package.mycropsCount,
-        package.mycropsCount > 0,
+        package.myCropsCount,
+        package.myCropsCount > 0,
         textColor,
       ),
       _buildFeatureItem(
         'expense_tracking'.tr,
-        package.myexpenseCount,
-        package.myexpenseCount > 0,
+        package.myExpenseCount,
+        package.myExpenseCount > 0,
         textColor,
       ),
       _buildFeatureItem(
         'sales_tracking'.tr,
-        package.mysaleCount,
-        package.mysaleCount > 0,
+        package.mySaleCount,
+        package.mySaleCount > 0,
         textColor,
       ),
       _buildFeatureItem(
@@ -160,13 +163,13 @@ class SubscriptionPlansScreen extends StatelessWidget {
       ),
       _buildFeatureItem(
         'vehicle_management'.tr,
-        package.myvechicleCount,
-        package.isMyvechicle,
+        package.myVechicleCount,
+        package.isMyVechicle,
         textColor,
       ),
       _buildFeatureItem(
         'machinery_management'.tr,
-        package.mymachineryCount,
+        package.myMachineryCount,
         package.isMymachinery,
         textColor,
       ),

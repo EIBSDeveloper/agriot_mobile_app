@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/expense/view/widgets/date_picker_field.dart';
 import 'package:argiot/src/app/modules/expense/controller/purchases_add_controller.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/widgets.dart';
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

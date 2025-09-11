@@ -1,6 +1,6 @@
+import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
-
-import '../../core/app_style.dart';
+import 'package:get/get.dart';
 
 class InputCardStyle extends StatelessWidget {
   final Widget child;
@@ -9,13 +9,16 @@ class InputCardStyle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      decoration: AppStyle.inputDecoration,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      constraints: noHeight
-          ? null
-          : const BoxConstraints(
-              minHeight: 55, // minimum height for all fields
-            ),
-      child: child,
-    );
+    decoration: BoxDecoration(
+      color: Get.theme.colorScheme.secondaryContainer,
+      borderRadius: AppStyle.inputDecoration.borderRadius,
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    constraints: noHeight
+        ? null
+        : const BoxConstraints(
+            minHeight: 55, // minimum height for all fields
+          ),
+    child: child,
+  );
 }

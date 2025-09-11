@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:argiot/src/app/modules/notification/view/widget/notification_count.dart';
+import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/app_controller.dart';

@@ -18,6 +18,7 @@ AppDataController appData = Get.find();
 void showError(final String message) {
   if (message.contains('404') ||
       message.contains('500') ||
+      message.contains('load') ||
       message.contains('error') ||
       message.contains('Error')) {
     return;

@@ -264,7 +264,6 @@ class RentalDetail {
   final String vendorAddress;
   final String registerNumber;
   final String inventoryItemName;
-  final RentalLanguage language;
 
   RentalDetail({
     required this.id,
@@ -273,7 +272,7 @@ class RentalDetail {
     required this.vendorAddress,
     required this.registerNumber,
     required this.inventoryItemName,
-    required this.language,
+
   });
 
   factory RentalDetail.fromJson(Map<String, dynamic> json) => RentalDetail(
@@ -283,7 +282,6 @@ class RentalDetail {
       vendorAddress: json['vendor_address'],
       registerNumber: json['register_number'],
       inventoryItemName: json['inventory_item_name'],
-      language: RentalLanguage.fromJson(json['language']),
     );
 }
 

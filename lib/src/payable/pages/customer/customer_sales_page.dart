@@ -167,9 +167,9 @@ class CustomerSalesPage extends StatelessWidget {
                         },
                       ),*/
                         IconButton(
-                          icon: const Icon(
+                          icon:  Icon(
                             Icons.add_circle,
-                            color: Colors.green,
+                            color:    Get.theme.primaryColor,
                             size: 28,
                           ),
                           onPressed: () {

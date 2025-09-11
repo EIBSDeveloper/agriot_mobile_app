@@ -1,10 +1,10 @@
+import 'package:argiot/src/app/modules/bottombar/views/widgets/notification_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_images.dart';
 import '../../../../controller/app_controller.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
-import '../../../notification/controller/notification_controller.dart';
 import '../../contoller/user_profile_controller.dart';
 
 class ProfileAppBar extends GetView<UserProfileController>
@@ -16,7 +16,7 @@ class ProfileAppBar extends GetView<UserProfileController>
 
   @override
   Widget build(BuildContext context) => AppBar(
-    backgroundColor: Get.theme.colorScheme.primaryContainer,
+    backgroundColor:Get.theme.colorScheme.primaryContainer.withAlpha(180),
     title: SizedBox(
       height: 40,
       child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
@@ -89,53 +89,4 @@ class ProfileAppBar extends GetView<UserProfileController>
       ),
     );
   }
-}
-
-class NotificationIconButton extends StatelessWidget {
-  final NotificationController controller = Get.put(NotificationController());
-
-  NotificationIconButton({super.key});
-
-  @override
-  Widget build(BuildContext context) => Obx(() {
-    final unread = controller.unreadNotifications.value;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        IconButton(
-          onPressed: () {
-            Get.toNamed(Routes.notification);
-          },
-          icon: Icon(
-            Icons.notifications_none,
-            color: Get.theme.colorScheme.primary,
-          ),
-        ),
-        if (unread > 0)
-          Positioned(
-            right: 7,
-            top: 0,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-              child: Center(
-                child: Text(
-                  unread > 99 ? '99+' : '$unread',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  });
 }

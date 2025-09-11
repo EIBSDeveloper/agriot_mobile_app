@@ -1,5 +1,4 @@
 import 'package:argiot/src/app/modules/vendor_customer/model/item.dart';
-import 'package:argiot/src/app/modules/registration/model/address_model.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
@@ -40,11 +39,11 @@ class VendorCustomerController extends GetxController {
   // Location dropdowns
 
   // Dropdown data
-  final RxList<CountryModel> countries = <CountryModel>[].obs;
-  final RxList<StateModel> states = <StateModel>[].obs;
-  final RxList<CityModel> cities = <CityModel>[].obs;
-  final RxList<TalukModel> taluks = <TalukModel>[].obs;
-  final RxList<VillageModel> villages = <VillageModel>[].obs;
+  // final RxList<CountryModel> countries = <CountryModel>[].obs;
+  // final RxList<StateModel> states = <StateModel>[].obs;
+  // final RxList<CityModel> cities = <CityModel>[].obs;
+  // final RxList<TalukModel> taluks = <TalukModel>[].obs;
+  // final RxList<VillageModel> villages = <VillageModel>[].obs;
 
   // Loading states
   final markets = <Market>[].obs;

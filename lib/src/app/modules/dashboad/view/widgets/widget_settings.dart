@@ -116,7 +116,7 @@ class WidgetSettings extends GetView<DashboardController> {
     ),
     // activeThumbColor: Get.theme.primaryColor,
     inactiveThumbColor: Get.theme.primaryColor,
-    activeTrackColor: Get.theme.primaryColor.withAlpha(150),
+    activeTrackColor: Get.theme.primaryColor,
     value: value,
     onChanged: onChanged,
   );

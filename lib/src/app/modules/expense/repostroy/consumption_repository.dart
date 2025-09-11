@@ -1,5 +1,8 @@
 import 'dart:convert';
-import 'package:argiot/src/app/modules/expense/model/consumption_model.dart';
+import 'package:argiot/src/app/modules/expense/model/document_type_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 

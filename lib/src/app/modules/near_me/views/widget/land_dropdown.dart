@@ -20,19 +20,21 @@ class LandDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InputCardStyle(
-     
-      child: DropdownButtonFormField<Land>(
-        initialValue: selectedLand,
-        items: lands.map((Land land) => DropdownMenuItem<Land>(value: land, child: Text(land.name))).toList(),
-        icon: const Icon(Icons.keyboard_arrow_down_rounded),
-        onChanged: onChanged,
-        decoration: const InputDecoration(
-          labelText: 'Land',
-          
-          border: InputBorder.none,
-
-          contentPadding: EdgeInsets.symmetric(horizontal: 16),
-        ),
+    child: DropdownButtonFormField<Land>(
+      initialValue: selectedLand,
+      items: lands
+          .map(
+            (Land land) =>
+                DropdownMenuItem<Land>(value: land, child: Text(land.name)),
+          )
+          .toList(),
+      icon: const Icon(Icons.keyboard_arrow_down_rounded),
+      onChanged: onChanged,
+      decoration: const InputDecoration(
+        labelText: 'Land',
+        border: InputBorder.none,
+        contentPadding: EdgeInsets.symmetric(horizontal: 0),
       ),
-    );
+    ),
+  );
 }

@@ -185,7 +185,6 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                 );
                 return TaskCard(
                   task: tas,
-
                   refresh: () {
                     controller.fetchLandsAndCropsDetails(crop.cropId);
                   },

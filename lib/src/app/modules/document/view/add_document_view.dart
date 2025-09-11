@@ -66,9 +66,9 @@ class _AddDocumentViewState extends State<AddDocumentView> {
                 height: 92,
                 width: 92,
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: const Icon(
+                child: Icon(
                   Icons.camera_alt,
-                  color: Colors.green,
+                  color: Get.theme.primaryColor,
                   size: 50,
                 ),
               ),
@@ -81,9 +81,9 @@ class _AddDocumentViewState extends State<AddDocumentView> {
                 width: 92,
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
 
-                child: const Icon(
+                child: Icon(
                   Icons.photo_library,
-                  color: Colors.blue,
+                  color: Get.theme.primaryColor,
                   size: 50,
                 ),
               ),

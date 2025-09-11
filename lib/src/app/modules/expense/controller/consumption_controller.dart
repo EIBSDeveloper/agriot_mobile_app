@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:argiot/src/app/modules/expense/model/consumption_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_repository.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';

@@ -24,7 +24,7 @@ class WorkerCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: Get.theme.primaryColor.withAlpha(100),
+                  backgroundColor: Get.theme.primaryColor.withAlpha(50),
                   child: Icon(
                     Icons.person,
                     size: 30,

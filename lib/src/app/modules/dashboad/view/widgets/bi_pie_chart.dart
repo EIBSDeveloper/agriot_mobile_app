@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/dashboad/view/widgets/chart_data.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -28,12 +29,4 @@ class BiPieChart extends StatelessWidget {
         ),
       ],
     );
-}
-
-class ChartData {
-  final String label;
-  final double value;
-  final Color color;
-
-  ChartData(this.label, this.value, this.color);
 }

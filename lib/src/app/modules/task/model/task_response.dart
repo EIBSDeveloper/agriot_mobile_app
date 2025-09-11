@@ -8,7 +8,6 @@ class TaskResponse {
   final List<DateTask> pendingTasks;
   final List<DateTask> inProgressTasks;
   final List<Event> events;
-  final String defaultLanguage;
 
   TaskResponse({
     required this.completedTasks,
@@ -17,7 +16,6 @@ class TaskResponse {
     required this.pendingTasks,
     required this.inProgressTasks,
     required this.events,
-    required this.defaultLanguage,
   });
 
   factory TaskResponse.fromJson(Map<String, dynamic> json) => TaskResponse(
@@ -37,6 +35,6 @@ class TaskResponse {
           .map((e) => DateTask.fromJson(e))
           .toList(),
       events: (json['events'] as List).map((e) => Event.fromJson(e)).toList(),
-      defaultLanguage: json['language']['default'] ?? 'en',
+    
     );
 }

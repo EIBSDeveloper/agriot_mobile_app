@@ -1,9 +1,7 @@
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../service/utils/enums.dart';
-
 
 class DocumentViewerController extends GetxController {
   final RxString documentUrl = ''.obs;
@@ -34,9 +32,9 @@ class DocumentViewerController extends GetxController {
       if (lowerUrl.endsWith('.pdf')) {
         fileType.value = FileType.pdf;
       } else if (lowerUrl.endsWith('.png') ||
-                 lowerUrl.endsWith('.jpg') ||
-                 lowerUrl.endsWith('.jpeg') ||
-                 lowerUrl.endsWith('.gif')) {
+          lowerUrl.endsWith('.jpg') ||
+          lowerUrl.endsWith('.jpeg') ||
+          lowerUrl.endsWith('.gif')) {
         fileType.value = FileType.image;
       } else {
         fileType.value = FileType.unsupported;

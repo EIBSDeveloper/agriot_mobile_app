@@ -31,7 +31,7 @@ class LandCard extends StatelessWidget {
       elevation: 0,
       color: !isExpanded
           ? Colors.white
-          : (Get.theme.colorScheme.primary.withAlpha(30)),
+          : (Get.theme.colorScheme.primary.withAlpha(50)),
       child: Column(
         children: [
           InkWell(
@@ -103,15 +103,15 @@ class LandCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Crops ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                  // const Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       'Crops ',
+                  //       style: TextStyle(fontWeight: FontWeight.bold),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 8),
                   ...land.crops.map(
                     (crop) => InkWell(

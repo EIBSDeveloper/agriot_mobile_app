@@ -1,11 +1,11 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
+import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../service/utils/utils.dart';
 import '../../controller/notification_controller.dart';
-import '../../notification_model.dart';
 
 class NotificationView extends GetView<NotificationController> {
   const NotificationView({super.key});
@@ -146,7 +146,7 @@ class NotificationView extends GetView<NotificationController> {
                   color:
                       notification.isRead
                           ? Colors.grey.withAlpha(50)
-                          : Get.theme.primaryColor.withAlpha(100),
+                          : Get.theme.primaryColor.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

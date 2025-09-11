@@ -39,7 +39,10 @@ class CropCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text('Expense: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Expense: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(width: 10),
               InkWell(
                 onTap: () {
@@ -51,7 +54,7 @@ class CropCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade50,
+                    color: Get.theme.primaryColor.withAlpha(50),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -59,11 +62,11 @@ class CropCard extends StatelessWidget {
                       Text(
                         '₹${crop.expense.toStringAsFixed(2)}  ',
                         style: TextStyle(
-                          color: Colors.green.shade700,
+                          color: Get.theme.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(Icons.open_in_new, color: Colors.green.shade700),
+                      Icon(Icons.open_in_new, color: Get.theme.primaryColor),
                     ],
                   ),
                 ),
@@ -76,7 +79,10 @@ class CropCard extends StatelessWidget {
           // Sales
           Row(
             children: [
-              const Text('Sales: ', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Sales: ',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               const SizedBox(width: 10),
               InkWell(
                 onTap: () {
@@ -88,7 +94,7 @@ class CropCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.green.shade50,
+                    color: Get.theme.primaryColor.withAlpha(50),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -96,11 +102,11 @@ class CropCard extends StatelessWidget {
                       Text(
                         '₹${crop.sales.toStringAsFixed(2)}  ',
                         style: TextStyle(
-                          color: Colors.green.shade700,
+                          color: Get.theme.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(Icons.open_in_new, color: Colors.green.shade700),
+                      Icon(Icons.open_in_new, color: Get.theme.primaryColor),
                     ],
                   ),
                 ),
@@ -120,7 +126,7 @@ class CropCard extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: LinearProgressIndicator(
-                  backgroundColor: Get.theme.primaryColor.withAlpha(100),
+                  backgroundColor: Get.theme.primaryColor.withAlpha(50),
                   color: Get.theme.primaryColor,
                   value: crop.totalScheduleCount > 0
                       ? crop.completedScheduleCount / crop.totalScheduleCount

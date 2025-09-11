@@ -83,8 +83,9 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             () => Container(
               height: 60,
               width: double.infinity,
-              decoration: AppStyle.inputDecoration.copyWith(
-                color: Get.theme.primaryColor.withAlpha(100),
+              decoration:BoxDecoration(
+                color: Get.theme.primaryColor.withAlpha(50),
+                 borderRadius:AppStyle.decoration.borderRadius,
               ),
               padding: const EdgeInsets.only(right: 80, left: 8),
               margin: const EdgeInsets.only(right: 8, bottom: 15, left: 10),

@@ -54,21 +54,3 @@ class UserProfile {
     );
   }
 }
-
-class UserProfileResponse {
-  final bool success;
-  final String message;
-  final UserProfile userProfile;
-
-  UserProfileResponse({
-    required this.success,
-    required this.message,
-    required this.userProfile,
-  });
-
-  factory UserProfileResponse.fromJson(Map<String, dynamic> json) => UserProfileResponse(
-      success: json['status'] == 'success',
-      message: json['message'] ?? '',
-      userProfile: UserProfile.fromJson(json),
-    );
-}

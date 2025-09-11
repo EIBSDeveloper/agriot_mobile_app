@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
+import 'package:argiot/src/app/modules/dashboad/view/widgets/chart_data.dart';
 import 'package:argiot/src/app/modules/forming/controller/crop_details_controller.dart';
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
 import 'package:argiot/src/app/modules/forming/model/schedule.dart';
@@ -141,7 +142,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                       onTap: () {
                         Get.toNamed(
                           Routes.landDetail,
-                          arguments: landId,
+                          arguments: controller.landId.value,
                           preventDuplicates: true,
                         );
                       },
@@ -165,10 +166,10 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           onPressed: () =>
               Get.toNamed(
                 Routes.addCrop,
-                arguments: {'landId': landId, 'cropId': cropId},
+                arguments: {'landId': controller.landId.value, 'cropId': controller.cropId.value},
               )?.then((rturn) {
                 if (rturn) {
-                  controller.fetchCropDetails(landId, cropId);
+                  controller.fetchCropDetails(controller.landId.value, controller.cropId.value);
                 }
               }),
         ),
@@ -206,7 +207,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
               const TitleText('Crop Details'), const Spacer(),
                   InkWell(
                     onTap: () {
-                      Get.toNamed(Routes.landMapView,arguments: {'landId': landId, 'cropId': cropId});
+                      Get.toNamed(Routes.landMapView,arguments: {'landId': controller.landId.value, 'cropId': controller.cropId.value});
                     },
                     child: SizedBox(
                       width: 50,

@@ -1,10 +1,12 @@
 import 'dart:convert';
-import 'package:argiot/src/app/modules/expense/model/consumption_model.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_response.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
+import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 

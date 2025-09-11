@@ -23,7 +23,7 @@ class GuidelineThunbnail extends StatelessWidget {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: Colors.grey[200],
+            color:Colors.grey.withAlpha(30),
             borderRadius: BorderRadius.circular(8),
           ),
           child: (guideline.mediaType == 'video' && youtubeThumbnailUrl == null)

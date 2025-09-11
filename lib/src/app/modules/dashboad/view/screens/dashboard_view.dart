@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/dashboad/model/product_price.dart';
+import 'package:argiot/src/app/modules/dashboad/view/widgets/chart_data.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/scrollable_bar_chart.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';

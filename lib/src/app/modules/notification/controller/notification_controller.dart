@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
 import 'package:get/get.dart';
 
 import '../Repository/notification_repository.dart';

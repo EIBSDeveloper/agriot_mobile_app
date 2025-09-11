@@ -2,7 +2,6 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
-import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -108,7 +107,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           selectedColor: Get.theme.primaryColor,
           chipDisplay: MultiSelectChipDisplay(
             textStyle: const TextStyle(color: Colors.black),
-            chipColor: AppStyle.inputBoxColor,
+            chipColor: Get.theme.colorScheme.onSecondaryContainer,
             onTap: (value) => controller.toggleSelection(value),
           ),
           onConfirm: (values) {

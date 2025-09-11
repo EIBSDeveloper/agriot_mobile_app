@@ -42,7 +42,7 @@ class LandDetailController extends GetxController {
       isLoading(true);
       error('');
       final result = await _repository.daleteLandDetails(landId);
-      Get.back();
+      Get.back(result: true);
       showSuccess(result["message"]);
     } catch (e) {
       error(e.toString());

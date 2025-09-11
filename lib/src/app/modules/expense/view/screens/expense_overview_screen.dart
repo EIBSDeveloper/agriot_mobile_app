@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/expense/model/expense.dart';
 import 'package:argiot/src/app/modules/expense/model/purchase.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'package:pie_chart/pie_chart.dart';
 
@@ -10,6 +11,7 @@ import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
+import '../widgets/month_day_format.dart';
 
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
@@ -60,7 +62,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         ),
         child: Wrap(
           children: [
-           const ButtomSheetScrollButton(),
+            const ButtomSheetScrollButton(),
             ListTile(
               title: Text(
                 "${'add_new'.tr} ${'Expense'.tr}",
@@ -156,79 +158,84 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       elevation: 1,
       child: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 1,
-              child: PieChart(
-                dataMap: dataMap,
-                colorList: controller.colorList,
-                chartType: ChartType.disc,
-                chartValuesOptions: const ChartValuesOptions(
-                  showChartValues: true,
-                  showChartValuesInPercentage: true,
-                  showChartValueBackground: false,
-                  decimalPlaces: 0,
-                  chartValueStyle: TextStyle(
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold,
+        child: Container(
+          constraints: const BoxConstraints(
+            maxHeight: 300
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 1,
+                child: PieChart(
+                  dataMap: dataMap,
+                  colorList: controller.colorList,
+                  chartType: ChartType.disc,
+                  chartValuesOptions: const ChartValuesOptions(
+                    showChartValues: true,
+                    showChartValuesInPercentage: true,
+                    showChartValueBackground: false,
+                    decimalPlaces: 0,
+                    chartValueStyle: TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  legendOptions: const LegendOptions(showLegends: false),
+                  // chartRadius: MediaQuery.of(Get.context).size.width / 1,
+                  initialAngleInDegree: 0,
+                  centerText: "",
+                  baseChartColor: Colors.white,
+                  ringStrokeWidth: 32,
+                ),
+              ),
+          
+              // Legends
+              Expanded(
+                flex: 1,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: controller.cardexpenses.asMap().entries.map((
+                      entry,
+                    ) {
+                      int index = entry.key;
+                      var expense = entry.value;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                expense.expensestype,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Text(
+                              "₹ ${expense.totalAmount.toStringAsFixed(1)}k",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    controller.colorList[index %
+                                        controller.colorList.length],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-                legendOptions: const LegendOptions(showLegends: false),
-                // chartRadius: MediaQuery.of(Get.context).size.width / 1,
-                initialAngleInDegree: 0,
-                centerText: "",
-                baseChartColor: Colors.white,
-                ringStrokeWidth: 32,
               ),
-            ),
-
-            // Legends
-            Expanded(
-              flex: 1,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: controller.cardexpenses.asMap().entries.map((
-                    entry,
-                  ) {
-                    int index = entry.key;
-                    var expense = entry.value;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              expense.expensestype,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Text(
-                            "₹ ${expense.totalAmount.toStringAsFixed(1)}k",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  controller.colorList[index %
-                                      controller.colorList.length],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -291,14 +298,44 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           return Card(
             elevation: 1,
             margin: const EdgeInsets.symmetric(vertical: 4),
-            child: ListTile(
-              title: Text('${item.createdDay} - ${item.typeExpenses.name}'),
-              subtitle: Text(item.myCrop.name),
-              trailing: Text(
-                '₹${item.amount.toStringAsFixed(2)}',
-                style: Get.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MonthDayFormat(
+                    date: DateFormat("dd-MM-yyyy").parse(item.createdDay),
+                  ),
+                  const SizedBox(width: 8),
+
+                  /// Left section (title + subtitle)
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.typeExpenses.name,
+                          style: Get.textTheme.bodyLarge,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          item.myCrop.name,
+                          style: Get.textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Text(
+                    '₹${item.amount.toStringAsFixed(2)}',
+                    style: Get.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           );
@@ -306,21 +343,49 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           return Card(
             elevation: 1,
             margin: const EdgeInsets.symmetric(vertical: 4),
-            child: ListTile(
-              title: Text(
-                '${item.dateOfConsumption} - ${item.inventoryItems.name}',
-              ),
-              subtitle:
-                  (item.availableQuans != null &&
-                      item.inventorytype.id != 1 &&
-                      item.inventorytype.id != 2)
-                  ? Text('Quantity: ${item.availableQuans}')
-                  : null,
-              trailing: Text(
-                '₹${item.purchaseAmount}',
-                style: Get.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MonthDayFormat(
+                    date: DateFormat(
+                      "dd-MM-yyyy",
+                    ).parse(item.dateOfConsumption),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          item.inventoryItems.name,
+                          style: Get.textTheme.bodyLarge,
+                        ),
+                        if (item.availableQuans != null &&
+                            item.inventorytype.id != 1 &&
+                            item.inventorytype.id != 2) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Quantity: ${item.availableQuans}',
+                            style: Get.textTheme.bodyMedium?.copyWith(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+
+                  /// Right section (trailing price)
+                  Text(
+                    '₹${item.purchaseAmount}',
+                    style: Get.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           );

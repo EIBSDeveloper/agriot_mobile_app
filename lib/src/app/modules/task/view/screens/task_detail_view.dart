@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/title_text.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class TaskDetailView extends GetView<TaskDetailsController> {
@@ -49,42 +50,58 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         return const Center(child: Text('No task details available'));
       }
 
-      return SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // _buildSectionHeader('Land Information'),
-
-            // const SizedBox(height: 16),
-            _buildSectionHeader('Crop Information'),
-            _buildDetailItem('Crop Name', task.myCrop.name),
-            _buildDetailItem('Land Name', task.myLand.name),
-            if (task.myCrop.cropImg.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Image.network(task.myCrop.cropImg, height: 150),
+      return RefreshIndicator(
+        onRefresh: controller.fetchTaskDetails,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // _buildSectionHeader('Land Information'),
+              const TitleText('Crop Information'),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  task.myCrop.cropImg.isNotEmpty
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(task.myCrop.cropImg),
+                          radius: 35,
+                        )
+                      : const CircleAvatar(
+                          radius: 24,
+                          child: Icon(Icons.grass),
+                        ),
+                  const SizedBox(width: 12),
+                  Column(
+                    children: [
+                      TitleText(task.myCrop.name),
+                      Text(task.myLand.name),
+                    ],
+                  ),
+                ],
               ),
-            const SizedBox(height: 16),
 
-            _buildSectionHeader('Task Details'),
-            _buildDetailItem('Activity Type', task.scheduleActivityType.name),
-            // _buildDetailItem('Start Date', task.startDate),
-            _buildDetailItem('Date', task.endDate),
+              const SizedBox(height: 8),
+              const Divider(),
+              const SizedBox(height: 8),
 
-            // _buildDetailItem('Status', task.scheduleStatus.name),
-            _buildDetailItem('Description', task.description),
-           
+              const TitleText('Task Details'),
+              _buildDetailItem('Activity Type', task.scheduleActivityType.name),
+
+              _buildDetailItem('Date', task.endDate),
+
+              _buildDetailItem('Description', task.description),
+
               _buildDetailItem('Comment', task.comment),
-            _buildStatus('Status'),
+              _buildStatus('Status'),
 
-            // _buildSectionHeader('Expenses'),
-            // _buildDetailItem('Total Expenses', '${task.totalExpenseAmount}'),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            _buildActionButtons(),
-            const SizedBox(height: 200),
-          ],
+              _buildActionButtons(),
+              const SizedBox(height: 200),
+            ],
+          ),
         ),
       );
     }),
@@ -93,12 +110,14 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         FloatingActionButton(
+          heroTag: null,
           backgroundColor: Get.theme.primaryColor,
           onPressed: _showAddCommentDialog,
           child: const Icon(Icons.message),
         ),
         const SizedBox(height: 10),
         FloatingActionButton(
+          heroTag: null,
           backgroundColor: Get.theme.primaryColor,
           onPressed: _showEditTaskSheet,
           child: const Icon(Icons.edit),
@@ -111,36 +130,27 @@ class TaskDetailView extends GetView<TaskDetailsController> {
     Get.bottomSheet(const EditTask(), isScrollControlled: true);
   }
 
-  Widget _buildSectionHeader(String title) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: Text(
-      title,
-      style: Get.textTheme.titleLarge?.copyWith(
-        fontWeight: FontWeight.bold,
-        color: Get.theme.primaryColor,
-      ),
-    ),
-  );
-
-  Widget _buildDetailItem(String label, String value) => (value.isNotEmpty)?Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4.0),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Get.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+  Widget _buildDetailItem(String label, String value) => (value.isNotEmpty)
+      ? Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 120,
+                child: Text(
+                  label,
+                  style: Get.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(value, style: Get.textTheme.bodyMedium)),
+            ],
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(child: Text(value, style: Get.textTheme.bodyMedium)),
-      ],
-    ),
-  ):const SizedBox.shrink();
+        )
+      : const SizedBox.shrink();
 
   Widget _buildStatus(String label) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 4.0),

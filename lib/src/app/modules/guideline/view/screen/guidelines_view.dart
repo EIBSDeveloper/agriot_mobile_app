@@ -48,9 +48,9 @@ class GuidelinesView extends GetView<GuidelineController> {
     child: TextField(
       decoration: InputDecoration(
         labelText: 'search_placeholder'.tr,
-        prefixIcon: const Icon(Icons.search),
+        // prefixIcon: const Icon(Icons.search),
         border: InputBorder.none,
-        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(vertical: 0),
       ),
       onChanged: (value) => controller.searchGuidelines(value),
     ),

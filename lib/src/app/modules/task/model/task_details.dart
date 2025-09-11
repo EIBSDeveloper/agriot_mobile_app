@@ -49,7 +49,7 @@ class TaskDetails {
       endDate: json['end_date'],
       scheduleStatus: ScheduleStatus.fromJson(json['schedule_status']),
       status: json['status'],
-      description: json['description'] ?? " ",
+      description: json['description'] ?? "",
       comment: json['comment'] ?? '',
       // cropExpenses: List<CropExpense>.from(json['crop_expenses'].map((x) => CropExpense.fromJson(x))),
       totalExpenseAmount: json['total_expense_amount']?.toDouble() ?? 0.0,

@@ -84,13 +84,9 @@ class SubscriptionController extends GetxController {
         razorpaySignature: response.signature ?? '',
         packageId: selectedPackage.value!.id,
       );
-      // Refresh data after successful payment
-      ProfileController profile = Get.find();
-      await profile.fetchProfile();
-      // await loadData();
-        packageRefresh();
-      Get.back();
-      Get.back();
+    
+      Get.back(result: true);
+      Get.back(result: true);
     } catch (e) {
       errorMessage.value = 'Payment verification failed: ${e.toString()}';
       rethrow;

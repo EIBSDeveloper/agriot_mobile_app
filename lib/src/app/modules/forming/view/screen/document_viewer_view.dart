@@ -12,7 +12,7 @@ class DocumentViewerView extends GetView<DocumentViewerController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Document Viewer'),
+    appBar: const CustomAppBar(title: 'Viewer'),
     body: Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());

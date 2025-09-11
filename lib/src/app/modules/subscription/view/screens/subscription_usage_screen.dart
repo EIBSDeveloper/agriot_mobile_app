@@ -14,7 +14,7 @@ class SubscriptionUsageScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'current_subscription'.tr),
       body: Obx(() {
-        if (controller.isLoading.value && controller.usage.value == null) {
+        if (controller.isLoading.value ) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -143,7 +143,12 @@ class SubscriptionUsageScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () => Get.toNamed(Routes.subscriptionPlans),
+                      onPressed: () =>
+                          Get.toNamed(Routes.subscriptionPlans)?.then((result) {
+                            // if (result ?? false) {
+                              controller.loadData();
+                            // }
+                          }),
                       child: Text('view_subscription_plans'.tr),
                     ),
                   ],

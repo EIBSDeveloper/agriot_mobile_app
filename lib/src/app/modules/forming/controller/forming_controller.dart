@@ -35,6 +35,10 @@ class FormingController extends GetxController {
   }
 
   void navigateToLandDetail(int landId) {
-    Get.toNamed(Routes.landDetail, arguments: landId);
+    Get.toNamed(Routes.landDetail, arguments: landId)?.then((result) {
+      if (result ?? false) {
+         fetchLands();
+      }
+    });
   }
 }

@@ -1,8 +1,10 @@
+import 'dart:io';
 
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../controller/profile_controller.dart';
@@ -13,60 +15,60 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: CustomAppBar(
-        title: 'Profile',
-        showBackButton: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Get.toNamed('/vendor-customer');
-            },
-            icon: const Icon(Icons.account_box),
-          ),
-        ],
-      ),
+    appBar: CustomAppBar(
+      title: 'Profile',
+      showBackButton: true,
+      actions: [
+        IconButton(
+          onPressed: () {
+            Get.toNamed('/vendor-customer');
+          },
+          icon: const Icon(Icons.account_box),
+        ),
+      ],
+    ),
 
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    body: Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        final profile = controller.profile.value;
-        if (profile == null) {
-          return const Center(child: Text('No profile data available'));
-        }
+      final profile = controller.profile.value;
+      if (profile == null) {
+        return const Center(child: Text('No profile data available'));
+      }
 
-        return RefreshIndicator(
-          onRefresh: () => controller.fetchProfile(),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                _buildProfileCard(profile, context),
-                _buildSubscriptionCard(profile),
-                _buildContactCard(profile),
-                _buildCompanyCard(profile),
-                const SizedBox(height: 10),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.logout, color: Colors.redAccent),
-                  label: const Text('Logout'),
-                  onPressed: () => _showLogoutConfirmation(controller),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.redAccent,
-                    side: BorderSide(color: Colors.red.shade400),
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+      return RefreshIndicator(
+        onRefresh: () => controller.fetchProfile(),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              _buildProfileCard(profile, context),
+              _buildSubscriptionCard(profile),
+              _buildContactCard(profile),
+              _buildCompanyCard(profile),
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.logout, color: Colors.redAccent),
+                label: const Text('Logout'),
+                onPressed: () => _showLogoutConfirmation(controller),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.redAccent,
+                  side: BorderSide(color: Colors.red.shade400),
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                const SizedBox(height: 30),
-              ],
-            ),
+              ),
+              const SizedBox(height: 30),
+            ],
           ),
-        );
-      }),
-    );
+        ),
+      );
+    }),
+  );
 
   void _showLogoutConfirmation(ProfileController controller) {
     Get.dialog(
@@ -87,46 +89,99 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-
   Widget _buildProfileCard(ProfileModel profile, BuildContext context) => Card(
-      color: Colors.grey.withAlpha(30), //rgb(226,237,201)
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            if (profile.imgUrl!.isNotEmpty)
-              CircleAvatar(
-                radius: 40,
-                backgroundColor: Get.theme.colorScheme.primaryContainer,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: MyNetworkImage(profile.imgUrl!),
+    color: Colors.grey.withAlpha(30), //rgb(226,237,201)
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    child: Padding(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: (){
+              if(profile.imgUrl!.isNotEmpty) {
+                Get.toNamed(Routes.docViewer, arguments:profile.imgUrl );
+              }
+            },
+            child: Stack(
+              children: [
+                if (controller.isSubmitting.value)
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Get.theme.colorScheme.primaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: LoadingAnimationWidget.hexagonDots(
+                        color: Get.theme.primaryColor,
+                        size: 40,
+                      ),
+                    ),
+                  )
+                else if (profile.imgUrl!.isNotEmpty)
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Get.theme.colorScheme.primaryContainer,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: MyNetworkImage(profile.imgUrl!),
+                    ),
+                  )
+                else
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: controller.imagePath.value.isEmpty
+                        ? null
+                        : FileImage(File(controller.imagePath.value))
+                              as ImageProvider,
+                    child: controller.imagePath.value.isEmpty
+                        ? const Icon(Icons.person, size: 40)
+                        : const SizedBox(),
+                  ),
+
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: controller.pickImage,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Get.theme.primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TitleText(profile.name),
-                  const SizedBox(height: 4),
-                  Text(profile.phone, style: Get.textTheme.bodyLarge),
-                ],
-              ),
+              ],
             ),
-            IconButton(
-              icon: Icon(Icons.edit, color: Get.theme.primaryColor),
-              onPressed: () {
-                Get.toNamed(Routes.profileEdit);
-                // Navigate to edit profile
-              },
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TitleText(profile.name),
+                const SizedBox(height: 4),
+                Text(profile.phone, style: Get.textTheme.bodyLarge),
+              ],
             ),
-          ],
-        ),
+          ),
+          IconButton(
+            icon: Icon(Icons.edit, color: Get.theme.primaryColor),
+            onPressed: () {
+              Get.toNamed(Routes.profileEdit);
+              // Navigate to edit profile
+            },
+          ),
+        ],
       ),
-    );
+    ),
+  );
 
   Widget _buildSubscriptionCard(ProfileModel profile) {
     if (profile.subscriptions.isEmpty) {
@@ -202,82 +257,81 @@ class ProfileView extends GetView<ProfileController> {
   }
 
   Widget _buildSubscriptionDetailRow(String label, String value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: Get.textTheme.bodyLarge!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: Get.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          value,
+          style: Get.textTheme.bodyLarge!.copyWith(
+            // fontWeight: FontWeight.w500,
           ),
-          Text(
-            value,
-            style: Get.textTheme.bodyLarge!.copyWith(
-              // fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
 
   Widget _buildContactCard(ProfileModel profile) => Card(
-      color: Colors.grey.withAlpha(30),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const TitleText('Contact Information'),
-            const SizedBox(height: 12),
-            _buildContactDetailRow(Icons.email, profile.email),
-            if (profile.doorNo.isNotEmpty)
-              _buildContactDetailRow(Icons.location_on, profile.doorNo),
-          ],
-        ),
-      ),
-    );
-
-  Widget _buildCompanyCard(ProfileModel profile) => (profile.description != null ||
-            profile.taxNo != null ||
-            profile.companyName != null)
-        ? Card(
-            color: Colors.grey.withAlpha(30), //rgb(226,237,201)
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const TitleText('Company Details'),
-                  const SizedBox(height: 12),
-                  _buildDetailRow('Company Name', profile.companyName),
-                  _buildDetailRow('Tax Number', profile.taxNo),
-
-                  _buildDetailRow('Description', profile.description),
-                ],
-              ),
-            ),
-          )
-        : const SizedBox();
-
-  Widget _buildContactDetailRow(IconData icon, String value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
+    color: Colors.grey.withAlpha(30),
+    elevation: 0,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    child: Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: Get.theme.primaryColor),
-          const SizedBox(width: 12),
-          Flexible(child: Text(value, style: Get.textTheme.bodyLarge!)),
+          const TitleText('Contact Information'),
+          const SizedBox(height: 12),
+          _buildContactDetailRow(Icons.email, profile.email),
+          if (profile.doorNo.isNotEmpty)
+            _buildContactDetailRow(Icons.location_on, profile.doorNo),
         ],
       ),
-    );
+    ),
+  );
+
+  Widget _buildCompanyCard(ProfileModel profile) =>
+      (profile.description != null ||
+          profile.taxNo != null ||
+          profile.companyName != null)
+      ? Card(
+          color: Colors.grey.withAlpha(30), //rgb(226,237,201)
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const TitleText('Company Details'),
+                const SizedBox(height: 12),
+                _buildDetailRow('Company Name', profile.companyName),
+                _buildDetailRow('Tax Number', profile.taxNo),
+
+                _buildDetailRow('Description', profile.description),
+              ],
+            ),
+          ),
+        )
+      : const SizedBox();
+
+  Widget _buildContactDetailRow(IconData icon, String value) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: Get.theme.primaryColor),
+        const SizedBox(width: 12),
+        Flexible(child: Text(value, style: Get.textTheme.bodyLarge!)),
+      ],
+    ),
+  );
 
   Widget _buildDetailRow(String label, String? value) {
     if (value == null || value == '') {

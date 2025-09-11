@@ -1,12 +1,12 @@
 import 'package:argiot/src/app/modules/expense/model/consumption_record.dart';
+import 'package:argiot/src/app/modules/expense/view/widgets/month_day_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../service/utils/utils.dart';
 
 class ConsumptionList extends StatelessWidget {
   final List<ConsumptionRecord> records;
-final int type;
+  final int type;
   const ConsumptionList({super.key, required this.records, required this.type});
 
   @override
@@ -27,7 +27,7 @@ final int type;
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Leading (Date)
-                _formatDate(record.dateOfConsumption),
+                MonthDayFormat(date: record.dateOfConsumption),
 
                 const SizedBox(width: 12),
 
@@ -56,26 +56,4 @@ final int type;
       },
     );
   }
-
-  Widget _formatDate(DateTime date) => Column(
-      children: [
-        Text(
-          getMonthName(date.month),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          date.day.toString(),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ],
-    );
-
-
 }

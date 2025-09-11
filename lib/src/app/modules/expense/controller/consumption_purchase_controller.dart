@@ -7,6 +7,7 @@ import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_routes.dart';
 import '../../../service/utils/utils.dart';
 
 class ConsumptionPurchaseController extends GetxController
@@ -157,7 +158,71 @@ class ConsumptionPurchaseController extends GetxController
       isLoading(false);
     }
   }
-
+  void reLoad(result) {
+    if (result ?? false) {
+      loadData();
+    }
+  }
+  void open() {
+      if (currentTabIndex.value == 0) {
+      Get.toNamed(
+        Routes.fuelConsumption,
+        arguments: {
+          "type": selectedInventoryType.value,
+          "category": selectedInventoryCategory.value,
+          "item": selectedInventoryItem.value,
+        },
+      )?.then((result) {
+        reLoad(result);
+      });
+    } else {
+      if (selectedInventoryType.value == 6) {
+        Get.toNamed(
+          '/fuel-expenses-entry',
+          arguments: {
+            "id": selectedInventoryType.value,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
+        )?.then((result) {
+          reLoad(result);
+        });
+      } else if (selectedInventoryType.value == 1) {
+        Get.toNamed(
+          '/vehicle_entry',
+          arguments: {
+            "id": selectedInventoryType.value,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
+        )?.then((result) {
+          reLoad(result);
+        });
+      } else if (selectedInventoryType.value == 2) {
+        Get.toNamed(
+          '/machinery_entry',
+          arguments: {
+            "id": selectedInventoryType.value,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
+        )?.then((result) {
+          reLoad(result);
+        });
+      } else {
+        Get.toNamed(
+          '/fertilizer_entry',
+          arguments: {
+            "id": selectedInventoryType.value,
+            "category": selectedInventoryCategory.value,
+            "item": selectedInventoryItem.value,
+          },
+        )?.then((result) {
+          reLoad(result);
+        });
+      }
+    }
+  }
   void changeTab(int index) {
     currentTabIndex.value = index;
   }

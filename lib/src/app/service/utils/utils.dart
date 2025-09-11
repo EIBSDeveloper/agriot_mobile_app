@@ -95,8 +95,9 @@ void showDefaultGetXDialog(final String message) {
     textConfirm: "Upgrade",
     textCancel: 'Close',
     radius: 10,
-    onConfirm: () async {
-      await Get.toNamed(Routes.subscriptionUsage);
+    onConfirm: () {
+      Get.back();
+      Get.toNamed(Routes.subscriptionUsage);
     },
     onCancel: Get.back,
   );

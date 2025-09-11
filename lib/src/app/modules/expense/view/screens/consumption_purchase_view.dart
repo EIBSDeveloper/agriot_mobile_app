@@ -7,14 +7,10 @@ import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 
 class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   const ConsumptionPurchaseView({super.key});
-
-
-
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -62,7 +58,6 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               }
-
               return TabBarView(
                 controller: controller.tabController,
                 children: [
@@ -83,9 +78,9 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             () => Container(
               height: 60,
               width: double.infinity,
-              decoration:BoxDecoration(
+              decoration: BoxDecoration(
                 color: Get.theme.primaryColor.withAlpha(50),
-                 borderRadius:AppStyle.decoration.borderRadius,
+                borderRadius: AppStyle.decoration.borderRadius,
               ),
               padding: const EdgeInsets.only(right: 80, left: 8),
               margin: const EdgeInsets.only(right: 8, bottom: 15, left: 10),
@@ -106,74 +101,11 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
       onPressed: () {
-        if (controller.currentTabIndex.value == 0) {
-          Get.toNamed(
-            Routes.fuelConsumption,
-            arguments: {
-              "type": controller.selectedInventoryType.value,
-              "category": controller.selectedInventoryCategory.value,
-              "item": controller.selectedInventoryItem.value,
-            },
-          )?.then((result) {
-            refresh(result);
-          });
-        } else {
-          if (controller.selectedInventoryType.value == 6) {
-            Get.toNamed(
-              '/fuel-expenses-entry',
-              arguments: {
-                "id": controller.selectedInventoryType.value,
-                "category": controller.selectedInventoryCategory.value,
-                "item": controller.selectedInventoryItem.value,
-              },
-            )?.then((result) {
-              refresh(result);
-            });
-          } else if (controller.selectedInventoryType.value == 1) {
-            Get.toNamed(
-              '/vehicle_entry',
-              arguments: {
-                "id": controller.selectedInventoryType.value,
-                "category": controller.selectedInventoryCategory.value,
-                "item": controller.selectedInventoryItem.value,
-              },
-            )?.then((result) {
-              refresh(result);
-            });
-          } else if (controller.selectedInventoryType.value == 2) {
-            Get.toNamed(
-              '/machinery_entry',
-              arguments: {
-                "id": controller.selectedInventoryType.value,
-                "category": controller.selectedInventoryCategory.value,
-                "item": controller.selectedInventoryItem.value,
-              },
-            )?.then((result) {
-              refresh(result);
-            });
-          } else {
-            Get.toNamed(
-              '/fertilizer_entry',
-              arguments: {
-                "id": controller.selectedInventoryType.value,
-                "category": controller.selectedInventoryCategory.value,
-                "item": controller.selectedInventoryItem.value,
-              },
-            )?.then((result) {
-              refresh(result);
-            });
-          }
-        }
+        controller.open();
       },
       child: const Icon(Icons.add),
     ),
   );
-
-  void refresh(result) {
-    if (result ?? false) {
-      controller.loadData();
-    }
-  }
 
   Widget buildInventoryCategoryDropdown() => Expanded(
     child: Obx(

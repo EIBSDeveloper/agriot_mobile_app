@@ -25,10 +25,10 @@ class LandDetailView extends GetView<LandDetailController> {
           IconButton(
             color: Get.theme.primaryColor,
             onPressed: () {
-            
-              Get.toNamed('/add-land', arguments: {'landId': controller.landId.value})?.then((
-                result,
-              ) {
+              Get.toNamed(
+                '/add-land',
+                arguments: {'landId': controller.landId.value},
+              )?.then((result) {
                 controller.loadData();
               });
             },
@@ -66,8 +66,7 @@ class LandDetailView extends GetView<LandDetailController> {
             Text(controller.error.value),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () =>
-                  controller.fetchLandDetails(),
+              onPressed: () => controller.fetchLandDetails(),
               child: const Text('Retry'),
             ),
           ],
@@ -110,24 +109,26 @@ class LandDetailView extends GetView<LandDetailController> {
         children: [
           const TitleText('Land Details'),
           const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      Get.toNamed(Routes.landMapView,arguments: {'landId': controller.landId.value });
-                    },
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image.asset(AppIcons.map),
-                    ),
-                  ),
+          InkWell(
+            onTap: () {
+              Get.toNamed(
+                Routes.landMapView,
+                arguments: {'landId': controller.landId.value},
+              );
+            },
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: Image.asset(AppIcons.map),
+            ),
+          ),
         ],
       ),
-      const SizedBox(height: 10),
+
       _buildDetailRow(
         'Soil Type',
         controller.landDetails['soil_type']!['name'] ?? "",
       ),
-      _buildDetailRow('Address', ' '),
 
       _buildDetailRow(
         'Patta No',
@@ -139,22 +140,6 @@ class LandDetailView extends GetView<LandDetailController> {
       ),
       if (controller.landDetails['description'] != null)
         _buildDetailRow('Description', controller.landDetails['description']),
-      // Padding(
-      //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.end,
-      //     children: [
-      //       ElevatedButton.icon(
-      //         icon: Icon(Icons.map),
-      //         label: Text('Map'),
-      //         onPressed: () => controller.viewOnMap(
-      //           controller.landDetails['latitude'],
-      //           controller.landDetails['longitude'],
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
     ],
   );
 
@@ -235,9 +220,9 @@ class LandDetailView extends GetView<LandDetailController> {
                   'cropId': crop.id,
                 },
               )?.then((result) {
-               if(result??false){
-                 controller.loadData();
-               }
+                if (result ?? false) {
+                  controller.loadData();
+                }
               });
             },
             child: CropCard(crop: crop),
@@ -253,13 +238,17 @@ class LandDetailView extends GetView<LandDetailController> {
     children: [
       OutlinedButton(
         onPressed: () async {
-          PackageUsage? package =await findLimit();
+          PackageUsage? package = await findLimit();
 
           if (package!.cropBalance > 0) {
             Get.toNamed(
               Routes.addCrop,
               arguments: controller.landDetails['id'],
-            );
+            )?.then((result) {
+              if(result??false){
+                controller.fetchLandDetails();
+              }
+            });
           } else {
             showDefaultGetXDialog("Crop");
           }
@@ -275,21 +264,23 @@ class LandDetailView extends GetView<LandDetailController> {
     ],
   );
 
-  Widget _buildDetailRow(String label, String value) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            '$label:',
-            style: const TextStyle(fontWeight: FontWeight.bold),
+  Widget _buildDetailRow(String label, String value) => value.isNotEmpty
+      ? Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 100,
+                child: Text(
+                  '$label:',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(value)),
+            ],
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(child: Text(value)),
-      ],
-    ),
-  );
+        )
+      : const SizedBox();
 }

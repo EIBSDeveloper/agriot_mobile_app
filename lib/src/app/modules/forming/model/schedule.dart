@@ -23,7 +23,7 @@ class Schedule {
       startDate: json['start_date'],
       endDate: json['end_date'],
       status: json['schedule_status'],
-      schedule: json['schedule']??" ",
+      schedule: json['schedule']??"",
       comment: json['comment'] ?? '',
     );
 }

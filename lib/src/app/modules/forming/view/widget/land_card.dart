@@ -119,7 +119,11 @@ class LandCard extends StatelessWidget {
                         Get.toNamed(
                           '/crop-overview',
                           arguments: {'landId': land.id, 'cropId': crop.id},
-                        );
+                        )?.then((result) {
+                          if (result ?? false) {
+                            refresh.call();
+                          }
+                        });
                       },
                       child: CropCard(crop: crop),
                     ),
@@ -134,7 +138,11 @@ class LandCard extends StatelessWidget {
                             Get.toNamed(
                               Routes.addCrop,
                               arguments: land.id,
-                            )?.then((result) {});
+                            )?.then((result) {
+                              if (result ?? false) {
+                                refresh.call();
+                              }
+                            });
                           } else {
                             showDefaultGetXDialog("Crop");
                           }
@@ -153,7 +161,7 @@ class LandCard extends StatelessWidget {
               ),
             ),
           ],
-      const Divider()
+          const Divider(),
         ],
       ),
     ),

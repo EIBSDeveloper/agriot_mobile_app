@@ -6,7 +6,6 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_for
 
 import 'package:argiot/src/app/modules/vendor_customer/repository/vendor_customer_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -112,12 +111,8 @@ class VendorCustomerController extends GetxController {
   }
 
   void showError(String message) {
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
-      backgroundColor: Colors.red,
-      textColor: Colors.white,
+     showError(message,
+      
     );
   }
 

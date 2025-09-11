@@ -1,5 +1,5 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/core/app_style.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_routes.dart';
@@ -24,13 +24,7 @@ class SalesListView extends GetView<SalesController> {
               () => Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        // horizontal: 8,
-                        vertical: 4,
-                      ),
-                      // margin: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: AppStyle.decoration,
+                    child: InputCardStyle(
                       child: Column(
                         children: [
                           const FittedBox(
@@ -55,12 +49,9 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-
+const SizedBox(width: 8,),
                   Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: AppStyle.decoration,
+                    child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: controller.selectedPeriod.value,
@@ -80,10 +71,9 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
+const SizedBox(width: 8,),
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: AppStyle.decoration,
+                    child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton(
                           value: controller.selectedCropType.value,

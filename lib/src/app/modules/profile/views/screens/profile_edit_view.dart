@@ -225,7 +225,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
       inputFormatters: inputFormatters,
       controller: controller,
       decoration: InputDecoration(
-        hintText: label,
+        labelText: label,
         border: InputBorder.none,
         isDense: true,
         suffixIcon: readOnly ? const Icon(Icons.location_on) : null,

@@ -8,7 +8,6 @@ import 'package:argiot/src/app/modules/task/model/task_request.dart';
 import 'package:argiot/src/app/modules/task/view/widget/add_schedule.dart';
 import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class ScheduleController extends GetxController {
@@ -159,10 +158,8 @@ class ScheduleController extends GetxController {
       schedules.assignAll(result);
       filteredSchedules.assignAll(result);
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'failed_to_load_schedules'.tr,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+      showError( 'failed_to_load_schedules'.tr,
+        
       );
     } finally {
       isLoading(false);
@@ -179,10 +176,8 @@ class ScheduleController extends GetxController {
       );
       selectedSchedule(result);
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'failed_to_load_schedule_details'.tr,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+       showError('failed_to_load_schedule_details'.tr,
+       
       );
     } finally {
       isLoading(false);

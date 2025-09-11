@@ -89,7 +89,7 @@ class MarketListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: CustomSearchBar(
-              hintText: 'Search market name or place',
+              labelText: 'Search market name or place',
               onChanged: (query) => controller.filterMarkets(query),
             ),
           ),
@@ -173,7 +173,7 @@ class PlaceDetailsListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: CustomSearchBar(
-              hintText: 'Search name or address',
+              labelText: 'Search name or address',
               onChanged: (query) => controller.filterPlaceDetails(query),
             ),
           ),
@@ -378,7 +378,7 @@ class RentalDetailsListScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: CustomSearchBar(
-              hintText: 'Search item name',
+              labelText: 'Search item name',
               onChanged: (query) => controller.filterRentalDetails(query),
             ),
           ),

@@ -48,7 +48,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             icon: const Icon(Icons.keyboard_arrow_down),
             initialValue: controller.selectedMarket.value,
             decoration: InputDecoration(
-              hintText: "${'select_market'.tr}*",
+              labelText: "${'select_market'.tr}*",
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -108,7 +108,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           selectedColor: Get.theme.primaryColor,
           chipDisplay: MultiSelectChipDisplay(
             textStyle: const TextStyle(color: Colors.black),
-            chipColor: const Color.fromARGB(137, 221, 234, 234),
+            chipColor: AppStyle.inputBoxColor,
             onTap: (value) => controller.toggleSelection(value),
           ),
           onConfirm: (values) {
@@ -130,7 +130,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           controller: controller.nameController,
           decoration: InputDecoration(
             border: InputBorder.none,
-            hintText:
+            labelText:
                 "${controller.selectedType.value == 'customer' ? 'customer_name'.tr : 'vendor_name'.tr}*",
           ),
           validator: (value) =>
@@ -142,7 +142,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         child: TextFormField(
           controller: controller.mobileController,
           decoration: InputDecoration(
-            hintText: "${'mobile_number'.tr} *",
+            labelText: "${'mobile_number'.tr} *",
             border: InputBorder.none,
           ),
           keyboardType: TextInputType.phone,
@@ -158,7 +158,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         child: TextFormField(
           controller: controller.emailController,
           decoration: InputDecoration(
-            hintText: 'email'.tr,
+            labelText: 'email'.tr,
             border: InputBorder.none,
           ),
           keyboardType: TextInputType.emailAddress,
@@ -175,7 +175,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         child: TextFormField(
           controller: controller.shopNameController,
           decoration: InputDecoration(
-            hintText:
+            labelText:
                 controller.selectedType.value == 'customer' ||
                     controller.selectedType.value == 'both'
                 ? "${'shop_name'.tr} *"
@@ -199,7 +199,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           controller: controller.doorNoController,
           maxLines: 3,
           decoration: InputDecoration(
-            hintText: 'address'.tr,
+            labelText: 'address'.tr,
             border: InputBorder.none,
           ),
         ),
@@ -209,7 +209,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         child: TextFormField(
           controller: controller.pincodeController,
           decoration: InputDecoration(
-            hintText: "${'pincode'.tr}*",
+            labelText: "${'pincode'.tr}*",
             border: InputBorder.none,
           ),
           inputFormatters: [
@@ -254,24 +254,19 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         child: TextFormField(
           controller: controller.gstNoController,
           decoration: InputDecoration(
-            hintText: 'gst_number'.tr,
+            labelText: 'gst_number'.tr,
             border: InputBorder.none,
           ),
         ),
       ),
 
       const SizedBox(height: 12),
-      Container(
-        decoration: AppStyle.decoration.copyWith(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          boxShadow: const [],
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-
+      InputCardStyle(
+               
         child: TextFormField(
           controller: controller.descriptionController,
           decoration: InputDecoration(
-            hintText: 'description'.tr,
+            labelText: 'description'.tr,
             border: InputBorder.none,
           ),
           maxLines: 3,

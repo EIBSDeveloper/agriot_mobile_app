@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/input_card_style.dart';
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class TaskDetailView extends GetView<TaskDetailsController> {
   const TaskDetailView({super.key});
@@ -19,7 +20,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       actions: [
         IconButton(
           onPressed: () => _confirmDeleteTask(),
-          icon:  Icon(Icons.delete, color: Get.theme.primaryColor),
+          icon: Icon(Icons.delete, color: Get.theme.primaryColor),
         ),
       ],
     ),
@@ -70,12 +71,12 @@ class TaskDetailView extends GetView<TaskDetailsController> {
             _buildDetailItem('Activity Type', task.scheduleActivityType.name),
             // _buildDetailItem('Start Date', task.startDate),
             _buildDetailItem('Date', task.endDate),
+
             // _buildDetailItem('Status', task.scheduleStatus.name),
-            _buildStatus('Status'),
             _buildDetailItem('Description', task.description),
-            if (task.comment.isNotEmpty)
+           
               _buildDetailItem('Comment', task.comment),
-            const SizedBox(height: 16),
+            _buildStatus('Status'),
 
             // _buildSectionHeader('Expenses'),
             // _buildDetailItem('Total Expenses', '${task.totalExpenseAmount}'),
@@ -121,7 +122,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
     ),
   );
 
-  Widget _buildDetailItem(String label, String value) => Padding(
+  Widget _buildDetailItem(String label, String value) => (value.isNotEmpty)?Padding(
     padding: const EdgeInsets.symmetric(vertical: 4.0),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,30 +140,30 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         Expanded(child: Text(value, style: Get.textTheme.bodyMedium)),
       ],
     ),
-  );
+  ):const SizedBox.shrink();
 
   Widget _buildStatus(String label) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 4.0),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: Get.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
+        // SizedBox(
+        //   width: 120,
+        //   child: Text(
+        //     label,
+        //     style: Get.textTheme.bodyMedium?.copyWith(
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        // ),
+        // const SizedBox(width: 8),
         Expanded(
           child: InputCardStyle(
             child: DropdownButtonFormField<int>(
               initialValue: controller.selectedValue.value,
               icon: const Icon(Icons.keyboard_arrow_down),
               decoration: const InputDecoration(
-                hintText: "Status",
+                labelText: "Status",
                 border: InputBorder.none,
               ),
               items: controller.statusList
@@ -221,7 +222,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       ),
     );
   }
-  
+
   void _showAddCommentDialog() {
     final commentController = TextEditingController(
       text: controller.task.value?.comment ?? '',
@@ -240,17 +241,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+            const ButtomSheetScrollButton(),
             const Text(
               'Add Comment',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -260,7 +251,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               controller: commentController,
               maxLines: 3,
               decoration: const InputDecoration(
-                hintText: 'Enter your comment...',
+                labelText: 'Enter your comment...',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -291,5 +282,4 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       isScrollControlled: true,
     );
   }
-
 }

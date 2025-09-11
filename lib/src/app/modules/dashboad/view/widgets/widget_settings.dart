@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/dashboad/controller/dashboard_controller.dart';
+import 'package:argiot/src/app/modules/dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,17 +16,7 @@ class WidgetSettings extends GetView<DashboardController> {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Center(
-          child: Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
+        const ButtomSheetScrollButton(),
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(

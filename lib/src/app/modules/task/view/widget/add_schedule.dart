@@ -4,6 +4,8 @@ import 'package:argiot/src/app/widgets/toggle_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
+
 class AddSchedule extends StatelessWidget {
   AddSchedule({super.key});
   final ScheduleController controller = Get.find<ScheduleController>();
@@ -25,17 +27,7 @@ class AddSchedule extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const ButtomSheetScrollButton(),
               const Text(
                 'Add Schedule',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -153,7 +145,7 @@ class AddSchedule extends StatelessWidget {
                                 Icons.calendar_today,
                                 color: Get.theme.primaryColor,
                               ),
-                              hintText: "Not selected",
+                            
                               border: InputBorder.none,
                             ),
                             controller: TextEditingController(

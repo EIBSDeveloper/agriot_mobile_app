@@ -7,6 +7,7 @@ class AppStyle {
   static const double borderRadiusbox = 10;
   static const double borderRadiusClip = 5;
   static const double borderRadiusbottom = 50;
+  static const Color inputBoxColor = Color.fromARGB(137, 221, 234, 234);
 
   static const List<BoxShadow> boxShadow = [
     BoxShadow(
@@ -29,7 +30,7 @@ class AppStyle {
     boxShadow: AppStyle.boxShadow,
   );
   static const BoxDecoration inputDecoration = BoxDecoration(
-    color:  Color.fromARGB(137, 221, 234, 234),
+    color: inputBoxColor,
     borderRadius: BorderRadius.all(Radius.circular(borderRadiusbox)),
   );
 }

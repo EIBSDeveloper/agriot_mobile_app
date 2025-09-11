@@ -76,7 +76,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.regNoController,
       decoration: InputDecoration(
-        hintText: 'reg_no_label'.tr,
+        labelText: 'reg_no_label'.tr,
         border: InputBorder.none,
         errorText: controller.errors['reg_no'],
       ),
@@ -87,7 +87,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.ownerNameController,
       decoration: InputDecoration(
-        hintText: 'owner_name_label'.tr,
+        labelText: 'owner_name_label'.tr,
         border: InputBorder.none,
         errorText: controller.errors['owner_name'],
       ),
@@ -102,7 +102,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       },
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
       decoration: InputDecoration(
-        hintText: "${'date_of_reg_label'.tr} *",
+        labelText: "${'date_of_reg_label'.tr} *",
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
       ),
@@ -117,7 +117,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       onTap: () =>
           controller.selectDate(controller.regValidTillController, context),
       decoration: InputDecoration(
-        hintText: "${'reg_valid_till_label'.tr} *",
+        labelText: "${'reg_valid_till_label'.tr} *",
 
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
@@ -130,7 +130,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.engineNoController,
       decoration: InputDecoration(
-        hintText: 'engine_no_label'.tr,
+        labelText: 'engine_no_label'.tr,
         border: InputBorder.none,
       ),
     ),
@@ -140,7 +140,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.chasisNoController,
       decoration: InputDecoration(
-        hintText: 'chasis_no_label'.tr,
+        labelText: 'chasis_no_label'.tr,
         border: InputBorder.none,
       ),
     ),
@@ -150,7 +150,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.runningKmController,
       decoration: InputDecoration(
-        hintText: 'running_km_label'.tr,
+        labelText: 'running_km_label'.tr,
         border: InputBorder.none,
         errorText: controller.errors['running_km'],
       ),
@@ -166,7 +166,7 @@ class VehicleView extends GetView<PurchasesAddController> {
           child: TextFormField(
             controller: controller.serviceFrequencyController,
             decoration: InputDecoration(
-              hintText: 'service_frequency_label'.tr,
+              labelText: 'service_frequency_label'.tr,
               border: InputBorder.none,
             ),
             keyboardType: TextInputType.number,
@@ -186,7 +186,7 @@ class VehicleView extends GetView<PurchasesAddController> {
                 .toList(),
             onChanged: (value) => controller.setServiceFrequencyUnit(value!),
             decoration: InputDecoration(
-              hintText: 'unit_label'.tr,
+              labelText: 'unit_label'.tr,
               border: InputBorder.none,
             ),
           ),
@@ -199,7 +199,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.fuelCapacityController,
       decoration: InputDecoration(
-        hintText: 'fuel_capacity_label'.tr,
+        labelText: 'fuel_capacity_label'.tr,
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -210,7 +210,7 @@ class VehicleView extends GetView<PurchasesAddController> {
     child: TextFormField(
       controller: controller.averageMileageController,
       decoration: InputDecoration(
-        hintText: 'average_mileage_label'.tr,
+        labelText: 'average_mileage_label'.tr,
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -257,7 +257,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       decoration: InputDecoration(
         border: InputBorder.none,
 
-        hintText: 'company_name_label'.tr,
+        labelText: 'company_name_label'.tr,
         errorText: controller.errors['company_name'],
       ),
     ),
@@ -269,7 +269,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
 
       decoration: InputDecoration(
-        hintText: 'insurance_no_label'.tr,
+        labelText: 'insurance_no_label'.tr,
         border: InputBorder.none,
         errorText: controller.errors['insurance_no'],
       ),
@@ -282,7 +282,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
 
       decoration: InputDecoration(
-        hintText: 'insurance_amount_label'.tr,
+        labelText: 'insurance_amount_label'.tr,
         border: InputBorder.none,
         errorText: controller.errors['insurance_amount'],
       ),
@@ -298,7 +298,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       onTap: () =>
           controller.selectDate(controller.startDateController, context),
       decoration: InputDecoration(
-        hintText: 'start_date_label'.tr,
+        labelText: 'start_date_label'.tr,
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         errorText: controller.errors['start_date'],
@@ -314,7 +314,7 @@ class VehicleView extends GetView<PurchasesAddController> {
 
       onTap: () => controller.selectDate(controller.endDateController, context),
       decoration: InputDecoration(
-        hintText: 'end_date_label'.tr,
+        labelText: 'end_date_label'.tr,
 
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
@@ -332,7 +332,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       onTap: () =>
           controller.selectDate(controller.renewalDateController, context),
       decoration: InputDecoration(
-        hintText: 'renewal_date_label'.tr,
+        labelText: 'renewal_date_label'.tr,
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         errorText: controller.errors['renewal_date'],

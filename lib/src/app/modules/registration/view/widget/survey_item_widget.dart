@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/app_style.dart';
+import '../../../../widgets/input_card_style.dart';
 import '../../model/dropdown_item.dart';
 import '../../model/survey_model.dart';
 import 'searchable_dropdown.dart';
@@ -44,15 +44,8 @@ class SurveyItemWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Container(
-              decoration: AppStyle.decoration.copyWith(
-                color: const Color.fromARGB(137, 221, 234, 234),
-                boxShadow: const [],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              constraints: const BoxConstraints(
-                minHeight: 55, // minimum height for all fields
-              ),
+         InputCardStyle(
+               
               child: TextFormField(
                 initialValue: item.surveyNo,
                 decoration: const InputDecoration(
@@ -69,16 +62,8 @@ class SurveyItemWidget extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: Container(
-                    decoration: AppStyle.decoration.copyWith(
-                      color: const Color.fromARGB(137, 221, 234, 234),
-                      boxShadow: const [],
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    height: 55,
+                  child:  InputCardStyle(
+               
                     child: TextFormField(
                       initialValue: item.measurement,
                       decoration: const InputDecoration(

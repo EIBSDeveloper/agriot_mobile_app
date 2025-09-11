@@ -1,9 +1,9 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../service/utils/utils.dart';
 import '../../controller/notification_controller.dart';
 import '../../notification_model.dart';
 
@@ -58,13 +58,8 @@ class NotificationView extends GetView<NotificationController> {
   Widget _buildNotificationCard(NotificationItem notification) => InkWell(
       onTap: () {
         if (notification.isRead) {
-          Fluttertoast.showToast(
-            msg: "this_notification_is_already_read".tr,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Get.theme.primaryColor,
-            textColor: Colors.white,
-            fontSize: 14.0,
+          showSuccess( "this_notification_is_already_read".tr,
+          
           );
           return;
         }

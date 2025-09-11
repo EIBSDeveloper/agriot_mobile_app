@@ -10,7 +10,6 @@ import 'package:argiot/src/app/modules/sales/model/rupee.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail.dart';
 import 'package:argiot/src/app/modules/sales/model/unit.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/enums.dart';
@@ -117,7 +116,7 @@ class NewSalesController extends GetxController {
       selectedCustomer.value = response.myCustomer.id;
       selectedDate.value = DateTime.parse(response.createdAt);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to fetch sales details: $e');
+     showError( 'Failed to fetch sales details: $e');
     } finally {
       isLoading(false);
     }
@@ -131,7 +130,7 @@ class NewSalesController extends GetxController {
         selectedReason.value = reasonsList.first;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to fetch reasons: $e');
+       showError('Failed to fetch reasons: $e');
     }
   }
 
@@ -140,7 +139,7 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.getRupees();
       rupeesList.assignAll(response);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to fetch rupees: $e');
+       showError('Failed to fetch rupees: $e');
     }
   }
 
@@ -149,7 +148,7 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.getCustomerList();
       customerList.assignAll(response);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to fetch customers: $e');
+     showError( 'Failed to fetch customers: $e');
     }
   }
 
@@ -195,19 +194,17 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.addSales(request);
 
       if (response['success'] == true) {
-        Fluttertoast.showToast(
-          msg: response['message'] ?? 'Sales added successfully!',
+        showSuccess( response['message'] ?? 'Sales added successfully!',
         );
         clearForm();
         return true;
       } else {
-        Fluttertoast.showToast(
-          msg: response['message'] ?? 'Failed to add sales',
+        showError( response['message'] ?? 'Failed to add sales',
         );
         return false;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to add sales: $e');
+       showError( 'Failed to add sales: $e');
       return false;
     } finally {
       isLoading(false);
@@ -237,18 +234,16 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.updateSales(salesId, request);
 
       if (response['success'] == true) {
-        Fluttertoast.showToast(
-          msg: response['message'] ?? 'Sales updated successfully!',
+         showError(response['message'] ?? 'Sales updated successfully!',
         );
         return true;
       } else {
-        Fluttertoast.showToast(
-          msg: response['message'] ?? 'Failed to update sales',
+         showError( response['message'] ?? 'Failed to update sales',
         );
         return false;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to update sales: $e');
+       showError( 'Failed to update sales: $e');
       return false;
     } finally {
       isLoading(false);
@@ -261,14 +256,14 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.deleteSales(salesId);
 
       if (response['message'] != null) {
-        Fluttertoast.showToast(msg: response['message']);
+        showSuccess( response['message']);
         return true;
       } else {
-        Fluttertoast.showToast(msg: 'Failed to delete sales');
+         showError( 'Failed to delete sales');
         return false;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to delete sales: $e');
+       showError( 'Failed to delete sales: $e');
       return false;
     } finally {
       isLoading(false);

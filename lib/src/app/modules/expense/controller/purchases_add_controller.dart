@@ -10,7 +10,6 @@ import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -132,7 +131,7 @@ class PurchasesAddController extends GetxController {
       final response = await _repository.getVendorList();
       vendorList.assignAll(response);
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Failed to fetch customers: $e');
+      showError('Failed to fetch customers: $e');
     }
   }
 
@@ -151,7 +150,7 @@ class PurchasesAddController extends GetxController {
         inventoryCategoryUpdate(inventoryCategories.first.id);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch inventory categories');
+   showError( 'Failed to fetch inventory categories');
     } finally {
       isCategoryLoading(false);
     }
@@ -287,12 +286,12 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-        Fluttertoast.showToast(msg: 'fuel_added_success'.tr);
+        showSuccess('fuel_added_success'.tr);
       } else {
-        Fluttertoast.showToast(msg: response['message'] ?? 'error_occurred'.tr);
+        showError(response['message'] ?? 'error_occurred'.tr);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'network_error'.tr);
+      showError('network_error'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -337,14 +336,12 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-        Fluttertoast.showToast(msg: 'Machinery added successfully!'.tr);
+        showSuccess( 'Machinery added successfully!'.tr);
       } else {
-        Fluttertoast.showToast(
-          msg: response['message'] ?? 'Failed to add machinery'.tr,
-        );
+        showError(response['message'] ?? 'Failed to add machinery'.tr);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Network error: ${e.toString()}'.tr);
+      showError('Network error: ${e.toString()}'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -362,8 +359,7 @@ class PurchasesAddController extends GetxController {
         farmerId: appData.userId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
         vendor: selectedVendor.value ?? 0,
-        inventoryType:
-            selectedInventoryType.value!, // Assuming default value
+        inventoryType: selectedInventoryType.value!, // Assuming default value
         inventoryCategory: selectedInventoryCategory.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
         registerNumber: regNoController.text,
@@ -439,30 +435,14 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-        Fluttertoast.showToast(
-          msg: "Vehicle added successfully!",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
+       showSuccess( "Vehicle added successfully!",
+        
         );
       } else {
-        Fluttertoast.showToast(
-          msg: response.message ?? "Failed to add vehicle",
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-        );
+        showError(response.message ?? "Failed to add vehicle");
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error: ${e.toString()}",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showError("Error: ${e.toString()}");
     } finally {
       isLoading.value = false;
     }
@@ -509,26 +489,17 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-        Fluttertoast.showToast(
-          msg: 'fertilizer_add_success'.tr,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+       showError('fertilizer_add_success'.tr,
+        
         );
       } else {
-        Fluttertoast.showToast(
-          msg: response.message,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
+        showError( response.message,
+          
         );
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'fertilizer_add_failed'.tr,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
+       showError( 'fertilizer_add_failed'.tr,
+       
       );
     } finally {
       isLoading.value = false;
@@ -545,7 +516,7 @@ class PurchasesAddController extends GetxController {
           child: InputCardStyle(
             child: TextFormField(
               decoration: InputDecoration(
-                hintText: selectedInventoryType.value == 6
+                labelText: selectedInventoryType.value == 6
                     ? "${'litre'.tr} *"
                     : "${'quantity'.tr} *",
                 border: InputBorder.none,
@@ -582,7 +553,7 @@ class PurchasesAddController extends GetxController {
       child: TextFormField(
         validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         decoration: InputDecoration(
-          hintText: "${'purchase_amount'.tr} *",
+          labelText: "${'purchase_amount'.tr} *",
           border: InputBorder.none,
           // errorText: ,
         ),
@@ -597,7 +568,7 @@ class PurchasesAddController extends GetxController {
     () => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: "${'paid_amount'.tr} *",
+          labelText: "${'paid_amount'.tr} *",
           border: InputBorder.none,
           // errorText: ,
         ),
@@ -680,7 +651,7 @@ class PurchasesAddController extends GetxController {
     noHeight: true,
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: 'description'.tr,
+        labelText: 'description'.tr,
         border: InputBorder.none,
 
         // counterText: '${description.value.length}/250',
@@ -700,7 +671,7 @@ class PurchasesAddController extends GetxController {
             onTap: () => selectDate1(),
             child: InputDecorator(
               decoration: InputDecoration(
-                hintText: 'date'.tr,
+                labelText: 'date'.tr,
                 border: InputBorder.none,
                 // errorText: getErrorForField('date'),
               ),
@@ -732,7 +703,7 @@ class PurchasesAddController extends GetxController {
         InputCardStyle(
           child: DropdownButtonFormField<int>(
             decoration: InputDecoration(
-              hintText: "${'Inventory Category'.tr} *",
+              labelText: "${'Inventory Category'.tr} *",
               border: InputBorder.none,
             ),
 
@@ -761,7 +732,7 @@ class PurchasesAddController extends GetxController {
       child: DropdownButtonFormField<int>(
         validator: (value) => value == null ? 'required_field'.tr : null,
         decoration: InputDecoration(
-          hintText: "${'Inventory Item'.tr} *",
+          labelText: "${'Inventory Item'.tr} *",
           border: InputBorder.none,
         ),
         initialValue: selectedInventoryItem.value,
@@ -788,7 +759,7 @@ class PurchasesAddController extends GetxController {
             child: DropdownButtonFormField<int>(
               validator: (value) => value == null ? 'required_field'.tr : null,
               decoration: const InputDecoration(
-                hintText: 'Vendor *',
+                labelText: 'Vendor *',
                 border: InputBorder.none,
               ),
 

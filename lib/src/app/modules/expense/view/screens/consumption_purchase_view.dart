@@ -182,7 +182,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             child: DropdownButtonFormField<int>(
               isExpanded: true,
               decoration: InputDecoration(
-                hintText: 'Inventory Category'.tr,
+                labelText: 'Inventory Category'.tr,
                 border: InputBorder.none,
               ),
 
@@ -217,7 +217,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
         child: DropdownButtonFormField<int>(
           isExpanded: true,
           decoration: InputDecoration(
-            hintText: 'Inventory Item'.tr,
+            labelText: 'Inventory Item'.tr,
             border: InputBorder.none,
           ),
 

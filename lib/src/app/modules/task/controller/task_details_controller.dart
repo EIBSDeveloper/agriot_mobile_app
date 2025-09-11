@@ -5,7 +5,6 @@ import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/modules/task/model/task_details.dart';
 import 'package:argiot/src/app/modules/task/repostory/task_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 

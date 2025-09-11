@@ -9,6 +9,7 @@ import 'package:pie_chart/pie_chart.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/title_text.dart';
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
@@ -59,19 +60,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         ),
         child: Wrap(
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
+           const ButtomSheetScrollButton(),
             ListTile(
               title: Text(
                 "${'add_new'.tr} ${'Expense'.tr}",

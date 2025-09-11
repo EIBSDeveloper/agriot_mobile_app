@@ -6,7 +6,7 @@ import '../../../../widgets/input_card_style.dart';
 
 class SearchableDropdown<T> extends StatefulWidget {
   final String label;
-  final String? hintText;
+  final String? labelText;
   final List<T> items;
   final T? selectedItem;
   final ValueChanged<T?> onChanged;
@@ -18,7 +18,7 @@ class SearchableDropdown<T> extends StatefulWidget {
   const SearchableDropdown({
     super.key,
     required this.label,
-    this.hintText,
+    this.labelText,
     required this.items,
     required this.onChanged,
     this.selectedItem,
@@ -63,7 +63,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
       controller: _displayController,
       readOnly: true,
       decoration: InputDecoration(
-        labelText: widget.hintText ?? widget.label,
+        labelText: widget.labelText ?? widget.label,
         border: InputBorder.none,
         isDense: widget.isDense,
         contentPadding: EdgeInsets.zero,
@@ -190,20 +190,12 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Container(
-                    decoration: AppStyle.decoration.copyWith(
-                      color: const Color.fromARGB(137, 221, 234, 234),
-                      boxShadow: const [],
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                  child:  InputCardStyle(
+               
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'Search ${widget.label}',
+                        labelText: 'Search ${widget.label}',
                         prefixIcon: const Icon(Icons.search),
                         border: InputBorder.none,
                       ),

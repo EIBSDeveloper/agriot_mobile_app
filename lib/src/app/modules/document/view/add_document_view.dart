@@ -161,7 +161,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
               child: TextFormField(
                 controller: _textController,
                 decoration: const InputDecoration(
-                  hintText: 'Enter Document type',
+                  labelText: 'Enter Document type',
                   border: InputBorder.none,
                 ),
                 validator: (value) => value == null || value.isEmpty

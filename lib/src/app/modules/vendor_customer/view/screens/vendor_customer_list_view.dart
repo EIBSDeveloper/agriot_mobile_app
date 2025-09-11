@@ -4,6 +4,7 @@ import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_custome
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 import '../../../subscription/model/package_usage.dart';
 
 class VendorCustomerListView extends GetView<VendorCustomerController> {
@@ -129,17 +130,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         ),
         child: Wrap(
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
+           const ButtomSheetScrollButton(),
             Text(
               'add_new'.tr,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

@@ -1,29 +1,25 @@
 // widgets/search_bar.dart
 
-import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../widgets/input_card_style.dart';
+
 class CustomSearchBar extends StatelessWidget {
-  final String hintText;
+  final String labelText;
   final Function(String) onChanged;
 
   const CustomSearchBar({
     super.key,
-    required this.hintText,
+    required this.labelText,
     required this.onChanged,
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      height: 55,
+  Widget build(BuildContext context) =>  InputCardStyle(
+               
       child: TextField(
         decoration: InputDecoration(
-          hintText: hintText,
+          labelText: labelText,
           prefixIcon: const Icon(Icons.search),
           border: InputBorder.none,
         ),

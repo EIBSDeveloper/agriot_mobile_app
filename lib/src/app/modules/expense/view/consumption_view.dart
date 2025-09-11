@@ -170,7 +170,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: 'Date'.tr,
+          labelText: 'Date'.tr,
           border: InputBorder.none,
           suffixIcon:  Icon(Icons.calendar_today,color: Get.theme.primaryColor,),
         ),
@@ -208,7 +208,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          hintText: "${'Inventory Type'.tr} *",
+          labelText: "${'Inventory Type'.tr} *",
           border: InputBorder.none,
         ),
 
@@ -232,7 +232,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          hintText: "${'Inventory Category'.tr } *",
+          labelText: "${'Inventory Category'.tr } *",
           border: InputBorder.none,
         ),
         icon: const Icon(Icons.keyboard_arrow_down),
@@ -259,7 +259,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          hintText: "${'Inventory Item'.tr} *",
+          labelText: "${'Inventory Item'.tr} *",
           border: InputBorder.none,
         ),
 
@@ -287,7 +287,7 @@ class ConsumptionView extends StatelessWidget {
         child: InputCardStyle(
           child: TextFormField(
             decoration: InputDecoration(
-              hintText: "${'Quantity'.tr} *",
+              labelText: "${'Quantity'.tr} *",
               border: InputBorder.none,
             ),
 
@@ -306,7 +306,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildUsageHoursField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: "${'Usage Hours'.tr} *",
+        labelText: "${'Usage Hours'.tr} *",
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -317,7 +317,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildStartKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText:"${ 'Start Kilometer'.tr} *",
+        labelText:"${ 'Start Kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -329,7 +329,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildEndKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: "${'End Kilometer'.tr} *",
+        labelText: "${'End Kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -341,7 +341,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildToolItemsField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: 'Tool Items'.tr,
+        labelText: 'Tool Items'.tr,
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -353,7 +353,7 @@ class ConsumptionView extends StatelessWidget {
     noHeight: true,
     child: TextFormField(
       decoration: InputDecoration(
-        hintText: 'Description'.tr,
+        labelText: 'Description'.tr,
         border: InputBorder.none,
       ),
       maxLines: 3,

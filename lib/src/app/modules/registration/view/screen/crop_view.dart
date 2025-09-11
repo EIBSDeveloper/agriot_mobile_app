@@ -2,7 +2,6 @@ import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/app_style.dart';
 import '../../../forming/view/widget/survey_dropdown.dart';
 import '../../controller/crop_controller.dart';
 import '../../model/dropdown_item.dart';
@@ -146,12 +145,8 @@ class CropView extends GetView<RegCropController> {
       );
     });
 
-  Widget _buildPlantationDateField(BuildContext context) => Obx(() => Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  Widget _buildPlantationDateField(BuildContext context) => Obx(() =>  InputCardStyle(
+               
         child: TextFormField(
           readOnly: true,
           decoration: const InputDecoration(
@@ -179,15 +174,8 @@ class CropView extends GetView<RegCropController> {
           children: [
             Expanded(
               flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
+              child:  InputCardStyle(
+               
                 child: TextFormField(
                   controller: controller.measurementController,
                   decoration: const InputDecoration(
@@ -203,15 +191,8 @@ class CropView extends GetView<RegCropController> {
             const SizedBox(width: 16),
            Expanded(
               flex: 2,
-              child: Obx(() => Container(
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(137, 221, 234, 234),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
+              child: Obx(() => InputCardStyle(
+               
                   child: DropdownButtonFormField<AppDropdownItem>(
                     isExpanded: true,
                     
@@ -259,18 +240,11 @@ class CropView extends GetView<RegCropController> {
             : const Text('Save Crop Details'),
       ));
 
-  Widget _buildLoadingDropdown(String text) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-       constraints: const BoxConstraints(
-      minHeight: 55, // minimum height for all fields
-    ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  Widget _buildLoadingDropdown(String text) => InputCardStyle(
+               
       child: InputDecorator(
         decoration: InputDecoration(
-          hintText: text,
+          labelText: text,
           border: InputBorder.none,
           isDense: true,
         ),
@@ -288,18 +262,11 @@ class CropView extends GetView<RegCropController> {
       ),
     );
 
-  Widget _buildDisabledDropdown(String text) => Container(
-      decoration: AppStyle.decoration.copyWith(
-        color: const Color.fromARGB(137, 221, 234, 234),
-        boxShadow: const [],
-      ),
-     constraints: const BoxConstraints(
-      minHeight: 55, // minimum height for all fields
-    ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  Widget _buildDisabledDropdown(String text) => InputCardStyle(
+               
       child: InputDecorator(
         decoration: InputDecoration(
-          hintText: text,
+          labelText: text,
           border: InputBorder.none,
           isDense: true,
         ),
@@ -320,45 +287,3 @@ class CropView extends GetView<RegCropController> {
     );
 
 }
-
-// class SurveyDropdown extends StatelessWidget {
-//   final List<CropSurveyDetail> surveys;
-//   final CropSurveyDetail? selectedSurvey;
-//   final Function(CropSurveyDetail?) onChanged;
-//   final String label;
-
-//   const SurveyDropdown({
-//     super.key,
-//     required this.surveys,
-//     required this.selectedSurvey,
-//     required this.onChanged,
-//     this.label = 'Survey No',
-//   });
-
-//   @override
-//   Widget build(BuildContext context) => Container(
-//       decoration: AppStyle.decoration.copyWith(
-//         color: const Color.fromARGB(137, 221, 234, 234),
-//         boxShadow: const [],
-//       ),
-//       height: 55,
-//       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-//       child: DropdownButtonFormField<CropSurveyDetail>(
-//         value: surveys.contains(selectedSurvey) ? selectedSurvey : null,
-        
-//                 icon: const Icon(Icons.keyboard_arrow_down),
-//         items: surveys.map((CropSurveyDetail survey) => DropdownMenuItem(
-//             value: survey,
-//             child: Text(
-//               '${survey.surveyNo} (${survey.surveyMeasurementValue} ${survey.surveyMeasurementUnit})',
-//             ),
-//           )).toList(),
-//         onChanged: onChanged,
-//         decoration: InputDecoration(
-//           labelText: label,
-//           border: InputBorder.none,
-//           contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-//         ),
-//       ),
-//     );
-// }

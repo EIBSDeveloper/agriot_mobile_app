@@ -3,7 +3,6 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../core/app_style.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../registration/model/dropdown_item.dart';
 import '../../../registration/view/widget/searchable_dropdown.dart';
@@ -255,7 +254,7 @@ class CropView extends GetView<CropController> {
                 child: DropdownButtonFormField<AppDropdownItem>(
                   initialValue: controller.selectedMeasurementUnit.value,
                   decoration: const InputDecoration(
-                    hintText: 'Unit *',
+                    labelText: 'Unit *',
                     border: InputBorder.none,
                   ),
 
@@ -303,16 +302,11 @@ class CropView extends GetView<CropController> {
     ),
   );
 
-  Widget _buildLoadingDropdown(String text) => Container(
-    decoration: AppStyle.decoration.copyWith(
-      color: const Color.fromARGB(137, 221, 234, 234),
-      boxShadow: const [],
-    ),
-    height: 55,
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  Widget _buildLoadingDropdown(String text) =>  InputCardStyle(
+               
     child: InputDecorator(
       decoration: InputDecoration(
-        hintText: text,
+        labelText: text,
         border: InputBorder.none,
         isDense: true,
       ),
@@ -330,16 +324,11 @@ class CropView extends GetView<CropController> {
     ),
   );
 
-  Widget _buildDisabledDropdown(String text) => Container(
-    decoration: AppStyle.decoration.copyWith(
-      color: const Color.fromARGB(137, 221, 234, 234),
-      boxShadow: const [],
-    ),
-    height: 55,
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  Widget _buildDisabledDropdown(String text) =>  InputCardStyle(
+               
     child: InputDecorator(
       decoration: InputDecoration(
-        hintText: text,
+        labelText: text,
         border: InputBorder.none,
         isDense: true,
       ),

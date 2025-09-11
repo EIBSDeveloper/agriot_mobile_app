@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/app_style.dart';
+import '../../../../widgets/input_card_style.dart';
 import '../../controller/kyc_controller.dart';
 
 class KycView extends GetView<KycController> {
@@ -94,22 +94,14 @@ class KycView extends GetView<KycController> {
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) => Container(
-    decoration: AppStyle.decoration.copyWith(
-      color: const Color.fromARGB(137, 221, 234, 234),
-      boxShadow: const [],
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    // height: height ?? 55,
-    constraints: const BoxConstraints(
-      minHeight: 55, // minimum height for all fields
-    ),
+  }) =>  InputCardStyle(
+               
 
     child: TextFormField(
       controller: controller,
       inputFormatters: inputFormatters,
       decoration: InputDecoration(
-        hintText: label,
+        labelText: label,
         border: InputBorder.none,
         isDense: true,
         suffixIcon: readOnly ? const Icon(Icons.location_on) : null,

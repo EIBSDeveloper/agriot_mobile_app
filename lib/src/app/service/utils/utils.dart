@@ -16,6 +16,12 @@ import 'enums.dart';
 
 AppDataController appData = Get.find();
 void showError(final String message) {
+  if (message.contains('404') ||
+      message.contains('500') ||
+      message.contains('error') ||
+      message.contains('Error')) {
+    return;
+  }
   Fluttertoast.showToast(
     msg: message,
     toastLength: Toast.LENGTH_LONG,
@@ -24,6 +30,7 @@ void showError(final String message) {
     textColor: Colors.white,
   );
 }
+
 void showSuccess(final String message) {
   Fluttertoast.showToast(
     msg: message,
@@ -43,6 +50,7 @@ void showWarning(final String message) {
     textColor: Colors.white,
   );
 }
+
 String capitalizeFirstLetter(final String input) {
   if (input.isEmpty) return input;
   return input[0].toUpperCase() + input.substring(1);
@@ -62,8 +70,6 @@ Future<void> makePhoneCall(final String phoneNumber) async {
     throw 'Could not launch $uri';
   }
 }
-
-
 
 double kelvinToCelsius(final double kelvin) => kelvin - 273.15;
 

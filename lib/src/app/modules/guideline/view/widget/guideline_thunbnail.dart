@@ -26,8 +26,8 @@ class GuidelineThunbnail extends StatelessWidget {
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
           ),
-          child: guideline.mediaType == 'video'
-              ? const Icon(Icons.videocam, size: 40, color: Colors.grey)
+          child: (guideline.mediaType == 'video' && youtubeThumbnailUrl == null)
+              ?   Icon(Icons.play_circle_fill, size: 40, color: Get.theme.colorScheme.primary,)
               : Image.network(
                   "${appData.baseUrlWithoutAPi.value}${guideline.document}",
                   fit: BoxFit.cover,
@@ -39,15 +39,15 @@ class GuidelineThunbnail extends StatelessWidget {
                     }
                     return const Center(child: CircularProgressIndicator());
                   },
-                  errorBuilder: (context, error, stackTrace) => const Icon(
+                  errorBuilder: (context, error, stackTrace) =>  Icon(
                     Icons.insert_drive_file,
                     size: 40,
-                    color: Colors.grey,
+                  color: Get.theme.colorScheme.primary,
                   ),
                 ),
         ),
-        if (guideline.mediaType == 'video' && youtubeThumbnailUrl == null)
-          const Icon(Icons.play_circle_fill, size: 40, color: Colors.white),
+       
+         
         if (youtubeThumbnailUrl != null && guideline.mediaType == 'video')
           Image.network(
             youtubeThumbnailUrl,

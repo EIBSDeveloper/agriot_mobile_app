@@ -2,7 +2,6 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../../../../core/app_style.dart';
 import '../../controller/kyc_controller.dart';
 import '../../controller/land_controller.dart';
 import '../../model/dropdown_item.dart';
@@ -95,15 +94,8 @@ class LandView extends GetView<RegLandController> {
           displayItem: (value) => value.name.toString(),
         ),
         gap,
-        Container(
-          decoration: AppStyle.decoration.copyWith(
-            color: const Color.fromARGB(137, 221, 234, 234),
-            boxShadow: const [],
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          constraints: const BoxConstraints(
-            minHeight: 55, // minimum height for all fields
-          ),
+      InputCardStyle(
+               
           child: TextFormField(
             controller: controller.locationListController,
             decoration: const InputDecoration(

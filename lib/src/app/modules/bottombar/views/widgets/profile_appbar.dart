@@ -16,7 +16,7 @@ class ProfileAppBar extends GetView<UserProfileController>
 
   @override
   Widget build(BuildContext context) => AppBar(
-    backgroundColor: const Color.fromARGB(223, 229, 235, 209),
+    backgroundColor: Get.theme.colorScheme.primaryContainer,
     title: SizedBox(
       height: 40,
       child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),

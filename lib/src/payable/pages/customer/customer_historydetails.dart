@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/utils.dart';
 import '../../controller/customercontroller/customer_salaes_controller.dart';
 import '../../model/customer_history/customer_sales_history.dart';
 import '../../repository/customer_repository/customer_sales_repository.dart';
@@ -250,7 +251,7 @@ class HistoryPage extends StatelessWidget {
     }
 
     if (error != null) {
-      Get.snackbar('error'.tr, error, snackPosition: SnackPosition.BOTTOM);
+     showError( error, );
       return;
     }
 

@@ -6,7 +6,6 @@ import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/enums.dart';
@@ -181,7 +180,7 @@ class ConsumptionController extends GetxController {
         setInventoryType(inventoryType.value!);
       }
     } catch (e) {
-      Get.snackbar('Error'.tr, 'Failed to fetch inventory types'.tr);
+     showError( 'Failed to fetch inventory types'.tr);
     } finally {
       isTypeLoading(false);
     }
@@ -222,7 +221,7 @@ class ConsumptionController extends GetxController {
         setInventoryCategory(inventoryCategory.value!);
       }
     } catch (e) {
-      Get.snackbar('Error'.tr, 'Failed to fetch inventory categories'.tr);
+     showError('Failed to fetch inventory categories'.tr);
     } finally {
       isCategoryLoading(false);
     }
@@ -237,7 +236,7 @@ class ConsumptionController extends GetxController {
         setInventoryItem(inventoryItem.value!);
       }
     } catch (e) {
-      Get.snackbar('Error'.tr, 'Failed to fetch inventory items'.tr);
+     showError( 'Failed to fetch inventory items'.tr);
     } finally {
       isInventoryLoading(false);
     }
@@ -288,11 +287,11 @@ class ConsumptionController extends GetxController {
         // clearForm();
         return true;
       } else {
-        Fluttertoast.showToast(msg: 'Failed to record consumption'.tr);
+        showError( 'Failed to record consumption'.tr);
         return false;
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'Error: $e');
+      showError( 'Error: $e');
       return false;
     } finally {
       isLoading(false);

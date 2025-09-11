@@ -85,10 +85,11 @@ class DashboardView extends GetView<DashboardController> {
           ),
         ),
       ),
-      IconButton(
+      IconButton(color: Get.theme.primaryColor,
+      iconSize: 40,
         icon: const Icon(
-          Icons.widgets_outlined,
-          color: Color.fromARGB(199, 0, 0, 0),
+          Icons.widgets,
+        
         ),
         onPressed: () => controller.showWidgetSettings(),
       ),
@@ -101,7 +102,7 @@ class DashboardView extends GetView<DashboardController> {
       if (controller.weatherData.value != null) ...[
         Expanded(
           child: Card(
-            color: const Color.fromARGB(255, 242, 240, 232),
+            color:  Get.theme.colorScheme.primaryContainer,
             elevation: 0,
             child: Container(
               height: 150,
@@ -310,15 +311,16 @@ class DashboardView extends GetView<DashboardController> {
                       onPressed: () {
                         controller.idlandVSCropGraph.value =
                             !controller.idlandVSCropGraph.value;
-                      },
-                      icon: const Icon(Icons.keyboard_arrow_left),
+                      },     iconSize: 30,
+                      icon:  Icon(Icons.keyboard_arrow_left, color: Get.theme.colorScheme.primary,),
                     ),
                     IconButton(
                       onPressed: () {
                         controller.idlandVSCropGraph.value =
                             !controller.idlandVSCropGraph.value;
                       },
-                      icon: const Icon(Icons.keyboard_arrow_right),
+                      iconSize: 30,
+                      icon:  Icon(Icons.keyboard_arrow_right,  color: Get.theme.colorScheme.primary,),
                     ),
                   ],
                 ),

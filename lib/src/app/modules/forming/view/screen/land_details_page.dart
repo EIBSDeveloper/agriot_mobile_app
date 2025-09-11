@@ -5,6 +5,7 @@ import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../../core/app_icons.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../controller/land_detail_controller.dart';
@@ -24,8 +25,8 @@ class LandDetailView extends GetView<LandDetailController> {
           IconButton(
             color: Get.theme.primaryColor,
             onPressed: () {
-              final landId = Get.arguments as int;
-              Get.toNamed('/add-land', arguments: {'landId': landId})?.then((
+            
+              Get.toNamed('/add-land', arguments: {'landId': controller.landId.value})?.then((
                 result,
               ) {
                 controller.loadData();
@@ -35,7 +36,7 @@ class LandDetailView extends GetView<LandDetailController> {
           ),
           IconButton(
             onPressed: () {
-              controller.deleteLandDetails(Get.arguments as int);
+              controller.deleteLandDetails(controller.landId.value);
             },
             color: Get.theme.primaryColor,
             icon: const Icon(Icons.delete),
@@ -105,7 +106,22 @@ class LandDetailView extends GetView<LandDetailController> {
   Widget _buildHeaderSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const TitleText('Land Details'),
+      Row(
+        children: [
+          const TitleText('Land Details'),
+          const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.landMapView,arguments: {'landId': controller.landId.value });
+                    },
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.asset(AppIcons.map),
+                    ),
+                  ),
+        ],
+      ),
       const SizedBox(height: 10),
       _buildDetailRow(
         'Soil Type',
@@ -215,7 +231,7 @@ class LandDetailView extends GetView<LandDetailController> {
               Get.toNamed(
                 Routes.cropOverview,
                 arguments: {
-                  'landId': controller.landDetails['id'],
+                  'landId': controller.landId.value,
                   'cropId': crop.id,
                 },
               )?.then((result) {

@@ -5,6 +5,8 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
+
 class EditTask extends GetView<TaskDetailsController> {
   const EditTask({super.key});
 
@@ -23,17 +25,7 @@ class EditTask extends GetView<TaskDetailsController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+         const ButtomSheetScrollButton(),
               const Text(
                 'Edit Task',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

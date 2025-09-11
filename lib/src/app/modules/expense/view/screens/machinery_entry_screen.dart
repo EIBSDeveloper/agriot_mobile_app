@@ -88,7 +88,7 @@ Widget _buildMachineryTypeRadio() => Obx(
     child: TextFormField(
       controller: controller.fuelCapacityController,
       decoration: InputDecoration(
-        hintText: "${'fuel_capacity'.tr} *",
+        labelText: "${'fuel_capacity'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
+import '../../../app/service/utils/utils.dart';
 import '../../repository/customer_add_repository/customer_add_repository.dart';
 
 class CustomerAddController extends GetxController {
@@ -38,12 +39,12 @@ class CustomerAddController extends GetxController {
       final response = await repository.postPayable(customerId, body);
 
       if (response.containsKey("detail")) {
-        Get.snackbar("Info", response["detail"]);
+        showWarning( response["detail"]);
       } else {
-        Get.snackbar("Success", "Payable added successfully");
+         showSuccess( "Payable added successfully");
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      showError( e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -75,12 +76,12 @@ class CustomerAddController extends GetxController {
       final response = await repository.postReceivable(customerId, body);
 
       if (response.containsKey("detail")) {
-        Get.snackbar("Info", response["detail"]);
+       showWarning( response["detail"]);
       } else {
-        Get.snackbar("Success", "Receivable added successfully");
+         showSuccess("Receivable added successfully");
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+     showError( e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -106,7 +107,7 @@ class CustomerAddController extends GetxController {
         }
       } else {}
     } catch (e) {
-      Get.snackbar("Error", "Failed to pick files: $e");
+     showError( "Failed to pick files: $e");
     }
   }
 }

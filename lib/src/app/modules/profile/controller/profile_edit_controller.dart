@@ -121,7 +121,7 @@ class ProfileEditController extends GetxController {
         locationController.text = '${latitude.value}, ${longitude.value}';
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to pick location');
+      showError( 'Failed to pick location');
     }
   }
 

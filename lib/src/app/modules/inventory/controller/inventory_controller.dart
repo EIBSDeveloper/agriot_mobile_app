@@ -1,9 +1,9 @@
 import 'package:argiot/src/app/modules/inventory/model/inventory_model.dart';
 import 'package:argiot/src/app/modules/inventory/repostory/inventory_repository.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
+import '../../../service/utils/utils.dart';
 
 class InventoryController extends GetxController {
   final InventoryRepository _repository = InventoryRepository();
@@ -26,10 +26,8 @@ class InventoryController extends GetxController {
       inventory(result);
     } catch (e) {
       errorMessage(e.toString());
-      Fluttertoast.showToast(
-        msg: "Failed to load inventory: ${e.toString()}",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+       showError( "Failed to load inventory: ${e.toString()}",
+        
       );
     } finally {
       isLoading(false);

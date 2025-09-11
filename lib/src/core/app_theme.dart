@@ -5,7 +5,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: const ColorScheme.light(
         primary: Color.fromARGB(255, 73, 148, 38),
-        primaryContainer: Color.fromARGB(255, 236, 243, 219), // slightly lighter variant
+        primaryContainer:  Color.fromARGB(223, 229, 235, 209), // slightly lighter variant
         secondary:Color.fromARGB(255, 73, 148, 38),
         secondaryContainer: Color(0xFFF5FDD3), // lighter container
         surface: Color(0xFFFFFFFF),

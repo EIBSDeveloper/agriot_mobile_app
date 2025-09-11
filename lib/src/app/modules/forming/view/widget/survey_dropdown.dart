@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../widgets/input_card_style.dart';
 import '../../../registration/model/crop_model.dart';
 
 class SurveyMultiSelect extends StatefulWidget {
@@ -77,12 +78,8 @@ class _SurveyMultiSelectState extends State<SurveyMultiSelect> {
 
     return GestureDetector(
       onTap: _openMultiSelectDialog,
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(137, 221, 234, 234),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: InputCardStyle(
+               
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

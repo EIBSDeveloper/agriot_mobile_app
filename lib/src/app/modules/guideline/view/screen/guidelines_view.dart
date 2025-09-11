@@ -47,7 +47,7 @@ class GuidelinesView extends GetView<GuidelineController> {
   Widget _buildSearchField() => InputCardStyle(
     child: TextField(
       decoration: InputDecoration(
-        hintText: 'search_placeholder'.tr,
+        labelText: 'search_placeholder'.tr,
         prefixIcon: const Icon(Icons.search),
         border: InputBorder.none,
         contentPadding: const EdgeInsets.symmetric(vertical: 12),

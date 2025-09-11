@@ -35,7 +35,7 @@ class Registration extends GetView<ResgisterController> {
          return const SizedBox();
          })
         ],
-        backgroundColor: const Color.fromARGB(223, 229, 235, 209),
+        backgroundColor: Get.theme.colorScheme.primaryContainer,
       ),
 
       body: Padding(
@@ -47,6 +47,7 @@ class Registration extends GetView<ResgisterController> {
                 () => MinimalHorizontalStepper(
                   steps: const ['KYC', 'Land', 'Crop'],
                   currentStep: controller.pageIndex.value,
+                  activeColor: Get.theme.primaryColor,
                 ),
               ),
               Obx(() => controller.pages[controller.pageIndex.value]),

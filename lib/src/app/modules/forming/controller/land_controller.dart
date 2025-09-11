@@ -1,7 +1,6 @@
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
 import 'package:flutter/material.dart' hide State;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -102,10 +101,8 @@ class LandController extends GetxController {
       final result = await _landService.fetchLandDetail(landId.value);
       landDetail(result);
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'failed_to_load_land_details'.tr,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP,
+      showError( 'failed_to_load_land_details'.tr,
+       
       );
     } finally {
       isLoading(false);

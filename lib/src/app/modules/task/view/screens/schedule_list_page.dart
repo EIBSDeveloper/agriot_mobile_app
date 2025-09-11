@@ -40,7 +40,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),
                       decoration: const InputDecoration(
-                        hintText: 'Land',
+                        labelText: 'Land',
                         border: InputBorder.none,
                       ),
                     ),
@@ -83,7 +83,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),
                       decoration: const InputDecoration(
-                        hintText: 'Crop',
+                        labelText: 'Crop',
                         border: InputBorder.none,
                       ),
                     ),

@@ -10,7 +10,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
   final bool disabled;
   final T? selectedItem;
   final void Function(T?) onChanged;
-  final String? hintText;
+  final String? labelText;
   final EdgeInsetsGeometry? padding;
   final InputBorder? border;
 
@@ -22,7 +22,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
     this.disabled = false,
     required this.selectedItem,
     required this.onChanged,
-    this.hintText,
+    this.labelText,
     this.padding,
     this.border,
   });
@@ -34,13 +34,13 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
       key: key,
       initialValue: selectedItem,
       decoration: InputDecoration(
-        hintText: label,
+        labelText: label,
         border: InputBorder.none,
         // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
 
       icon: const Icon(Icons.keyboard_arrow_down),
-      hint: hintText != null ? Text(hintText!) : null,
+      hint: labelText != null ? Text(labelText!) : null,
       items: items
           .map(
             (T item) => DropdownMenuItem<T>(

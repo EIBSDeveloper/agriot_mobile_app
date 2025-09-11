@@ -2,7 +2,6 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:argiot/src/app/modules/sales/controller/new_sales_controller.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
-import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -64,17 +63,12 @@ class AddDeductionView extends StatelessWidget {
           ),
         if (controller.isNewReason.value)
           Expanded(
-            child: Container(
-              decoration: AppStyle.decoration.copyWith(
-                color: const Color.fromARGB(137, 221, 234, 234),
-                boxShadow: const [],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              height: 55,
+            child: InputCardStyle(
+               
               child: TextFormField(
                 controller: _reasonController,
                 decoration: const InputDecoration(
-                  hintText: 'Reason for Deduction',
+                  labelText: 'Reason for Deduction',
                   border: InputBorder.none,
                 ),
                 validator: (value) => value == null || value.isEmpty
@@ -100,7 +94,7 @@ class AddDeductionView extends StatelessWidget {
           child: TextFormField(
             controller: _chargesController,
             decoration: const InputDecoration(
-              hintText: 'Deduction Amount',
+              labelText: 'Deduction Amount',
               border: InputBorder.none,
             ),
             keyboardType: TextInputType.number,

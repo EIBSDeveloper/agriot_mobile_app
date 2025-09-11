@@ -2,10 +2,11 @@ import 'package:argiot/src/app/modules/expense/controller/expense_controller.dar
 import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
-import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import '../../../../widgets/input_card_style.dart';
 
 class AddExpenseScreen extends GetView<ExpenseController> {
   final _formKey = GlobalKey<FormState>();
@@ -33,16 +34,8 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 label: "${'crop'.tr} *",
               ),
               const SizedBox(height: 16),
-              Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                height: 55,
+             InputCardStyle(
+               
                 child: TextFormField(
                   readOnly: true,
                   controller: TextEditingController(
@@ -51,7 +44,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     ).format(controller.selectedDate.value),
                   ),
                   decoration: InputDecoration(
-                    hintText: "${'Date'.tr} *",
+                    labelText: "${'Date'.tr} *",
                     suffixIcon: const Icon(Icons.calendar_today),
                     border: InputBorder.none,
                   ),
@@ -65,16 +58,8 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 ),
               ),
               const SizedBox(height: 16),
-              Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  // vertical: 5,
-                ),
-                height: 55,
+              InputCardStyle(
+               
                 child: DropdownButtonFormField<ExpenseType>(
                   initialValue: controller.selectedExpenseType.value.id == 0
                       ? null
@@ -91,7 +76,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                       .toList(),
                   onChanged: (type) => controller.selectedExpenseType(type!),
                   decoration: InputDecoration(
-                    hintText: "${'Type of Expense'.tr}  *",
+                    labelText: "${'Type of Expense'.tr}  *",
                     border: InputBorder.none,
                   ),
                   validator: (value) {
@@ -103,20 +88,12 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 ),
               ),
               const SizedBox(height: 16),
-              Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                height: 55,
+            InputCardStyle(
+               
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    hintText: "${'Amount'.tr} *",
+                    labelText: "${'Amount'.tr} *",
                     // prefixText: ' ₹ ',
                     border: InputBorder.none,
                   ),
@@ -136,20 +113,12 @@ class AddExpenseScreen extends GetView<ExpenseController> {
               ),
 
               const SizedBox(height: 16),
-              Container(
-                decoration: AppStyle.decoration.copyWith(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  boxShadow: const [],
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-
+            InputCardStyle(
+               
                 child: TextFormField(
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'description'.tr,
+                    labelText: 'description'.tr,
                     alignLabelWithHint: true,
                     border: InputBorder.none,
                   ),

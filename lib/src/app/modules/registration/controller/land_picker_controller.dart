@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../service/utils/utils.dart';
 import '../repostrory/crop_service.dart';
 
 class LandPickerController extends GetxController {
@@ -49,12 +48,8 @@ class LandPickerController extends GetxController {
       polylinePoints.add(tappedPoint);
       update();
     } else {
-      Fluttertoast.showToast(
-        msg: "You cannot mark outside the land boundary",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
+     showSuccess( "You cannot mark outside the land boundary",
+        
       );
     }
   }

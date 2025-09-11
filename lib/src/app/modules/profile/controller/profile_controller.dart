@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/profile/repository/profile_repository.dar
 import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,11 +35,8 @@ class ProfileController extends GetxController {
       appData.emailId.value='';
       Get.offAllNamed(Routes.login);
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Failed to logout',
-        backgroundColor: Colors.redAccent,
-
-        fontSize: 16.0,
+      showError( 'Failed to logout',
+        
       );
     } finally {
       isLoading.value = false;

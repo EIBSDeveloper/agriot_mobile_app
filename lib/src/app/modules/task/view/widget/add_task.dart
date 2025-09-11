@@ -3,9 +3,12 @@
 import 'package:argiot/src/app/modules/task/controller/task_controller.dart';
 import 'package:argiot/src/app/modules/task/model/activity_model.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/app/widgets/toggle_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class AddTask extends GetView<TaskController> {
   final bool isEditing;
@@ -25,17 +28,7 @@ class AddTask extends GetView<TaskController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+         const ButtomSheetScrollButton(),
             Text(
               isEditing ? 'Edit Task' : 'Add New Task',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -64,12 +57,8 @@ class AddTask extends GetView<TaskController> {
             const SizedBox(height: 8),
             // Schedule Date
             Obx(
-              () => Container(
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(137, 221, 234, 234),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              () => InputCardStyle(
+               
                 child: ListTile(
                   title: const Text('Schedule Date*'),
                   subtitle: Text(
@@ -158,16 +147,8 @@ class AddTask extends GetView<TaskController> {
                           () => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: const Color.fromARGB(
-                                    137,
-                                    221,
-                                    234,
-                                    234,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
+                               InputCardStyle(
+               
                                 child: ListTile(
                                   title: const Text('Schedule End Date*'),
                                   subtitle: Text(
@@ -211,12 +192,8 @@ class AddTask extends GetView<TaskController> {
             const SizedBox(height: 8),
 
             // Description
-            Container(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(137, 221, 234, 234),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+           InputCardStyle(
+               
               child: TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Description',

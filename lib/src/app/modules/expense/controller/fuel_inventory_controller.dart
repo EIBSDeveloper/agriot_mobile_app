@@ -1,8 +1,9 @@
 import 'package:argiot/src/app/modules/expense/repostroy/fuel_inventory_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+
+import '../../../service/utils/utils.dart';
 
 class FuelInventoryController extends GetxController {
   final FuelInventoryRepository repository = FuelInventoryRepository();
@@ -30,10 +31,9 @@ class FuelInventoryController extends GetxController {
       fuelInventory.value = result;
     } catch (e) {
       error.value = e.toString();
-      Fluttertoast.showToast(
-        msg: 'Failed to load fuel inventory details',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+      showError(
+       'Failed to load fuel inventory details',
+       
       );
     } finally {
       isLoading.value = false;
@@ -47,18 +47,15 @@ class FuelInventoryController extends GetxController {
 
       final success = await repository.deleteFuelInventory(fuelId.value);
       if (success) {
-        Fluttertoast.showToast(
-          msg: 'Fuel inventory deleted successfully',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
+       showSuccess(
+         'Fuel inventory deleted successfully',
+         
         );
         Get.back(result: true);
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Failed to delete fuel inventory',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+     showError( 'Failed to delete fuel inventory',
+      
       );
     }
   }

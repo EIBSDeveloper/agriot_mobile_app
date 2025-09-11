@@ -1,6 +1,5 @@
 import 'package:argiot/src/payable/pages/customer/customer_historydetails.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../app/service/utils/utils.dart';

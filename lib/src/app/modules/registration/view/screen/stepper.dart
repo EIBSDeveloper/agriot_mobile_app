@@ -13,9 +13,9 @@ class MinimalHorizontalStepper extends StatelessWidget {
     super.key,
     required this.steps,
     required this.currentStep,
-    this.activeColor = const Color.fromARGB(255, 100, 120, 31),
+    this.activeColor = Colors.green,
     this.inactiveColor = Colors.grey,
-    this.backgroundColor = const Color(0xFFF6F9F0), // pale green-ish bg
+    this.backgroundColor = const Color(0xFFF6F9F0), 
     this.circleSize = 20,
     this.lineHeight = 4,
   });

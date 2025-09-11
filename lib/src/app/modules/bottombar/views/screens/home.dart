@@ -55,7 +55,7 @@ class Home extends GetView<BottomBarContoller> {
                     ),
                     child: Image.asset(
                       controller.icons[index],
-                      color: isSelected ? Colors.white : const Color.fromARGB(199, 0, 0, 0),
+                      color: isSelected ? Colors.white : Get.theme.primaryColor,
                     
                     ),
                   ),

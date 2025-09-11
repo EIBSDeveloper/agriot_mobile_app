@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/utils.dart';
-import '../../../../core/app_style.dart';
 import '../../../routes/app_routes.dart';
 import '../../subscription/model/package_usage.dart';
 
@@ -207,7 +206,7 @@ class _NewSalesViewState extends State<NewSalesView> {
           child: DropdownButtonFormField<int>(
             icon: const Icon(Icons.keyboard_arrow_down),
             decoration: const InputDecoration(
-              hintText: 'Customer * ',
+              labelText: 'Customer * ',
 
               border: InputBorder.none,
             ),
@@ -261,7 +260,7 @@ class _NewSalesViewState extends State<NewSalesView> {
       },
       child: InputDecorator(
         decoration: const InputDecoration(
-          hintText: 'Date',
+          labelText: 'Date',
           border: InputBorder.none,
         ),
         child: Row(
@@ -280,7 +279,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   Widget _buildSalesQuantityField() => InputCardStyle(
     child: TextFormField(
       decoration: const InputDecoration(
-        hintText: 'Sales Quantity',
+        labelText: 'Sales Quantity',
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -312,7 +311,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   Widget _buildQuantityAmountField() => InputCardStyle(
     child: TextFormField(
       decoration: const InputDecoration(
-        hintText: 'Amount per unit*',
+        labelText: 'Amount per unit*',
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -397,7 +396,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   Widget _buildAmountPaidField() => InputCardStyle(
     child: TextFormField(
       decoration: const InputDecoration(
-        hintText: 'Amount Paid*',
+        labelText: 'Amount Paid*',
         border: InputBorder.none,
       ),
       initialValue: controller.amountPaid.value,
@@ -408,16 +407,12 @@ class _NewSalesViewState extends State<NewSalesView> {
     ),
   );
 
-  Widget _buildDescriptionField() => Container(
-    decoration: AppStyle.decoration.copyWith(
-      color: const Color.fromARGB(137, 221, 234, 234),
-      boxShadow: const [],
-    ),
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+  Widget _buildDescriptionField() =>  InputCardStyle(
+               
 
     child: TextFormField(
       decoration: const InputDecoration(
-        hintText: 'Description',
+        labelText: 'Description',
         border: InputBorder.none,
       ),
       maxLines: 3,

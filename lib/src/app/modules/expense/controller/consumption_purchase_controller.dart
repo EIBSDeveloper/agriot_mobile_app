@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/expense/repostroy/purchases_add_repositor
 import 'package:argiot/src/app/modules/expense/model/consumption_record.dart';
 import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/utils.dart';
@@ -90,7 +89,7 @@ class ConsumptionPurchaseController extends GetxController
         setInventoryCategory(inventoryCategories.first.id);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch inventory categories');
+      showError( 'Failed to fetch inventory categories');
     } finally {
       isCategoryLoading(false);
     }

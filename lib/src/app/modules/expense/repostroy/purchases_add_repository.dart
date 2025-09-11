@@ -11,6 +11,7 @@ import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
+import '../../../service/utils/utils.dart';
 import '../../sales/model/unit.dart';
 
 class PurchasesAddRepository {
@@ -77,7 +78,7 @@ class PurchasesAddRepository {
         return [];
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch inventory types');
+     showError( 'Failed to fetch inventory types');
       return [];
     }
   }
@@ -113,7 +114,7 @@ class PurchasesAddRepository {
         return [];
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch inventory categories');
+   showError('Failed to fetch inventory categories');
       return [];
     }
   }
@@ -133,7 +134,7 @@ class PurchasesAddRepository {
         return [];
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch inventory items');
+   showError( 'Failed to fetch inventory items');
       return [];
     }
   }

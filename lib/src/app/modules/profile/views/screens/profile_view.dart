@@ -99,7 +99,7 @@ class ProfileView extends GetView<ProfileController> {
             if (profile.imgUrl!.isNotEmpty)
               CircleAvatar(
                 radius: 40,
-                backgroundColor: const Color.fromARGB(205, 226, 237, 201),
+                backgroundColor: Get.theme.colorScheme.primaryContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: MyNetworkImage(profile.imgUrl!),

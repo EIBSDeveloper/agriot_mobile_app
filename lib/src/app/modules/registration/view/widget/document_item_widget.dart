@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/app_style.dart';
+import '../../../../widgets/input_card_style.dart';
 import '../../model/document_model.dart';
 import '../../model/dropdown_item.dart';
 
@@ -45,13 +45,8 @@ class DocumentItemWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Container(
-              decoration: AppStyle.decoration.copyWith(
-                color: const Color.fromARGB(137, 221, 234, 234),
-                boxShadow: const [],
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              height: 55,
+          InputCardStyle(
+               
               child: DropdownButtonFormField<AppDropdownItem>(
                 initialValue: item.type,
                 decoration: const InputDecoration(

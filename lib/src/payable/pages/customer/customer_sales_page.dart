@@ -1,4 +1,5 @@
 import 'package:argiot/src/payable/pages/customer/customer_historydetails.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -86,9 +87,10 @@ class CustomerSalesPage extends StatelessWidget {
               CircleAvatar(
                 radius: 30,
                 backgroundImage: customer.customerImage.isNotEmpty
-                    ? NetworkImage(customer.customerImage)
+                    ? CachedNetworkImageProvider(customer.customerImage)
                     : const AssetImage('assets/images/user_placeholder.png')
                           as ImageProvider,
+                          
               ),
               const SizedBox(width: 12),
               Expanded(

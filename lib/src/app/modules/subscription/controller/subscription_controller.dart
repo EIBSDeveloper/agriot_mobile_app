@@ -6,8 +6,6 @@ import 'package:argiot/src/app/modules/subscription/repository/subscription_repo
 import 'package:get/get.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-import '../../../service/utils/utils.dart';
-import '../../profile/controller/profile_controller.dart';
 
 class SubscriptionController extends GetxController {
   final SubscriptionRepository repository = SubscriptionRepository();

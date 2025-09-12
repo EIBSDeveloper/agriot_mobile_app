@@ -1,7 +1,7 @@
 // models/sales_model.dart
 
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -82,12 +82,10 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
 
   Widget _buildProductHeader(SalesDetail salesDetail) => Row(
     children: [
-      CachedNetworkImage(
-        imageUrl: salesDetail.myCrop.img,
+      MyNetworkImage(
+        salesDetail.myCrop.img,
         width: 80,
         height: 80,
-        placeholder: (context, url) => const CircularProgressIndicator(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
       const SizedBox(width: 16),
       Column(
@@ -159,36 +157,20 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         children: salesDetail.documents
             .expand((category) => category.documents)
             .map(
-              (document) => GestureDetector(
-                onTap: () {},
+              (document) => InkWell(
+                onTap: () {
+                  Get.toNamed(Routes.docViewer,arguments: document.uploadDocument);
+                },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(document.documentCategory.name),
-                    CachedNetworkImage(
-                      imageUrl: document.uploadDocument,
+                    MyNetworkImage(
+                       document.uploadDocument,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: 80,
-                        height: 80,
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.document_scanner),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        width: 80,
-                        height: 80,
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.error),
-                      ),
                     ),
-                    //  Positioned(
-                    //   bottom: 2,
-                    //   right: 2,
-                    //   child: SizedBox(width: 76,child: InputCardStyle(
-                    //     noHeight: true,
-                    //     child: Text(document.documentCategory.name)),)),
                   ],
                 ),
               ),

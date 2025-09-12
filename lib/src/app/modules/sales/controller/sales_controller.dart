@@ -3,10 +3,8 @@ import 'dart:io';
 
 import 'package:argiot/src/app/modules/sales/model/deduction.dart';
 import 'package:argiot/src/app/modules/sales/model/dropdown_item.dart';
-import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_by_date.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail_response.dart';
-import 'package:argiot/src/app/modules/sales/model/sales_edit_request.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -76,7 +74,7 @@ class SalesController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    cropId.value = Get.arguments?['crop_id']??0;
+    cropId.value = Get.arguments?['crop_id'] ?? 0;
     loadInitialData();
   }
 
@@ -103,10 +101,9 @@ class SalesController extends GetxController {
           (crop) => crop.id == cropId.value,
         );
         // changeCrop( selectedCropType.value);
-      }else{
-   selectedCropType.value = croplist.first;
+      } else {
+        selectedCropType.value = croplist.first;
       }
-   
     }
     isLoading.value = false;
     return;
@@ -261,75 +258,6 @@ class SalesController extends GetxController {
 
   void removeDocument(int index) {
     newDocuments.removeAt(index);
-  }
-
-  Future<void> addSales() async {
-    isAdding.value = true;
-    try {
-      // Upload documents first
-
-      final request = SalesAddRequest(
-        datesOfSales: selectedDate.value,
-        myCrop: selectedCropId.value,
-        myCustomer: selectedCustomerId.value,
-        salesQuantity: int.tryParse(quantityController.text) ?? 0,
-        salesUnit: selectedUnitId.value,
-        quantityAmount: amountPerUnitController.text,
-        salesAmount: totalAmountController.text,
-        deductionAmount: deductionAmountController.text,
-        description: descriptionController.text,
-        amountPaid: paidAmountController.text,
-        deductions: newDeductions.toList(),
-        fileData: [],
-      );
-
-      final salesId = await _repository.addSales(request: request);
-
-      Get.back(result: {'success': true, 'sales_id': salesId});
-      showSuccess('Sales added successfully');
-    } catch (e) {
-      showError('Failed to add sales');
-      rethrow;
-    } finally {
-      isAdding.value = false;
-    }
-  }
-
-  Future<void> updateSales(int salesId) async {
-    isUpdating.value = true;
-    try {
-      // Upload new documents first
-      final List<Map<String, dynamic>> fileData = [];
-
-      final request = SalesEditRequest(
-        salesId: salesId,
-        datesOfSales: selectedDate.value,
-        myCrop: selectedCropId.value,
-        myCustomer: selectedCustomerId.value,
-        salesQuantity: int.tryParse(quantityController.text) ?? 0,
-        salesUnit: selectedUnitId.value,
-        quantityAmount: amountPerUnitController.text,
-        salesAmount: totalAmountController.text,
-        deductionAmount: deductionAmountController.text,
-        description: descriptionController.text,
-        amountPaid: paidAmountController.text,
-        deductions: newDeductions.toList(),
-        fileData: fileData,
-      );
-
-      final updatedId = await _repository.updateSales(
-        salesId: salesId,
-        request: request,
-      );
-
-      Get.back(result: {'success': true, 'sales_id': updatedId});
-      showSuccess('Sales updated successfully');
-    } catch (e) {
-      showError('Failed to update sales');
-      rethrow;
-    } finally {
-      isUpdating.value = false;
-    }
   }
 
   Future<void> deleteSales(int salesId) async {

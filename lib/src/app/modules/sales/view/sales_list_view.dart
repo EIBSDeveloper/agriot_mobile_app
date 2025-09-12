@@ -49,15 +49,16 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-const SizedBox(width: 8,),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: controller.selectedPeriod.value,
-
-                          icon: const Icon(Icons.keyboard_arrow_down),
+                          padding: EdgeInsets.zero,
                           isExpanded: true,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+
                           items: ['week', 'month', 'year']
                               .map(
                                 (period) => DropdownMenuItem(
@@ -71,7 +72,7 @@ const SizedBox(width: 8,),
                       ),
                     ),
                   ),
-const SizedBox(width: 8,),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
@@ -102,13 +103,10 @@ const SizedBox(width: 8,),
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                // Grouped sales list
-                final groupedSales = controller.salesList; // List<SalesByDate>
-
                 return ListView.builder(
-                  itemCount: groupedSales.length,
+                  itemCount: controller.salesList.length,
                   itemBuilder: (context, index) {
-                    final group = groupedSales[index];
+                    final group = controller.salesList[index];
 
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,7 +148,7 @@ const SizedBox(width: 8,),
                               ),
                               trailing: Text(
                                 '₹${sale.totalSalesAmount.toStringAsFixed(2)}',
-                                style:  TextStyle(
+                                style: TextStyle(
                                   color: Get.theme.primaryColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,

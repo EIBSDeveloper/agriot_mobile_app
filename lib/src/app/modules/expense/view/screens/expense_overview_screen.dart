@@ -160,7 +160,8 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         padding: const EdgeInsets.all(10.0),
         child: Container(
           constraints: const BoxConstraints(
-            maxHeight: 300
+            maxHeight: 260
+           
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,

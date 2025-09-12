@@ -4,6 +4,7 @@ import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/controller/document_controller.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
+import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
@@ -96,41 +97,52 @@ class _AddDocumentViewState extends State<AddDocumentView> {
                   ? base64Decode(base64Str.split(",").last)
                   : null;
 
-              return Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: isImage
-                          ? Image.memory(
-                              bytes!,
-                              width: 92,
-                              height: 92,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(
-                              width: 92,
-                              height: 92,
-                              color: Colors.grey.shade300,
-                              child: const Icon(
-                                Icons.picture_as_pdf,
-                                size: 40,
-                                color: Colors.red,
+              return InkWell(
+                onTap: () {
+                  Get.toNamed(
+                    Routes.docViewer,
+                    arguments: {
+                      "files": controller.uploadedDocs,
+                      "index": index,
+                    },
+                  );
+                },
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: isImage
+                            ? Image.memory(
+                                bytes!,
+                                width: 92,
+                                height: 92,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: 92,
+                                height: 92,
+                                color: Colors.grey.shade300,
+                                child: const Icon(
+                                  Icons.picture_as_pdf,
+                                  size: 40,
+                                  color: Colors.red,
+                                ),
                               ),
-                            ),
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () => controller.removeDocument(index),
-                    child: const CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.red,
-                      child: Icon(Icons.close, size: 14, color: Colors.white),
+                    GestureDetector(
+                      onTap: () => controller.removeDocument(index),
+                      child: const CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Colors.red,
+                        child: Icon(Icons.close, size: 14, color: Colors.white),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             }),
           ],

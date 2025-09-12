@@ -7,7 +7,7 @@ class DocumentCategory {
   DocumentCategory({required this.categoryId, required this.documents});
 
   factory DocumentCategory.fromJson(Map<String, dynamic> json) => DocumentCategory(
-      categoryId: json['category_id'] ?? 0,
+      categoryId: int.tryParse(json['category_id'].toString()) ?? 0,
       documents: (json['documents'] as List<dynamic>? ?? [])
           .map((doc) => Document.fromJson(doc))
           .toList(),

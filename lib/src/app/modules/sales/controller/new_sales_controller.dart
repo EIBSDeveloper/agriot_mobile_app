@@ -3,7 +3,6 @@ import 'package:argiot/src/app/modules/document/view/add_document_view.dart';
 import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
 import 'package:argiot/src/app/modules/sales/repostory/new_sales_repository.dart';
-import 'package:argiot/src/app/modules/sales/model/sales_update_request.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/sales/model/reason.dart';
 import 'package:argiot/src/app/modules/sales/model/rupee.dart';
@@ -116,7 +115,7 @@ class NewSalesController extends GetxController {
       selectedCustomer.value = response.myCustomer.id;
       selectedDate.value = DateTime.parse(response.createdAt);
     } catch (e) {
-     showError( 'Failed to fetch sales details: $e');
+      showError('Failed to fetch sales details: $e');
     } finally {
       isLoading(false);
     }
@@ -130,7 +129,7 @@ class NewSalesController extends GetxController {
         selectedReason.value = reasonsList.first;
       }
     } catch (e) {
-       showError('Failed to fetch reasons: $e');
+      showError('Failed to fetch reasons: $e');
     }
   }
 
@@ -139,7 +138,7 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.getRupees();
       rupeesList.assignAll(response);
     } catch (e) {
-       showError('Failed to fetch rupees: $e');
+      showError('Failed to fetch rupees: $e');
     }
   }
 
@@ -148,7 +147,7 @@ class NewSalesController extends GetxController {
       final response = await _salesRepository.getCustomerList();
       customerList.assignAll(response);
     } catch (e) {
-     showError( 'Failed to fetch customers: $e');
+      showError('Failed to fetch customers: $e');
     }
   }
 
@@ -170,13 +169,14 @@ class NewSalesController extends GetxController {
   }
 
   Future<bool> addSales() async {
+    int? id =salesDetail.value?.salesId;
     try {
       isLoading(true);
       final documentItemsList = documentItems.map((doc) {
         var json = doc.toJson();
         return json;
       }).toList();
-      final request = SalesAddRequest(
+      final request = SalesRequest(
         datesOfSales: selectedDate.value.toIso8601String().split('T')[0],
         myCrop: selectedCropType.value.id,
         myCustomer: selectedCustomer.value ?? 0,
@@ -191,84 +191,29 @@ class NewSalesController extends GetxController {
         fileData: documentItemsList,
       );
 
-      final response = await _salesRepository.addSales(request);
-
+      final Map<String, dynamic> response;
+      if (id != null) {
+        response = await _salesRepository.updateSales(id, request);
+      } else {
+        response = await _salesRepository.addSales(request);
+      }
       if (response['success'] == true) {
-        showSuccess( response['message'] ?? 'Sales added successfully!',
-        );
+        showSuccess(response['message'] ?? 'Sales added successfully!');
         clearForm();
         return true;
       } else {
-        showError( response['message'] ?? 'Failed to add sales',
-        );
+        showError(response['message'] ?? 'Failed to add sales');
         return false;
       }
     } catch (e) {
-       showError( 'Failed to add sales: $e');
+      showError('Failed to add sales: $e');
       return false;
     } finally {
       isLoading(false);
     }
   }
 
-  Future<bool> updateSales(int salesId) async {
-    try {
-      isLoading(true);
 
-      final request = SalesUpdateRequest(
-        id: salesId.toString(),
-        datesOfSales: selectedDate.value.toIso8601String().split('T')[0],
-        myCrop: selectedCropType.value.id,
-        myCustomer: selectedCustomer.value ?? 0,
-        salesQuantity: salesQuantity.value ?? 0,
-        salesUnit: selectedUnit.value.id,
-        quantityAmount: quantityAmount.value,
-        salesAmount: salesAmount.value,
-        deductionAmount: deductionAmount.value,
-        description: description.value,
-        amountPaid: amountPaid.value,
-        deductions: deductions,
-        fileData: documents,
-      );
-
-      final response = await _salesRepository.updateSales(salesId, request);
-
-      if (response['success'] == true) {
-         showError(response['message'] ?? 'Sales updated successfully!',
-        );
-        return true;
-      } else {
-         showError( response['message'] ?? 'Failed to update sales',
-        );
-        return false;
-      }
-    } catch (e) {
-       showError( 'Failed to update sales: $e');
-      return false;
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  Future<bool> deleteSales(int salesId) async {
-    try {
-      isLoading(true);
-      final response = await _salesRepository.deleteSales(salesId);
-
-      if (response['message'] != null) {
-        showSuccess( response['message']);
-        return true;
-      } else {
-         showError( 'Failed to delete sales');
-        return false;
-      }
-    } catch (e) {
-       showError( 'Failed to delete sales: $e');
-      return false;
-    } finally {
-      isLoading(false);
-    }
-  }
 
   void changeCrop(CropModel crop) {
     selectedCropType.value = crop;
@@ -349,19 +294,6 @@ class NewSalesController extends GetxController {
           .toList(),
     );
 
-    // Convert documents to form format (simplified)
-    // documents.assignAll(
-    //   detail.documents
-    //       .expand(
-    //         (category) => category.documents.map(
-    //           (doc) => {
-    //             'document_id': doc.id,
-    //             'file_type': category.categoryId,
-    //             'file_url': doc.fileUpload,
-    //           },
-    //         ),
-    //       )
-    //       .toList(),
-    // );
+  
   }
 }

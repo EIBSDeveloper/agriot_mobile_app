@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/document/binding/document_viewer_binding.dart';
 import 'package:argiot/src/app/modules/expense/binding/fuel_inventory_binding.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/fuel_inventory_view.dart';
 import 'package:argiot/src/app/modules/map_view/bindings/land_map_view_binding.dart';
@@ -44,7 +45,7 @@ import '../modules/expense/binding/fuel_entry_binding.dart';
 import '../modules/expense/view/screens/fuel_entry_view.dart';
 import '../modules/inventory/view/purchase_items_screen.dart';
 import '../modules/forming/controller/location_viewer_view.dart';
-import '../modules/forming/view/screen/document_viewer_view.dart';
+import '../modules/document/view/document_viewer_view.dart';
 import '../modules/forming/view/screen/land_details_page.dart';
 import '../modules/near_me/views/screen/view.dart';
 import '../modules/notification/view/screen/notification_view.dart';

@@ -1,10 +1,10 @@
 
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/my_network_image.dart';
 import '../../../../widgets/title_text.dart';
 
 
@@ -58,18 +58,11 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: CachedNetworkImage(
-                  imageUrl: schedule.cropImage,
+                child: MyNetworkImage(
+                  schedule.cropImage,
                   width: 200,
                   height: 200,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    width: 200,
-                    height: 200,
-                    color: Colors.grey[300],
-                  ),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.error, size: 50),
                 ),
               ),
             ),

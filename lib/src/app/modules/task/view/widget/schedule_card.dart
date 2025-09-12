@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/task/model/schedule.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart';
+import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,14 +22,11 @@ class ScheduleCard extends StatelessWidget {
     child: ListTile(
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(
-          imageUrl: schedule.cropImage,
+        child: MyNetworkImage(
+           schedule.cropImage,
           width: 50,
           height: 50,
           fit: BoxFit.cover,
-          placeholder: (context, url) =>
-              Container(width: 50, height: 50, color: Colors.grey[300]),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
       ),
       title: TitleText(schedule.crop),

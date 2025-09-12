@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:argiot/src/app/modules/sales/model/dropdown_item.dart';
-import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail_response.dart';
-import 'package:argiot/src/app/modules/sales/model/sales_edit_request.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_list_response.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:flutter/foundation.dart';
@@ -100,35 +98,6 @@ class SalesRepository {
         .map<DropdownItem>((item) => DropdownItem.fromJson(item))
         .toList();
     return map;
-  }
-
-  Future<String> addSales({required SalesAddRequest request}) async {
-    final farmerId = _appDataController.userId;
-    try {
-      final response = await _httpService.post(
-        '/add_sales_with_deductions/$farmerId',
-        request.toJson(),
-      );
-      return jsonDecode(response.body)['id'].toString();
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<String> updateSales({
-    required int salesId,
-    required SalesEditRequest request,
-  }) async {
-    final farmerId = _appDataController.userId;
-    try {
-      final response = await _httpService.post(
-        '/update_sales_with_deductions/$farmerId/$salesId',
-        request.toJson(),
-      );
-      return jsonDecode(response.body)['id'].toString();
-    } catch (e) {
-      rethrow;
-    }
   }
 
   Future<bool> deleteSales({required int salesId}) async {

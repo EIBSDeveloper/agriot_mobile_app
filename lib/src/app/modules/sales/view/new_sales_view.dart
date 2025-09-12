@@ -166,7 +166,13 @@ class _NewSalesViewState extends State<NewSalesView> {
                       Text(
                         "${index + 1}, ${controller.documentItems[index].newFileType!}",
                       ),
-                      const Icon(Icons.attach_file),
+                      Row(
+                        children: [
+                          const Icon(Icons.attach_file),
+                              Text("${controller.documentItems[index].documents?.length??0}",style: const TextStyle(fontSize: 10),)
+                     
+                        ],
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -187,7 +193,6 @@ class _NewSalesViewState extends State<NewSalesView> {
       }),
     ],
   );
-
 
   Widget _buildProductDropdown() => Obx(
     () => MyDropdown(
@@ -356,6 +361,8 @@ class _NewSalesViewState extends State<NewSalesView> {
           children: controller.deductions
               .map(
                 (deduction) => ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  minVerticalPadding: 0,
                   title: Text(
                     (deduction['new_reason'] ?? deduction['reason_name']) ?? '',
                   ),
@@ -407,9 +414,7 @@ class _NewSalesViewState extends State<NewSalesView> {
     ),
   );
 
-  Widget _buildDescriptionField() =>  InputCardStyle(
-               
-
+  Widget _buildDescriptionField() => InputCardStyle(
     child: TextFormField(
       decoration: const InputDecoration(
         labelText: 'Description',
@@ -427,7 +432,7 @@ class _NewSalesViewState extends State<NewSalesView> {
         if (_formKey.currentState!.validate()) {
           final success = await controller.addSales();
           if (success) {
-            Get.back();
+            Get.back(result: true);
           }
         }
       },

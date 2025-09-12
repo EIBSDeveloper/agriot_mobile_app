@@ -27,7 +27,6 @@ import '../modules/forming/controller/forming_controller.dart';
 import '../modules/forming/controller/land_controller.dart';
 import '../modules/forming/controller/land_detail_controller.dart';
 import '../modules/forming/repostroy/forming_repository.dart';
-import '../modules/forming/controller/document_viewer_controller.dart';
 import '../modules/near_me/controller/controllers.dart';
 import '../modules/near_me/repostory/near_me_repository.dart';
 import '../modules/notification/Repository/notification_repository.dart';
@@ -116,12 +115,6 @@ class SalesBinding implements Bindings {
   }
 }
 
-class DocumentViewerBinding implements Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut<DocumentViewerController>(() => DocumentViewerController());
-  }
-}
 
 class ExpenseBinding implements Bindings {
   @override

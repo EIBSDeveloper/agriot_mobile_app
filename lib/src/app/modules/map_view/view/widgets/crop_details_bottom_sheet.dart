@@ -172,25 +172,30 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
         const SizedBox(height: 8),
         if (controller.cropDetails.value!.tasks.isNotEmpty)
           const TitleText("Today task"),
-        Obx(
-          () => Column(
-            children: [
-              ...controller.cropDetails.value!.tasks.map((task) {
-                var tas = Task(
-                  id: task.id,
-                  cropType: task.activityType,
-                  cropImage: "cropImage",
-                  description: task.description,
-                  status: task.scheduleStatusName,
-                );
-                return TaskCard(
-                  task: tas,
-                  refresh: () {
-                    controller.fetchLandsAndCropsDetails(crop.cropId);
-                  },
-                );
-              }),
-            ],
+        SizedBox(
+          height: 300,
+          child: SingleChildScrollView(
+            child: Obx(
+              () => Column(
+                children: [
+                  ...controller.cropDetails.value!.tasks.map((task) {
+                    var tas = Task(
+                      id: task.id,
+                      cropType: task.activityType,
+                      cropImage: "cropImage",
+                      description: task.description,
+                      status: task.scheduleStatusName,
+                    );
+                    return TaskCard(
+                      task: tas,
+                      refresh: () {
+                        controller.fetchLandsAndCropsDetails(crop.cropId);
+                      },
+                    );
+                  }),
+                ],
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 60),

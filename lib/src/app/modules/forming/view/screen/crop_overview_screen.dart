@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/app_icons.dart';
+import '../../../../widgets/my_network_image.dart';
 import '../../../guideline/model/guideline.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../guideline/model/guideline_category.dart';
@@ -126,10 +127,11 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                 CircleAvatar(
                   radius: 30,
 
-                  backgroundImage: NetworkImage(details!.imageUrl!),
-                  child: details.imageUrl!.isEmpty
+                  child: details!.imageUrl!.isEmpty
                       ? const Icon(Icons.agriculture, size: 30)
-                      : null,
+                      : ClipOval(
+                          child: MyNetworkImageProvider(details.imageUrl!),
+                        ),
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -166,10 +168,16 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           onPressed: () =>
               Get.toNamed(
                 Routes.addCrop,
-                arguments: {'landId': controller.landId.value, 'cropId': controller.cropId.value},
+                arguments: {
+                  'landId': controller.landId.value,
+                  'cropId': controller.cropId.value,
+                },
               )?.then((rturn) {
                 if (rturn) {
-                  controller.fetchCropDetails(controller.landId.value, controller.cropId.value);
+                  controller.fetchCropDetails(
+                    controller.landId.value,
+                    controller.cropId.value,
+                  );
                 }
               }),
         ),
@@ -204,17 +212,24 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         children: [
           Row(
             children: [
-              const TitleText('Crop Details'), const Spacer(),
-                  InkWell(
-                    onTap: () {
-                      Get.toNamed(Routes.landMapView,arguments: {'landId': controller.landId.value, 'cropId': controller.cropId.value});
+              const TitleText('Crop Details'),
+              const Spacer(),
+              InkWell(
+                onTap: () {
+                  Get.toNamed(
+                    Routes.landMapView,
+                    arguments: {
+                      'landId': controller.landId.value,
+                      'cropId': controller.cropId.value,
                     },
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image.asset(AppIcons.map),
-                    ),
-                  ),
+                  );
+                },
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: Image.asset(AppIcons.map),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -335,12 +350,10 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                 InkWell(
                   onTap: () {
                     // if (controller.details.value?.crop?.id != null) {
-                      Get.toNamed(
-                        Routes.sales,
-                        arguments: {
-                          "crop_id": Get.arguments['cropId'],
-                        },
-                      );
+                    Get.toNamed(
+                      Routes.sales,
+                      arguments: {"crop_id": Get.arguments['cropId']},
+                    );
                     // }else{
                     //   warningSuccess("Crop details are loading, please wait..");
                     // }

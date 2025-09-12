@@ -1,4 +1,5 @@
-class SalesAddRequest {
+class SalesRequest {
+  final int? id;
   final String datesOfSales;
   final int myCrop;
   final int myCustomer;
@@ -12,7 +13,8 @@ class SalesAddRequest {
   final List<Map<String, dynamic>> deductions;
   final List<Map<String, dynamic>> fileData;
 
-  SalesAddRequest({
+  SalesRequest({
+    this.id,
     required this.datesOfSales,
     required this.myCrop,
     required this.myCustomer,
@@ -28,6 +30,7 @@ class SalesAddRequest {
   });
 
   Map<String, dynamic> toJson() => {
+    if (id != null) 'id': id,
     'dates_of_sales': datesOfSales,
     'my_crop': myCrop,
     'my_customer': myCustomer,

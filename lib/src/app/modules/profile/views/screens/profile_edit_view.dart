@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/profile/controller/profile_edit_controller.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -47,7 +48,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
             return CircleAvatar(
               radius: 50,
               backgroundImage: controller.imagePath.startsWith('http')
-                  ? NetworkImage(controller.imagePath.value)
+                  ? CachedNetworkImageProvider(controller.imagePath.value)
                   : FileImage(File(controller.imagePath.value))
                         as ImageProvider,
             );

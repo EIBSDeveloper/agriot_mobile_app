@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/my_network_image.dart';
 
 class CropCard extends StatelessWidget {
   final CropCardModel crop;
@@ -24,8 +25,10 @@ class CropCard extends StatelessWidget {
             children: [
               crop.img != null
                   ? CircleAvatar(
-                      backgroundImage: NetworkImage(crop.img!),
                       radius: 24,
+                      child: ClipOval(
+                          child: MyNetworkImageProvider(crop.img!),
+                        ),
                     )
                   : const CircleAvatar(radius: 24, child: Icon(Icons.grass)),
               const SizedBox(width: 12),

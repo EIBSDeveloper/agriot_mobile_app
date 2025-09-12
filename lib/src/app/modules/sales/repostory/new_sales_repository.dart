@@ -1,7 +1,5 @@
-
 import 'dart:convert';
 import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
-import 'package:argiot/src/app/modules/sales/model/sales_update_request.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/sales/model/unit.dart';
@@ -79,7 +77,7 @@ class NewSalesRepository {
     }
   }
 
-  Future<Map<String, dynamic>> addSales(SalesAddRequest request) async {
+  Future<Map<String, dynamic>> addSales(SalesRequest request) async {
     final farmerId = _appDataController.userId;
     try {
       final response = await _httpService.post(
@@ -94,11 +92,11 @@ class NewSalesRepository {
 
   Future<Map<String, dynamic>> updateSales(
     int salesId,
-    SalesUpdateRequest request,
+    SalesRequest request,
   ) async {
     final farmerId = _appDataController.userId;
     try {
-      final response = await _httpService.post(
+      final response = await _httpService.put(
         '/update_sales_with_deductions/$farmerId/$salesId/',
         request.toJson(),
       );

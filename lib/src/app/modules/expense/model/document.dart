@@ -15,6 +15,6 @@ class Document {
       documentCategory: DocumentCategoryDetail.fromJson(
         json['document_category'] ?? {},
       ),
-      uploadDocument: json['upload_document'] ?? '',
+      uploadDocument: json['upload_document'] ??json['file_upload']??'' ,
     );
 }

@@ -37,3 +37,36 @@ class MyNetworkImage extends StatelessWidget {
           (context, url, error) => const Icon(Icons.now_wallpaper_outlined),
     );
 }
+class MyNetworkImageProvider extends StatelessWidget {
+  const MyNetworkImageProvider(
+    this.imageUrl, {
+    super.key,
+    this.fit,
+    this.height,
+    this.width,
+  });
+
+  final String imageUrl;
+  final BoxFit? fit;
+  final double? width;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) => CachedNetworkImage(
+      imageUrl: imageUrl,
+      fit: fit,
+      width: width,
+      height: height,
+      placeholder: (context, url) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: LoadingAnimationWidget.hexagonDots(
+            color: Get.theme.primaryColor,
+            size: 40,
+          ),
+        ),
+      ),
+      errorWidget: (context, url, error) =>
+          const Icon(Icons.wallpaper_outlined),
+    );
+}

@@ -172,8 +172,8 @@ class LandMapViewController extends GetxController {
     fetchLandsAndCropMap(); //  refresh polygons + zoom
   }
 
-  var markers = <Marker>{}.obs;
-  var polygons = <Polygon>{}.obs;
+  final polygons = <Polygon>{}.obs;
+  final markers = <Marker>{}.obs;
 
   Future<void> fetchLandsAndCropMap() async {
     if (selectedLand.value == null) return;
@@ -213,10 +213,8 @@ class LandMapViewController extends GetxController {
           );
         }),
     };
-    polygons.value = polySet;
-
-    // update markers reactively
-    markers.value = await buildCropMarkers(result.crops ?? []);
+    polygons.assignAll(polySet);
+    markers.assignAll(await buildCropMarkers(result.crops ?? []));
 
     // update camera
     if (selectedCrop.value?.id == 0) {

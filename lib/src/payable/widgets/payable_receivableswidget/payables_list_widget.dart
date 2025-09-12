@@ -109,7 +109,7 @@ class PayablesList extends StatelessWidget {
         Get.to(
           () =>  const CustomerVendorDetailsPage(
            
-            detailsType: DetailsType.payables,
+            detailsType: DetailsTypes.payables,
           ),
         );
       },

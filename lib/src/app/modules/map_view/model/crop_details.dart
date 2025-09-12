@@ -1,4 +1,4 @@
-import 'package:argiot/src/app/modules/map_view/model/crop_task.dart';
+import '../../task/model/task.dart';
 
 class CropDetails {
   final int id;
@@ -11,7 +11,7 @@ class CropDetails {
   final String measurementUnit;
   final double expense;
   final double sales;
-  final List<CropTask> tasks;
+  final List<Task> tasks;
 
   CropDetails({
     required this.id,
@@ -39,7 +39,7 @@ class CropDetails {
     expense: (json['expense'] ?? 0).toDouble(),
     sales: (json['sales'] ?? 0).toDouble(),
     tasks: (json['task'] as List<dynamic>? ?? [])
-        .map((taskJson) => CropTask.fromJson(taskJson))
+        .map((taskJson) => Task.fromJson(taskJson))
         .toList(),
   );
 

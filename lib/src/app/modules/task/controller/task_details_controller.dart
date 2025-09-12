@@ -4,11 +4,14 @@ import 'package:argiot/src/app/modules/task/model/activity_model.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/modules/task/model/task_details.dart';
 import 'package:argiot/src/app/modules/task/repostory/task_repository.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../service/utils/utils.dart';
+import '../../../service/utils/enums.dart';
+import '../model/task_types_dropdown_item.dart';
 
 class TaskDetailsController extends GetxController {
   final TaskRepository _taskRepository = TaskRepository();
@@ -29,14 +32,13 @@ class TaskDetailsController extends GetxController {
   final RxString description = ''.obs;
   final RxBool isLoadingEdit = false.obs;
 
-  RxInt selectedValue = 1.obs;
-  final List<Map<String, dynamic>> statusList = [
-    {"name": "Waiting Completion", "value": 1},
-    {"name": "Completed", "value": 2},
-    {"name": "In Progress", "value": 3},
-    {"name": "Pending", "value": 4},
-    {"name": "Cancelled", "value": 5},
-  ];
+  Rx<TaskTypes> selectedValue = TaskTypes.waiting.obs;
+final statusList = TaskTypes.values.whereMap(
+  (task) => task == TaskTypes.all
+      ? null
+      : TaskTypesDropdownItem(task: task, name: getTaskName(task)),
+).toList();
+
 
   @override
   void onInit() {
@@ -159,7 +161,7 @@ class TaskDetailsController extends GetxController {
         myCrop: selectedCropType.value.id,
         startDate: scheduleDate.value,
         description: description.value,
-        scheduleStatus: task.value?.status ?? 1,
+        scheduleStatus: getTaskId(task.value?.status ?? TaskTypes.completed),
       );
       if (response.isNotEmpty) {}
       await fetchTaskDetails(); // Refresh task details

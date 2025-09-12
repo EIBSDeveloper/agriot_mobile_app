@@ -57,12 +57,12 @@ class DocumentViewerView extends GetView<forming.DocumentViewerController> {
     }),
   );
 
-  Widget _buildFileView(String path, FileType type, FileSourceType source) {
+  Widget _buildFileView(String path, FileTypes type, FileSourceTypes source) {
     switch (type) {
-      case FileType.pdf:
-        if (source == FileSourceType.local) {
+      case FileTypes.pdf:
+        if (source == FileSourceTypes.local) {
           return PDFView(filePath: path);
-        } else if (source == FileSourceType.base64) {
+        } else if (source == FileSourceTypes.base64) {
           final bytes = base64Decode(
             path.replaceAll(RegExp(r'data:.*;base64,'), ''),
           );
@@ -75,12 +75,12 @@ class DocumentViewerView extends GetView<forming.DocumentViewerController> {
           return PDFView(filePath: path);
         }
 
-      case FileType.image:
-        if (source == FileSourceType.local) {
+      case FileTypes.image:
+        if (source == FileSourceTypes.local) {
           return Center(
             child: InteractiveViewer(child: Image.file(File(path))),
           );
-        } else if (source == FileSourceType.base64) {
+        } else if (source == FileSourceTypes.base64) {
           final bytes = base64Decode(
             path.replaceAll(RegExp(r'data:.*;base64,'), ''),
           );
@@ -89,7 +89,7 @@ class DocumentViewerView extends GetView<forming.DocumentViewerController> {
           return Center(child: InteractiveViewer(child: MyNetworkImage(path)));
         }
 
-      case FileType.unsupported:
+      case FileTypes.unsupported:
         return const Center(child: Text('Unsupported file format'));
     }
   }

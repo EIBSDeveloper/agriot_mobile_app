@@ -1,5 +1,7 @@
 import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
 import 'package:argiot/src/app/modules/auth/model/verify_otp.dart';
+import 'package:argiot/src/app/service/utils/input_validation.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +10,6 @@ import '../../../routes/app_routes.dart';
 import '../../../controller/app_controller.dart';
 import '../../../controller/storage_service.dart';
 import '../../../service/utils/local_notifications.dart';
-import '../../../service/utils/utils.dart';
 import '../repository/auth_repository.dart';
 
 class AuthController extends GetxController {

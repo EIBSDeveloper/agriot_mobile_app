@@ -3,6 +3,9 @@ import 'package:argiot/src/app/modules/task/model/schedule_activity_type.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_status.dart';
 import 'package:argiot/src/app/modules/task/model/task_crop.dart';
 import 'package:argiot/src/app/modules/task/model/task_land.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
+
+import '../../../service/utils/enums.dart';
 
 class TaskDetails {
   final int farmerId;
@@ -13,7 +16,7 @@ class TaskDetails {
   final String startDate;
   final String endDate;
   final ScheduleStatus scheduleStatus;
-  final int status;
+  final TaskTypes status;
   final String description;
   final String comment;
   // final List<CropExpense> cropExpenses;
@@ -48,7 +51,7 @@ class TaskDetails {
       startDate: json['start_date'],
       endDate: json['end_date'],
       scheduleStatus: ScheduleStatus.fromJson(json['schedule_status']),
-      status: json['status'],
+      status: getTaskStatus(json['status']??0),
       description: json['description'] ?? "",
       comment: json['comment'] ?? '',
       // cropExpenses: List<CropExpense>.from(json['crop_expenses'].map((x) => CropExpense.fromJson(x))),

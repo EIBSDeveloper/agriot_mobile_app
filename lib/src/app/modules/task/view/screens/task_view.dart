@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/enums.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
 import '../../controller/task_controller.dart';
@@ -129,7 +130,7 @@ class TaskView extends GetView<TaskController> {
           ),
           Obx(
             () => EmptyLandCard(
-              view:(!controller.isLoading.value&& controller.lands.isEmpty),
+              view: (!controller.isLoading.value && controller.lands.isEmpty),
               refresh: controller.fetchLands,
             ),
           ),
@@ -208,40 +209,33 @@ class TaskView extends GetView<TaskController> {
     ),
   );
 
-  Widget _buildTaskCard(Task tas) {
-    Task task = tas;
-    return InkWell(
-      onTap: () {
-        Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
-      },
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        color: Colors.grey.withAlpha(30), //rgb(226,237,201)
-        elevation: 0,
-        child: ListTile(
-          title: Text(task.cropType),
-          subtitle: Text(
-            task.description,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // IconButton(
-              //   icon: Icon(Icons.edit, color: Get.theme.primaryColor),
-              //   onPressed: () => _showEditTaskBottomSheet(task.id),
-              // ),
-              IconButton(
-                icon: Icon(Icons.delete, color: Get.theme.primaryColor),
-                onPressed: () => controller.deleteTask(task.id),
-              ),
-            ],
-          ),
+  Widget _buildTaskCard(Task task) => InkWell(
+    onTap: () {
+      Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
+    },
+    child: Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      color: Colors.grey.withAlpha(30),
+      elevation: 0,
+      child: ListTile(
+        title: Text(task.cropType!),
+        subtitle: Text(
+          task.description,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.delete, color: Get.theme.primaryColor),
+              onPressed: () => controller.deleteTask(task.id),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 
   void _showAddTaskBottomSheet() {
     controller.resetForm();
@@ -341,18 +335,18 @@ class TaskView extends GetView<TaskController> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildFilterChip('All', 'all'),
-          _buildFilterChip('Completed', 'completed'),
-          _buildFilterChip('Waiting', 'waiting'),
-          _buildFilterChip('Cancelled', 'cancelled'),
-          _buildFilterChip('Pending', 'pending'),
+          _buildFilterChip('All', TaskTypes.all),
+          _buildFilterChip('Completed', TaskTypes.completed),
+          _buildFilterChip('Waiting', TaskTypes.waiting),
+          _buildFilterChip('Cancelled', TaskTypes.cancelled),
+          _buildFilterChip('Pending', TaskTypes.pending),
           // _buildFilterChip('In Progress', 'in_progress'),
         ],
       ),
     ),
   );
 
-  Widget _buildFilterChip(String label, String value) => Obx(() {
+  Widget _buildFilterChip(String label, TaskTypes value) => Obx(() {
     final isSelected = controller.selectedFilter.value == value;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -386,18 +380,6 @@ class TaskView extends GetView<TaskController> {
       );
     }
 
-    return Column(
-      children: [
-        ...tasks.map((data) {
-          Task task = Task(
-            cropImage: "",
-            cropType: data.activityTypeName,
-            description: data.description,
-            id: data.taskId,
-          );
-          return _buildTaskCard(task);
-        }),
-      ],
-    );
+    return Column(children: [...tasks.map((task) => _buildTaskCard(task))]);
   });
 }

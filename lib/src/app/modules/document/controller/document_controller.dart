@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/repository/document_repository.dart';
 import 'package:argiot/src/app/modules/registration/model/dropdown_item.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
-import '../../../service/utils/utils.dart';
 
 class DocumentController extends GetxController {
   final DocumentRepository _documentRepository =

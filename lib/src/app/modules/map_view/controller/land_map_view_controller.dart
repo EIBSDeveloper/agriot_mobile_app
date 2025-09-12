@@ -35,9 +35,11 @@ class LandMapViewController extends GetxController {
 
   GoogleMapController? mapController;
   LatLngBounds? pendingBounds;
-
+  final polygons = <Polygon>{}.obs;
+  final markers = <Marker>{}.obs;
   final RxInt landId = 0.obs;
   final RxInt cropId = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -47,8 +49,26 @@ class LandMapViewController extends GetxController {
     fetchLandsAndCrops();
   }
 
+  List<ScheduleCrop> get cropsForSelectedLand =>
+      selectedLand.value?.crops ?? [];
+
   Future<void> fetchWeatherData(double lat, double lon) async {
     weatherData.value = await _repository.getWeatherData(lat, lon);
+  }
+
+  void selectLand(ScheduleLand? land) {
+    selectedLand.value = land;
+    selectedCrop.value = allCrop; //  reset to All
+    fetchLandsAndCropMap();
+  }
+
+  void selectCrop(ScheduleCrop? crop) {
+    selectedCrop.value = crop ?? allCrop;
+    fetchLandsAndCropMap(); //  refresh polygons + zoom
+  }
+
+  void changeMapType(MapType type) {
+    mapType.value = type;
   }
 
   void updateCameraToPolygon(List<LatLng> polygon) {
@@ -74,13 +94,6 @@ class LandMapViewController extends GetxController {
       if (latLng.longitude < y0) y0 = latLng.longitude;
     }
     return LatLngBounds(northeast: LatLng(x1, y1), southwest: LatLng(x0, y0));
-  }
-
-  List<ScheduleCrop> get cropsForSelectedLand =>
-      selectedLand.value?.crops ?? [];
-
-  void changeMapType(MapType type) {
-    mapType.value = type;
   }
 
   Future<void> fetchLandsAndCrops() async {
@@ -160,20 +173,6 @@ class LandMapViewController extends GetxController {
     }
     return markers;
   }
-
-  void selectLand(ScheduleLand? land) {
-    selectedLand.value = land;
-    selectedCrop.value = allCrop; //  reset to All
-    fetchLandsAndCropMap();
-  }
-
-  void selectCrop(ScheduleCrop? crop) {
-    selectedCrop.value = crop ?? allCrop;
-    fetchLandsAndCropMap(); //  refresh polygons + zoom
-  }
-
-  final polygons = <Polygon>{}.obs;
-  final markers = <Marker>{}.obs;
 
   Future<void> fetchLandsAndCropMap() async {
     if (selectedLand.value == null) return;

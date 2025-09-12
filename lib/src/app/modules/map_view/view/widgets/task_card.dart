@@ -1,5 +1,6 @@
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,9 +30,11 @@ class TaskCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
 
       decoration: AppStyle.decoration.copyWith(
-        border: const Border(
+        border: Border(
           left: BorderSide(
-            color: Colors.red,
+            color: task.status != null
+                ? getTaskColors(task.status!)
+                : Colors.transparent,
             width: 8,
             style: BorderStyle.solid,
           ),
@@ -48,12 +51,12 @@ class TaskCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    task.cropType,
+                    task.cropType??task.activityTypeName??'',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    task.status ?? "",
+                    getTaskName(task.status!),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium,

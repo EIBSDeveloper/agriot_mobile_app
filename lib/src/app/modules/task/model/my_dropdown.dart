@@ -1,4 +1,3 @@
-// lib/app/modules/task/views/task_view.dart
 
 import 'package:argiot/src/app/modules/task/model/named_item.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';

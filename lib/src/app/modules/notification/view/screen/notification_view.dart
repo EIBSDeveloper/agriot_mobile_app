@@ -1,10 +1,10 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../service/utils/utils.dart';
 import '../../controller/notification_controller.dart';
 
 class NotificationView extends GetView<NotificationController> {

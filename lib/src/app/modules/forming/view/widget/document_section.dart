@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/forming/model/document_view.dart';
 import 'package:argiot/src/app/modules/forming/view/widget/pdf_thumbnail.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
-import 'package:argiot/src/app/service/utils/utils.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

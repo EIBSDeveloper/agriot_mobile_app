@@ -1,4 +1,4 @@
-import 'package:argiot/src/app/modules/bottombar/model/user_profile_model.dart';
+import 'package:argiot/src/app/modules/home/model/user_profile_model.dart';
 
 class UserProfileResponse {
   final bool success;

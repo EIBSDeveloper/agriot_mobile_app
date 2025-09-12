@@ -4,6 +4,8 @@ import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../service/utils/input_validation.dart';
+
 class GuidelineThunbnail extends StatelessWidget {
   GuidelineThunbnail({super.key, required this.guideline});
   final Guideline guideline;

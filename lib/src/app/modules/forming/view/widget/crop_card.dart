@@ -1,10 +1,10 @@
 import 'package:argiot/src/app/modules/forming/model/crop_card_model.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
-import '../../../../widgets/my_network_image.dart';
 
 class CropCard extends StatelessWidget {
   final CropCardModel crop;
@@ -26,9 +26,7 @@ class CropCard extends StatelessWidget {
               crop.img != null
                   ? CircleAvatar(
                       radius: 24,
-                      child: ClipOval(
-                          child: MyNetworkImageProvider(crop.img!),
-                        ),
+                      backgroundImage: CachedNetworkImageProvider(crop.img!),
                     )
                   : const CircleAvatar(radius: 24, child: Icon(Icons.grass)),
               const SizedBox(width: 12),

@@ -1,5 +1,6 @@
 import 'package:argiot/src/app/modules/registration/controller/kyc_controller.dart';
 import 'package:argiot/src/app/modules/registration/controller/resgister_controller.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -126,7 +127,7 @@ class RegLandController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocType.land)},
+      arguments: {"id": getDocTypeId(DocTypes.land)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

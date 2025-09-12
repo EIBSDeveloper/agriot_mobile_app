@@ -1,5 +1,6 @@
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -101,9 +102,7 @@ class LandController extends GetxController {
       final result = await _landService.fetchLandDetail(landId.value);
       landDetail(result);
     } catch (e) {
-      showError( 'failed_to_load_land_details'.tr,
-       
-      );
+      showError('failed_to_load_land_details'.tr);
     } finally {
       isLoading(false);
     }
@@ -115,12 +114,6 @@ class LandController extends GetxController {
     pattaNoController.text = landDetail.value.pattaNumber;
     measurementController.text = landDetail.value.measurementValue.toString();
     descriptionController.text = landDetail.value.description ?? '';
-
-    // Set selected dropdown values
-    // selectedLandUnit.value = AppDropdownItem(
-    //   id: landDetail.value.measurementUnit.id,
-    //   name: landDetail.value.measurementUnit.name,
-    // );
 
     if (landDetail.value.soilType != null &&
         landDetail.value.soilType!.id != null) {
@@ -135,7 +128,7 @@ class LandController extends GetxController {
     locationListController.text = landDetail.value.geoMarks.toString();
     // Set location data
     latitude.value = landDetail.value.latitude;
-    pincodeController.text= "0";
+    pincodeController.text = "0";
     longitude.value = landDetail.value.longitude;
     selectedLandUnit.value = AppDropdownItem(
       id: landDetail.value.measurementUnit.id,
@@ -207,7 +200,7 @@ class LandController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocType.land)},
+      arguments: {"id": getDocTypeId(DocTypes.land)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

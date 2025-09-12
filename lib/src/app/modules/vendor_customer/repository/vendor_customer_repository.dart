@@ -148,7 +148,7 @@ class VendorCustomerRepository {
       json2["is_customer_is_vendor"] = "yes";
 
       final response = await _httpService.post(
-        '/add_customer/$farmerId/',
+        '/add_customer/$farmerId',
         json2,
       );
       if (response.statusCode == 200 || response.statusCode == 201) {

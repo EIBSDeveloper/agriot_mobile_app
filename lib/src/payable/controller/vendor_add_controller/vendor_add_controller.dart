@@ -1,6 +1,6 @@
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
-import '../../../app/service/utils/utils.dart';
 import '../../repository/vendor_add_repository/vendor_add_repository.dart';
 
 class VendorAddController extends GetxController {

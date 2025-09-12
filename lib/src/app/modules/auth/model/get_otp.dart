@@ -1,7 +1,5 @@
-
-
 class GetOtp {
-  String ?message;
+  String? message;
   bool? user;
   int? userId;
   bool? details;
@@ -10,9 +8,9 @@ class GetOtp {
   int? otp;
 
   GetOtp({
-     this.message,
-     this.user,
-     this.userId,
+    this.message,
+    this.user,
+    this.userId,
     required this.details,
     required this.land,
     required this.crop,
@@ -22,14 +20,13 @@ class GetOtp {
   factory GetOtp.fromJson(Map<String, dynamic> json) {
     var farmer = json["farmer"];
     return GetOtp(
-    message: json["message"],
-    user: json["user"],
-    userId: farmer["id"],
-    details: json["details"],
-    land: json["land"],
-    crop: json["crop"],
-    otp: int.tryParse(farmer["otp"].toString())??0,
-  );}
-
-
+      message: json["message"],
+      user: json["user"],
+      userId: farmer["id"],
+      details: json["details"],
+      land: json["land"],
+      crop: json["crop"],
+      otp: int.tryParse(farmer["otp"].toString()) ?? 0,
+    );
+  }
 }

@@ -7,6 +7,7 @@ import 'package:argiot/src/app/modules/expense/repostroy/consumption_repository.
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -126,7 +127,7 @@ class ConsumptionController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocType.inventory)},
+      arguments: {"id": getDocTypeId(DocTypes.inventory)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

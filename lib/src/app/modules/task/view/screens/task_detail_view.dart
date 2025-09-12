@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../service/utils/enums.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
@@ -66,7 +67,9 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                 children: [
                   task.myCrop.cropImg.isNotEmpty
                       ? CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(task.myCrop.cropImg),
+                          backgroundImage: CachedNetworkImageProvider(
+                            task.myCrop.cropImg,
+                          ),
                           radius: 35,
                         )
                       : const CircleAvatar(
@@ -83,9 +86,9 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                 ],
               ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
               const Divider(),
-              const SizedBox(height: 8),
+              const SizedBox(height: 10),
 
               const TitleText('Task Details'),
               _buildDetailItem('Activity Type', task.scheduleActivityType.name),
@@ -158,19 +161,9 @@ class TaskDetailView extends GetView<TaskDetailsController> {
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // SizedBox(
-        //   width: 120,
-        //   child: Text(
-        //     label,
-        //     style: Get.textTheme.bodyMedium?.copyWith(
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        // ),
-        // const SizedBox(width: 8),
         Expanded(
           child: InputCardStyle(
-            child: DropdownButtonFormField<int>(
+            child: DropdownButtonFormField<TaskTypes>(
               initialValue: controller.selectedValue.value,
               icon: const Icon(Icons.keyboard_arrow_down),
               decoration: const InputDecoration(
@@ -179,9 +172,9 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               ),
               items: controller.statusList
                   .map(
-                    (item) => DropdownMenuItem<int>(
-                      value: item["value"],
-                      child: Text(item["name"]),
+                    (item) => DropdownMenuItem(
+                      value: item.task,
+                      child: Text(item.name),
                     ),
                   )
                   .toList(),

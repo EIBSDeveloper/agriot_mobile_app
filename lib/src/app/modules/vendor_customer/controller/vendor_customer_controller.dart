@@ -4,11 +4,11 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dar
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
 
 import 'package:argiot/src/app/modules/vendor_customer/repository/vendor_customer_repository.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../service/utils/utils.dart';
 
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();

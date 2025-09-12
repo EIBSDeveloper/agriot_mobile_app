@@ -1,10 +1,9 @@
-import 'package:argiot/src/app/modules/bottombar/views/widgets/notification_icon_button.dart';
+import 'package:argiot/src/app/modules/home/views/widgets/notification_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_images.dart';
 import '../../../../controller/app_controller.dart';
 import '../../../../routes/app_routes.dart';
-import '../../../../service/utils/utils.dart';
 import '../../contoller/user_profile_controller.dart';
 
 class ProfileAppBar extends GetView<UserProfileController>
@@ -16,7 +15,7 @@ class ProfileAppBar extends GetView<UserProfileController>
 
   @override
   Widget build(BuildContext context) => AppBar(
-    backgroundColor:Get.theme.colorScheme.primaryContainer.withAlpha(180),
+    backgroundColor: Get.theme.colorScheme.primaryContainer.withAlpha(180),
     title: SizedBox(
       height: 40,
       child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
@@ -34,7 +33,6 @@ class ProfileAppBar extends GetView<UserProfileController>
       ),
       IconButton(
         onPressed: () {
-          packageRefresh();
           Get.toNamed(Routes.profile);
         },
         icon: Icon(

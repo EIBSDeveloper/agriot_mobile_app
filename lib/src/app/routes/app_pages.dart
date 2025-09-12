@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/auth/view/screens/walkthrough_view.dart';
 import 'package:argiot/src/app/modules/document/binding/document_viewer_binding.dart';
 import 'package:argiot/src/app/modules/expense/binding/fuel_inventory_binding.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/fuel_inventory_view.dart';
@@ -24,14 +25,13 @@ import 'package:argiot/src/app/modules/subscription/view/screens/payment_success
 import 'package:argiot/src/app/modules/expense/view/screens/expense_overview_screen.dart';
 import 'package:argiot/src/app/modules/forming/view/screen/crop_overview_screen.dart';
 import 'package:argiot/src/app/modules/auth/view/screens/splash_screen.dart';
-import 'package:argiot/src/app/modules/bottombar/views/screens/home.dart';
+import 'package:argiot/src/app/modules/home/views/screens/home.dart';
 import 'package:argiot/src/app/modules/forming/view/screen/crop_view.dart';
 import 'package:argiot/src/app/modules/forming/view/screen/landi_add_page.dart';
 import 'package:argiot/src/app/modules/task/view/screens/task_detail_view.dart';
 import 'package:argiot/src/app/modules/subscription/view/screens/subscription_plans_screen.dart';
 import 'package:argiot/src/app/modules/subscription/view/screens/subscription_usage_screen.dart';
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_list_view.dart';
-import 'package:argiot/src/app/modules/auth/view/screens/walkthrough_model.dart';
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_customer_view.dart';
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';

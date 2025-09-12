@@ -4,12 +4,14 @@ import 'package:argiot/src/app/modules/task/model/task_details.dart';
 import 'package:argiot/src/app/modules/task/model/task_group.dart';
 import 'package:argiot/src/app/modules/task/model/task_request.dart';
 import 'package:argiot/src/app/modules/task/model/task_response.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
+import '../../../service/utils/enums.dart';
 import '../../near_me/model/models.dart';
 
 class TaskRepository {
@@ -166,15 +168,13 @@ class TaskRepository {
     int cropId,
     String startDate,
     String description,
-    int scheduleStatus,
+    TaskTypes scheduleStatus,
   ) async {
     final farmerId = _appDataController.userId;
     try {
-      // Parse the incoming string (assumed format: dd-MM-yyyy)
       final inputFormat = DateFormat('dd-MM-yyyy');
       final dateTime = inputFormat.parse(startDate);
 
-      // Format it to the API expected format (yyyy-MM-dd)
       final outputFormat = DateFormat('yyyy-MM-dd');
       final formattedDate = outputFormat.format(dateTime);
 
@@ -183,7 +183,7 @@ class TaskRepository {
         'my_crop': cropId,
         'start_date': formattedDate,
         'description': description,
-        'schedule_status': scheduleStatus,
+        'schedule_status': getTaskId(scheduleStatus),
         'schedule_choice': 0,
       });
     } catch (e) {

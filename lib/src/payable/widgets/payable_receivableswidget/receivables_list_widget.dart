@@ -107,7 +107,7 @@ class ReceivablesList extends StatelessWidget {
       onTap: () {
         Get.to(
           () => const CustomerVendorDetailsPage(
-            detailsType: DetailsType.receivables,
+            detailsType: DetailsTypes.receivables,
           ),
         );
       },

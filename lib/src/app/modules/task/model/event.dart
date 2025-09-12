@@ -1,10 +1,11 @@
-import 'package:argiot/src/app/modules/task/model/c_task.dart';
+
+import 'task.dart';
 
 class Event {
   final String date;
   final int count;
   final String status;
-  final List<CTask> tasks;
+  final List<Task> tasks;
 
   Event({
     required this.date,
@@ -14,9 +15,9 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> json) => Event(
-      date: json['Date'],
-      count: json['count'],
-      status: json['status'],
-      tasks: (json['tasks'] as List).map((e) => CTask.fromJson(e)).toList(),
-    );
+    date: json['Date'],
+    count: json['count'],
+    status: json['status'],
+    tasks: (json['tasks'] as List).map((e) => Task.fromJson(e)).toList(),
+  );
 }

@@ -10,6 +10,7 @@ import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -228,7 +229,7 @@ class PurchasesAddController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocType.inventory)},
+      arguments: {"id": getDocTypeId(DocTypes.inventory)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

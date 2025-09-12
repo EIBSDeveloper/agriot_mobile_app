@@ -13,7 +13,7 @@ import '../../../../../payable/pages/payables_receivables/payables_receivables_s
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../../../widgets/title_text.dart';
-import '../../../bottombar/contoller/bottombar_contoller.dart';
+import '../../../home/contoller/bottombar_contoller.dart';
 import '../../../guideline/model/guideline_category.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
 import '../../controller/dashboard_controller.dart';
@@ -669,18 +669,9 @@ class DashboardView extends GetView<DashboardController> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.tasks.length,
-              itemBuilder: (context, index) {
-                final task = controller.tasks[index];
-
-                return _buildTaskCard(
-                  Task(
-                    id: task.id,
-                    cropImage: task.cropImage,
-                    cropType: task.cropName,
-                    description: task.scheduleStatusName,
-                  ),
-                );
-              },
+              itemBuilder: (context, index) => _buildTaskCard(
+                  controller.tasks[index]
+                ),
             );
           }),
         ],
@@ -699,7 +690,7 @@ class DashboardView extends GetView<DashboardController> {
         color: Colors.grey.withAlpha(30),
         elevation: 0,
         child: ListTile(
-          title: Text(task.cropType.tr),
+          title: Text(task.cropType!),
           subtitle: Text(
             task.description.tr,
             maxLines: 1,

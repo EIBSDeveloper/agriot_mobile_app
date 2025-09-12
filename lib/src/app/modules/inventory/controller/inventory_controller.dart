@@ -1,9 +1,9 @@
 import 'package:argiot/src/app/modules/inventory/model/inventory_model.dart';
 import 'package:argiot/src/app/modules/inventory/repostory/inventory_repository.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
-import '../../../service/utils/utils.dart';
 
 class InventoryController extends GetxController {
   final InventoryRepository _repository = InventoryRepository();

@@ -28,10 +28,9 @@ class NotificationRepository {
       print('Notifications JSON: $notificationsJson');
 
       // Convert to NotificationItem
-      final List<NotificationItem> allNotifications =
-          notificationsJson
-              .map((item) => NotificationItem.fromJson(item))
-              .toList();
+      final List<NotificationItem> allNotifications = notificationsJson
+          .map((item) => NotificationItem.fromJson(item))
+          .toList();
 
       // Group by date
       Map<String, List<NotificationItem>> grouped = {};
@@ -42,15 +41,14 @@ class NotificationRepository {
       }
 
       // Convert to NotificationModel list
-      final List<NotificationModel> notificationModels =
-          grouped.entries
-              .map(
-                (entry) => NotificationModel(
-                  timeStamp: entry.key,
-                  notifications: entry.value,
-                ),
-              )
-              .toList();
+      final List<NotificationModel> notificationModels = grouped.entries
+          .map(
+            (entry) => NotificationModel(
+              timeStamp: entry.key,
+              notifications: entry.value,
+            ),
+          )
+          .toList();
 
       // Sort by date descending
       notificationModels.sort((a, b) => b.timeStamp.compareTo(a.timeStamp));

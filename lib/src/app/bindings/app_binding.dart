@@ -18,7 +18,7 @@ import '../controller/app_controller.dart';
 import '../controller/network_contoller.dart';
 import '../modules/auth/controller/splash_controller.dart';
 import '../modules/auth/repository/auth_repository.dart';
-import '../modules/bottombar/contoller/bottombar_contoller.dart';
+import '../modules/home/contoller/bottombar_contoller.dart';
 import '../modules/dashboad/controller/dashboard_controller.dart';
 import '../modules/dashboad/repostory/dashboard_repository.dart';
 import '../modules/forming/controller/crop_controller.dart';

@@ -1,20 +1,21 @@
 import 'package:argiot/src/app/modules/task/model/activity_model.dart';
-import 'package:argiot/src/app/modules/task/model/c_task.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/modules/task/model/date_task.dart';
 import 'package:argiot/src/app/modules/task/model/event.dart';
 import 'package:argiot/src/app/modules/task/model/task_group.dart';
 import 'package:argiot/src/app/modules/task/model/task_request.dart';
 import 'package:argiot/src/app/modules/task/model/task_response.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../service/utils/utils.dart';
 import '../../../controller/app_controller.dart';
+import '../../../service/utils/enums.dart';
 import '../../near_me/model/models.dart';
 
+import '../model/task.dart';
 import '../repostory/task_repository.dart';
 import 'dart:async';
 
@@ -50,7 +51,7 @@ class TaskController extends GetxController {
 
   // Task view related
   final Rx<TaskResponse?> taskResponse = Rx<TaskResponse?>(null);
-  final RxString selectedFilter = 'all'.obs;
+  final Rx<TaskTypes> selectedFilter =  TaskTypes.all.obs;
   final RxBool cisLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final Rx<DateTime> focusedDay = DateTime.now().obs;
@@ -243,7 +244,7 @@ class TaskController extends GetxController {
     selectedDays.clear();
   }
 
-  void changeFilter(String filter) {
+  void changeFilter(TaskTypes filter) {
     selectedFilter.value = filter;
     update();
   }
@@ -270,10 +271,10 @@ class TaskController extends GetxController {
         .toList();
   }
 
-  List<CTask> getTasksForDay(DateTime day) {
+  List<Task> getTasksForDay(DateTime day) {
     if (taskResponse.value == null) return [];
     final dateString = DateFormat('yyyy-MM-dd').format(day);
-    final allTasks = <CTask>[];
+    final allTasks = <Task>[];
 
     allTasks.addAll(
       _getTasksFromDateTasks(taskResponse.value!.completedTasks, dateString),
@@ -294,7 +295,7 @@ class TaskController extends GetxController {
     return _applyFilter(allTasks);
   }
 
-  List<CTask> _getTasksFromDateTasks(
+  List<Task> _getTasksFromDateTasks(
     List<DateTask> dateTasks,
     String dateString,
   ) {
@@ -305,19 +306,18 @@ class TaskController extends GetxController {
     return dateTask.tasks;
   }
 
-  List<CTask> _applyFilter(List<CTask> tasks) {
+  List<Task> _applyFilter(List<Task> tasks) {
     switch (selectedFilter.value) {
-      case 'completed':
-        return tasks.where((task) => task.statusId == 2).toList();
-      case 'waiting':
-        return tasks.where((task) => task.statusId == 1).toList();
-
-      case 'in_progress':
-        return tasks.where((task) => task.statusId == 3).toList();
-      case 'pending':
-        return tasks.where((task) => task.statusId == 4).toList();
-      case 'cancelled':
-        return tasks.where((task) => task.statusId == 5).toList();
+      case  TaskTypes.completed:
+        return tasks.where((task) => task.status ==  TaskTypes.completed).toList();
+      case  TaskTypes.waiting:
+        return tasks.where((task) => task.status ==  TaskTypes.waiting).toList();
+      case  TaskTypes.inProgress:
+        return tasks.where((task) => task.status ==  TaskTypes.inProgress).toList();
+      case  TaskTypes.pending:
+        return tasks.where((task) => task.status ==  TaskTypes.pending).toList();
+      case   TaskTypes.cancelled:
+        return tasks.where((task) => task.status ==  TaskTypes.cancelled).toList();
       default:
         return tasks;
     }

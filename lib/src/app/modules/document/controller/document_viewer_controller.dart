@@ -9,8 +9,8 @@ class DocumentViewerController extends GetxController {
   final RxList<String> documentUrls = <String>[].obs;
   final RxBool isLoading = true.obs;
   final RxString error = ''.obs;
-  final RxList<FileType> fileTypes = <FileType>[].obs;
-  final RxList<FileSourceType> sourceTypes = <FileSourceType>[].obs;
+  final RxList<FileTypes> fileTypes = <FileTypes>[].obs;
+  final RxList<FileSourceTypes> sourceTypes = <FileSourceTypes>[].obs;
   int initialIndex = 0;
 
   @override
@@ -45,32 +45,32 @@ class DocumentViewerController extends GetxController {
 
       for (final doc in documentUrls) {
         if (doc.isEmpty) {
-          fileTypes.add(FileType.unsupported);
-          sourceTypes.add(FileSourceType.unsupported);
+          fileTypes.add(FileTypes.unsupported);
+          sourceTypes.add(FileSourceTypes.unsupported);
           continue;
         }
 
         // Detect base64
         if (doc.startsWith("data:") ||
             RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(doc)) {
-          sourceTypes.add(FileSourceType.base64);
+          sourceTypes.add(FileSourceTypes.base64);
 
           if (doc.contains("pdf") || doc.toLowerCase().endsWith(".pdf")) {
-            fileTypes.add(FileType.pdf);
+            fileTypes.add(FileTypes.pdf);
           } else {
-            fileTypes.add(FileType.image);
+            fileTypes.add(FileTypes.image);
           }
           continue;
         }
 
         //  Detect local file
         if (File(doc).existsSync()) {
-          sourceTypes.add(FileSourceType.local);
+          sourceTypes.add(FileSourceTypes.local);
 
           if (doc.toLowerCase().endsWith('.pdf')) {
-            fileTypes.add(FileType.pdf);
+            fileTypes.add(FileTypes.pdf);
           } else {
-            fileTypes.add(FileType.image);
+            fileTypes.add(FileTypes.image);
           }
           continue;
         }
@@ -78,21 +78,21 @@ class DocumentViewerController extends GetxController {
         //  Otherwise treat as network
         final response = await http.head(Uri.parse(doc));
         if (response.statusCode == 200) {
-          sourceTypes.add(FileSourceType.network);
+          sourceTypes.add(FileSourceTypes.network);
 
           if (doc.toLowerCase().endsWith('.pdf')) {
-            fileTypes.add(FileType.pdf);
+            fileTypes.add(FileTypes.pdf);
           } else if (doc.toLowerCase().endsWith('.png') ||
               doc.toLowerCase().endsWith('.jpg') ||
               doc.toLowerCase().endsWith('.jpeg') ||
               doc.toLowerCase().endsWith('.gif')) {
-            fileTypes.add(FileType.image);
+            fileTypes.add(FileTypes.image);
           } else {
-            fileTypes.add(FileType.unsupported);
+            fileTypes.add(FileTypes.unsupported);
           }
         } else {
-          fileTypes.add(FileType.unsupported);
-          sourceTypes.add(FileSourceType.unsupported);
+          fileTypes.add(FileTypes.unsupported);
+          sourceTypes.add(FileSourceTypes.unsupported);
         }
       }
     } catch (e) {

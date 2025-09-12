@@ -21,12 +21,12 @@ class CustomerVendorController extends GetxController {
   var error = ''.obs;
 
   /// Load Receivables (Vendor side)
-  Future<void> loadReceivables( DetailsType? detailsType) async {
+  Future<void> loadReceivables( DetailsTypes? detailsType) async {
     try {
       isLoading.value = true;
       error.value = '';
       final VendorCustomerResponse result;
-      if (DetailsType.receivables == detailsType) {
+      if (DetailsTypes.receivables == detailsType) {
         result = await repository.fetchReceivables();
       } else {
         result = await repository.fetchPayables();

@@ -9,6 +9,7 @@ import 'package:argiot/src/app/modules/sales/model/rupee.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_detail.dart';
 import 'package:argiot/src/app/modules/sales/model/unit.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/enums.dart';
@@ -155,7 +156,7 @@ class NewSalesController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocType.sales)},
+      arguments: {"id": getDocTypeId(DocTypes.sales)},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

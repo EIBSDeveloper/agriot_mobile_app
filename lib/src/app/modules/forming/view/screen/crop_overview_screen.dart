@@ -7,13 +7,14 @@ import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/app_icons.dart';
-import '../../../../widgets/my_network_image.dart';
+import '../../../../service/utils/enums.dart';
 import '../../../guideline/model/guideline.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../guideline/model/guideline_category.dart';
@@ -126,12 +127,12 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
               children: [
                 CircleAvatar(
                   radius: 30,
-
-                  child: details!.imageUrl!.isEmpty
+                  backgroundImage: details!.imageUrl!.isNotEmpty
+                      ? CachedNetworkImageProvider(details.imageUrl!)
+                      : null,
+                  child: details.imageUrl!.isEmpty
                       ? const Icon(Icons.agriculture, size: 30)
-                      : ClipOval(
-                          child: MyNetworkImageProvider(details.imageUrl!),
-                        ),
+                      : null,
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -556,28 +557,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                 );
         }),
         const SizedBox(height: 180),
-        // ...schedulesByDate.entries.map((entry) {
-        //   return Column(
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-        //       Text(
-        //         entry.key,
-        //         style: Get.textTheme.titleMedium!.copyWith(
-        //           fontWeight: FontWeight.bold,
-        //         ),
-        //       ),
-        //       ...entry.value.map((schedule) {
-        //         Task task = Task(
-        //           cropImage: overview.crop.imageUrl!,
-        //           cropType: overview.crop.cropType!,
-        //           description: schedule.status,
-        //           id: schedule.id,
-        //         );
-        //         return _buildTaskCard(task);
-        //       }),
-        //     ],
-        //   );
-        // }),
       ],
     );
   }
@@ -599,7 +578,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         //     borderRadius: BorderRadius.circular(4),
         //   ),
         // ),
-        title: Text(task.cropType),
+        title: Text(task.cropType!),
         subtitle: Text(
           task.description,
           maxLines: 1,
@@ -627,7 +606,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
   );
 
   Widget _buildCalendarSection() => Card(
-    // margin: const EdgeInsets.all(8),
     elevation: 0,
     color: Get.theme.primaryColor.withAlpha(40),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -712,18 +690,18 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildFilterChip('All', 'all'),
-          _buildFilterChip('Completed', 'completed'),
-          _buildFilterChip('Waiting', 'waiting'),
-          // _buildFilterChip('Cancelled', 'cancelled'),
-          // _buildFilterChip('Pending', 'pending'),
-          // _buildFilterChip('In Progress', 'in_progress'),
+          _buildFilterChip('All', TaskTypes.all),
+          _buildFilterChip('Completed', TaskTypes.completed),
+          _buildFilterChip('Waiting', TaskTypes.waiting),
+          _buildFilterChip('Cancelled', TaskTypes.cancelled),
+          _buildFilterChip('Pending', TaskTypes.pending),
+          _buildFilterChip('In Progress', TaskTypes.inProgress),
         ],
       ),
     ),
   );
 
-  Widget _buildFilterChip(String label, String value) => Obx(() {
+  Widget _buildFilterChip(String label, TaskTypes value) => Obx(() {
     final isSelected = controller.selectedFilter.value == value;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -759,15 +737,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
     return Column(
       children: [
-        ...tasks.map((data) {
-          Task task = Task(
-            cropImage: "",
-            cropType: data.activityTypeName,
-            description: data.description,
-            id: data.taskId,
-          );
-          return _buildTaskCard(task);
-        }),
+        ...tasks.map((task) => _buildTaskCard(task)),
       ],
     );
   });

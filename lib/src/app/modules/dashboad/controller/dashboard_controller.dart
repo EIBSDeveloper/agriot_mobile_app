@@ -5,12 +5,13 @@ import 'package:argiot/src/app/modules/dashboad/model/market_price.dart';
 import 'package:argiot/src/app/modules/dashboad/model/payment_summary.dart';
 import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/widget_settings.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import '../../../service/utils/utils.dart';
 import '../../../controller/user_limit.dart';
 import '../../near_me/model/models.dart';
-import '../model/task.dart';
+import '../../task/model/task.dart';
+
 import '../model/widget_config.dart';
 import '../repostory/dashboard_repository.dart';
 
@@ -25,7 +26,7 @@ class DashboardController extends GetxController {
   // Data observables
   final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);
   final RxList<Guideline> guidelines = <Guideline>[].obs;
-  final RxList<DashBoardSchedule> tasks = <DashBoardSchedule>[].obs;
+  final RxList<Task> tasks = <Task>[].obs;
   final Rx<FinanceData?> financeData = Rx<FinanceData?>(null);
   final Rx<Position?> position = Rx<Position?>(null);
 

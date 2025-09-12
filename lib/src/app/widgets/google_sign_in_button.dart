@@ -13,23 +13,27 @@ class GoogleSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ElevatedButton.icon(
-      icon: const FaIcon(FontAwesomeIcons.google, color: Colors.redAccent, size: 24),
-      label: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.black87,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
+    icon: const FaIcon(
+      FontAwesomeIcons.google,
+      color: Colors.redAccent,
+      size: 24,
+    ),
+    label: Text(
+      text,
+      style: const TextStyle(
+        color: Colors.black87,
+        fontWeight: FontWeight.w600,
+        fontSize: 16,
       ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+    ),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
 
-        minimumSize: const Size(double.infinity, 50),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
-      ),
-      onPressed: onPressed,
-    );
+      minimumSize: const Size(double.infinity, 50),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+    ),
+    onPressed: onPressed,
+  );
 }

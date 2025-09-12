@@ -1,9 +1,10 @@
-enum DocType { land, expense, sales, inventory, payouts }
+enum DocTypes { land, expense, sales, inventory, payouts }
 
-enum DetailsType { payables, receivables }
+enum DetailsTypes { payables, receivables }
 
-enum FileSourceType { network, local, base64, unsupported }
-enum FileType { pdf, image, unsupported }
+enum FileSourceTypes { network, local, base64, unsupported }
+
+enum FileTypes { pdf, image, unsupported }
 
 enum InventoryTypes {
   fuel,
@@ -14,3 +15,5 @@ enum InventoryTypes {
   fertilizer,
   seeds,
 }
+
+enum TaskTypes { all, completed, waiting, inProgress, pending, cancelled }

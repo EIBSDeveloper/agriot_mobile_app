@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:argiot/src/app/modules/profile/repository/profile_repository.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../controller/app_controller.dart';
-import '../../../service/utils/utils.dart';
 import '../model/profile_model.dart';
 
 class ProfileController extends GetxController {

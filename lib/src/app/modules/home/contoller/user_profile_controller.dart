@@ -1,8 +1,8 @@
 // controllers/user_profile_controller.dart
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
-import '../../../service/utils/utils.dart';
-import '../../bottombar/model/user_profile_model.dart';
+import '../model/user_profile_model.dart';
 
 class UserProfileController extends GetxController {
   // final UserProfileRepository _repository = Get.put(UserProfileRepository());

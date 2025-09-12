@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -15,46 +15,30 @@ import '../../routes/app_routes.dart';
 import 'enums.dart';
 
 AppDataController appData = Get.find();
-void showError(final String message) {
-  if (message.contains('404') ||
-      message.contains('500') ||
-      message.contains('load') ||
-      message.contains('error') ||
-      message.contains('Error')) {
-    return;
+
+UserLimitController limitController = Get.put(UserLimitController());
+
+double kelvinToCelsius(final double kelvin) => kelvin - 273.15;
+
+String generateGoogleMapsUrl(double latitude, double longitude) =>
+    "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
+
+String capitalizeFirstLetter(final String input) =>
+    input.isEmpty ? input : input[0].toUpperCase() + input.substring(1);
+
+String? getYoutubeThumbnailUrl(
+  String? videoId, {
+  String quality = 'hqdefault',
+}) =>
+    videoId == null ? null : 'https://img.youtube.com/vi/$videoId/$quality.jpg';
+
+extension IterableUtils<E> on Iterable<E> {
+  Iterable<T> whereMap<T>(T? Function(E e) transform) sync* {
+    for (final e in this) {
+      final result = transform(e);
+      if (result != null) yield result;
+    }
   }
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.red,
-    textColor: Colors.white,
-  );
-}
-
-void showSuccess(final String message) {
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.green,
-    textColor: Colors.white,
-  );
-}
-
-void showWarning(final String message) {
-  Fluttertoast.showToast(
-    msg: message,
-    toastLength: Toast.LENGTH_LONG,
-    gravity: ToastGravity.BOTTOM,
-    backgroundColor: Colors.orangeAccent,
-    textColor: Colors.white,
-  );
-}
-
-String capitalizeFirstLetter(final String input) {
-  if (input.isEmpty) return input;
-  return input[0].toUpperCase() + input.substring(1);
 }
 
 Future<void> openUrl(url) async {
@@ -72,35 +56,9 @@ Future<void> makePhoneCall(final String phoneNumber) async {
   }
 }
 
-double kelvinToCelsius(final double kelvin) => kelvin - 273.15;
-
 Future<PackageUsage?> findLimit() async {
-  UserLimitController limitController = Get.put(UserLimitController());
   await limitController.loadUsage();
   return limitController.packageUsage.value;
-}
-
-String generateGoogleMapsUrl(double latitude, double longitude) =>
-    "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
-
-packageRefresh() async {
-  UserLimitController limitController = Get.put(UserLimitController());
-  await limitController.loadUsage();
-}
-
-void showDefaultGetXDialog(final String message) {
-  Get.defaultDialog(
-    title: 'Package Limit Reached',
-    middleText: "You've reached your limit for adding new $message .",
-    textConfirm: "Upgrade",
-    textCancel: 'Close',
-    radius: 10,
-    onConfirm: () {
-      Get.back();
-      Get.toNamed(Routes.subscriptionUsage);
-    },
-    onCancel: Get.back,
-  );
 }
 
 String getType(int id) {
@@ -170,62 +128,98 @@ String getMonthName(int month) {
   return months[month - 1];
 }
 
-String? getYoutubeVideoId(String? url) {
-  if (url == null) {
-    return null;
-  }
-  final RegExp regExp = RegExp(r"(?:v=|\/)([0-9A-Za-z_-]{11})(?:\?|\&|$)");
-  final match = regExp.firstMatch(url);
-  return match?.group(1);
-}
-
-String? getYoutubeThumbnailUrl(
-  String? videoId, {
-  String quality = 'hqdefault',
-}) {
-  if (videoId == null) {
-    return null;
-  }
-  return 'https://img.youtube.com/vi/$videoId/$quality.jpg';
-}
-
 void handleGuidelineTap(Guideline guideline) {
   if (guideline.mediaType == 'video' && guideline.videoUrl != null) {
-    // Open video player
-
-    openUrl(Uri.parse(guideline.videoUrl!));
+    openUrl(Uri.parse(guideline.videoUrl!)); // Open video player
   } else if (guideline.mediaType == 'document' && guideline.document != null) {
-    // Open document viewer
-    var arguments = "${appData.baseUrlWithoutAPi}${guideline.document}";
-    Get.toNamed(Routes.docViewer, arguments: arguments);
+    Get.toNamed(
+      Routes.docViewer,
+      arguments: "${appData.baseUrlWithoutAPi}${guideline.document}",
+    ); // Open document viewer
   } else {
     showError('Unable to open guideline content');
   }
 }
 
-bool isValidMobile(String input) {
-  // Check if input is exactly 10 digits
-  final mobileRegex = RegExp(r'^\d{10}$');
-  return mobileRegex.hasMatch(input);
-}
-
-bool isValidEmail(String input) {
-  // Simple email regex pattern
-  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  return emailRegex.hasMatch(input);
-}
-
-int getDocTypeId(DocType type) {
-  if (type == DocType.land) {
+int getDocTypeId(DocTypes type) {
+  if (type == DocTypes.land) {
     return 0;
-  } else if (type == DocType.expense) {
+  } else if (type == DocTypes.expense) {
     return 1;
-  } else if (type == DocType.sales) {
+  } else if (type == DocTypes.sales) {
     return 2;
-  } else if (type == DocType.inventory) {
+  } else if (type == DocTypes.inventory) {
     return 3;
-  } else if (type == DocType.payouts) {
+  } else if (type == DocTypes.payouts) {
     return 4;
   }
   return 0;
+}
+
+Color getTaskColors(TaskTypes task) {
+  switch (task) {
+    case TaskTypes.completed:
+      return Colors.green;
+    case TaskTypes.waiting:
+      return Colors.green;
+    case TaskTypes.pending:
+      return Colors.green;
+    case TaskTypes.inProgress:
+      return Colors.green;
+    case TaskTypes.cancelled:
+      return Colors.green;
+    default:
+      return Colors.green;
+  }
+}
+
+TaskTypes getTaskStatus(int task) {
+  switch (task) {
+    case 1:
+      return TaskTypes.waiting;
+    case 2:
+      return TaskTypes.completed;
+    case 3:
+      return TaskTypes.inProgress;
+    case 4:
+      return TaskTypes.pending;
+    case 5:
+      return TaskTypes.cancelled;
+    default:
+      return TaskTypes.all;
+  }
+}
+
+int getTaskId(TaskTypes task) {
+  switch (task) {
+    case TaskTypes.waiting:
+      return 1;
+    case TaskTypes.completed:
+      return 2;
+    case TaskTypes.inProgress:
+      return 3;
+    case TaskTypes.pending:
+      return 4;
+    case TaskTypes.cancelled:
+      return 5;
+    default:
+      return 0;
+  }
+}
+
+String getTaskName(TaskTypes task) {
+  switch (task) {
+    case TaskTypes.waiting:
+      return "Waiting";
+    case TaskTypes.completed:
+      return "Completed";
+    case TaskTypes.inProgress:
+      return "In Progress";
+    case TaskTypes.pending:
+      return "Pending";
+    case TaskTypes.cancelled:
+      return "Cancelled";
+    default:
+      return "All";
+  }
 }

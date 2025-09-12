@@ -788,7 +788,7 @@ import 'historydetailspage.dart';
 
 class CustomerVendorDetailsPage extends StatefulWidget {
 
-  final DetailsType? detailsType;
+  final DetailsTypes? detailsType;
 
 const  CustomerVendorDetailsPage({
     super.key,
@@ -834,7 +834,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ================= Receivables =================
-              if (widget.detailsType == DetailsType.receivables) ...[
+              if (widget.detailsType == DetailsTypes.receivables) ...[
                 if (vendorReceivables.isNotEmpty) ...[
                   Text(
                     'Vendor Receivables'.tr,
@@ -859,7 +859,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
               ],
 
               // ================= Payables =================
-              if (widget.detailsType == DetailsType.payables) ...[
+              if (widget.detailsType == DetailsTypes.payables) ...[
                 if (vendorReceivables.isNotEmpty) ...[
                   Text(
                     "Vendor Payables".tr,

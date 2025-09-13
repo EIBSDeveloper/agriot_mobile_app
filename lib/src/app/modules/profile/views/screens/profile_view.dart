@@ -72,7 +72,6 @@ class ProfileView extends GetView<ProfileController> {
     floatingActionButton: FloatingActionButton(
       onPressed: () {
         AppDataController appData = Get.find();
-
         appData.error.value = !appData.error.value;
       },
       backgroundColor: Get.theme.primaryColor,
@@ -100,7 +99,7 @@ class ProfileView extends GetView<ProfileController> {
   }
 
   Widget _buildProfileCard(ProfileModel profile, BuildContext context) => Card(
-    color: Colors.grey.withAlpha(30), //rgb(226,237,201)
+    color: Colors.grey.withAlpha(30),
     elevation: 0,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Padding(
@@ -247,19 +246,6 @@ class ProfileView extends GetView<ProfileController> {
               },
               child: const Text("Explore Plans"),
             ),
-
-            // LinearProgressIndicator(
-            //   value: (subscription.remainingDays / subscription.packageValidity)
-            //       .clamp(0.0, 1.0),
-            //   backgroundColor: Get.theme.dividerColor,
-            //   valueColor: AlwaysStoppedAnimation<Color>(
-            //     subscription.remainingDays > 7
-            //         ? Colors.green
-            //         : subscription.remainingDays > 3
-            //         ? Colors.orange
-            //         : Colors.red,
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -343,28 +329,26 @@ class ProfileView extends GetView<ProfileController> {
     ),
   );
 
-  Widget _buildDetailRow(String label, String? value) {
-    if (value == null || value == '') {
-      return Container();
-    }
-    return SizedBox(
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: Get.textTheme.bodyLarge!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+  Widget _buildDetailRow(String label, String? value) =>
+      (value == null || value == '')
+      ? const SizedBox()
+      : SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label,
+                  style: Get.textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(value, style: Get.textTheme.bodyLarge!),
+              ],
             ),
-            const SizedBox(height: 4),
-            Text(value, style: Get.textTheme.bodyLarge!),
-          ],
-        ),
-      ),
-    );
-  }
+          ),
+        );
 }

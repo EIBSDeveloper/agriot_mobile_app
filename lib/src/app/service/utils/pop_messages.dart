@@ -4,16 +4,18 @@ import 'package:get/get.dart';
 
 import '../../controller/app_controller.dart';
 import '../../routes/app_routes.dart';
- AppDataController appData = Get.find();
-     
-     
-void showError(final String message) {
 
-  if (appData.error.value && message.contains('404') ||
-      message.contains('500') ||
-      message.contains('load') ||
-      message.contains('error') ||
-      message.contains('Error')) {
+AppDataController appData = Get.find();
+
+void showError(final String message) {
+  var bool =
+      appData.error.value &&
+      (message.contains('404') ||
+          message.contains('500') ||
+          message.contains('load') ||
+          message.contains('error') ||
+          message.contains('Error'));
+  if (bool) {
     return;
   }
   Fluttertoast.showToast(
@@ -44,6 +46,7 @@ void showWarning(final String message) {
     textColor: Colors.white,
   );
 }
+
 void showDefaultGetXDialog(final String message) {
   Get.defaultDialog(
     title: 'Package Limit Reached',

@@ -101,13 +101,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
             validator: (value) =>
                 value?.isEmpty ?? true ? 'Required field' : null,
           ),
-          // const SizedBox(height: 12),
-          // _buildTextField(
-          //   controller: controller.phoneController,
-          //   label: 'Phone Number *',
-          //   validator: (value) => value?.isEmpty ?? true ? 'Required field' : null,
-          //   keyboardType: TextInputType.phone,
-          // ),
+
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.emailController,
@@ -162,15 +156,6 @@ class ProfileEditView extends GetView<ProfileEditController> {
             onTap: controller.pickLocation,
           ),
           const SizedBox(height: 12),
-          // _buildCountryDropdown(),
-          // const SizedBox(height: 12),
-          // _buildStateDropdown(),
-          // const SizedBox(height: 12),
-          // _buildCityDropdown(),
-          // const SizedBox(height: 12),
-          // _buildTalukDropdown(),
-          // const SizedBox(height: 12),
-          // _buildVillageDropdown(),
         ],
       ),
     ),

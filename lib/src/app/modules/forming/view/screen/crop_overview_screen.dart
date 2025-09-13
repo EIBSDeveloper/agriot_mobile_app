@@ -5,7 +5,7 @@ import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
 import 'package:argiot/src/app/modules/forming/model/schedule.dart';
 import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/modules/task/model/task.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +19,7 @@ import '../../../guideline/model/guideline.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../guideline/model/guideline_category.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
+import '../../../map_view/view/widgets/task_card.dart';
 
 class CropOverviewScreen extends StatefulWidget {
   const CropOverviewScreen({super.key});
@@ -236,7 +237,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           const SizedBox(height: 10),
           _buildDetailRow('Crop Type', details!.cropType!.name),
           _buildDetailRow('Harvest Frequency', details.harvestingType!.name),
-          _buildDetailRow('Plantation Date', details.plantationDate.toString()),
+          _buildDetailRow('Plantation Date', DateFormat('dd/MM/yyyy').format(details.plantationDate!)),
           _buildDetailRow(
             'Measurement',
             '${details.measurementValue} ${details.measurementUnit!.name}',
@@ -541,7 +542,14 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                               ),
                             ),
                           ),
-                          ...group.tasks.map((task) => _buildTaskCard(task)),
+                          ...group.tasks.map(
+                            (task) => TaskCard(
+                              task: task,
+                              refresh: () {
+                                controller.loadTasks();
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -561,50 +569,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     );
   }
 
-  Widget _buildTaskCard(Task task) => InkWell(
-    onTap: () {
-      Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
-    },
-    child: Card(
-      margin: const EdgeInsets.only(left: 10, bottom: 8),
-      color: Colors.grey.withAlpha(30), //rgb(226,237,201)
-      elevation: 0,
-      child: ListTile(
-        // leading: Container(
-        //   width: 8,
-        //   height: 40,
-        //   decoration: BoxDecoration(
-        //     color: Colors.green,
-        //     borderRadius: BorderRadius.circular(4),
-        //   ),
-        // ),
-        title: Text(task.cropType!),
-        subtitle: Text(
-          task.description,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // IconButton(
-            //   icon: Icon(Icons.edit, color: Get.theme.primaryColor),
-            //   onPressed: () {
-            //     // _showEditTaskBottomSheet(task.id);
-            //   },
-            // ),
-            // IconButton(
-            //   icon: Icon(Icons.delete, color: Get.theme.primaryColor),
-            //   onPressed: () {
-            //     controller.deleteTask(task.id);
-            //   },
-            // ),
-          ],
-        ),
-      ),
-    ),
-  );
-
   Widget _buildCalendarSection() => Card(
     elevation: 0,
     color: Get.theme.primaryColor.withAlpha(40),
@@ -622,7 +586,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             controller.selectedDay.value = focusedDay;
             controller.refreshData(month: focusedDay);
           },
-          // Instead of selectedDay, use selectedDayPredicate:
+      
           selectedDayPredicate: (day) =>
               isSameDay(day, controller.selectedDay.value),
 
@@ -690,17 +654,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildFilterChip('All', TaskTypes.all),
-          _buildFilterChip('Completed', TaskTypes.completed),
-          _buildFilterChip('Waiting', TaskTypes.waiting),
-          _buildFilterChip('Cancelled', TaskTypes.cancelled),
-          _buildFilterChip('Pending', TaskTypes.pending),
-          _buildFilterChip('In Progress', TaskTypes.inProgress),
+          ...TaskTypes.values.map(
+            (task) => _buildFilterChip(getTaskName(task), task),
+          ),
         ],
       ),
     ),
   );
-
   Widget _buildFilterChip(String label, TaskTypes value) => Obx(() {
     final isSelected = controller.selectedFilter.value == value;
     return Padding(
@@ -737,7 +697,14 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
     return Column(
       children: [
-        ...tasks.map((task) => _buildTaskCard(task)),
+        ...tasks.map(
+          (task) => TaskCard(
+            task: task,
+            refresh: () {
+              controller.loadTasks();
+            },
+          ),
+        ),
       ],
     );
   });

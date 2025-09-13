@@ -3,6 +3,7 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/controller/task_details_controller.dart';
 import 'package:argiot/src/app/modules/task/view/widget/edit_task.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -174,7 +175,10 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                   .map(
                     (item) => DropdownMenuItem(
                       value: item.task,
-                      child: Text(item.name),
+                      child: Text(
+                        item.name,
+                        selectionColor: getTaskColors(item.task),
+                      ),
                     ),
                   )
                   .toList(),

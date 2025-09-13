@@ -67,7 +67,7 @@ abstract class Routes {
   //
   static const inventory = '/inventory';
 
-  static const String landEdit = '/land/edit';
+  static const String addDocument = '/addDocument';
   static const String fuelConsumption = '/fuel-consumption';
 
   static const String landMapView = '/land-map';

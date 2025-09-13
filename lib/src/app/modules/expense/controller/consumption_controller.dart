@@ -6,16 +6,14 @@ import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_repository.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
+import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../service/utils/enums.dart';
-import '../../../service/utils/utils.dart';
-import '../../document/binding/document_binding.dart';
 import '../../document/model/add_document_model.dart';
-import '../../document/view/add_document_view.dart';
 
 class ConsumptionController extends GetxController {
   final ConsumptionRepository _repository = ConsumptionRepository();
@@ -124,10 +122,8 @@ class ConsumptionController extends GetxController {
   }
 
   void addDocumentItem() {
-    Get.to(
-      const AddDocumentView(),
-      binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocTypes.inventory)},
+    Get.toNamed(
+   Routes.addDocument, arguments: {"type": DocTypes.inventory}
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

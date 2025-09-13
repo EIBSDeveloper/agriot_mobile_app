@@ -1,33 +1,18 @@
 import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
 import '../../../service/utils/enums.dart';
 
-class DocumentViewerController extends GetxController {
+class DocumentThumbnailController extends GetxController {
   final RxList<String> documentUrls = <String>[].obs;
   final RxBool isLoading = true.obs;
   final RxString error = ''.obs;
   final RxList<FileTypes> fileTypes = <FileTypes>[].obs;
   final RxList<FileSourceTypes> sourceTypes = <FileSourceTypes>[].obs;
- RxInt initialIndex = 0.obs;
+  int initialIndex = 0;
 
-  @override
-  void onInit() {
-    super.onInit();
-
-    final args = Get.arguments;
-    if (args is Map<String, dynamic>) {
-      if (args["files"] is List<String>) {
-        documentUrls.assignAll(args["files"]);
-      }
-      if (args["index"] is int) {
-        initialIndex.value = args["index"];
-      }
-    } else if (args is List<String>) {
-      documentUrls.assignAll(args);
-    } else if (args is String) {
+  load(args) {
+    if (args is String) {
       documentUrls.assignAll([args]);
     } else {
       error.value = "Invalid arguments";
@@ -50,12 +35,12 @@ class DocumentViewerController extends GetxController {
           continue;
         }
 
-        // Detect base64
+        // 🔹 Detect base64
         if (doc.startsWith("data:") ||
             RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(doc)) {
           sourceTypes.add(FileSourceTypes.base64);
 
-          if ( doc.toLowerCase().endsWith(".pdf")) {
+          if (doc.contains("pdf") || doc.toLowerCase().endsWith(".pdf")) {
             fileTypes.add(FileTypes.pdf);
           } else {
             fileTypes.add(FileTypes.image);
@@ -63,7 +48,7 @@ class DocumentViewerController extends GetxController {
           continue;
         }
 
-        //  Detect local file
+        // 🔹 Detect local file
         if (File(doc).existsSync()) {
           sourceTypes.add(FileSourceTypes.local);
 
@@ -75,7 +60,7 @@ class DocumentViewerController extends GetxController {
           continue;
         }
 
-        //  Otherwise treat as network
+        // 🔹 Otherwise treat as network
         final response = await http.head(Uri.parse(doc));
         if (response.statusCode == 200) {
           sourceTypes.add(FileSourceTypes.network);

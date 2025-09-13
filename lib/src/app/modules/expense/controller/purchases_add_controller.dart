@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
-import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
@@ -15,8 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../routes/app_routes.dart';
 import '../../../service/utils/enums.dart';
-import '../../document/view/add_document_view.dart';
 import '../../../service/utils/utils.dart';
 import '../../../widgets/input_card_style.dart';
 
@@ -226,10 +225,8 @@ class PurchasesAddController extends GetxController {
   }
 
   void addDocumentItem() {
-    Get.to(
-      const AddDocumentView(),
-      binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocTypes.inventory)},
+   Get.toNamed(
+   Routes.addDocument, arguments: {"type": DocTypes.inventory}
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

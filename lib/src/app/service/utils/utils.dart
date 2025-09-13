@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -155,21 +154,20 @@ int getDocTypeId(DocTypes type) {
   }
   return 0;
 }
-
 Color getTaskColors(TaskTypes task) {
   switch (task) {
     case TaskTypes.completed:
-      return Colors.green;
+      return const Color(0xFF4CAF50); 
     case TaskTypes.waiting:
-      return Colors.green;
+      return const Color(0xFFFFC107); 
     case TaskTypes.pending:
-      return Colors.green;
+      return const Color(0xFF2196F3); 
     case TaskTypes.inProgress:
-      return Colors.green;
+      return const Color(0xFF03A9F4); 
     case TaskTypes.cancelled:
-      return Colors.green;
+      return const Color(0xFFF44336);
     default:
-      return Colors.green;
+      return const Color(0xFF9E9E9E);
   }
 }
 

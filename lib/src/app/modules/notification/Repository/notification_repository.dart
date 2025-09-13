@@ -19,13 +19,8 @@ class NotificationRepository {
         '/farmer_notifications_all/$userId',
       );
 
-      // Debug print
-      print('Full response: ${response.body}');
-
       final Map<String, dynamic> jsonMap = json.decode(response.body);
       final List<dynamic> notificationsJson = jsonMap['notifications'] ?? [];
-
-      print('Notifications JSON: $notificationsJson');
 
       // Convert to NotificationItem
       final List<NotificationItem> allNotifications = notificationsJson

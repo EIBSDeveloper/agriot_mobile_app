@@ -1,5 +1,5 @@
 import 'package:argiot/src/app/modules/auth/view/screens/walkthrough_view.dart';
-import 'package:argiot/src/app/modules/document/binding/document_viewer_binding.dart';
+
 import 'package:argiot/src/app/modules/expense/binding/fuel_inventory_binding.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/fuel_inventory_view.dart';
 import 'package:argiot/src/app/modules/map_view/bindings/land_map_view_binding.dart';
@@ -9,10 +9,10 @@ import 'package:argiot/src/app/modules/task/view/screens/schedule_list_page.dart
 import 'package:argiot/src/app/modules/guideline/binding/guideline_binding.dart';
 import 'package:argiot/src/app/modules/guideline/view/screen/guidelines_view.dart';
 import 'package:argiot/src/app/modules/sales/bindings/new_sales_binding.dart';
-import 'package:argiot/src/app/modules/sales/view/new_sales_details_view.dart';
+import 'package:argiot/src/app/modules/sales/view/screens/new_sales_details_view.dart';
 import 'package:argiot/src/app/modules/auth/view/screens/login_page.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/add_expense_screen.dart';
-import 'package:argiot/src/app/modules/sales/view/add_deduction_view.dart';
+
 import 'package:argiot/src/app/modules/expense/view/consumption_view.dart';
 import 'package:argiot/src/app/modules/expense/binding/consumption_purchase_binding.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/consumption_purchase_view.dart';
@@ -36,23 +36,25 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_c
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';
 
+
+import '../modules/document/document.dart';
+import '../modules/sales/view/screens/add_deduction_view.dart';
 import '../modules/task/view/screens/schedule_details_page.dart';
 import '../modules/map_view/view/screens/land_map_view.dart';
-import '../modules/sales/view/new_sales_view.dart';
+import '../modules/sales/view/screens/new_sales_view.dart';
 import '../bindings/app_binding.dart';
 import '../modules/auth/view/screens/otp_page.dart';
 import '../modules/expense/binding/fuel_entry_binding.dart';
 import '../modules/expense/view/screens/fuel_entry_view.dart';
 import '../modules/inventory/view/purchase_items_screen.dart';
 import '../modules/forming/controller/location_viewer_view.dart';
-import '../modules/document/view/document_viewer_view.dart';
 import '../modules/forming/view/screen/land_details_page.dart';
 import '../modules/near_me/views/screen/view.dart';
 import '../modules/notification/view/screen/notification_view.dart';
 import '../modules/profile/views/screens/profile_view.dart';
 import '../modules/registration/binding/registration_binding.dart';
 import '../modules/registration/view/screen/regisster.dart';
-import '../modules/sales/view/sales_list_view.dart';
+import '../modules/sales/view/screens/sales_list_view.dart';
 import '../modules/task/view/screens/task_view.dart';
 import 'app_routes.dart';
 
@@ -256,11 +258,11 @@ class AppPages {
       page: () => const PaymentFailedScreen(),
     ),
 
-    // GetPage(
-    //   name: Routes.landEdit,
-    //   page: () => const LandEditView(),
-    //   binding: LandBinding(),
-    // ),
+    GetPage(
+      name: Routes.addDocument,
+      page: () => const AddDocumentView(),
+      binding: DocumentBinding(),
+    ),
     GetPage(
       name: Routes.fuelConsumption,
       page: () => ConsumptionView(),

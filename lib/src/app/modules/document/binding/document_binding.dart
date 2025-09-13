@@ -1,6 +1,8 @@
-import 'package:argiot/src/app/modules/document/controller/document_controller.dart';
-import 'package:argiot/src/app/modules/document/repository/document_repository.dart';
+
 import 'package:get/get.dart';
+
+import '../controller/document_controller.dart';
+import '../repository/document_repository.dart';
 
 class DocumentBinding extends Bindings {
   @override

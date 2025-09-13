@@ -4,34 +4,42 @@ import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/repository/document_repository.dart';
 import 'package:argiot/src/app/modules/registration/model/dropdown_item.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
-
 class DocumentController extends GetxController {
-  final DocumentRepository _documentRepository =
-      Get.find<DocumentRepository>();
+  final DocumentRepository repository = Get.find<DocumentRepository>();
 
   Rx<AddDocumentModel?> documents = Rx<AddDocumentModel?>(null);
   RxBool isNewDocument = false.obs;
   var docTypeList = <AppDropdownItem>[].obs;
+
+  RxList<String> uploadedDocs = <String>[].obs;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController textController = TextEditingController();
   final Rx<AppDropdownItem> selectedDocument = AppDropdownItem(
     id: 0,
     name: '',
   ).obs;
 
-  RxList<String> uploadedDocs = <String>[].obs;
+  @override
+  void onInit() {
+    super.onInit();
+
+    fetchDocument(Get.arguments['type']);
+  }
 
   Future<void> fetchDocument(typeId) async {
     try {
-      final response = await _documentRepository.getDocumentTypes();
+      final response = await repository.getDocumentTypes();
       docTypeList.assignAll(response.where((doc) => typeId == doc.doctype));
       if (docTypeList.isNotEmpty) {
         selectedDocument.value = docTypeList.first;
       }
     } catch (e) {
-     showError('Failed to fetch reasons: $e');
+      showError('Failed to fetch reasons: $e');
     }
   }
 

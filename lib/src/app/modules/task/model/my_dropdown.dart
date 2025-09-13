@@ -1,4 +1,3 @@
-
 import 'package:argiot/src/app/modules/task/model/named_item.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
@@ -28,16 +27,10 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InputCardStyle(
-    // padding: padding ?? const EdgeInsets.symmetric(vertical: 8.0),
     child: DropdownButtonFormField<T>(
       key: key,
       initialValue: selectedItem,
-      decoration: InputDecoration(
-        labelText: label,
-        border: InputBorder.none,
-        // contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-
+      decoration: InputDecoration(labelText: label, border: InputBorder.none),
       icon: const Icon(Icons.keyboard_arrow_down),
       hint: labelText != null ? Text(labelText!) : null,
       items: items

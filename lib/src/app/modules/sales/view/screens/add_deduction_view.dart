@@ -5,7 +5,6 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class AddDeductionView extends StatelessWidget {
   final NewSalesController controller = Get.find<NewSalesController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -17,10 +16,7 @@ class AddDeductionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(
-      
-      title: 'Add Deduction',
-    ),
+    appBar: const CustomAppBar(title: 'Add Deduction'),
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -35,10 +31,6 @@ class AddDeductionView extends StatelessWidget {
             // Charges Input
             _buildChargesInput(),
             const SizedBox(height: 16),
-
-            // Type Selector
-            // _buildTypeSelector(),
-            // const SizedBox(height: 16),
 
             // Add Button
             _buildAddButton(),
@@ -64,7 +56,6 @@ class AddDeductionView extends StatelessWidget {
         if (controller.isNewReason.value)
           Expanded(
             child: InputCardStyle(
-               
               child: TextFormField(
                 controller: _reasonController,
                 decoration: const InputDecoration(
@@ -130,26 +121,11 @@ class AddDeductionView extends StatelessWidget {
         items: const [
           DropdownMenuItem(
             value: '1',
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.currency_rupee, size: 18),
-                ),
-                // SizedBox(width: 8),
-                // Text('₹ (Fixed Amount)'),
-              ],
-            ),
+            child: Row(children: [Icon(Icons.currency_rupee, size: 18)]),
           ),
           DropdownMenuItem(
             value: '2',
-            child: Row(
-              children: [
-                Icon(Icons.percent, size: 18),
-                // SizedBox(width: 8),
-                // Text('% (Percentage)'),
-              ],
-            ),
+            child: Row(children: [Icon(Icons.percent, size: 18)]),
           ),
         ],
         decoration: const InputDecoration(

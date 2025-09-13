@@ -5,13 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../routes/app_routes.dart';
 import '../../../service/utils/enums.dart';
 import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
-import '../../document/binding/document_binding.dart';
 import '../../document/model/add_document_model.dart';
-import '../../document/view/add_document_view.dart';
 import '../model/dropdown_item.dart';
 import '../model/survey_model.dart';
 import '../repostrory/crop_service.dart';
@@ -124,10 +123,8 @@ class RegLandController extends GetxController {
   }
 
   void addDocumentItem() {
-    Get.to(
-      const AddDocumentView(),
-      binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocTypes.land)},
+   Get.toNamed(
+   Routes.addDocument, arguments: {"type": DocTypes.land}
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

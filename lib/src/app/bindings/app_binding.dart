@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../modules/expense/controller/consumption_controller.dart';
 import '../controller/user_limit.dart';
+import '../modules/forming/controller/forming_date_controller.dart';
 import '../modules/inventory/controller/inventory_controller.dart';
 import '../controller/app_controller.dart';
 import '../controller/network_contoller.dart';
@@ -79,6 +80,10 @@ class HomeBinding implements Bindings {
     Get.lazyPut<VendorCustomerRepository>(() => VendorCustomerRepository());
     // Get.lazyPut<AddressService>(() => AddressService());
     Get.lazyPut<InventoryController>(() => InventoryController(), fenix: true);
+    Get.lazyPut<FormingDateController>(
+      () => FormingDateController(),
+      fenix: true,
+    );
   }
 }
 
@@ -114,7 +119,6 @@ class SalesBinding implements Bindings {
     Get.lazyPut(() => SalesController());
   }
 }
-
 
 class ExpenseBinding implements Bindings {
   @override

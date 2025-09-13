@@ -2,8 +2,8 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../routes/app_routes.dart';
-import '../controller/sales_controller.dart';
+import '../../../../routes/app_routes.dart';
+import '../../controller/sales_controller.dart';
 
 class SalesListView extends GetView<SalesController> {
   const SalesListView({super.key});
@@ -19,7 +19,6 @@ class SalesListView extends GetView<SalesController> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            // SizedBox(height: 18,),
             Obx(
               () => Row(
                 children: [
@@ -175,9 +174,11 @@ class SalesListView extends GetView<SalesController> {
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
       child: const Icon(Icons.add),
-      onPressed: () =>
-          Get.toNamed(Routes.newSales, arguments: {"new": true})?.then((yy) {
-            controller.fetchSalesList();
+      onPressed: () => Get.toNamed(Routes.newSales, arguments: {"new": true})
+          ?.then((result) {
+            if (result ?? false) {
+              controller.fetchSalesList();
+            }
           }),
     ),
   );

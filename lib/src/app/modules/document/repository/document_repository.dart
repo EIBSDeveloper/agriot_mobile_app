@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:argiot/src/app/modules/registration/model/dropdown_item.dart';
-import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
+
+import '../../../service/http/http_service.dart';
+import '../../registration/model/dropdown_item.dart';
 
 class DocumentRepository {
   final HttpService _httpService = Get.find<HttpService>();

@@ -19,6 +19,8 @@ import '../model/task.dart';
 import '../repostory/task_repository.dart';
 import 'dart:async';
 
+import '../view/widget/add_task.dart';
+
 class TaskController extends GetxController {
   final TaskRepository _repository = TaskRepository();
   final RxList<TaskGroup> taskGroups = <TaskGroup>[].obs;
@@ -217,7 +219,10 @@ class TaskController extends GetxController {
       isLoading(false);
     }
   }
-
+  void showAddTaskBottomSheet() {
+    resetForm();
+    Get.bottomSheet(const AddTask(), isScrollControlled: true);
+  }
   _initializeTodayTasks(TaskResponse response) {
     if (response.events.isNotEmpty) {
       final todayEvents = response.events

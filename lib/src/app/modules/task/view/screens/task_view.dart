@@ -1,16 +1,15 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:argiot/src/app/modules/task/model/event.dart';
-import 'package:argiot/src/app/modules/task/model/task.dart';
-import 'package:argiot/src/app/modules/task/view/widget/add_task.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
+import '../../../map_view/view/widgets/task_card.dart';
 import '../../controller/task_controller.dart';
 
 class TaskView extends GetView<TaskController> {
@@ -178,7 +177,7 @@ class TaskView extends GetView<TaskController> {
                                     ),
                                   ),
                                   ...group.tasks.map(
-                                    (task) => _buildTaskCard(task),
+                                    (task) => TaskCard(task: task),
                                   ),
                                 ],
                               );
@@ -204,43 +203,10 @@ class TaskView extends GetView<TaskController> {
     ),
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
-      onPressed: () => _showAddTaskBottomSheet(),
+      onPressed: () => controller.showAddTaskBottomSheet(),
       child: const Icon(Icons.add),
     ),
   );
-
-  Widget _buildTaskCard(Task task) => InkWell(
-    onTap: () {
-      Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
-    },
-    child: Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      color: Colors.grey.withAlpha(30),
-      elevation: 0,
-      child: ListTile(
-        title: Text(task.cropType!),
-        subtitle: Text(
-          task.description,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: Icon(Icons.delete, color: Get.theme.primaryColor),
-              onPressed: () => controller.deleteTask(task.id),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-
-  void _showAddTaskBottomSheet() {
-    controller.resetForm();
-    Get.bottomSheet(const AddTask(), isScrollControlled: true);
-  }
 
   Widget _buildCalendarSection() => Card(
     margin: const EdgeInsets.all(8),
@@ -335,12 +301,9 @@ class TaskView extends GetView<TaskController> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _buildFilterChip('All', TaskTypes.all),
-          _buildFilterChip('Completed', TaskTypes.completed),
-          _buildFilterChip('Waiting', TaskTypes.waiting),
-          _buildFilterChip('Cancelled', TaskTypes.cancelled),
-          _buildFilterChip('Pending', TaskTypes.pending),
-          // _buildFilterChip('In Progress', 'in_progress'),
+          ...TaskTypes.values.map(
+            (task) => _buildFilterChip(getTaskName(task), task),
+          ),
         ],
       ),
     ),
@@ -380,6 +343,6 @@ class TaskView extends GetView<TaskController> {
       );
     }
 
-    return Column(children: [...tasks.map((task) => _buildTaskCard(task))]);
+    return Column(children: [...tasks.map((task) => TaskCard(task: task))]);
   });
 }

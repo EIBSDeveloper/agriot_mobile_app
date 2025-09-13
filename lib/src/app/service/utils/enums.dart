@@ -4,6 +4,7 @@ enum DetailsTypes { payables, receivables }
 
 enum FileSourceTypes { network, local, base64, unsupported }
 
+
 enum FileTypes { pdf, image, unsupported }
 
 enum InventoryTypes {

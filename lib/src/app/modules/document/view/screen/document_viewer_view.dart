@@ -1,19 +1,34 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
-import '../../../service/utils/enums.dart';
-import '../controller/document_viewer_controller.dart' as forming;
+import '../../../../service/utils/enums.dart';
+import '../../../../widgets/my_network_image.dart';
+import '../../../near_me/views/widget/custom_app_bar.dart';
+import '../../controller/document_viewer_controller.dart' as forming;
 
 class DocumentViewerView extends GetView<forming.DocumentViewerController> {
   const DocumentViewerView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Viewer'),
+    appBar: CustomAppBar(
+      title: 'Viewer',
+      actions: [
+        Obx(() {
+          if (controller.documentUrls.length < 2) {
+            return const SizedBox();
+          }
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text(
+              "${controller.initialIndex.value + 1}/${controller.documentUrls.length}",
+            ),
+          );
+        }),
+      ],
+    ),
     body: Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -46,7 +61,10 @@ class DocumentViewerView extends GetView<forming.DocumentViewerController> {
 
       // Multiple files with initial index
       return PageView.builder(
-        controller: PageController(initialPage: controller.initialIndex),
+        controller: PageController(initialPage: controller.initialIndex.value),
+        onPageChanged: (index) {
+          controller.initialIndex.value = index;
+        },
         itemCount: controller.documentUrls.length,
         itemBuilder: (context, index) => _buildFileView(
           controller.documentUrls[index],

@@ -3,7 +3,6 @@ import 'package:argiot/src/app/modules/dashboad/view/widgets/chart_data.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/scrollable_bar_chart.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
-import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/widgets/finance_line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +15,7 @@ import '../../../../widgets/title_text.dart';
 import '../../../home/contoller/bottombar_contoller.dart';
 import '../../../guideline/model/guideline_category.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
+import '../../../map_view/view/widgets/task_card.dart';
 import '../../controller/dashboard_controller.dart';
 
 class DashboardView extends GetView<DashboardController> {
@@ -86,12 +86,10 @@ class DashboardView extends GetView<DashboardController> {
           ),
         ),
       ),
-      IconButton(color: Get.theme.primaryColor,
-      iconSize: 40,
-        icon: const Icon(
-          Icons.widgets,
-        
-        ),
+      IconButton(
+        color: Get.theme.primaryColor,
+        iconSize: 40,
+        icon: const Icon(Icons.widgets),
         onPressed: () => controller.showWidgetSettings(),
       ),
     ],
@@ -103,7 +101,7 @@ class DashboardView extends GetView<DashboardController> {
       if (controller.weatherData.value != null) ...[
         Expanded(
           child: Card(
-            color:  Get.theme.colorScheme.primaryContainer,
+            color: Get.theme.colorScheme.primaryContainer,
             elevation: 0,
             child: Container(
               height: 150,
@@ -312,8 +310,12 @@ class DashboardView extends GetView<DashboardController> {
                       onPressed: () {
                         controller.idlandVSCropGraph.value =
                             !controller.idlandVSCropGraph.value;
-                      },     iconSize: 30,
-                      icon:  Icon(Icons.keyboard_arrow_left, color: Get.theme.colorScheme.primary,),
+                      },
+                      iconSize: 30,
+                      icon: Icon(
+                        Icons.keyboard_arrow_left,
+                        color: Get.theme.colorScheme.primary,
+                      ),
                     ),
                     IconButton(
                       onPressed: () {
@@ -321,7 +323,10 @@ class DashboardView extends GetView<DashboardController> {
                             !controller.idlandVSCropGraph.value;
                       },
                       iconSize: 30,
-                      icon:  Icon(Icons.keyboard_arrow_right,  color: Get.theme.colorScheme.primary,),
+                      icon: Icon(
+                        Icons.keyboard_arrow_right,
+                        color: Get.theme.colorScheme.primary,
+                      ),
                     ),
                   ],
                 ),
@@ -669,44 +674,16 @@ class DashboardView extends GetView<DashboardController> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: controller.tasks.length,
-              itemBuilder: (context, index) => _buildTaskCard(
-                  controller.tasks[index]
-                ),
+              itemBuilder: (context, index) => TaskCard(
+                task: controller.tasks[index],
+                refresh: () {
+                  controller.fetchTasks();
+                },
+              ),
             );
           }),
         ],
       ),
     ],
   );
-
-  Widget _buildTaskCard(Task tas) {
-    Task task = tas;
-    return InkWell(
-      onTap: () {
-        Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id});
-      },
-      child: Card(
-        margin: const EdgeInsets.only(right: 10, bottom: 8),
-        color: Colors.grey.withAlpha(30),
-        elevation: 0,
-        child: ListTile(
-          title: Text(task.cropType!),
-          subtitle: Text(
-            task.description.tr,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          trailing: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // IconButton(
-              //   icon: Icon(Icons.delete, color: Get.theme.primaryColor),
-              //   onPressed: () => controller.deleteTask(task.id),
-              // ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }

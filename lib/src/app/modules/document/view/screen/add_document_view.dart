@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/document/controller/document_controller.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
@@ -10,24 +8,10 @@ import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AddDocumentView extends StatefulWidget {
+import 'document_thumbnail.dart';
+
+class AddDocumentView extends GetView<DocumentController> {
   const AddDocumentView({super.key});
-
-  @override
-  State<AddDocumentView> createState() => _AddDocumentViewState();
-}
-
-class _AddDocumentViewState extends State<AddDocumentView> {
-  final DocumentController controller = Get.find<DocumentController>();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _textController = TextEditingController();
-  @override
-  void initState() {
-    final int typeId = Get.arguments['id'];
-
-    controller.fetchDocument(typeId);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -35,7 +19,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
-        key: _formKey,
+        key: controller.formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,7 +27,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
             _buildReasonInput(),
             _buildDocumentUploadSection(),
             const SizedBox(height: 16),
-            // Add Button
+
             _buildAddButton(),
           ],
         ),
@@ -92,11 +76,6 @@ class _AddDocumentViewState extends State<AddDocumentView> {
             ...List.generate(controller.uploadedDocs.length, (index) {
               final base64Str = controller.uploadedDocs[index];
 
-              final isImage = base64Str.startsWith("data:image");
-              final bytes = isImage
-                  ? base64Decode(base64Str.split(",").last)
-                  : null;
-
               return InkWell(
                 onTap: () {
                   Get.toNamed(
@@ -114,23 +93,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
                       padding: const EdgeInsets.all(8.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: isImage
-                            ? Image.memory(
-                                bytes!,
-                                width: 92,
-                                height: 92,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                width: 92,
-                                height: 92,
-                                color: Colors.grey.shade300,
-                                child: const Icon(
-                                  Icons.picture_as_pdf,
-                                  size: 40,
-                                  color: Colors.red,
-                                ),
-                              ),
+                        child: DocumentThumbnail(base64Str),
                       ),
                     ),
                     GestureDetector(
@@ -160,7 +123,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
               items: controller.docTypeList,
               selectedItem: controller.selectedDocument.value,
               onChanged: (land) {
-                _textController.text = land!.name;
+                controller.textController.text = land!.name;
                 controller.changeDocument(land);
               },
               label: 'Select Document type',
@@ -171,7 +134,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
           Expanded(
             child: InputCardStyle(
               child: TextFormField(
-                controller: _textController,
+                controller: controller.textController,
                 decoration: const InputDecoration(
                   labelText: 'Enter Document type',
                   border: InputBorder.none,
@@ -187,7 +150,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
           child: IconButton(
             color: Colors.white,
             onPressed: () {
-              _textController.clear();
+              controller.textController.clear();
               controller.isNewDocument.value = !controller.isNewDocument.value;
             },
             icon: Icon(
@@ -203,14 +166,14 @@ class _AddDocumentViewState extends State<AddDocumentView> {
     width: double.infinity,
     child: ElevatedButton(
       onPressed: () {
-        if (_formKey.currentState!.validate()) {
+        if (controller.formKey.currentState!.validate()) {
           final documents = AddDocumentModel(
             documents: controller.uploadedDocs.toList(),
             fileType: controller.selectedDocument.value.id,
             isNew: controller.isNewDocument.value,
-            newFileType: _textController.text.isEmpty
+            newFileType: controller.textController.text.isEmpty
                 ? controller.selectedDocument.value.name
-                : _textController.text,
+                : controller.textController.text,
           );
 
           Get.back(result: documents);

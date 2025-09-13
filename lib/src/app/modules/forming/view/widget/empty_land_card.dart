@@ -2,6 +2,7 @@ import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/core/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 class EmptyLandCard extends StatelessWidget {
   const EmptyLandCard({super.key, required this.refresh, this.view = false});
 
@@ -20,13 +21,13 @@ class EmptyLandCard extends StatelessWidget {
                 height: 250,
                 fit: BoxFit.fill,
               ),
-              const SizedBox(height: 8,),
+              const SizedBox(height: 8),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
                     Get.toNamed(Routes.addLand)?.then((result) {
                       if (result ?? false) {
-                        refresh?.call();  
+                        refresh?.call();
                       }
                     });
                   },

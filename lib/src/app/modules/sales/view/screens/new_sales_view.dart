@@ -1,14 +1,16 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/sales/controller/new_sales_controller.dart';
+import 'package:argiot/src/app/modules/document/view/widget/documents_section.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../service/utils/pop_messages.dart';
-import '../../../service/utils/utils.dart';
-import '../../../routes/app_routes.dart';
-import '../../subscription/model/package_usage.dart';
+import '../../../../service/utils/enums.dart';
+import '../../../../service/utils/pop_messages.dart';
+import '../../../../service/utils/utils.dart';
+import '../../../../routes/app_routes.dart';
+import '../../../subscription/model/package_usage.dart';
 
 class NewSalesView extends StatefulWidget {
   const NewSalesView({super.key});
@@ -20,8 +22,6 @@ class NewSalesView extends StatefulWidget {
 class _NewSalesViewState extends State<NewSalesView> {
   final NewSalesController controller = Get.find<NewSalesController>();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +30,10 @@ class _NewSalesViewState extends State<NewSalesView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'New Sales', showBackButton: true),
+    appBar: CustomAppBar(
+      title: Get.arguments?["id"] != null ? 'New Sales' : "",
+      showBackButton: true,
+    ),
 
     body: Obx(() {
       if (controller.isLoading.value) {
@@ -39,160 +42,87 @@ class _NewSalesViewState extends State<NewSalesView> {
       return SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
-          key: _formKey,
+          key: controller.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Date Picker
               _buildDatePicker(),
               const SizedBox(height: 10),
-              // Product Dropdown
               _buildProductDropdown(),
               const SizedBox(height: 10),
-
-              // Customer Dropdown
               _buildCustomerDropdown(),
               const SizedBox(height: 10),
 
-              // Sales Quantity
               Row(
                 children: [
                   Expanded(child: _buildSalesQuantityField()),
                   const SizedBox(width: 10),
-
-                  // Unit Dropdown
                   Expanded(child: _buildUnitDropdown()),
                 ],
               ),
               const SizedBox(height: 10),
 
-              // Quantity Amount
               _buildQuantityAmountField(),
               const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Sales Amount', style: Get.textTheme.bodyLarge),
 
-                  Text(
-                    "${controller.salesAmount.value}",
-                    style: Get.textTheme.bodyLarge,
-                  ),
-                ],
+              // Reactive sales amount display
+              Obx(
+                () => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Sales Amount', style: Get.textTheme.bodyLarge),
+                    Text(
+                      "${controller.salesAmount.value}",
+                      style: Get.textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
               ),
-              // // Sales Amount
-              // _buildSalesAmountField(),
-              const SizedBox(height: 10),
-              const Divider(), const SizedBox(height: 16),
 
-              // Deductions Section
+              const SizedBox(height: 10),
+              const Divider(),
+              const SizedBox(height: 16),
+
               _buildDeductionsSection(),
 
               const SizedBox(height: 5),
               const Divider(),
               const SizedBox(height: 5),
-              // Amount Paid
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Total Sales Amount', style: Get.textTheme.bodyLarge),
 
-                  Text(
-                    "${controller.salesAmount.value - controller.deductionAmount.value}",
-                    style: Get.textTheme.bodyLarge,
-                  ),
-                ],
-              ),
+              // Reactive total sales amount display
+              Obx(() {
+                final total =
+                    controller.salesAmount.value -
+                    controller.deductionAmount.value;
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total Sales Amount', style: Get.textTheme.bodyLarge),
+                    Text("$total", style: Get.textTheme.bodyLarge),
+                  ],
+                );
+              }),
+
               const SizedBox(height: 10),
               _buildAmountPaidField(),
               const SizedBox(height: 10),
-              _buildDocumentsSection(), const SizedBox(height: 10),
-              // Description
+
+              // DocumentsSection already has internal Obx, so no extra here
+              DocumentsSection(
+                documentItems: controller.documentItems,
+                type: DocTypes.sales,
+              ),
+
+              const SizedBox(height: 10),
               _buildDescriptionField(),
               const SizedBox(height: 20),
-
-              // Submit Button
               _buildSubmitButton(),
-
               const SizedBox(height: 30),
             ],
           ),
         ),
       );
     }),
-  );
-
-  Widget _buildDocumentsSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Documents',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Card(
-            color: Get.theme.primaryColor,
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.add),
-              onPressed: controller.addDocumentItem,
-              tooltip: 'Add Document',
-            ),
-          ),
-        ],
-      ),
-      Obx(() {
-        if (controller.documentItems.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              'No documents added',
-              style: TextStyle(color: Colors.grey),
-            ),
-          );
-        }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.documentItems.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.attach_file),
-                              Text("${controller.documentItems[index].documents?.length??0}",style: const TextStyle(fontSize: 10),)
-                     
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      controller.removeDocumentItem(index);
-                    },
-                    color: Get.theme.primaryColor,
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const Divider(),
-            ],
-          ),
-        );
-      }),
-    ],
   );
 
   Widget _buildProductDropdown() => Obx(
@@ -429,13 +359,8 @@ class _NewSalesViewState extends State<NewSalesView> {
   Widget _buildSubmitButton() => SizedBox(
     width: double.infinity,
     child: ElevatedButton(
-      onPressed: () async {
-        if (_formKey.currentState!.validate()) {
-          final success = await controller.addSales();
-          if (success) {
-            Get.back(result: true);
-          }
-        }
+      onPressed: () {
+        controller.addSales();
       },
       child: const Text('Submit'),
     ),

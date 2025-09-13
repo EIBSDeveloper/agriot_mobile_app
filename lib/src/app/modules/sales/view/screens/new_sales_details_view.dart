@@ -5,10 +5,10 @@ import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../controller/new_sales_controller.dart';
-import '../model/sales_detail.dart';
-import '../../../widgets/title_text.dart';
-import '../../../routes/app_routes.dart';
+import '../../controller/new_sales_controller.dart';
+import '../../model/sales_detail.dart';
+import '../../../../widgets/title_text.dart';
+import '../../../../routes/app_routes.dart';
 
 class NewSalesDetailsView extends StatefulWidget {
   const NewSalesDetailsView({super.key});

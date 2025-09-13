@@ -9,11 +9,11 @@ class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.task,
-    required this.refresh,
+    this.refresh,
     this.trailing = const [],
   });
 
-  final VoidCallback refresh;
+  final VoidCallback? refresh;
   final Task task;
   final List<Widget> trailing;
 
@@ -23,12 +23,14 @@ class TaskCard extends StatelessWidget {
       Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id})?.then((
         result,
       ) {
-        refresh();
+        if (refresh != null) {
+          refresh!();
+        }
       });
     },
     child: Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-
+      constraints: const BoxConstraints(minHeight: 80),
       decoration: AppStyle.decoration.copyWith(
         border: Border(
           left: BorderSide(
@@ -51,16 +53,17 @@ class TaskCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    task.cropType??task.activityTypeName??'',
+                    task.cropType ?? task.activityTypeName ?? '',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    getTaskName(task.status!),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  if (task.status != null)
+                    Text(
+                      getTaskName(task.status!),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   if (task.description.isNotEmpty) ...[
                     const SizedBox(height: 2),
                     Text(

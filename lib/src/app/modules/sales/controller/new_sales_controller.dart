@@ -1,6 +1,4 @@
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
-import 'package:argiot/src/app/modules/document/view/add_document_view.dart';
-import 'package:argiot/src/app/modules/document/binding/document_binding.dart';
 import 'package:argiot/src/app/modules/sales/model/sales_add_request.dart';
 import 'package:argiot/src/app/modules/sales/repostory/new_sales_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
@@ -10,10 +8,8 @@ import 'package:argiot/src/app/modules/sales/model/sales_detail.dart';
 import 'package:argiot/src/app/modules/sales/model/unit.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../service/utils/enums.dart';
-import '../../../service/utils/utils.dart';
 
 class NewSalesController extends GetxController {
   final NewSalesRepository _salesRepository = Get.find<NewSalesRepository>();
@@ -46,6 +42,7 @@ class NewSalesController extends GetxController {
   var deductions = <Map<String, dynamic>>[].obs;
   var documents = <Map<String, dynamic>>[].obs;
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   void onInit() {
     super.onInit();
@@ -55,7 +52,7 @@ class NewSalesController extends GetxController {
   Future<void> loadData() async {
     var id = Get.arguments?["id"];
     var isNew = Get.arguments?["new"];
-
+    isLoading(true);
     if (isNew != null) {
       await fetchReasons();
       await fetchRupees();
@@ -63,10 +60,11 @@ class NewSalesController extends GetxController {
       await fetchUnit();
       await fetchCustomerList();
     }
-    if (id == null) {
-      return;
+    if (id != null) {
+      await fetchSalesDetails(id);
     }
-    await fetchSalesDetails(id);
+
+    isLoading(false);
   }
 
   Future<void> fetchCrop() async {
@@ -152,27 +150,15 @@ class NewSalesController extends GetxController {
     }
   }
 
-  void addDocumentItem() {
-    Get.to(
-      const AddDocumentView(),
-      binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocTypes.sales)},
-    )?.then((result) {
-      if (result != null && result is AddDocumentModel) {
-        documentItems.add(result);
-      }
-      print(documentItems.toString());
-    });
-  }
+  Future<void> addSales() async {
+        int? id = salesDetail.value?.salesId;
+    if (!formKey.currentState!.validate()) {
+      
+      return;
+    }
+    isLoading(true);
 
-  void removeDocumentItem(int index) {
-    documentItems.removeAt(index);
-  }
-
-  Future<bool> addSales() async {
-    int? id =salesDetail.value?.salesId;
     try {
-      isLoading(true);
       final documentItemsList = documentItems.map((doc) {
         var json = doc.toJson();
         return json;
@@ -201,20 +187,17 @@ class NewSalesController extends GetxController {
       if (response['success'] == true) {
         showSuccess(response['message'] ?? 'Sales added successfully!');
         clearForm();
-        return true;
+
+        Get.back(result: true);
       } else {
         showError(response['message'] ?? 'Failed to add sales');
-        return false;
       }
     } catch (e) {
       showError('Failed to add sales: $e');
-      return false;
     } finally {
       isLoading(false);
     }
   }
-
-
 
   void changeCrop(CropModel crop) {
     selectedCropType.value = crop;
@@ -294,7 +277,5 @@ class NewSalesController extends GetxController {
           )
           .toList(),
     );
-
-  
   }
 }

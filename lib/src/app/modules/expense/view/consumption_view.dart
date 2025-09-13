@@ -5,6 +5,9 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../service/utils/enums.dart';
+import '../../document/document.dart';
+
 class ConsumptionView extends StatelessWidget {
   ConsumptionView({super.key});
   final ConsumptionController _controller = Get.find<ConsumptionController>();
@@ -20,7 +23,6 @@ class ConsumptionView extends StatelessWidget {
           child: Column(
             children: [
               _buildDatePicker(),
-            
 
               const SizedBox(height: 16),
               _buildInventoryTypeDropdown(),
@@ -28,8 +30,8 @@ class ConsumptionView extends StatelessWidget {
               _buildInventoryCategoryDropdown(),
               const SizedBox(height: 16),
               _buildInventoryItemDropdown(),
-              const SizedBox(height: 16),  
-              _buildCropDropdown(),const SizedBox(height: 16),
+              const SizedBox(height: 16),
+              _buildCropDropdown(), const SizedBox(height: 16),
               Obx(
                 () => !_controller.requiresUsageHours
                     ? _buildQuantityField()
@@ -86,7 +88,7 @@ class ConsumptionView extends StatelessWidget {
                     : const SizedBox.shrink(),
               ),
 
- const Divider(),
+              const Divider(),
               _buildDocumentsSection(),
               const SizedBox(height: 24),
               const Divider(),
@@ -99,71 +101,9 @@ class ConsumptionView extends StatelessWidget {
       ),
     ),
   );
-  Widget _buildDocumentsSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Documents',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Card(
-            color: Get.theme.primaryColor,
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.add),
-              onPressed: _controller.addDocumentItem,
-              tooltip: 'Add Document',
-            ),
-          ),
-        ],
-      ),
-      Obx(() {
-        if (_controller.documentItems.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              'No documents added',
-              style: TextStyle(color: Colors.grey),
-            ),
-          );
-        }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _controller.documentItems.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${index + 1}, ${_controller.documentItems[index].newFileType!}",
-                      ),
-                      const Icon(Icons.attach_file),
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      _controller.removeDocumentItem(index);
-                    },
-                    color: Get.theme.primaryColor,
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const Divider(),
-            ],
-          ),
-        );
-      }),
-    ],
+  Widget _buildDocumentsSection() => DocumentsSection(
+    documentItems: _controller.documentItems,
+    type: DocTypes.inventory,
   );
 
   Widget _buildDatePicker() => Obx(
@@ -172,7 +112,7 @@ class ConsumptionView extends StatelessWidget {
         decoration: InputDecoration(
           labelText: 'Date'.tr,
           border: InputBorder.none,
-          suffixIcon:  Icon(Icons.calendar_today,color: Get.theme.primaryColor,),
+          suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         ),
         readOnly: true,
         controller: TextEditingController(
@@ -232,7 +172,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          labelText: "${'Inventory Category'.tr } *",
+          labelText: "${'Inventory Category'.tr} *",
           border: InputBorder.none,
         ),
         icon: const Icon(Icons.keyboard_arrow_down),
@@ -317,7 +257,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildStartKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        labelText:"${ 'Start Kilometer'.tr} *",
+        labelText: "${'Start Kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,

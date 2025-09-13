@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../controller/app_controller.dart';
 import '../../routes/app_routes.dart';
-
+ AppDataController appData = Get.find();
+     
+     
 void showError(final String message) {
-  if (message.contains('404') ||
+
+  if (appData.error.value && message.contains('404') ||
       message.contains('500') ||
       message.contains('load') ||
       message.contains('error') ||

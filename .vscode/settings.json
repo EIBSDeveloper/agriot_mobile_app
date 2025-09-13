@@ -2,5 +2,7 @@
     "cSpell.words": [
         "argiot",
         "initialsubtab"
-    ]
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
 }

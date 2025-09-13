@@ -6,13 +6,11 @@ import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_repository.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
-import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../service/utils/enums.dart';
 import '../../document/model/add_document_model.dart';
 
 class ConsumptionController extends GetxController {
@@ -117,20 +115,6 @@ class ConsumptionController extends GetxController {
     await fetchInventoryItems(categoryId);
   }
 
-  void removeDocumentItem(int index) {
-    documentItems.removeAt(index);
-  }
-
-  void addDocumentItem() {
-    Get.toNamed(
-   Routes.addDocument, arguments: {"type": DocTypes.inventory}
-    )?.then((result) {
-      if (result != null && result is AddDocumentModel) {
-        documentItems.add(result);
-      }
-      print(documentItems.toString());
-    });
-  }
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;

@@ -1,4 +1,7 @@
 import 'package:argiot/src/app/modules/task/model/named_item.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
+
+import '../../../service/utils/enums.dart';
 
 
 class AppDropdownItem extends NamedItem {
@@ -6,7 +9,7 @@ class AppDropdownItem extends NamedItem {
   final int id;
   @override
   final String name;
-  final int? doctype;
+  final DocTypes? doctype;
   final String? description;
 
   AppDropdownItem({
@@ -18,7 +21,7 @@ class AppDropdownItem extends NamedItem {
 
   factory AppDropdownItem.fromJson(Map<String, dynamic> json) => AppDropdownItem(
       id: json['id'],
-      doctype: json['doctype'],
+      doctype: getDocumentTypes(json['doctype']),
       name: json['name'],
       description: json['description'],
     );

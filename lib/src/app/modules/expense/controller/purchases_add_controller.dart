@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
@@ -14,11 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../controller/app_controller.dart';
 import '../../../routes/app_routes.dart';
 import '../../../service/utils/enums.dart';
 import '../../../service/utils/utils.dart';
 import '../../../widgets/input_card_style.dart';
 
+import '../../document/document.dart';
 import '../../sales/model/unit.dart';
 import '../repostroy/purchases_add_repository.dart';
 
@@ -151,7 +152,7 @@ class PurchasesAddController extends GetxController {
         inventoryCategoryUpdate(inventoryCategories.first.id);
       }
     } catch (e) {
-   showError( 'Failed to fetch inventory categories');
+      showError('Failed to fetch inventory categories');
     } finally {
       isCategoryLoading(false);
     }
@@ -225,8 +226,9 @@ class PurchasesAddController extends GetxController {
   }
 
   void addDocumentItem() {
-   Get.toNamed(
-   Routes.addDocument, arguments: {"type": DocTypes.inventory}
+    Get.toNamed(
+      Routes.addDocument,
+      arguments: {"type": DocTypes.inventory},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);
@@ -335,7 +337,7 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-        showSuccess( 'Machinery added successfully!'.tr);
+        showSuccess('Machinery added successfully!'.tr);
       } else {
         showError(response['message'] ?? 'Failed to add machinery'.tr);
       }
@@ -354,6 +356,9 @@ class PurchasesAddController extends GetxController {
       return json;
     }).toList();
     try {
+       AppDataController appData = Get.find();
+     
+     
       final vehicle = VehicleModel(
         farmerId: appData.userId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
@@ -434,9 +439,7 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-       showSuccess( "Vehicle added successfully!",
-        
-        );
+        showSuccess("Vehicle added successfully!");
       } else {
         showError(response.message ?? "Failed to add vehicle");
       }
@@ -488,18 +491,12 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-       showError('fertilizer_add_success'.tr,
-        
-        );
+        showError('fertilizer_add_success'.tr);
       } else {
-        showError( response.message,
-          
-        );
+        showError(response.message);
       }
     } catch (e) {
-       showError( 'fertilizer_add_failed'.tr,
-       
-      );
+      showError('fertilizer_add_failed'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -579,72 +576,8 @@ class PurchasesAddController extends GetxController {
     ),
   );
 
-  Widget buildDocumentsSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Documents',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Card(
-            color: Get.theme.primaryColor,
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.add),
-              onPressed: addDocumentItem,
-              tooltip: 'Add Document',
-            ),
-          ),
-        ],
-      ),
-      Obx(() {
-        if (documentItems.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              'No documents added',
-              style: TextStyle(color: Colors.grey),
-            ),
-          );
-        }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: documentItems.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${index + 1}, ${documentItems[index].newFileType!}",
-                      ),
-                      const Icon(Icons.attach_file),
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      removeDocumentItem(index);
-                    },
-                    color: Get.theme.primaryColor,
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const Divider(),
-            ],
-          ),
-        );
-      }),
-    ],
-  );
+  Widget buildDocumentsSection() =>
+      DocumentsSection(documentItems: documentItems, type: DocTypes.inventory);
 
   Widget buildDescriptionField() => InputCardStyle(
     noHeight: true,

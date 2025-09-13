@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,15 @@ class ProfileView extends GetView<ProfileController> {
         ),
       );
     }),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        AppDataController appData = Get.find();
+
+        appData.error.value = !appData.error.value;
+      },
+      backgroundColor: Get.theme.primaryColor,
+      child: const Icon(Icons.error),
+    ),
   );
 
   void _showLogoutConfirmation(ProfileController controller) {
@@ -98,9 +108,9 @@ class ProfileView extends GetView<ProfileController> {
       child: Row(
         children: [
           InkWell(
-            onTap: (){
-              if(profile.imgUrl!.isNotEmpty) {
-                Get.toNamed(Routes.docViewer, arguments:profile.imgUrl );
+            onTap: () {
+              if (profile.imgUrl!.isNotEmpty) {
+                Get.toNamed(Routes.docViewer, arguments: profile.imgUrl);
               }
             },
             child: Stack(

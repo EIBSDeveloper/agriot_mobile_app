@@ -102,7 +102,7 @@ class DocumentViewerView extends GetView<forming.DocumentViewerController> {
           final bytes = base64Decode(
             path.replaceAll(RegExp(r'data:.*;base64,'), ''),
           );
-          return Center(child: InteractiveViewer(child: Image.memory(bytes)));
+          return Center(child: InteractiveViewer(child: Image.memory(bytes,  gaplessPlayback: true,)));
         } else {
           return Center(child: InteractiveViewer(child: MyNetworkImage(path)));
         }

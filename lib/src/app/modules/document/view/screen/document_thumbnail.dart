@@ -169,7 +169,7 @@ class _DocumentThumbnailState extends State<DocumentThumbnail> {
         } else if (source == FileSourceTypes.base64) {
           final bytes = base64Decode(path.split(",").last);
 
-          return Center(child: InteractiveViewer(child: Image.memory(bytes)));
+          return Center(child: InteractiveViewer(child: Image.memory(bytes, gaplessPlayback: true,)));
         } else {
           return Center(child: InteractiveViewer(child: MyNetworkImage(path)));
         }

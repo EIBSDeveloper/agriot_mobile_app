@@ -154,16 +154,17 @@ int getDocTypeId(DocTypes type) {
   }
   return 0;
 }
+
 Color getTaskColors(TaskTypes task) {
   switch (task) {
     case TaskTypes.completed:
-      return const Color(0xFF4CAF50); 
+      return const Color(0xFF4CAF50);
     case TaskTypes.waiting:
-      return const Color(0xFFFFC107); 
+      return const Color(0xFFFFC107);
     case TaskTypes.pending:
-      return const Color(0xFF2196F3); 
+      return const Color(0xFF2196F3);
     case TaskTypes.inProgress:
-      return const Color(0xFF03A9F4); 
+      return const Color(0xFF03A9F4);
     case TaskTypes.cancelled:
       return const Color(0xFFF44336);
     default:
@@ -185,6 +186,21 @@ TaskTypes getTaskStatus(int task) {
       return TaskTypes.cancelled;
     default:
       return TaskTypes.all;
+  }
+}
+
+DocTypes getDocumentTypes(int task) {
+  switch (task) {
+    case 1:
+      return DocTypes.expense;
+    case 2:
+      return DocTypes.sales;
+    case 3:
+      return DocTypes.inventory;
+    case 4:
+      return DocTypes.payouts;
+    default:
+      return DocTypes.land;
   }
 }
 

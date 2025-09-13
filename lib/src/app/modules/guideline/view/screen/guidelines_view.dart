@@ -1,5 +1,5 @@
 import 'package:argiot/src/app/modules/guideline/controller/guideline_controller.dart';
-import 'package:argiot/src/app/controller/app_controller.dart';
+
 import 'package:argiot/src/app/modules/guideline/model/guideline_category.dart';
 import 'package:argiot/src/app/modules/guideline/view/widget/guideline_card.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
@@ -9,8 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class GuidelinesView extends GetView<GuidelineController> {
-  GuidelinesView({super.key});
-  final AppDataController appData = Get.find();
+  const GuidelinesView({super.key});
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(title: 'guidelines_title'.tr),
@@ -28,14 +27,14 @@ class GuidelinesView extends GetView<GuidelineController> {
               if (controller.isLoading.value) {
                 return const Center(child: CircularProgressIndicator());
               }
-
               if (controller.filteredGuidelines.isEmpty) {
                 return Center(child: Text('no_guidelines_found'.tr));
               }
-
               return ListView.builder(
                 itemCount: controller.filteredGuidelines.length,
-                itemBuilder: (context, index) => GuidelineCard(guideline:controller.filteredGuidelines[index]),
+                itemBuilder: (context, index) => GuidelineCard(
+                  guideline: controller.filteredGuidelines[index],
+                ),
               );
             }),
           ),
@@ -48,7 +47,6 @@ class GuidelinesView extends GetView<GuidelineController> {
     child: TextField(
       decoration: InputDecoration(
         labelText: 'search_placeholder'.tr,
-        // prefixIcon: const Icon(Icons.search),
         border: InputBorder.none,
         contentPadding: const EdgeInsets.symmetric(vertical: 0),
       ),
@@ -64,16 +62,13 @@ class GuidelinesView extends GetView<GuidelineController> {
             child: DropdownButtonFormField2<GuidelineCategory>(
               isExpanded: true,
               decoration: const InputDecoration(
-                border: InputBorder.none, // Removes underline
-                enabledBorder:
-                    InputBorder.none, // Removes underline when enabled
-                focusedBorder:
-                    InputBorder.none, // Removes underline when focused
-                contentPadding:
-                    EdgeInsets.zero, // Optional: adjust vertical space
+                border: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
               ),
+              
               hint: Text('select_category'.tr),
-
               value: controller.selectedCategory.value,
               items: controller.categories
                   .map(
@@ -104,7 +99,4 @@ class GuidelinesView extends GetView<GuidelineController> {
       ),
     ],
   );
-
-
-  
 }

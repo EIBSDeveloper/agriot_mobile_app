@@ -2,7 +2,9 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../../../../service/utils/enums.dart';
 import '../../../../widgets/input_card_style.dart';
+import '../../../document/document.dart';
 import '../../../registration/controller/kyc_controller.dart';
 import '../../../registration/model/dropdown_item.dart';
 import '../../../registration/view/widget/searchable_dropdown.dart';
@@ -163,73 +165,10 @@ class LandViewPage extends GetView<LandController> {
     ],
   );
 
-  Widget _buildDocumentsSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Text(
-            'Documents',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Card(
-            color: Get.theme.primaryColor,
-            child: IconButton(
-              color: Colors.white,
-              icon: const Icon(Icons.add),
-              onPressed: controller.addDocumentItem,
-              tooltip: 'Add Document',
-            ),
-          ),
-        ],
-      ),
-      Obx(() {
-        if (controller.documentItems.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Text(
-              'No documents added',
-              style: TextStyle(color: Colors.grey),
-            ),
-          );
-        }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.documentItems.length,
-          itemBuilder: (context, index) => Column(
-            children: [
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
-                      ),
-                      const Icon(Icons.attach_file),
-                    ],
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    onPressed: () {
-                      controller.removeDocumentItem(index);
-                    },
-                    color: Get.theme.primaryColor,
-                    icon: const Icon(Icons.delete),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const Divider(),
-            ],
-          ),
-        );
-      }),
-    ],
-  );
-
+  Widget _buildDocumentsSection() =>     DocumentsSection(
+                documentItems: controller.documentItems,
+                type: DocTypes.land,
+              );
   Widget _buildSubmitButton() => Obx(
     () => ElevatedButton(
       onPressed: controller.isSubmitting.value ? null : controller.submitForm,

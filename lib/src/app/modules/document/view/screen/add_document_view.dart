@@ -10,8 +10,21 @@ import 'package:get/get.dart';
 
 import 'document_thumbnail.dart';
 
-class AddDocumentView extends GetView<DocumentController> {
+class AddDocumentView extends StatefulWidget {
   const AddDocumentView({super.key});
+
+  @override
+  State<AddDocumentView> createState() => _AddDocumentViewState();
+}
+
+class _AddDocumentViewState extends State<AddDocumentView> {
+  final DocumentController controller = Get.find<DocumentController>();
+
+  @override
+  void initState() {
+    controller.fetchDocument(Get.arguments['type']);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -44,6 +57,7 @@ class AddDocumentView extends GetView<DocumentController> {
           spacing: 8,
           runSpacing: 8,
           children: [
+            // Camera Button
             InkWell(
               onTap: controller.pickFromCamera,
               child: Container(
@@ -58,6 +72,8 @@ class AddDocumentView extends GetView<DocumentController> {
                 ),
               ),
             ),
+
+            // Gallery Button
             InkWell(
               onTap: controller.pickFromGallery,
               child: Container(
@@ -65,7 +81,6 @@ class AddDocumentView extends GetView<DocumentController> {
                 height: 92,
                 width: 92,
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-
                 child: Icon(
                   Icons.photo_library,
                   color: Get.theme.primaryColor,
@@ -73,10 +88,14 @@ class AddDocumentView extends GetView<DocumentController> {
                 ),
               ),
             ),
-            ...List.generate(controller.uploadedDocs.length, (index) {
-              final base64Str = controller.uploadedDocs[index];
+
+            // Uploaded Document Thumbnails
+            ...controller.uploadedDocs.asMap().entries.map((entry) {
+              final index = entry.key;
+              final base64Str = entry.value;
 
               return InkWell(
+                key: ValueKey(base64Str), // 👈 Key to prevent index mismatch
                 onTap: () {
                   Get.toNamed(
                     Routes.docViewer,

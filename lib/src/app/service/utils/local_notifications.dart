@@ -11,9 +11,8 @@ Future<void> showNotification({
 }) async {
   const AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails(
-        'your channel id',
-        'your channel name',
-        channelDescription: 'your channel description',
+        'com.eibs.agriot',
+        'AgrIOT',
         importance: Importance.max,
         priority: Priority.high,
         icon: '@mipmap/ic_launcher',
@@ -31,3 +30,7 @@ Future<void> showNotification({
     payload: jsonEncode2,
   );
 }
+
+
+
+

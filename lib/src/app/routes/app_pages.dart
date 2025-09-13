@@ -119,15 +119,10 @@ class AppPages {
 
     GetPage(
       name: Routes.guidelines,
-      page: () => GuidelinesView(),
+      page: () => const GuidelinesView(),
       binding: GuidelineBinding(),
     ),
 
-    // GetPage(
-    //   name: "/myEdit",
-    //   page: () => SalesFormScreen(),
-    //   binding: SalesBindings(),
-    // ),
     GetPage(
       name: Routes.salesDetails,
       page: () => const NewSalesDetailsView(),

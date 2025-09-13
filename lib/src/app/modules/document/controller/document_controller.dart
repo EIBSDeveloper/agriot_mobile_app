@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
+import '../../../service/utils/enums.dart';
+
 class DocumentController extends GetxController {
   final DocumentRepository repository = Get.find<DocumentRepository>();
 
@@ -24,14 +26,8 @@ class DocumentController extends GetxController {
     name: '',
   ).obs;
 
-  @override
-  void onInit() {
-    super.onInit();
 
-    fetchDocument(Get.arguments['type']);
-  }
-
-  Future<void> fetchDocument(typeId) async {
+  Future<void> fetchDocument(DocTypes typeId) async {
     try {
       final response = await repository.getDocumentTypes();
       docTypeList.assignAll(response.where((doc) => typeId == doc.doctype));

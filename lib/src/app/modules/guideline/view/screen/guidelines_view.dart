@@ -67,20 +67,21 @@ class GuidelinesView extends GetView<GuidelineController> {
                 focusedBorder: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
               ),
-              
+
               hint: Text('select_category'.tr),
               value: controller.selectedCategory.value,
-              items: controller.categories
-                  .map(
-                    (category) => DropdownMenuItem<GuidelineCategory>(
-                      value: category,
-                      child: Text(
-                        category.name,
-                        style: Get.textTheme.bodyMedium,
-                      ),
-                    ),
-                  )
-                  .toList(),
+              items: [
+                DropdownMenuItem<GuidelineCategory>(
+                  value: GuidelineCategory(id: 0, name: "All"),
+                  child: Text("All", style: Get.textTheme.bodyMedium),
+                ),
+                ...controller.categories.map(
+                  (category) => DropdownMenuItem<GuidelineCategory>(
+                    value: category,
+                    child: Text(category.name, style: Get.textTheme.bodyMedium),
+                  ),
+                ),
+              ],
               onChanged: (value) => controller.filterByCategory(value),
               buttonStyleData: const ButtonStyleData(
                 padding: EdgeInsets.only(right: 8),

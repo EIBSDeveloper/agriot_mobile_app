@@ -72,7 +72,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             children: [
               // Crop Info Section
               _buildCropInfoSection(),
-              const SizedBox(height: 10),
+              // const SizedBox(height: 10),
               // Statistics Section
               _buildStatisticsSection(overview),
               const SizedBox(height: 10),

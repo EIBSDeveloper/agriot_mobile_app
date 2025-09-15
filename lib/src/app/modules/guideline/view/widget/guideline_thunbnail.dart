@@ -31,7 +31,7 @@ class GuidelineThunbnail extends StatelessWidget {
           child: (guideline.mediaType == 'video' && youtubeThumbnailUrl == null)
               ?   Icon(Icons.play_circle_fill, size: 40, color: Get.theme.colorScheme.primary,)
               : Image.network(
-                  "${appData.baseUrlWithoutAPi.value}${guideline.document}",
+                  "${appData.imageBaseUrl.value}${guideline.document}",
                   fit: BoxFit.cover,
                   height: 60,
                   width: 60,

@@ -24,7 +24,7 @@ class ConsumptionPurchaseController extends GetxController
   final selectedInventoryTypeName = 'Fuel'.obs;
   var consumptionData = <ConsumptionRecord>[].obs;
   var purchaseData = <PurchaseRecord>[].obs;
-  var currentTabIndex = 0.obs;
+  // var currentTabIndex = 0.obs;
   late TabController tabController;
   // 0 = Consumption, 1 = Purchase
   final RxBool isCategoryLoading = false.obs;
@@ -43,7 +43,8 @@ class ConsumptionPurchaseController extends GetxController
 
     var tab = Get.arguments["tab"];
     if (tab != null) {
-      currentTabIndex.value = tab;
+      tabController.animateTo(tab);
+      // currentTabIndex.value = tab;
     }
     if (arguments?["id"] != null) {
       inventoryType.value = arguments?["id"];
@@ -165,7 +166,7 @@ class ConsumptionPurchaseController extends GetxController
     }
   }
   void open() {
-      if (currentTabIndex.value == 0) {
+      if (tabController.index == 0) {
       Get.toNamed(
         Routes.fuelConsumption,
         arguments: {
@@ -224,7 +225,5 @@ class ConsumptionPurchaseController extends GetxController
       }
     }
   }
-  void changeTab(int index) {
-    currentTabIndex.value = index;
-  }
+  
 }

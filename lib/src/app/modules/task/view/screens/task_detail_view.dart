@@ -79,6 +79,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                         ),
                   const SizedBox(width: 12),
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TitleText(task.myCrop.name),
                       Text(task.myLand.name),

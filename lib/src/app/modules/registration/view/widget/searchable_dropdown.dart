@@ -48,7 +48,9 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
   void didUpdateWidget(covariant SearchableDropdown<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedItem != oldWidget.selectedItem) {
-      _displayController.text = _getDisplayText(widget.selectedItem);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _displayController.text = _getDisplayText(widget.selectedItem);
+      });
     }
   }
 
@@ -85,7 +87,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
         displayItem: widget.displayItem,
         label: widget.label,
         validator: widget.validator,
-        initialSearchText: _displayController.text,
+        // initialSearchText: _displayController.text,
       ),
     );
 
@@ -190,8 +192,7 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child:  InputCardStyle(
-               
+                  child: InputCardStyle(
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(

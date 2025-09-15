@@ -21,7 +21,7 @@ class AppDropdownItem extends NamedItem {
 
   factory AppDropdownItem.fromJson(Map<String, dynamic> json) => AppDropdownItem(
       id: json['id'],
-      doctype: getDocumentTypes(json['doctype']),
+      doctype: json['doctype']!= null ? getDocumentTypes(json['doctype']):null,
       name: json['name'],
       description: json['description'],
     );

@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
 import '../../controller/sales_controller.dart';
-
 class SalesListView extends GetView<SalesController> {
   const SalesListView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Sales List', showBackButton: true),
+    appBar:  CustomAppBar(title: 'sales_list'.tr, showBackButton: true),
     body: RefreshIndicator(
       onRefresh: () async {
         await controller.fetchSalesList();
@@ -26,11 +25,11 @@ class SalesListView extends GetView<SalesController> {
                     child: InputCardStyle(
                       child: Column(
                         children: [
-                          const FittedBox(
+                          FittedBox(
                             child: Text(
-                              "Total Sales ",
+                              "total_sales".tr,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -142,7 +141,7 @@ class SalesListView extends GetView<SalesController> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Sale Quantity : ${sale.salesQuantity}'),
+                                  Text("${'sale_quantity'.tr}: ${sale.salesQuantity}"),
                                 ],
                               ),
                               trailing: Text(

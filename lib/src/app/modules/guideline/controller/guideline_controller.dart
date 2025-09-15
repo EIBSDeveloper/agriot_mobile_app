@@ -97,11 +97,11 @@ class GuidelineController extends GetxController {
           .toList();
     }
 
-    if (selectedCategory.value != null) {
+    if (selectedCategory.value != null && selectedCategory.value!.id != 0) {
       results = results
           .where((g) => g.guidelinescategory!.id == selectedCategory.value?.id)
           .toList();
-    }
+    } 
 
     filteredGuidelines.assignAll(results);
   }

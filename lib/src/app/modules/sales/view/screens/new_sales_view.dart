@@ -31,7 +31,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(
-      title: Get.arguments?["id"] != null ? 'New Sales' : "",
+      title: Get.arguments?["id"] != null ? 'new_sales'.tr : "",
       showBackButton: true,
     ),
 
@@ -70,7 +70,7 @@ class _NewSalesViewState extends State<NewSalesView> {
                 () => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Sales Amount', style: Get.textTheme.bodyLarge),
+                    Text('sales_amount'.tr, style: Get.textTheme.bodyLarge),
                     Text(
                       "${controller.salesAmount.value}",
                       style: Get.textTheme.bodyLarge,
@@ -97,7 +97,10 @@ class _NewSalesViewState extends State<NewSalesView> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Total Sales Amount', style: Get.textTheme.bodyLarge),
+                    Text(
+                      'total_sales_amount'.tr,
+                      style: Get.textTheme.bodyLarge,
+                    ),
                     Text("$total", style: Get.textTheme.bodyLarge),
                   ],
                 );
@@ -130,7 +133,7 @@ class _NewSalesViewState extends State<NewSalesView> {
       items: controller.crop,
       selectedItem: controller.selectedCropType.value,
       onChanged: (land) => controller.changeCrop(land!),
-      label: 'Crop*',
+      label: "${'crop'.tr} *",
       // disable: isEditing,
     ),
   );
@@ -141,9 +144,8 @@ class _NewSalesViewState extends State<NewSalesView> {
         child: InputCardStyle(
           child: DropdownButtonFormField<int>(
             icon: const Icon(Icons.keyboard_arrow_down),
-            decoration: const InputDecoration(
-              labelText: 'Customer * ',
-
+            decoration: InputDecoration(
+              labelText: 'customer'.tr,
               border: InputBorder.none,
             ),
             initialValue: controller.selectedCustomer.value,
@@ -157,7 +159,7 @@ class _NewSalesViewState extends State<NewSalesView> {
                 )
                 .toList(),
             validator: (value) =>
-                value == null ? 'Please select a customer' : null,
+                value == null ? 'please_select_a_customer'.tr : null,
           ),
         ),
       ),
@@ -172,7 +174,7 @@ class _NewSalesViewState extends State<NewSalesView> {
                 controller.fetchCustomerList();
               });
             } else {
-              showDefaultGetXDialog("Vendor/Customer");
+              showDefaultGetXDialog("vendor_customer".tr);
             }
           },
           icon: const Icon(Icons.add),
@@ -195,8 +197,8 @@ class _NewSalesViewState extends State<NewSalesView> {
         }
       },
       child: InputDecorator(
-        decoration: const InputDecoration(
-          labelText: 'Date',
+        decoration: InputDecoration(
+          labelText: 'date'.tr,
           border: InputBorder.none,
         ),
         child: Row(
@@ -214,8 +216,8 @@ class _NewSalesViewState extends State<NewSalesView> {
 
   Widget _buildSalesQuantityField() => InputCardStyle(
     child: TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Sales Quantity',
+      decoration: InputDecoration(
+        labelText: 'sales_quantity'.tr,
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -230,7 +232,7 @@ class _NewSalesViewState extends State<NewSalesView> {
             (controller.quantityAmount.value * controller.salesQuantity.value!);
       },
       validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter quantity' : null,
+          value == null || value.isEmpty ? 'please_enter_quantity'.tr : null,
     ),
   );
 
@@ -239,15 +241,15 @@ class _NewSalesViewState extends State<NewSalesView> {
       items: controller.unit,
       selectedItem: controller.selectedUnit.value,
       onChanged: (unit) => controller.changeUnit(unit!),
-      label: 'Unit*',
+      label: 'unit'.tr,
       // disable: isEditing,
     ),
   );
 
   Widget _buildQuantityAmountField() => InputCardStyle(
     child: TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Amount per unit*',
+      decoration: InputDecoration(
+        labelText: 'amount_per_unit'.tr,
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -263,7 +265,7 @@ class _NewSalesViewState extends State<NewSalesView> {
             (controller.quantityAmount.value * controller.salesQuantity.value!);
       },
       validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter amount' : null,
+          value == null || value.isEmpty ? 'please_enter_amount'.tr : null,
     ),
   );
 
@@ -273,9 +275,9 @@ class _NewSalesViewState extends State<NewSalesView> {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Deductions',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            'deductions'.tr,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Card(
             color: Get.theme.primaryColor,
@@ -320,7 +322,7 @@ class _NewSalesViewState extends State<NewSalesView> {
         () => Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Deduction Amount', style: Get.textTheme.bodyLarge),
+            Text('deduction_amount'.tr, style: Get.textTheme.bodyLarge),
             Text(
               controller.deductionAmount.value.toString(),
               style: Get.textTheme.bodyLarge,
@@ -333,22 +335,22 @@ class _NewSalesViewState extends State<NewSalesView> {
 
   Widget _buildAmountPaidField() => InputCardStyle(
     child: TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Amount Paid*',
+      decoration: InputDecoration(
+        labelText: 'amount_paid'.tr,
         border: InputBorder.none,
       ),
       initialValue: controller.amountPaid.value,
       keyboardType: TextInputType.number,
       onChanged: (value) => controller.amountPaid.value = value,
       validator: (value) =>
-          value == null || value.isEmpty ? 'Please enter amount paid' : null,
+          value == null || value.isEmpty ? 'please_enter_amount_paid'.tr : null,
     ),
   );
 
   Widget _buildDescriptionField() => InputCardStyle(
     child: TextFormField(
-      decoration: const InputDecoration(
-        labelText: 'Description',
+      decoration: InputDecoration(
+        labelText: 'description'.tr,
         border: InputBorder.none,
       ),
       maxLines: 3,
@@ -362,7 +364,7 @@ class _NewSalesViewState extends State<NewSalesView> {
       onPressed: () {
         controller.addSales();
       },
-      child: const Text('Submit'),
+      child: Text('submit'.tr),
     ),
   );
 }

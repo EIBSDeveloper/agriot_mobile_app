@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-
 class AddVendorCustomerView extends GetView<VendorCustomerController> {
   const AddVendorCustomerView({super.key});
 
@@ -84,7 +83,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
 
         final model = controller.purchaseModel.value;
         if (model == null) {
-          return const Center(child: Text("No data available"));
+          return Center(child: Text('no_data_available'.tr));
         }
 
         final items = model.items;
@@ -98,12 +97,12 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           items: options,
           dialogHeight: 300,
           initialValue: controller.selectedKeys.toList(),
-          title: const Text("Select Inventory Types"),
+          title: Text('select_inventory_types'.tr),
           itemsTextStyle: const TextStyle(color: Colors.black),
           selectedItemsTextStyle: const TextStyle(color: Colors.black),
           searchHintStyle: const TextStyle(color: Colors.black),
           searchTextStyle: const TextStyle(color: Colors.black),
-          buttonText: const Text("Select Inventory Types"),
+          buttonText: Text('select_inventory_types'.tr),
           selectedColor: Get.theme.primaryColor,
           chipDisplay: MultiSelectChipDisplay(
             textStyle: const TextStyle(color: Colors.black),
@@ -176,9 +175,9 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           decoration: InputDecoration(
             labelText:
                 controller.selectedType.value == 'customer' ||
-                    controller.selectedType.value == 'both'
-                ? "${'shop_name'.tr} *"
-                : "${'business_name'.tr} *",
+                        controller.selectedType.value == 'both'
+                    ? "${'shop_name'.tr} *"
+                    : "${'business_name'.tr} *",
             border: InputBorder.none,
           ),
         ),
@@ -261,7 +260,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
 
       const SizedBox(height: 12),
       InputCardStyle(
-               
+              
         child: TextFormField(
           controller: controller.descriptionController,
           decoration: InputDecoration(
@@ -278,7 +277,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
   Widget _buildSubmitButton() => Obx(
     () => ElevatedButton(
       onPressed: controller.isSubmitting.value ? null :(){
-         controller.submitForm(id:  Get.arguments?["id"]);
+          controller.submitForm(id:  Get.arguments?["id"]);
       },
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),

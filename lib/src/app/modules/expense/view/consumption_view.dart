@@ -7,14 +7,13 @@ import 'package:get/get.dart';
 
 import '../../../service/utils/enums.dart';
 import '../../document/document.dart';
-
 class ConsumptionView extends StatelessWidget {
   ConsumptionView({super.key});
   final ConsumptionController _controller = Get.find<ConsumptionController>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'Consumption'.tr),
+    appBar: CustomAppBar(title: 'consumption'.tr),
     body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -110,7 +109,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: TextFormField(
         decoration: InputDecoration(
-          labelText: 'Date'.tr,
+          labelText: 'date'.tr,
           border: InputBorder.none,
           suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         ),
@@ -148,7 +147,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          labelText: "${'Inventory Type'.tr} *",
+          labelText: "${'inventory_type'.tr} *",
           border: InputBorder.none,
         ),
 
@@ -172,7 +171,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          labelText: "${'Inventory Category'.tr} *",
+          labelText: "${'inventory_category'.tr} *",
           border: InputBorder.none,
         ),
         icon: const Icon(Icons.keyboard_arrow_down),
@@ -199,7 +198,7 @@ class ConsumptionView extends StatelessWidget {
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
         decoration: InputDecoration(
-          labelText: "${'Inventory Item'.tr} *",
+          labelText: "${'inventory_item'.tr} *",
           border: InputBorder.none,
         ),
 
@@ -227,7 +226,7 @@ class ConsumptionView extends StatelessWidget {
         child: InputCardStyle(
           child: TextFormField(
             decoration: InputDecoration(
-              labelText: "${'Quantity'.tr} *",
+              labelText: "${'quantity'.tr} *",
               border: InputBorder.none,
             ),
 
@@ -246,7 +245,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildUsageHoursField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        labelText: "${'Usage Hours'.tr} *",
+        labelText: "${'usage_hours'.tr} *",
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -257,7 +256,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildStartKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        labelText: "${'Start Kilometer'.tr} *",
+        labelText: "${'start_kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -269,7 +268,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildEndKilometerField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        labelText: "${'End Kilometer'.tr} *",
+        labelText: "${'end_kilometer'.tr} *",
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -281,7 +280,7 @@ class ConsumptionView extends StatelessWidget {
   Widget _buildToolItemsField() => InputCardStyle(
     child: TextFormField(
       decoration: InputDecoration(
-        labelText: 'Tool Items'.tr,
+        labelText: 'tool_items'.tr,
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
@@ -293,7 +292,7 @@ class ConsumptionView extends StatelessWidget {
     noHeight: true,
     child: TextFormField(
       decoration: InputDecoration(
-        labelText: 'Description'.tr,
+        labelText: 'description'.tr,
         border: InputBorder.none,
       ),
       maxLines: 3,
@@ -322,7 +321,7 @@ class ConsumptionView extends StatelessWidget {
       ),
       child: _controller.isLoading.value
           ? const CircularProgressIndicator()
-          : Text('Save'.tr),
+          : Text('save'.tr),
     ),
   );
 }

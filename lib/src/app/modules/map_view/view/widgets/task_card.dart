@@ -29,7 +29,7 @@ class TaskCard extends StatelessWidget {
       });
     },
     child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      margin: const EdgeInsets.only(left: 10, bottom: 8,right: 8),
       constraints: const BoxConstraints(minHeight: 80),
       decoration: AppStyle.decoration.copyWith(
         border: Border(

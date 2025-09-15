@@ -257,7 +257,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       decoration: InputDecoration(
         border: InputBorder.none,
 
-        labelText: 'company_name_label'.tr,
+        labelText: "${'company_name_label'.tr} *",
         errorText: controller.errors['company_name'],
       ),
     ),
@@ -282,7 +282,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
 
       decoration: InputDecoration(
-        labelText: 'insurance_amount_label'.tr,
+        labelText: "${'insurance_amount_label'.tr} *",
         border: InputBorder.none,
         errorText: controller.errors['insurance_amount'],
       ),
@@ -298,7 +298,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       onTap: () =>
           controller.selectDate(controller.startDateController, context),
       decoration: InputDecoration(
-        labelText: 'start_date_label'.tr,
+        labelText: "${'start_date_label'.tr} *",
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         errorText: controller.errors['start_date'],
@@ -314,7 +314,7 @@ class VehicleView extends GetView<PurchasesAddController> {
 
       onTap: () => controller.selectDate(controller.endDateController, context),
       decoration: InputDecoration(
-        labelText: 'end_date_label'.tr,
+        labelText: "${'end_date_label'.tr} *",
 
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
@@ -332,7 +332,7 @@ class VehicleView extends GetView<PurchasesAddController> {
       onTap: () =>
           controller.selectDate(controller.renewalDateController, context),
       decoration: InputDecoration(
-        labelText: 'renewal_date_label'.tr,
+        labelText: "${'renewal_date_label'.tr} *",
         border: InputBorder.none,
         suffixIcon: Icon(Icons.calendar_today, color: Get.theme.primaryColor),
         errorText: controller.errors['renewal_date'],

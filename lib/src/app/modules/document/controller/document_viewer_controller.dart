@@ -18,6 +18,7 @@ class DocumentViewerController extends GetxController {
     super.onInit();
 
     final args = Get.arguments;
+    print(args.runtimeType);
     if (args is Map<String, dynamic>) {
       if (args["files"] is List<String>) {
         documentUrls.assignAll(args["files"]);
@@ -31,6 +32,7 @@ class DocumentViewerController extends GetxController {
       documentUrls.assignAll([args]);
     } else {
       error.value = "Invalid arguments";
+      print("Invalid arguments");
       isLoading(false);
       return;
     }

@@ -23,7 +23,6 @@ class CropController extends GetxController {
   final AppDataController appData = Get.find();
 
   late final String baseUrl = appData.baseUrl.value;
-  late final String baseUrlIWithodAPi = appData.baseUrlWithoutAPi.value;
   final measurementController = TextEditingController();
   final descriptionController = TextEditingController();
   final locationController = TextEditingController();

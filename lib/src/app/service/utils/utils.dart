@@ -133,7 +133,7 @@ void handleGuidelineTap(Guideline guideline) {
   } else if (guideline.mediaType == 'document' && guideline.document != null) {
     Get.toNamed(
       Routes.docViewer,
-      arguments: "${appData.baseUrlWithoutAPi}${guideline.document}",
+      arguments: "${appData.imageBaseUrl.value}${guideline.document}",
     ); // Open document viewer
   } else {
     showError('Unable to open guideline content');

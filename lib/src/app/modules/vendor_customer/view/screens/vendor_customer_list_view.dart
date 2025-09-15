@@ -44,7 +44,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         if (package!.customerBalance > 0) {
           _showAddDialog();
         } else {
-          showDefaultGetXDialog("Vendor/Customer");
+          showDefaultGetXDialog('vendor_customer'.tr);
         }
       },
       child: const Icon(Icons.add),
@@ -131,7 +131,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         ),
         child: Wrap(
           children: [
-           const ButtomSheetScrollButton(),
+            const ButtomSheetScrollButton(),
             Text(
               'add_new'.tr,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

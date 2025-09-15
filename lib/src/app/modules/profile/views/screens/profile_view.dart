@@ -10,14 +10,13 @@ import '../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../controller/profile_controller.dart';
 import '../../model/profile_model.dart';
-
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(
-      title: 'Profile',
+      title: 'profile'.tr,
       showBackButton: true,
       actions: [
         IconButton(
@@ -36,7 +35,7 @@ class ProfileView extends GetView<ProfileController> {
 
       final profile = controller.profile.value;
       if (profile == null) {
-        return const Center(child: Text('No profile data available'));
+        return  Center(child: Text('no_profile_data_available'.tr));
       }
 
       return RefreshIndicator(
@@ -52,7 +51,7 @@ class ProfileView extends GetView<ProfileController> {
               const SizedBox(height: 10),
               OutlinedButton.icon(
                 icon: const Icon(Icons.logout, color: Colors.redAccent),
-                label: const Text('Logout'),
+                label: Text('logout'.tr),
                 onPressed: () => _showLogoutConfirmation(controller),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.redAccent,
@@ -82,16 +81,16 @@ class ProfileView extends GetView<ProfileController> {
   void _showLogoutConfirmation(ProfileController controller) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: Text('logout'.tr),
+        content: Text('logout_confirmation'.tr),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: Text('cancel'.tr)),
           TextButton(
             onPressed: () {
               Get.back();
               controller.logout();
             },
-            child: const Text('Logout', style: TextStyle(color: Colors.red)),
+            child: Text('logout'.tr, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -210,7 +209,7 @@ class ProfileView extends GetView<ProfileController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const TitleText('Current Plan'),
+                TitleText('current_plan'.tr),
 
                 InkWell(
                   onTap: () {
@@ -230,13 +229,13 @@ class ProfileView extends GetView<ProfileController> {
             ),
             const SizedBox(height: 8),
             _buildSubscriptionDetailRow(
-              'Validity',
+              'validity'.tr,
               '${subscription.packageValidity} ${subscription.packageDuration}',
             ),
-            _buildSubscriptionDetailRow('Start Date', subscription.startDate),
-            _buildSubscriptionDetailRow('End Date', subscription.endDate),
+            _buildSubscriptionDetailRow('start_date'.tr, subscription.startDate),
+            _buildSubscriptionDetailRow('end_date'.tr, subscription.endDate),
             _buildSubscriptionDetailRow(
-              'Remaining Days',
+              'remaining_days'.tr,
               '${subscription.remainingDays} days',
             ),
             const SizedBox(height: 8),
@@ -244,7 +243,7 @@ class ProfileView extends GetView<ProfileController> {
               onPressed: () {
                 Get.toNamed(Routes.subscriptionPlans);
               },
-              child: const Text("Explore Plans"),
+              child: Text("explore_plans".tr),
             ),
           ],
         ),
@@ -280,7 +279,7 @@ class ProfileView extends GetView<ProfileController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TitleText('Contact Information'),
+          TitleText('contact_information'.tr),
           const SizedBox(height: 12),
           _buildContactDetailRow(Icons.email, profile.email),
           if (profile.doorNo.isNotEmpty)
@@ -305,12 +304,12 @@ class ProfileView extends GetView<ProfileController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const TitleText('Company Details'),
+                TitleText('company_details'.tr),
                 const SizedBox(height: 12),
-                _buildDetailRow('Company Name', profile.companyName),
-                _buildDetailRow('Tax Number', profile.taxNo),
+                _buildDetailRow('company_name'.tr, profile.companyName),
+                _buildDetailRow('tax_number'.tr, profile.taxNo),
 
-                _buildDetailRow('Description', profile.description),
+                _buildDetailRow('description'.tr, profile.description),
               ],
             ),
           ),

@@ -1,4 +1,4 @@
-class GuidelineCategory {
+class        GuidelineCategory {
   GuidelineCategory({required this.id, required this.name, this.description});
 
   factory GuidelineCategory.fromJson(Map<String, dynamic> json) =>

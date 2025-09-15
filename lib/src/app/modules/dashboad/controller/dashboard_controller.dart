@@ -93,7 +93,7 @@ class DashboardController extends GetxController {
       }
       await loadData();
 
-      // fetchWeatherData(position.value!.latitude, position.value!.longitude);
+      fetchWeatherData(position.value!.latitude, position.value!.longitude);
     } catch (e) {
       showError('Failed to load dashboard data');
     } finally {

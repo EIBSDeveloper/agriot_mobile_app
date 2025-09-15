@@ -28,9 +28,9 @@ class AddTask extends GetView<TaskController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-         const ButtomSheetScrollButton(),
+            const ButtomSheetScrollButton(),
             Text(
-              isEditing ? 'Edit Task' : 'Add New Task',
+              isEditing ? 'edit_task'.tr : 'add_new_task'.tr,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -41,7 +41,7 @@ class AddTask extends GetView<TaskController> {
                 items: controller.crop,
                 selectedItem: controller.selectedCropType.value,
                 onChanged: (land) => controller.changeCrop(land!),
-                label: 'Crop*',
+                label: "${'crop'.tr} *",
                 // disable: isEditing,
               ),
             ),
@@ -51,16 +51,15 @@ class AddTask extends GetView<TaskController> {
                 items: controller.activity,
                 selectedItem: controller.selectedActivityType.value,
                 onChanged: (land) => controller.changeActivity(land!),
-                label: 'Activity type *',
+                label: "${'activity_type'.tr} *",
               ),
             ),
             const SizedBox(height: 8),
             // Schedule Date
             Obx(
               () => InputCardStyle(
-               
                 child: ListTile(
-                  title: const Text('Schedule Date*'),
+                  title: Text("${'schedule_date'.tr} *"),
                   subtitle: Text(
                     '${controller.scheduleDate.value.day}/${controller.scheduleDate.value.month}/${controller.scheduleDate.value.year}',
                   ),
@@ -88,7 +87,7 @@ class AddTask extends GetView<TaskController> {
                   const SizedBox(height: 8),
                   Obx(
                     () => CheckboxListTile(
-                      title: const Text('Recurring Task'),
+                      title: Text('recurring_task'.tr),
                       value: controller.isRecurring.value,
                       onChanged: (value) =>
                           controller.isRecurring.value = value ?? false,
@@ -108,9 +107,9 @@ class AddTask extends GetView<TaskController> {
                             controller.recurrenceType.value = index;
                           },
                           activePageIndex: controller.recurrenceType.value,
-                          buttonsList: ["Daily", "Weekly ", "Monthly "],
+                          buttonsList: ["daily".tr, "weekly".tr, "monthly".tr],
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
 
                         // Weekly day selector
                         if (controller.recurrenceType.value == 1)
@@ -118,13 +117,13 @@ class AddTask extends GetView<TaskController> {
                             spacing: 8,
                             children: List.generate(7, (index) {
                               final day = [
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat',
-                                'Sun',
+                                'mon'.tr,
+                                'tue'.tr,
+                                'wed'.tr,
+                                'thu'.tr,
+                                'fri'.tr,
+                                'sat'.tr,
+                                'sun'.tr,
                               ][index];
                               return FilterChip(
                                 label: Text(day),
@@ -147,13 +146,12 @@ class AddTask extends GetView<TaskController> {
                           () => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                               InputCardStyle(
-               
+                              InputCardStyle(
                                 child: ListTile(
-                                  title: const Text('Schedule End Date*'),
+                                  title: Text("${'schedule_end_date'.tr} *"),
                                   subtitle: Text(
                                     controller.scheduleEndDate.value == null
-                                        ? 'Not selected'
+                                        ? 'not_selected'.tr
                                         : '${controller.scheduleEndDate.value!.day}/${controller.scheduleEndDate.value!.month}/${controller.scheduleEndDate.value!.year}',
                                   ),
                                   trailing: const Icon(Icons.calendar_today),
@@ -176,9 +174,9 @@ class AddTask extends GetView<TaskController> {
                               ),
 
                               (!controller.endDate.value)
-                                  ? const Text(
-                                      "Please add End Date",
-                                      style: TextStyle(color: Colors.red),
+                                  ? Text(
+                                      "please_add_end_date".tr,
+                                      style: const TextStyle(color: Colors.red),
                                     )
                                   : const SizedBox(),
                             ],
@@ -192,11 +190,10 @@ class AddTask extends GetView<TaskController> {
             const SizedBox(height: 8),
 
             // Description
-           InputCardStyle(
-               
+            InputCardStyle(
               child: TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Description',
+                decoration: InputDecoration(
+                  labelText: 'description'.tr,
                   border: InputBorder.none,
                 ),
                 maxLines: 2,
@@ -227,7 +224,7 @@ class AddTask extends GetView<TaskController> {
                       },
                 child: controller.isLoading.value
                     ? const CircularProgressIndicator()
-                    : Text(isEditing ? 'Update Task' : 'Add Task'),
+                    : Text(isEditing ? 'update_task'.tr : 'add_task'.tr),
               ),
             ),
           ],

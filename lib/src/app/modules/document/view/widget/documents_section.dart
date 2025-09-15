@@ -6,9 +6,9 @@ import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
 import '../../model/add_document_model.dart';
 import 'document_item_widget.dart';
-
 class DocumentsSection extends StatelessWidget {
-  const DocumentsSection({super.key, required this.documentItems,required this.type});
+  const 
+  DocumentsSection({super.key, required this.documentItems,required this.type});
 
   final RxList<AddDocumentModel> documentItems;
   final DocTypes type;
@@ -20,11 +20,11 @@ class DocumentsSection extends StatelessWidget {
       _buildHeader(),
       Obx(() {
         if (documentItems.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Text(
-              'No documents added',
-              style: TextStyle(color: Colors.grey),
+              'no_documents_added'.tr,
+              style: const TextStyle(color: Colors.grey),
             ),
           );
         }
@@ -51,9 +51,9 @@ class DocumentsSection extends StatelessWidget {
   Widget _buildHeader() => Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      const Text(
-        'Documents',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      Text(
+        'documents'.tr,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
       Card(
         color: Get.theme.primaryColor,
@@ -71,7 +71,7 @@ class DocumentsSection extends StatelessWidget {
               print(documentItems.toString());
             });
           },
-          tooltip: 'Add Document',
+          tooltip: 'add_document'.tr,
         ),
       ),
     ],

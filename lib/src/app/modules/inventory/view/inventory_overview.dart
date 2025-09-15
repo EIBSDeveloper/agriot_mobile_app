@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../widgets/title_text.dart';
-
 class InventoryOverview extends GetView<InventoryController> {
   const InventoryOverview({super.key});
 
@@ -37,7 +36,7 @@ class InventoryOverview extends GetView<InventoryController> {
               const SizedBox(height: 10),
               _buildInventoryItem(
                 'fuel'.tr,
-                '${inventory.fuel.totalQuantity.round()} Ltr',
+                '${inventory.fuel.totalQuantity.round()} ${'ltr'.tr}',
                 inventory.fuel.id,
               ),
               const Divider(),
@@ -61,19 +60,19 @@ class InventoryOverview extends GetView<InventoryController> {
               const Divider(),
               _buildInventoryItem(
                 'pesticides'.tr,
-                '${inventory.pesticides.totalQuantity.round()} kg',
+                '${inventory.pesticides.totalQuantity.round()} ${'kg'.tr}',
                 inventory.pesticides.id,
               ),
               const Divider(),
               _buildInventoryItem(
                 'fertilizers'.tr,
-                '${inventory.fertilizers.totalQuantity.round()} kg',
+                '${inventory.fertilizers.totalQuantity.round()} ${'kg'.tr}',
                 inventory.fertilizers.id,
               ),
               const Divider(),
               _buildInventoryItem(
                 'seeds'.tr,
-                '${inventory.seeds.totalQuantity.round()} kg',
+                '${inventory.seeds.totalQuantity.round()} ${'kg'.tr}',
                 inventory.seeds.id,
               ),
             ],

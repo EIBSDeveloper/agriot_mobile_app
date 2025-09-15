@@ -528,9 +528,7 @@ class DashboardView extends GetView<DashboardController> {
           if (controller.marketError.isNotEmpty) {
             return Center(
               child: Text(
-                'error_message'.trParams({
-                  'error': controller.marketError.value,
-                }),
+                "${'error_message'.tr} ${controller.marketError.value}",
               ),
             );
           }

@@ -1,5 +1,4 @@
 import 'package:argiot/src/app/modules/forming/model/crop_card_model.dart';
-import 'package:argiot/src/app/modules/forming/model/document_view.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/subscription/model/package_usage.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
@@ -9,9 +8,9 @@ import '../../../../../core/app_icons.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/pop_messages.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../../widgets/my_network_image.dart';
 import '../../controller/land_detail_controller.dart';
 import '../widget/crop_card.dart';
-import '../widget/document_section.dart';
 
 class LandDetailView extends GetView<LandDetailController> {
   const LandDetailView({super.key});
@@ -181,25 +180,68 @@ class LandDetailView extends GetView<LandDetailController> {
     );
   }
 
+  // Widget _buildDocumentsSection() {
+  //   final documents = controller.landDetails['documents'] as List? ?? [];
+  //   if (documents.isEmpty) return const SizedBox();
+
+  //   List<DocumentView> allDocs = [];
+
+  //   for (var doc in documents) {
+  //     final List innerDocs = doc['documents'] ?? [];
+  //     allDocs.addAll(
+  //       innerDocs.map(
+  //         (e) => DocumentView(
+  //           label: e['document_category']['name'],
+  //           url: e['upload_document'],
+  //         ),
+  //       ),
+  //     );
+  //   }
+
+  //   return DocumentSection(docs: allDocs);
+  // }
   Widget _buildDocumentsSection() {
     final documents = controller.landDetails['documents'] as List? ?? [];
     if (documents.isEmpty) return const SizedBox();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Documents', style: Get.textTheme.titleMedium),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: documents
+              .map(
+                (document) => InkWell(
+                  onTap: () {
+                    List<String> list = document["documents"]
+                        .map<String>((doc) => doc["upload_document"].toString())
+                        .toList();
 
-    List<DocumentView> allDocs = [];
-
-    for (var doc in documents) {
-      final List innerDocs = doc['documents'] ?? [];
-      allDocs.addAll(
-        innerDocs.map(
-          (e) => DocumentView(
-            label: e['document_category']['name'],
-            url: e['upload_document'],
-          ),
+                    Get.toNamed(Routes.docViewer, arguments: list);
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        document["documents"]
+                            .first["document_category"]["name"],
+                      ),
+                      MyNetworkImage(
+                        document["documents"].first["upload_document"],
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
         ),
-      );
-    }
-
-    return DocumentSection(docs: allDocs);
+      ],
+    );
   }
 
   Widget _buildCropsSection() {
@@ -246,7 +288,7 @@ class LandDetailView extends GetView<LandDetailController> {
               Routes.addCrop,
               arguments: controller.landDetails['id'],
             )?.then((result) {
-              if(result??false){
+              if (result ?? false) {
                 controller.fetchLandDetails();
               }
             });

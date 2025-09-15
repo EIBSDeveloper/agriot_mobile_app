@@ -12,7 +12,6 @@ import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 import '../widgets/month_day_format.dart';
-
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
 
@@ -31,7 +30,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleText("Expense".tr),
+              TitleText("expenses".tr),
               const SizedBox(height: 10),
               _buildSummarySection(),
               const SizedBox(height: 10),
@@ -65,7 +64,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             const ButtomSheetScrollButton(),
             ListTile(
               title: Text(
-                "${'add_new'.tr} ${'Expense'.tr}",
+                "${'add_new'.tr} ${'expense'.tr}",
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -83,7 +82,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
             ),
             ListTile(
               title: Text(
-                "${'add_new'.tr} ${'Purchase'.tr}",
+                "${'add_new'.tr} ${'purchase'.tr}",
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -112,7 +111,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       Expanded(
         child: InputCardStyle(
           child: Text(
-            "Total Expenses\n₹ ${controller.totalExpense.value.toStringAsFixed(0)}",
+            "${"total_expenses".tr}\n ${controller.totalExpense.value.toStringAsFixed(0)}",
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
@@ -159,10 +158,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Container(
-          constraints: const BoxConstraints(
-            maxHeight: 260
-           
-          ),
+          constraints: const BoxConstraints(maxHeight: 260),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -190,7 +186,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                   ringStrokeWidth: 32,
                 ),
               ),
-          
+
               // Legends
               Expanded(
                 flex: 1,
@@ -244,9 +240,9 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
 
   Widget _buildTabBar() => Row(
     children: [
-      _buildTabButton(0, 'All'),
-      _buildTabButton(1, 'Expenses'),
-      _buildTabButton(2, 'Purchases'),
+      _buildTabButton(0, 'all'),
+      _buildTabButton(1, 'expenses'),
+      _buildTabButton(2, 'purchases'),
     ],
   );
 
@@ -283,7 +279,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 200),
-          child: Text('No transactions found'.tr),
+          child: Text('no_transactions_found'.tr),
         ),
       );
     }
@@ -369,7 +365,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                             item.inventorytype.id != 2) ...[
                           const SizedBox(height: 4),
                           Text(
-                            'Quantity: ${item.availableQuans}',
+                            'quantity'.trParams({'quantity': item.availableQuans.toString()}),
                             style: Get.textTheme.bodyMedium?.copyWith(
                               color: Colors.grey,
                             ),

@@ -39,7 +39,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               color: Get.theme.colorScheme.surface,
               child: TabBar(
                 controller: controller.tabController,
-                onTap: controller.changeTab,
+
                 tabs: [
                   Tab(
                     text:

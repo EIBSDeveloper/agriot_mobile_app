@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 class AddDeductionView extends StatelessWidget {
   final NewSalesController controller = Get.find<NewSalesController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -16,7 +15,7 @@ class AddDeductionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Add Deduction'),
+    appBar:  CustomAppBar(title: 'add_deduction'.tr),
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -49,7 +48,7 @@ class AddDeductionView extends StatelessWidget {
               items: controller.reasonsList,
               selectedItem: controller.selectedReason.value,
               onChanged: (land) => controller.changeResion(land!),
-              label: 'Reason*',
+              label: 'reason'.tr,
               // disable: isEditing,
             ),
           ),
@@ -58,12 +57,12 @@ class AddDeductionView extends StatelessWidget {
             child: InputCardStyle(
               child: TextFormField(
                 controller: _reasonController,
-                decoration: const InputDecoration(
-                  labelText: 'Reason for Deduction',
+                decoration: InputDecoration(
+                  labelText: 'reason_for_deduction'.tr,
                   border: InputBorder.none,
                 ),
                 validator: (value) => value == null || value.isEmpty
-                    ? 'Please enter a reason'
+                    ? 'please_enter_a_reason'.tr
                     : null,
               ),
             ),
@@ -84,21 +83,21 @@ class AddDeductionView extends StatelessWidget {
         child: InputCardStyle(
           child: TextFormField(
             controller: _chargesController,
-            decoration: const InputDecoration(
-              labelText: 'Deduction Amount',
+            decoration: InputDecoration(
+              labelText: 'deduction_amount'.tr,
               border: InputBorder.none,
             ),
             keyboardType: TextInputType.number,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter deduction amount';
+                return 'please_enter_deduction_amount'.tr;
               }
               final amount = double.tryParse(value);
               if (amount == null || amount <= 0) {
-                return 'Deduction must be greater than 0';
+                return 'deduction_must_be_greater_than_0'.tr;
               }
               if (_selectedType.value == '2' && amount > 100) {
-                return 'Percentage cannot exceed 100%';
+                return 'percentage_cannot_exceed_100'.tr;
               }
               return null;
             },
@@ -158,7 +157,7 @@ class AddDeductionView extends StatelessWidget {
           Get.back();
         }
       },
-      child: const Text('Add Deduction'),
+      child: Text('add_deduction'.tr),
     ),
   );
 }

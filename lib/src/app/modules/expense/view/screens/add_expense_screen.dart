@@ -45,7 +45,8 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                   ),
                   decoration: InputDecoration(
                     labelText: "${'Date'.tr} *",
-                    suffixIcon: const Icon(Icons.calendar_today),
+                    
+                    suffixIcon:  Icon(Icons.calendar_today,color: Get.theme.primaryColor,),
                     border: InputBorder.none,
                   ),
                   onTap: () => controller.selectDate(context),

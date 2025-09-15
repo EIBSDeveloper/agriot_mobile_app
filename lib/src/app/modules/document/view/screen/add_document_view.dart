@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'document_thumbnail.dart';
-
 class AddDocumentView extends StatefulWidget {
   const AddDocumentView({super.key});
 
@@ -28,7 +27,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Add Document'),
+    appBar:  CustomAppBar(title: 'add_document'.tr),
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -95,7 +94,6 @@ class _AddDocumentViewState extends State<AddDocumentView> {
               final base64Str = entry.value;
 
               return InkWell(
-                key: ValueKey(base64Str), // 👈 Key to prevent index mismatch
                 onTap: () {
                   Get.toNamed(
                     Routes.docViewer,
@@ -145,7 +143,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
                 controller.textController.text = land!.name;
                 controller.changeDocument(land);
               },
-              label: 'Select Document type',
+              label: 'select_document_type'.tr,
               // disable: isEditing,
             ),
           ),
@@ -154,12 +152,12 @@ class _AddDocumentViewState extends State<AddDocumentView> {
             child: InputCardStyle(
               child: TextFormField(
                 controller: controller.textController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter Document type',
+                decoration: InputDecoration(
+                  labelText: 'enter_document_type'.tr,
                   border: InputBorder.none,
                 ),
                 validator: (value) => value == null || value.isEmpty
-                    ? 'Please enter a document'
+                    ? 'please_enter_a_document'.tr
                     : null,
               ),
             ),
@@ -198,7 +196,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
           Get.back(result: documents);
         }
       },
-      child: const Text('Add Document'),
+      child: Text('add_document'.tr),
     ),
   );
 }

@@ -82,11 +82,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
 
   Widget _buildProductHeader(SalesDetail salesDetail) => Row(
     children: [
-      MyNetworkImage(
-        salesDetail.myCrop.img,
-        width: 80,
-        height: 80,
-      ),
+      MyNetworkImage(salesDetail.myCrop.img, width: 80, height: 80),
       const SizedBox(width: 16),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,18 +151,18 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
         spacing: 8,
         runSpacing: 8,
         children: salesDetail.documents
-            .expand((category) => category.documents)
             .map(
               (document) => InkWell(
                 onTap: () {
-                  Get.toNamed(Routes.docViewer,arguments: document.uploadDocument);
+                  var list = document.documents.map((doc)=>doc.uploadDocument).toList();
+                  Get.toNamed(Routes.docViewer, arguments: list);
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(document.documentCategory.name),
+                    Text(document.documents.first.documentCategory.name),
                     MyNetworkImage(
-                       document.uploadDocument,
+                      document.documents.first.uploadDocument,
                       width: 80,
                       height: 80,
                       fit: BoxFit.cover,
@@ -189,4 +185,3 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
     ],
   );
 }
-

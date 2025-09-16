@@ -1,33 +1,44 @@
-{
-    "fuel": {
-        "id": 6,
-        "total_quantity": "20.0"
-    },
-    "vehicle": {
+[
+    {
         "id": 1,
-        "total_fuel_capacity": "0"
+        "inventory_type": "vehicle",
+        "quantity": 0,
+        "unit_type": "count"
     },
-    "machinery": {
+    {
         "id": 2,
-        "total_fuel_capacity": "0"
+        "inventory_type": "machinery",
+        "quantity": 0,
+        "unit_type": "count"
     },
-    "tools": {
+    {
         "id": 3,
-        "total_quantity": "0"
+        "inventory_type": "tools",
+        "quantity": 0,
+        "unit_type": "count"
     },
-    "pesticides": {
+    {
         "id": 4,
-        "total_quantity": "0"
+        "inventory_type": "pesticides",
+        "quantity": 0,
+        "unit_type": "kg"
     },
-    "fertilizers": {
+    {
         "id": 5,
-        "total_quantity": "0"
+        "inventory_type": "fertilizer",
+        "quantity": 0,
+        "unit_type": "kg"
     },
-    "seeds": {
+    {
+        "id": 6,
+        "inventory_type": "fuel",
+        "quantity": 0,
+        "unit_type": "liter"
+    },
+    {
         "id": 7,
-        "total_quantity": "0"
-    },
-    "language": {
-        "default": "en"
+        "inventory_type": "seeds",
+        "quantity": 0,
+        "unit_type": "kg"
     }
-}
+]

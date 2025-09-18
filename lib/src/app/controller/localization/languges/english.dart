@@ -509,7 +509,6 @@ class English {
     "deduction_must_be_greater_than_0": "Deduction must be greater than 0",
     "percentage_cannot_exceed_100": "Percentage cannot exceed 100%",
     "no_documents_added": "No documents added",
-
     "sales_list": "Sales List",
     "total_sales": "Total Sales",
     "add_document": "Add Document",
@@ -533,11 +532,10 @@ class English {
     "start_kilometer": "Start Kilometer",
     "end_kilometer": "End Kilometer",
     "tool_items": "Tool Items",
-    "profile": "சுயவிவரம்",
-    "no_profile_data_available": "சுயவிவரத் தகவல் கிடைக்கவில்லை",
-    "logout": "வெளியேறு",
-    "logout_confirmation": "வெளியேற விரும்புகிறீர்களா?",
-  
+    "profile": "profile",
+    "no_profile_data_available": "No Profile Data Available",
+    "logout": "Logout",
+    "logout_confirmation": "Logout Confirmation ?",
     "current_plan": "Current Plan",
     "validity": "Validity",
     "start_date": "Start Date",
@@ -547,8 +545,6 @@ class English {
     "contact_information": "Contact Information",
     "company_details": "Company Details",
     "company_name": "Company Name",
-
-
     "select_market": "Select Market",
     "select_inventory_types": "Select Inventory Types",
     "loading_markets": "Loading Markets...",

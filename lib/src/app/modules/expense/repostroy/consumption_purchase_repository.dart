@@ -53,65 +53,65 @@ class ConsumptionPurchaseRepository {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        List<ConsumptionRecord> consumptionRecords = [];
-        List<PurchaseRecord> purchaseRecords = [];
+        List<ConsumptionItem> consumptionRecords = [];
+        List<PurchaseItem> purchaseRecords = [];
 
         // Parse based on inventory type
         switch (inventoryType.toLowerCase()) {
           case 'fuel':
             consumptionRecords = (data['fuel_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['fuel_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           case 'pesticides':
             consumptionRecords = (data['pesticide_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['pesticide_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           case 'seeds':
             consumptionRecords = (data['seeds_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['seeds_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           case 'fertilizers':
             consumptionRecords = (data['fertilizers_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['fertilizers_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           case 'tools':
             consumptionRecords = (data['tools_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['tools_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           case 'vehicle':
             consumptionRecords = (data['vehicle_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['vehicle_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           case 'machinery':
             consumptionRecords = (data['machinery_consumption'] as List)
-                .map((json) => ConsumptionRecord.fromJson(json))
+                .map((json) => ConsumptionItem.fromJson(json))
                 .toList();
             purchaseRecords = (data['machinery_purchase'] as List)
-                .map((json) => PurchaseRecord.fromJson(json))
+                .map((json) => PurchaseItem.fromJson(json))
                 .toList();
             break;
           default:
@@ -122,6 +122,63 @@ class ConsumptionPurchaseRepository {
           consumptionRecords: consumptionRecords,
           purchaseRecords: purchaseRecords,
         );
+      } else {
+        throw Exception('Failed to load inventory data');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<PurchaseItem>> getPurchaseList({
+    required int itemId,
+    required int type,
+    required int page,
+  }) async {
+    try {
+      // Get farmer ID from storage
+
+      final farmerId = _appDataController.userId.value;
+      final response = await _httpService.get(
+        '/inventory_purchase_list/$farmerId/$type/$itemId?page=$page',
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        List<PurchaseItem> purchaseRecords = data
+            .map((json) => PurchaseItem.fromJson(json))
+            .toList();
+
+        return purchaseRecords;
+      } else {
+        throw Exception('Failed to load inventory data');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+  Future<List<ConsumptionItem>> getConsumptionList({
+    required int itemId,
+    required int type,
+    required int page,
+  }) async {
+    try {
+      // Get farmer ID from storage
+
+      final farmerId = _appDataController.userId.value;
+      final response = await _httpService.get(
+        '/inventory_cunsumption_list/$farmerId/$type/$itemId?page=$page',
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        List<ConsumptionItem> consumptionRecords = data
+            .map((json) => ConsumptionItem.fromJson(json))
+            .toList();
+
+        return consumptionRecords;
       } else {
         throw Exception('Failed to load inventory data');
       }

@@ -1,15 +1,23 @@
 
-import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../service/utils/utils.dart';
-
-
+import '../../model/purchase_record.dart';
+import '../widgets/month_day_format.dart';
 class PurchaseList extends StatelessWidget {
-  final List<PurchaseRecord> records;
-final int type;
-  const PurchaseList({super.key, required this.records, required this.type});
+  final List<PurchaseItem> records;
+  final int type;
+  final ScrollController scrollController;
+  final bool isLoadingMore;
+  final bool hasMore;
+
+  const PurchaseList({
+    super.key,
+    required this.records,
+    required this.type,
+    required this.scrollController,
+    required this.isLoadingMore,
+    required this.hasMore,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +26,28 @@ final int type;
     }
 
     return ListView.builder(
-      itemCount: records.length,
+      controller: scrollController,
+      itemCount: records.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
+        if (index == records.length) {
+          // Loading indicator at the end
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: isLoadingMore
+                  ? const CircularProgressIndicator()
+                  : Text('no_more_data'.tr),
+            ),
+          );
+        }
+
         final record = records[index];
         return InkWell(
-          onTap: (){
-            Get.toNamed('/fuel_inventory',arguments: {"id":record.id,'type': type});
+          onTap: () {
+            Get.toNamed(
+              '/fuel_inventory',
+              arguments: {"id": record.id, 'type': type},
+            );
           },
           child: Card(
             elevation: 1,
@@ -32,28 +56,24 @@ final int type;
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-          
                 children: [
-                  // Leading (Date)
-                  _formatDate(record.date),
-          
+                  MonthDayFormat(date: record.dateOfConsumption),
                   const SizedBox(width: 12),
-          
-                  // Title + Subtitle
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(record.vendorName, style: Get.textTheme.titleMedium),
+                        Text(
+                          record.vendor?.name??" ",
+                          style: Get.textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 4),
-                        Text('${record.quantity.round()} ${record.quantityUnit}'),
-                        // if (record.description.isNotEmpty)
-                        //   Text(record.description),
+                        Text(
+                          '${record.quantity!.round()} ${record.unitType}',
+                        ),
                       ],
                     ),
                   ),
-          
-                  // Trailing (Amount)
                   Text(
                     '₹ ${record.purchaseAmount.toStringAsFixed(2)}',
                     style: Get.textTheme.titleMedium?.copyWith(
@@ -68,25 +88,4 @@ final int type;
       },
     );
   }
-
-  Widget _formatDate(DateTime date) => Column(
-      children: [
-        Text(
-          getMonthName(date.month),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          date.day.toString(),
-          style: TextStyle(
-            color: Get.theme.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-      ],
-    );
-
 }

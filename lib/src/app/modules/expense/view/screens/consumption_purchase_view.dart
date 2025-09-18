@@ -18,10 +18,10 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
       title: capitalizeFirstLetter(controller.selectedInventoryTypeName.value),
     ),
     body: RefreshIndicator(
-      onRefresh: controller.loadData,
+      onRefresh: controller.refreshData,
       child: Column(
         children: [
-          // Filter Section
+          // Filter Section (unchanged)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -33,13 +33,12 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             ),
           ),
 
-          // Tab Bar
+          // Tab Bar (unchanged)
           Obx(
             () => Container(
               color: Get.theme.colorScheme.surface,
               child: TabBar(
                 controller: controller.tabController,
-
                 tabs: [
                   Tab(
                     text:
@@ -53,6 +52,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               ),
             ),
           ),
+          
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -64,16 +64,23 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   ConsumptionList(
                     records: controller.consumptionData,
                     type: controller.inventoryType.value!,
+                    scrollController: controller.consumptionScrollController,
+                    isLoadingMore: controller.isLoadingMoreConsumption.value,
+                    hasMore: controller.hasMoreConsumption.value,
                   ),
                   PurchaseList(
                     records: controller.purchaseData,
                     type: controller.inventoryType.value!,
+                    scrollController: controller.purchaseScrollController,
+                    isLoadingMore: controller.isLoadingMorePurchase.value,
+                    hasMore: controller.hasMorePurchase.value,
                   ),
                 ],
               );
             }),
           ),
 
+          // Bottom section (unchanged)
           Obx(
             () => Container(
               height: 60,

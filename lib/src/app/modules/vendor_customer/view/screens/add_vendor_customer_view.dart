@@ -48,10 +48,10 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             decoration: InputDecoration(
               labelText: "${'select_market'.tr}*",
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
+              // contentPadding: const EdgeInsets.symmetric(
+              //   horizontal: 16,
+              //   vertical: 12,
+              // ),
             ),
             items: controller.markets
                 .map(

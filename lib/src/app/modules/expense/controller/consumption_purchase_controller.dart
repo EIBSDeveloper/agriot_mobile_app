@@ -16,14 +16,15 @@ class ConsumptionPurchaseController extends GetxController
   final ConsumptionPurchaseRepository _repository = Get.find();
   final PurchasesAddRepository purchasesrepository = PurchasesAddRepository();
   // Observables
-
-  var isLoading = false.obs;
+  RxInt purchasePage = 0.obs;
+  RxInt consumptionPage = 0.obs;
+  RxBool isLoading = false.obs;
   var selectedInventoryType = Rxn<int>();
   var selectedInventoryCategory = Rxn<int>();
   var selectedInventoryItem = Rxn<int>();
-  final selectedInventoryTypeName = 'Fuel'.obs;
-  var consumptionData = <ConsumptionRecord>[].obs;
-  var purchaseData = <PurchaseRecord>[].obs;
+  RxString selectedInventoryTypeName = 'Fuel'.obs;
+  RxList<ConsumptionItem> consumptionData = <ConsumptionItem>[].obs;
+  RxList<PurchaseItem> purchaseData = <PurchaseItem>[].obs;
   // var currentTabIndex = 0.obs;
   late TabController tabController;
   // 0 = Consumption, 1 = Purchase
@@ -34,7 +35,13 @@ class ConsumptionPurchaseController extends GetxController
   final Rxn<int> inventoryType = Rxn<int>();
   final Rxn<int> inventoryCategory = Rxn<int>();
   final Rxn<int> inventoryItem = Rxn<int>();
-
+  RxBool isLoadingMorePurchase = false.obs;
+  RxBool isLoadingMoreConsumption = false.obs;
+  RxBool hasMorePurchase = true.obs;
+  RxBool hasMoreConsumption = true.obs;
+  // Scroll controllers for detecting page end
+  ScrollController purchaseScrollController = ScrollController();
+  ScrollController consumptionScrollController = ScrollController();
   @override
   void onInit() {
     super.onInit();
@@ -58,6 +65,33 @@ class ConsumptionPurchaseController extends GetxController
     selectedInventoryTypeName.value = getType(inventoryType.value ?? 0);
 
     setInventoryType(inventoryType.value ?? 0);
+    purchaseScrollController.addListener(_onPurchaseScroll);
+    consumptionScrollController.addListener(_onConsumptionScroll);
+  }
+
+  @override
+  void onClose() {
+    purchaseScrollController.dispose();
+    consumptionScrollController.dispose();
+    super.onClose();
+  }
+
+  void _onPurchaseScroll() {
+    if (purchaseScrollController.position.pixels ==
+        purchaseScrollController.position.maxScrollExtent) {
+      if (hasMorePurchase.value && !isLoadingMorePurchase.value) {
+        loadMorePurchaseData();
+      }
+    }
+  }
+
+  void _onConsumptionScroll() {
+    if (consumptionScrollController.position.pixels ==
+        consumptionScrollController.position.maxScrollExtent) {
+      if (hasMoreConsumption.value && !isLoadingMoreConsumption.value) {
+        loadMoreConsumptionData();
+      }
+    }
   }
 
   void setInventoryType(int typeId) {
@@ -78,6 +112,21 @@ class ConsumptionPurchaseController extends GetxController
     loadData();
   }
 
+  Future<void> refreshData() async {
+    // Reset pagination on refresh
+    purchasePage.value = 1;
+    consumptionPage.value = 1;
+    hasMorePurchase.value = true;
+    hasMoreConsumption.value = true;
+
+    // Clear existing data
+    purchaseData.clear();
+    consumptionData.clear();
+
+    // Load fresh data
+    await loadData();
+  }
+
   Future<void> fetchInventoryCategories(int inventoryTypeId) async {
     try {
       isCategoryLoading(true);
@@ -93,7 +142,7 @@ class ConsumptionPurchaseController extends GetxController
         setInventoryCategory(inventoryCategories.first.id);
       }
     } catch (e) {
-      showError( 'Failed to fetch inventory categories');
+      showError('Failed to fetch inventory categories');
     } finally {
       isCategoryLoading(false);
     }
@@ -130,28 +179,54 @@ class ConsumptionPurchaseController extends GetxController
     }
   }
 
-  Future<void> loadData() async {
+  loadData() {
+    loadMorePurchaseData();
+    loadMoreConsumptionData();
+  }
+
+  Future<void> loadMorePurchaseData() async {
     if (selectedInventoryItem.value == null) return;
+    if (isLoadingMorePurchase.value || !hasMorePurchase.value) return;
 
     try {
-      isLoading(true);
-      consumptionData.clear();
-      purchaseData.clear();
-      final inventoryType = selectedInventoryTypeName.value;
-      final inventoryTypeid = selectedInventoryType.value;
-      final itemId = selectedInventoryItem.value!;
+      isLoadingMorePurchase(true);
 
-      final data = await _repository.getInventoryData(
-        inventoryType,
-        itemId,
-        inventoryTypeid!,
+      purchasePage.value++;
+
+      final data = await _repository.getPurchaseList(
+        itemId: selectedInventoryItem.value!,
+        type: selectedInventoryType.value!,
+        page: purchasePage.value,
       );
 
-      var where = data.consumptionRecords.where((e) => e.quantityUtilized != 0);
-      consumptionData.assignAll(where);
-      purchaseData.assignAll(data.purchaseRecords);
+      purchaseData.assignAll(data);
 
-      if (consumptionData.isEmpty && purchaseData.isEmpty) {
+      if (purchaseData.isEmpty) {
+        showWarning('no_records_found'.tr);
+      }
+    } catch (e) {
+      purchasePage.value--;
+      showError('failed_to_load_data'.tr);
+    } finally {
+      isLoadingMorePurchase(false);
+    }
+  }
+
+  Future<void> loadMoreConsumptionData() async {
+    if (isLoadingMoreConsumption.value || !hasMoreConsumption.value) return;
+    if (selectedInventoryItem.value == null) return;
+    try {
+      isLoadingMoreConsumption(true);
+      consumptionPage.value++;
+
+      final data = await _repository.getConsumptionList(
+        itemId: selectedInventoryItem.value!,
+        type: selectedInventoryType.value!,
+        page: consumptionPage.value,
+      );
+
+      consumptionData.assignAll(data);
+      if (consumptionData.isEmpty) {
         showWarning('no_records_found'.tr);
       }
     } catch (e) {
@@ -160,13 +235,15 @@ class ConsumptionPurchaseController extends GetxController
       isLoading(false);
     }
   }
+
   void reLoad(result) {
     if (result ?? false) {
       loadData();
     }
   }
+
   void open() {
-      if (tabController.index == 0) {
+    if (tabController.index == 0) {
       Get.toNamed(
         Routes.fuelConsumption,
         arguments: {
@@ -225,5 +302,4 @@ class ConsumptionPurchaseController extends GetxController
       }
     }
   }
-  
 }

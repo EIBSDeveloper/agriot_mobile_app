@@ -341,6 +341,9 @@ urlpatterns = [
     # region Add paths Changed by Bala
     path('inventory_purchase_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_purchase_list, name='get_inventory_purchase_list'),
     path('inventory_cunsumption_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_cusumption_list, name='get_inventory_cusumption_list'),
+    # path('get_inventory_items_with_quantity/<int:farmer_id>/<int:inventory_category_id>/', get_inventory_items_with_quantity, name='get_inventory_items_with_quantity'), 
+    path('inventory_purchase_details/<int:farmer_id>/<int:inventory_type_id>/<int:id>', get_inventory_purchase_details, name='get_inventory_purchase_details'),
+    path('inventory_cunsumption_details/<int:farmer_id>/<int:inventory_type_id>/<int:id>', get_inventory_cusumption_details, name='get_inventory_cusumption_details'),
    
     # endregion
 

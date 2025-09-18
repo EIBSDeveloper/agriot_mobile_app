@@ -3,8 +3,8 @@ import 'package:argiot/src/app/modules/expense/model/purchase_record.dart';
 
 
 class InventoryData {
-  final List<ConsumptionRecord> consumptionRecords;
-  final List<PurchaseRecord> purchaseRecords;
+  final List<ConsumptionItem> consumptionRecords;
+  final List<PurchaseItem> purchaseRecords;
 
   InventoryData({
     required this.consumptionRecords,

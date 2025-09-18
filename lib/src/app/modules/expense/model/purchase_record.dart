@@ -1,30 +1,30 @@
-class PurchaseRecord {
-  final int id;
-  final String vendorName;
-  final double quantity;
-  final String quantityUnit;
-  final double purchaseAmount;
-  final DateTime date;
-  final String description;
+import 'vendor.dart';
 
-  PurchaseRecord({
+class PurchaseItem {
+  final int id;
+  final DateTime dateOfConsumption;
+  final int purchaseAmount;
+  final Vendor? vendor;
+  final int? quantity;
+  final String? unitType;
+
+  PurchaseItem({
     required this.id,
-    required this.vendorName,
-    required this.quantity,
-    required this.quantityUnit,
+    required this.dateOfConsumption,
     required this.purchaseAmount,
-    required this.date,
-    required this.description,
+    this.vendor,
+    this.quantity,
+    this.unitType,
   });
 
-  factory PurchaseRecord.fromJson(Map<String, dynamic> json) => PurchaseRecord(
-      id: json['id'],
-      vendorName: json['vendor']?['name'] ?? 'Unknown',
-      quantity: double.tryParse(json['quantity']?.toString() ?? '0') ?? 0,
-      quantityUnit: json['quantity_unit'] ?? '',
-      purchaseAmount:
-          double.tryParse(json['purchase_amount']?.toString() ?? '0') ?? 0,
-      date: DateTime.parse(json['created_at']),
-      description: json['description'] ?? '',
-    );
+  factory PurchaseItem.fromJson(Map<String, dynamic> json) => PurchaseItem(
+    id: json["id"],
+    dateOfConsumption: json["date_of_consumption"] == null
+        ? DateTime.now()
+        : DateTime.parse(json["date_of_consumption"]),
+    purchaseAmount: json["purchase_amount"],
+    vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
+    quantity: json["quantity"],
+    unitType: json["unit_type"],
+  );
 }

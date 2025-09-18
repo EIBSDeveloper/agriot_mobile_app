@@ -44,27 +44,27 @@ class DashboardView extends GetView<DashboardController> {
               ),
             ),
             // Widgets based on configuration
-            if (controller.widgetConfig.value.weatherAndPayments) ...[
+            if (controller.lands.isNotEmpty&&  controller.widgetConfig.value.weatherAndPayments) ...[
               _buildWeatherAndPaymentsCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.widgetConfig.value.expensesSales) ...[
+            if (controller.lands.isNotEmpty&& controller.widgetConfig.value.expensesSales) ...[
               _buildFinanceGraphCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.widgetConfig.value.guidelines!) ...[
+            if (controller.lands.isNotEmpty&& controller.widgetConfig.value.guidelines!) ...[
               _buildGuidelinesCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.widgetConfig.value.marketPrice) ...[
+            if (controller.lands.isNotEmpty&& controller.widgetConfig.value.marketPrice) ...[
               _buildMarketPricesCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.widgetConfig.value.scheduleTask) ...[
+            if (controller.lands.isNotEmpty&&  controller.widgetConfig.value.scheduleTask) ...[
               _buildTasksCard(),
               const SizedBox(height: 16),
             ],

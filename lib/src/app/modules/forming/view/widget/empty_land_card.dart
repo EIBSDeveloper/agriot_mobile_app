@@ -11,31 +11,86 @@ class EmptyLandCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => view
-      ? Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: Column(
-            children: [
-              Image.asset(
-                AppImages.landMark,
-                width: 300,
-                height: 250,
-                fit: BoxFit.fill,
+      ? Padding(
+        padding: const EdgeInsets.only(top: 150),
+        child: Center(
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              const SizedBox(height: 8),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed(Routes.addLand)?.then((result) {
-                      if (result ?? false) {
-                        refresh?.call();
-                      }
-                    });
-                  },
-                  child: const Text("Add Your Land"),
+              elevation: 6,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                    colors: [Colors.green.shade100, Colors.green.shade50],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.asset(
+                        AppImages.landMark,
+                        width: 320,
+                        height: 240,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'No Land Added Yet!',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Start by adding your land to explore opportunities.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: Colors.green,
+                          elevation: 4,
+                          shadowColor: Colors.greenAccent,
+                        ),
+                        onPressed: () {
+                          Get.toNamed(Routes.addLand)?.then((result) {
+                            if (result ?? false) {
+                              refresh?.call();
+                            }
+                          });
+                        },
+                        child: const Text(
+                          "Add Your Land",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        )
+      )
       : const SizedBox.shrink();
 }

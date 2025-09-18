@@ -106,7 +106,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           selectedColor: Get.theme.primaryColor,
           chipDisplay: MultiSelectChipDisplay(
             textStyle: const TextStyle(color: Colors.black),
-            chipColor: Get.theme.colorScheme.onSecondaryContainer,
+            chipColor: Get.theme.colorScheme.primary.withAlpha(140),
             onTap: (value) => controller.toggleSelection(value),
           ),
           onConfirm: (values) {

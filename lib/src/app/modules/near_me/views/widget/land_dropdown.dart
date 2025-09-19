@@ -19,9 +19,11 @@ class LandDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => InputCardStyle(
+  Widget build(BuildContext context) => InputCardStyle(   
+     padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 5),
     child: DropdownButtonFormField<Land>(
       initialValue: selectedLand,
+      padding: EdgeInsets.zero,
       items: lands
           .map(
             (Land land) =>

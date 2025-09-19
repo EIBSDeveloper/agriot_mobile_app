@@ -8,14 +8,12 @@ import '../../routes/app_routes.dart';
 AppDataController appData = Get.find();
 
 void showError(final String message) {
-  var bool =
-      appData.error.value &&
-      (message.contains('404') ||
+ 
+  if ((message.contains('404') ||
           message.contains('500') ||
           message.contains('load') ||
           message.contains('error') ||
-          message.contains('Error'));
-  if (bool) {
+          message.contains('Error'))) {
     return;
   }
   Fluttertoast.showToast(

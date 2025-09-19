@@ -64,6 +64,7 @@ class AddTask extends GetView<TaskController> {
                     '${controller.scheduleDate.value.day}/${controller.scheduleDate.value.month}/${controller.scheduleDate.value.year}',
                   ),
                   trailing: const Icon(Icons.calendar_today),
+                  contentPadding: EdgeInsets.zero,
                   onTap: () async {
                     final date = await showDatePicker(
                       context: Get.context!,
@@ -86,8 +87,8 @@ class AddTask extends GetView<TaskController> {
                 children: [
                   const SizedBox(height: 8),
                   Obx(
-                    () => CheckboxListTile(
-                      title: Text('recurring_task'.tr),
+                    () => CheckboxListTile(contentPadding: EdgeInsets.zero,
+                      title: Text('recurring_task'.tr,style: const TextStyle(fontWeight: FontWeight.bold),),
                       value: controller.isRecurring.value,
                       onChanged: (value) =>
                           controller.isRecurring.value = value ?? false,
@@ -149,6 +150,7 @@ class AddTask extends GetView<TaskController> {
                               InputCardStyle(
                                 child: ListTile(
                                   title: Text("${'schedule_end_date'.tr} *"),
+                                contentPadding: EdgeInsets.zero,
                                   subtitle: Text(
                                     controller.scheduleEndDate.value == null
                                         ? 'not_selected'.tr

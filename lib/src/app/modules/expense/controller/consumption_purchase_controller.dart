@@ -106,18 +106,21 @@ class ConsumptionPurchaseController extends GetxController
   }
 
   Future<void> refreshData() async {
-    // Reset pagination on refresh
+    purchaseRefresh();
+    cunsumptionRefresh();
+  }
+
+  void purchaseRefresh() {
     purchasePage.value = 0;
-    consumptionPage.value = 0;
     hasMorePurchase.value = true;
-    hasMoreConsumption.value = true;
-
-    // Clear existing data
     purchaseData.clear();
-    consumptionData.clear();
-
-    // Load fresh data
     loadMorePurchaseData();
+  }
+
+  void cunsumptionRefresh() {
+     consumptionPage.value = 0;
+    hasMoreConsumption.value = true;
+    consumptionData.clear();
     loadMoreConsumptionData();
   }
 
@@ -186,7 +189,7 @@ class ConsumptionPurchaseController extends GetxController
         page: purchasePage.value,
       );
 
-      purchaseData.assignAll(data);
+      purchaseData.addAll(data);
 
       if (purchaseData.isEmpty) {
         showWarning('no_records_found'.tr);
@@ -213,7 +216,7 @@ class ConsumptionPurchaseController extends GetxController
         page: consumptionPage.value,
       );
 
-      consumptionData.assignAll(data);
+      consumptionData.addAll(data);
       if (consumptionData.isEmpty) {
         showWarning('no_records_found'.tr);
       }
@@ -227,7 +230,7 @@ class ConsumptionPurchaseController extends GetxController
 
   void reLoad(result) {
     if (result ?? false) {
-      refreshData();
+     purchaseRefresh();
     }
   }
 
@@ -237,11 +240,12 @@ class ConsumptionPurchaseController extends GetxController
         Routes.fuelConsumption,
         arguments: {
           "type": selectedInventoryType.value,
-          // "category": selectedInventoryCategory.value,
           "item": selectedInventoryItem.value,
         },
       )?.then((result) {
-        reLoad(result);
+        if(result??false){
+          cunsumptionRefresh();
+        }
       });
     } else {
       if (selectedInventoryType.value == 6) {
@@ -249,7 +253,6 @@ class ConsumptionPurchaseController extends GetxController
           '/fuel-expenses-entry',
           arguments: {
             "id": selectedInventoryType.value,
-            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {
@@ -260,7 +263,6 @@ class ConsumptionPurchaseController extends GetxController
           '/vehicle_entry',
           arguments: {
             "id": selectedInventoryType.value,
-            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {
@@ -271,7 +273,6 @@ class ConsumptionPurchaseController extends GetxController
           '/machinery_entry',
           arguments: {
             "id": selectedInventoryType.value,
-            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {
@@ -282,7 +283,6 @@ class ConsumptionPurchaseController extends GetxController
           '/fertilizer_entry',
           arguments: {
             "id": selectedInventoryType.value,
-            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {

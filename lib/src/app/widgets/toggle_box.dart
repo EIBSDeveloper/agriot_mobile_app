@@ -27,7 +27,10 @@ class ToggleBox extends StatelessWidget {
                 color: Get.theme.colorScheme.primary,
                 borderRadius: const BorderRadius.all(Radius.circular(10)),
               )
-            : null,
+            : BoxDecoration(
+                color: Get.theme.colorScheme.secondaryContainer
+                
+              ),
         child: Text(
           lable,
           style: Get.theme.textTheme.bodyLarge!.copyWith(

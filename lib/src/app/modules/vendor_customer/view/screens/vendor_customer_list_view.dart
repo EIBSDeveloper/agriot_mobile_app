@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../service/utils/pop_messages.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../../widgets/toggle_bar.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 import '../../../subscription/model/package_usage.dart';
 
@@ -53,41 +54,16 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
 
   Widget _buildFilterRow() => Padding(
     padding: const EdgeInsets.all(8.0),
-    child: Row(
-      children: [
-        // _buildTabButton('both', 'both'.tr),
-        _buildTabButton('customer', 'customer'.tr),
-        _buildTabButton('vendor', 'vendor'.tr),
-      ],
-    ),
+    child:Obx(()=> ToggleBar(
+      onTap: (index) {
+        controller.selectedFilter.value = index;
+        controller.fetchVendorCustomerList();
+      },
+      activePageIndex: controller.selectedFilter.value,
+      buttonsList: ["customer".tr, "vendor".tr],
+    )),
   );
 
-  Widget _buildTabButton(String index, String text) => Obx(
-    () => Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: TextButton(
-          style: TextButton.styleFrom(
-            backgroundColor: controller.selectedFilter.value == index
-                ? Get.theme.primaryColor
-                : Colors.grey[200],
-          ),
-          onPressed: () {
-            controller.selectedFilter.value = index;
-            controller.fetchVendorCustomerList();
-          },
-          child: Text(
-            text.tr,
-            style: Get.textTheme.bodyLarge?.copyWith(
-              color: controller.selectedFilter.value == index
-                  ? Colors.white
-                  : Colors.black,
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
 
   Widget _buildListItem(VendorCustomer item) => Card(
     elevation: 1,
@@ -129,7 +105,8 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
-        child: Wrap(
+        height: 400,
+        child: Column(
           children: [
             const ButtomSheetScrollButton(),
             Text(
@@ -155,15 +132,15 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
                 Get.toNamed('/add-vendor-customer');
               },
             ),
-            ListTile(
-              title: Text('both'.tr),
-              leading: const Icon(Icons.people_alt),
-              onTap: () {
-                Get.back();
-                controller.selectedType.value = 'both';
-                Get.toNamed('/add-vendor-customer');
-              },
-            ),
+            // ListTile(
+            //   title: Text('both'.tr),
+            //   leading: const Icon(Icons.people_alt),
+            //   onTap: () {
+            //     Get.back();
+            //     controller.selectedType.value = 'both';
+            //     Get.toNamed('/add-vendor-customer');
+            //   },
+            // ),
           ],
         ),
       ),

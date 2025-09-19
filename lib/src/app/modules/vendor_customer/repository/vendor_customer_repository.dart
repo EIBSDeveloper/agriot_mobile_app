@@ -9,18 +9,15 @@ import 'package:get/get.dart';
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
   final AppDataController _appDataController = Get.find();
-  Future<List> getVendorCustomerList(String type) async {
+  Future<List> getVendorCustomerList(int type) async {
     final farmerId = _appDataController.userId;
     try {
       String endpoint;
       switch (type) {
-        case 'both':
-          endpoint = '/both_customers_and_vendors/$farmerId';
-          break;
-        case 'customer':
+        case 0:
           endpoint = '/get_customer_list/$farmerId';
           break;
-        case 'vendor':
+        case 1:
           endpoint = '/get_vendor/$farmerId';
           break;
         default:

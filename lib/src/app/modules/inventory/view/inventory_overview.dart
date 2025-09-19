@@ -59,16 +59,11 @@ class InventoryOverview extends GetView<InventoryController> {
               ),
               const Divider(),
               _buildInventoryItem(
-                'pesticides'.tr,
+                "${'pesticides'.tr} / ${'fertilizers'.tr}",
                 '${inventory.pesticides.totalQuantity.round()} ${'kg'.tr}',
                 inventory.pesticides.id,
               ),
-              const Divider(),
-              _buildInventoryItem(
-                'fertilizers'.tr,
-                '${inventory.fertilizers.totalQuantity.round()} ${'kg'.tr}',
-                inventory.fertilizers.id,
-              ),
+             
               const Divider(),
               _buildInventoryItem(
                 'seeds'.tr,
@@ -101,12 +96,12 @@ class InventoryOverview extends GetView<InventoryController> {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16,fontWeight:FontWeight.w500),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
                    color: Get.theme.primaryColor.withAlpha(50),
                   borderRadius: BorderRadius.circular(12),

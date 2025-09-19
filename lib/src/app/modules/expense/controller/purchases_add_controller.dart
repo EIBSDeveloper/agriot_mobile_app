@@ -273,7 +273,7 @@ class PurchasesAddController extends GetxController {
     try {
       final machinery = Machinery(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value!,
+        vendor: selectedVendor.value??0,
         inventoryType:
             selectedInventoryType.value!, // Map to your actual values
         inventoryCategory: selectedInventoryType.value!,
@@ -623,9 +623,9 @@ class PurchasesAddController extends GetxController {
         child: Obx(
           () => InputCardStyle(
             child: DropdownButtonFormField<int>(
-              validator: (value) => value == null ? 'required_field'.tr : null,
-              decoration: const InputDecoration(
-                labelText: 'Vendor *',
+              // validator: (value) => value == null ? 'required_field'.tr : null,
+              decoration:  InputDecoration(
+                labelText: 'vendor'.tr,
                 border: InputBorder.none,
               ),
 

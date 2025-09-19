@@ -1,11 +1,11 @@
-import 'package:argiot/src/app/modules/expense/controller/fuel_inventory_controller.dart';
+import 'package:argiot/src/app/modules/expense/controller/purchase_details_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FuelInventoryView extends GetView<FuelInventoryController> {
+class FuelInventoryView extends GetView<InventoryDetailsController> {
   const FuelInventoryView({super.key});
 
   @override
@@ -59,7 +59,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
           _buildInfoRow('inventory_type'.tr, fuel.inventoryType.name),
           _buildInfoRow('inventory_category'.tr, fuel.inventoryCategory.name),
           _buildInfoRow('vendor'.tr, fuel.vendor.name),
-          _buildInfoRow('purchase_amount'.tr, '${fuel.purchaseAmount} ₹'),
+          _buildInfoRow('purchase_amount'.tr, '${fuel.purchaseAmount} '),
           _buildInfoRow('quantity'.tr, '${fuel.quantity} L'),
 
           const Divider(height: 32),
@@ -84,7 +84,7 @@ class FuelInventoryView extends GetView<FuelInventoryController> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: Get.textTheme.bodySmall),
+          Text(label, style: Get.textTheme.bodyMedium),
           Text(value, style: Get.textTheme.titleMedium),
         ],
       ),

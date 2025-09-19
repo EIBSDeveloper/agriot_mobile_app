@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_routes.dart';
 import '../controller/inventory_controller.dart';
 
 class PurchaseItemsScreen extends GetView<InventoryController> {
@@ -10,7 +11,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'Add New Purchase'.tr),
+    appBar: CustomAppBar(title: 'add_purchase'.tr),
     body: RefreshIndicator(
       onRefresh: () async {
         controller.loadInventory();
@@ -31,6 +32,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
 
         return ListView(
           children: [
+          
             _buildInventoryItem(
               'fuel'.tr,
               '${inventory.fuel.totalQuantity.round()} Ltr',
@@ -118,7 +120,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
             ),
             const Divider(),
             _buildInventoryItem(
-              'pesticides'.tr,
+              "${'pesticides'.tr} / ${'fertilizers'.tr}",
               '${inventory.pesticides.totalQuantity.round()} kg',
               open: () {
                 controller.navigateToCategoryDetail(
@@ -138,28 +140,28 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                 });
               },
             ),
-            const Divider(),
-            _buildInventoryItem(
-              'fertilizers'.tr,
-              '${inventory.fertilizers.totalQuantity.round()} kg',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'fertilizers',
-                  inventory.fertilizers.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/fertilizer_entry',
-                  arguments: {"id": inventory.fertilizers.id},
-                )?.then((res) {
-                  if (res ?? false) {
-                    controller.loadInventory();
-                  }
-                });
-              },
-            ),
+            // const Divider(),
+            // _buildInventoryItem(
+            //   'fertilizers'.tr,
+            //   '${inventory.fertilizers.totalQuantity.round()} kg',
+            //   open: () {
+            //     controller.navigateToCategoryDetail(
+            //       'fertilizers',
+            //       inventory.fertilizers.id,
+            //       tab: 1,
+            //     );
+            //   },
+            //   onTap: () {
+            //     Get.toNamed(
+            //       '/fertilizer_entry',
+            //       arguments: {"id": inventory.fertilizers.id},
+            //     )?.then((res) {
+            //       if (res ?? false) {
+            //         controller.loadInventory();
+            //       }
+            //     });
+            //   },
+            // ),
             const Divider(),
             _buildInventoryItem(
               'seeds'.tr,
@@ -181,6 +183,14 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                   }
                 });
               },
+            ),      const Divider(),
+              _buildInventoryItem(
+              "general_expense".tr,
+              '',
+              open: () {},
+              onTap: () {
+                Get.toNamed(Routes.addExpense)?.then((res) {});
+              },
             ),
           ],
         );
@@ -194,7 +204,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
     Function()? onTap,
     Function()? open,
   }) => InkWell(
-    onTap: onTap,
+    onTap:  open,
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -215,28 +225,32 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
           ),
 
           // Quantity with tap handler (open)
-          InkWell(
-            onTap: open,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    '($quantity)  ',
-                    style: TextStyle(
-                      color: Colors.green.shade700,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Icon(Icons.open_in_new, color: Colors.green.shade700),
-                ],
+          // if (quantity.isNotEmpty)
+            InkWell(
+              onTap: onTap,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    // Text(
+                    // quantity.isNotEmpty?  '($quantity)  ':'',
+                    //   style: TextStyle(
+                    //     color: Colors.green.shade700,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    Icon(Icons.add, color: Colors.green.shade700),
+                  ],
+                ),
               ),
             ),
-          ),
         ],
       ),
     ),

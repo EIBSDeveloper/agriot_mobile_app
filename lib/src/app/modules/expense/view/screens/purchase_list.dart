@@ -51,7 +51,7 @@ class PurchaseList extends StatelessWidget {
           },
           child: Card(
             elevation: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical:6),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -68,6 +68,7 @@ class PurchaseList extends StatelessWidget {
                           style: Get.textTheme.titleMedium,
                         ),
                         const SizedBox(height: 4),
+                        if(record.quantity != null)
                         Text(
                           '${record.quantity!.round()} ${record.unitType}',
                         ),

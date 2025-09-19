@@ -1,13 +1,11 @@
-import 'package:argiot/src/app/modules/expense/repostroy/fuel_inventory_repository.dart';
+import 'package:argiot/src/app/modules/expense/repostroy/purchase_details_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
-
-class FuelInventoryController extends GetxController {
-  final FuelInventoryRepository repository = FuelInventoryRepository();
+class InventoryDetailsController extends GetxController {
+  final InventoryDetailsRepository repository = InventoryDetailsRepository();
 
   final RxInt fuelId = 0.obs;
   final RxInt inventoryType = 0.obs;
@@ -28,14 +26,14 @@ class FuelInventoryController extends GetxController {
     try {
       isLoading.value = true;
       error.value = '';
-      final result = await repository.getFuelInventoryDetail(fuelId.value ,inventoryType.value);
+      final result = await repository.getFuelInventoryDetail(
+        fuelId.value,
+        inventoryType.value,
+      );
       fuelInventory.value = result;
     } catch (e) {
       error.value = e.toString();
-      showError(
-       'Failed to load fuel inventory details',
-       
-      );
+      showError('Failed to load fuel inventory details');
     } finally {
       isLoading.value = false;
     }
@@ -48,36 +46,32 @@ class FuelInventoryController extends GetxController {
 
       final success = await repository.deleteFuelInventory(fuelId.value);
       if (success) {
-       showSuccess(
-         'Fuel inventory deleted successfully',
-         
-        );
+        showSuccess('Fuel inventory deleted successfully');
         Get.back(result: true);
       }
     } catch (e) {
-     showError( 'Failed to delete fuel inventory',
-      
-      );
+      showError('Failed to delete fuel inventory');
     }
   }
 
-  Future<bool> showDeleteConfirmation() async => await Get.dialog(
-          AlertDialog(
-            title: Text('confirm_delete'.tr),
-            content: Text('delete_fuel_confirmation'.tr),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(result: false),
-                child: Text('cancel'.tr),
-              ),
-              TextButton(
-                onPressed: () => Get.back(result: true),
-                child: Text('delete'.tr),
-              ),
-            ],
-          ),
-        ) ??
-        false;
+  Future<bool> showDeleteConfirmation() async =>
+      await Get.dialog(
+        AlertDialog(
+          title: Text('confirm_delete'.tr),
+          content: Text('delete_fuel_confirmation'.tr),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(result: false),
+              child: Text('cancel'.tr),
+            ),
+            TextButton(
+              onPressed: () => Get.back(result: true),
+              child: Text('delete'.tr),
+            ),
+          ],
+        ),
+      ) ??
+      false;
 
   void navigateToEditScreen() {
     if (fuelInventory.value != null) {

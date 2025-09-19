@@ -23,9 +23,10 @@ class ScheduleListPage extends GetView<ScheduleController> {
               Expanded(
                 child: Obx(
                   () => InputCardStyle(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: DropdownButtonFormField<ScheduleLand>(
                       initialValue: controller.selectedLand.value,
-
+                      padding: EdgeInsets.zero,
                       items: controller.lands
                           .map(
                             (ScheduleLand land) =>
@@ -54,8 +55,10 @@ class ScheduleListPage extends GetView<ScheduleController> {
 
                   if (controller.selectedLand.value == null) {
                     return InputCardStyle(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: DropdownButtonFormField(
                         items: const [],
+                        padding: EdgeInsets.zero,
                         onChanged: null,
                         decoration: const InputDecoration(
                           labelText: 'Select land first',
@@ -66,9 +69,10 @@ class ScheduleListPage extends GetView<ScheduleController> {
                   }
 
                   return InputCardStyle(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: DropdownButtonFormField<ScheduleCrop>(
                       initialValue: controller.selectedCrop.value,
-
+                      padding: EdgeInsets.zero,
                       items: crops
                           .map(
                             (ScheduleCrop crop) =>

@@ -5,7 +5,13 @@ import 'package:get/get.dart';
 class InputCardStyle extends StatelessWidget {
   final Widget child;
   final bool noHeight;
-  const InputCardStyle({super.key, this.noHeight = false, required this.child});
+  final EdgeInsetsGeometry? padding;
+  const InputCardStyle({
+    super.key,
+    this.noHeight = false,
+    required this.child,
+    this.padding,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
@@ -13,11 +19,11 @@ class InputCardStyle extends StatelessWidget {
       color: Get.theme.colorScheme.secondaryContainer,
       borderRadius: AppStyle.inputDecoration.borderRadius,
     ),
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    padding: padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
     constraints: noHeight
         ? null
         : const BoxConstraints(
-            minHeight: 55, // minimum height for all fields
+            minHeight: 50, // minimum height for all fields
           ),
     child: child,
   );

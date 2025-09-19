@@ -211,6 +211,7 @@ class LandController extends GetxController {
   }
 
   Future<void> listpickLocation() async {
+    print(locationListController.text);
     try {
       final location = await Get.to(
         const LandPickerView(),

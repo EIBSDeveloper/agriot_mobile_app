@@ -748,7 +748,7 @@ def land_unit_list(request):
             item = {
                 "id": unit.id,
                 "name": unit.get_translated_value("name", language_code),
-                "landunitdef": unit.get_translated_value("landunitdef", language_code),
+                # "landunitdef": unit.get_translated_value("landunitdef", language_code),
                 "description": unit.get_translated_value("description", language_code),
             }
             data.append(item)
@@ -7793,28 +7793,22 @@ def get_purchase(request, farmer_id):
 #     return Response(serializer.data, status=200)
  
 @api_view(['GET'])
-def get_inventory_items(request, inventory_category_id):
+def get_inventory_items(request, inventory_type_id):
     language_code = request.GET.get('lang', 'en')  # Default to English
 
-    try:
-        inventory_category = InventoryCategory.objects.get(id=inventory_category_id, status=0)
-    except InventoryCategory.DoesNotExist:
-        return Response({"detail": "Inventory category not found or inactive."}, status=404)
+    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
     
-    inventory_items = InventoryItems.objects.filter(inventory_category=inventory_category, status=0)
+    inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
 
     if not inventory_items.exists():
         return Response({"detail": "No inventory items found for the given category."}, status=404)
 
     serializer = InventoryItemsSerializer(inventory_items, many=True, context={'language_code': language_code})
     
-    return Response({
-        "language": {
-            "default": "en",
-            "used": language_code
-        },
+    return Response({        
         "data": serializer.data
     }, status=200)
+ 
  
 
 
@@ -13207,7 +13201,7 @@ def get_task_list(request, id):
     try:
         farmer_instance = Farmer.objects.get(id=user_id, status=0)
     except Farmer.DoesNotExist:
-        return Response({"error": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Farmer not found."}, status=status.HTTP_400_NOT_FOUND)
 
     try:
         settings = GeneralSetting.objects.first()
@@ -26552,7 +26546,7 @@ def create_inventory_with_documents(request):
             try:
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist) as e:
                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
@@ -26612,7 +26606,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -36811,159 +36805,158 @@ def get_inventory_purchase_list(request, farmer_id, inventory_type_id, inventory
     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
     inventory_items = get_object_or_404(InventoryItems, id=inventory_items_id)
 
-    inventories_qs = MyInventory.objects.filter(farmer=farmer,inventory_type=inventory_type,inventory_items=inventory_items,) 
-    
-    # mapping : type -> (field, has_quantity, unit_type)
-    inventory_map = {     
-        1: ("vehicle_purchase", False, ""),  
-        2: ("machinery_purchase", False, ""),   
-        3: ("tool_purchase", False, ""),   
-        4: ("pesticide_purchase", False, "kg"),   
-        5: ("fertilizers_purchase", False, "kg"),  
-        6: ("fuel_purchase", True, "liter"),
-        7: ("seeds_purchase", False, "kg"),   
+    # Map inventory_type_id to actual purchase model and extra info
+    inventory_map = {
+        1: (MyVehicle, False, ""),  
+        2: (MyMachinery, False, ""),   
+        3: (MyTools, False, ""),   
+        4: (MyPesticides, True, "kg"),   
+        5: (MyFertilizers, True, "kg"),  
+        6: (MyFuel, True, "liter"),
+        7: (MySeeds, True, "kg"),   
     }
 
     if inventory_type.id not in inventory_map:
         return Response([], status=status.HTTP_200_OK)
 
-    field, has_quantity, unit_type = inventory_map[inventory_type.id]
+    PurchaseModel, has_quantity, unit_type = inventory_map[inventory_type.id]
 
-    fields_to_fetch = [
-        f"{field}__id",
-        f"{field}__date_of_consumption",
-        f"{field}__purchase_amount",
-        f"{field}__vendor__id",
-        f"{field}__vendor__name",
-    ]
-    if has_quantity:
-        fields_to_fetch.append(f"{field}__quantity")
+    # Filter the specific purchase records directly
+    purchase_qs = PurchaseModel.objects.filter(
+        farmer=farmer,
+        inventory_type=inventory_type,
+        inventory_items=inventory_items
+    ).select_related('vendor') 
 
-    data = inventories_qs.values(*fields_to_fetch)
     paginator = PageNumberPagination()
     paginator.page_size = 10
 
     try:
-        paginated_data = paginator.paginate_queryset(list(data), request)
-    except NotFound:
+        paginated_purchases = paginator.paginate_queryset(purchase_qs, request)
+    except Exception:
         return Response({
             "error": "No more items.",
             "message": "You have reached the end of the list."
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    def format_item(item):
+    def format_purchase(purchase):
         result = {
-            'id': item.get(f"{field}__id"),
-            'date_of_consumption': str(item.get(f"{field}__date_of_consumption") or "N/A"),
-            'purchase_amount': int(item.get(f"{field}__purchase_amount") or 0),
+            'id': purchase.id,
+            'date_of_consumption': str(purchase.date_of_consumption or "N/A"),
+            'purchase_amount': int(purchase.purchase_amount or 0),
             'vendor': {
-                'id': item.get(f"{field}__vendor__id"),
-                'name': item.get(f"{field}__vendor__name") or "Unknown",
+                'id': purchase.vendor.id if purchase.vendor else None,
+                'name': purchase.vendor.name if purchase.vendor else "Unknown",
             }
         }
-        if has_quantity:  # only fuel
-            result['quantity'] = int(item.get(f"{field}__quantity") or "0.00")
+        if has_quantity:
+            result['quantity'] = int(purchase.quantity or 0)
             result['unit_type'] = unit_type
         return result
 
-    response_data = list(map(format_item, paginated_data))
+    response_data = [format_purchase(p) for p in paginated_purchases]
     return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
-def get_inventory_cusumption_list(request, farmer_id, inventory_type_id, inventory_items_id): 
+def get_inventory_consumption_list(request, farmer_id, inventory_type_id, inventory_items_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
     inventory_items = get_object_or_404(InventoryItems, id=inventory_items_id)
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
 
     inventories = MyInventory.objects.filter(
-        farmer=farmer, 
-        inventory_type=inventory_type, 
-        inventory_items=inventory_items
-    ).select_related('crop', 'crop__crop')  
-
+        farmer=farmer,
+        inventory_type=inventory_type,
+        inventory_items=inventory_items,
+    ).exclude(
+        Q(quantity_utilized=0) | Q(usage_hours=0) | Q(start_kilometer=0) | Q(end_kilometer=0)
+    ).select_related('crop', 'crop__crop')
+    
     paginator = PageNumberPagination()
-    paginator.page_size = 4
+    paginator.page_size = 10
 
     try:
-        paginated_inventories = paginator.paginate_queryset(list(inventories), request)
-    except NotFound:
-        return Response(
-            {
-                "error": "No more items.",
-                "message": "You have reached the end of the list."
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    response_data = list(
-        map(lambda inventory: {
-        'id':int( inventory.id),
-        'quantity': float(inventory.quantity_utilized) if inventory.quantity_utilized else 0,
-        'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else "N/A",
-        'start_kilometer': float(inventory.start_kilometer) if inventory.start_kilometer else 0,
-        'end_kilometer': float(inventory.end_kilometer) if inventory.end_kilometer else 0,
-        'usage_hours': float(inventory.usage_hours) if inventory.usage_hours else 0,
-        'rental': int(inventory.rental) if inventory.rental else 1,
-        'crop_id':int( inventory.crop.id) if inventory.crop else None,
-        'crop_name': inventory.crop.crop.get_translated_value("name", language_code) if inventory.crop else "Unknown Crop",
-    }, paginated_inventories))
+        paginated = paginator.paginate_queryset(inventories, request)
+    except Exception:
+        return Response({
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+    inventory_map = {
+        1: (False, ""),  
+        2: (False, ""),   
+        3: (False, ""),   
+        4: (True, "kg"),   
+        5: (True, "kg"),  
+        6: (True, "liter"),
+        7: (True, "kg"),   
+    }
+    
+    has_quantity, unit_type = inventory_map[inventory_type.id]    
+
+    response_data = [
+        {
+            'id': int(inv.id),
+            'quantity': float(inv.quantity_utilized or 0),
+            'date_of_consumption': str(inv.date_of_consumption or "N/A"),
+            'unit_type': unit_type,
+            'start_kilometer': float(inv.start_kilometer or 0),
+            'end_kilometer': float(inv.end_kilometer or 0),
+            'usage_hours': float(inv.usage_hours or 0),
+            'rental': int(inv.rental or 1),
+            'crop_id': int(inv.crop.id) if inv.crop else None,
+            'crop_name': inv.crop.crop.get_translated_value("name", language_code) if inv.crop else "Unknown Crop",
+        }
+        for inv in paginated
+    ] 
 
     return Response(response_data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
 def get_inventory_purchase_details(request, farmer_id, inventory_type_id, id):
-    get_inventory_model = {
-        1: MyVehicle,
-        2: MyMachinery,
-        3: MyTools,
-        4: MyPesticides,
-        5: MyFertilizers,
-        6: MyFuel,
-        7: MySeeds,
-    }
-
+    # Map inventory_type_id to (Model, has_quantity, unit)
     inventory_map = {
-        1: ("vehicle_purchase", False, ""),
-        2: ("machinery_purchase", False, ""),
-        3: ("tool_purchase", False, ""),
-        4: ("pesticide_purchase", False, "kg"),
-        5: ("fertilizers_purchase", False, "kg"),
-        6: ("fuel_purchase", True, "liter"),
-        7: ("seeds_purchase", False, "kg"),
+        1: (MyVehicle, False, ""),  
+        2: (MyMachinery, False, ""),   
+        3: (MyTools, False, ""),   
+        4: (MyPesticides, True, "kg"),   
+        5: (MyFertilizers, True, "kg"),  
+        6: (MyFuel, True, "liter"),
+        7: (MySeeds, True, "kg"),   
     }
 
+    if inventory_type_id not in inventory_map:
+        return Response({"detail": "Invalid inventory type."}, status=400)
+
+    Model, has_quantity, unit = inventory_map[inventory_type_id]
     farmer = get_object_or_404(Farmer, id=farmer_id)
-    model = get_inventory_model.get(inventory_type_id)
-    if not model or inventory_type_id not in inventory_map:
-        return Response([], status=status.HTTP_200_OK)
+    try:
+        item = Model.objects.select_related('vendor').get(id=id, farmer=farmer)
+    except Model.DoesNotExist:
+        return Response({"detail": "Item not found."}, status=404)
 
-    field, has_quantity, unit_type = inventory_map[inventory_type_id]
-    fields = ["id", "date_of_consumption", "purchase_amount", "vendor__id", "vendor__name"]
-    if has_quantity:
-        fields.append("quantity")
-
-    item = model.objects.filter(id=id).values(*fields).first()
-    if not item:
-        return Response({"detail": "Item not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    response_data = {
-        'id': item["id"],
-        'date_of_consumption': str(item.get("date_of_consumption") or "N/A"),
-        'purchase_amount': str(item.get("purchase_amount") or "0.00"),
-        'vendor': {
-            'id': item.get("vendor__id"),
-            'name': item.get("vendor__name") or "Unknown",
+    data = {
+        "id": item.id,
+        "date_of_consumption": str(item.date_of_consumption or "N/A"),
+        "purchase_amount": str(item.purchase_amount or "0.00"),
+        "vendor": {
+            "id": getattr(item.vendor, "id", None),
+            "name": getattr(item.vendor, "name", "Unknown"),
         }
     }
-
     if has_quantity:
-        response_data.update({
-            'quantity': str(item.get("quantity") or "0.00"),
-            'unit_type': unit_type
+        data.update({
+            "quantity": str(getattr(item, "quantity", "0.00")),
+            "unit_type": unit,
         })
 
-    return Response(response_data, status=status.HTTP_200_OK)
+    return Response(data)
 
 
 @api_view(['GET'])
@@ -36998,6 +36991,24 @@ def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
     return Response(response_data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def get_inventory_items(request, inventory_type_id):
+    language_code = request.GET.get('lang', 'en')  # Default to English
+
+    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+    
+    inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
+
+    if not inventory_items.exists():
+        return Response({"detail": "No inventory items found for the given category."}, status=404)
+
+    serializer = InventoryItemsSerializer(inventory_items, many=True, context={'language_code': language_code})
+    
+    return Response({        
+        "data": serializer.data
+    }, status=200)
+ 
+
 # @api_view(['GET'])
 # def get_inventory_items_with_quantity(request, farmer_id, inventory_category_id):
 #     language_code = request.GET.get('lang', 'en')  
@@ -37021,4 +37032,3 @@ def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
     
     
 # endregion
-

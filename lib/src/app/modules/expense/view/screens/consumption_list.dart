@@ -42,7 +42,7 @@ class ConsumptionList extends StatelessWidget {
 
         final record = records[index];
         return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+           margin: const EdgeInsets.symmetric(horizontal: 10, vertical:6),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
@@ -61,7 +61,7 @@ class ConsumptionList extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${record.quantity} ',
+                  '${record.quantity} ${record.unitType} ',
                   style: Get.textTheme.titleMedium,
                 ),
               ],

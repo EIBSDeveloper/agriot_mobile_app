@@ -75,10 +75,8 @@ class LandViewPage extends GetView<LandController> {
                       items: controller.landUnits,
                       displayItem: (value) => value.name.toString(),
                       selectedItem: controller.selectedLandUnit.value,
-                      onChanged: (value) =>
-                          controller.selectedLandUnit.value = value,
-                      // validator: (value) =>
-                      //     value == null ? 'Required field' : null,
+                      onChanged: (value) => controller.selectedLandUnit.value = value,
+                      // validator: (value) => value == null ? 'Required field' : null,
                     ),
                   ))
                 ],

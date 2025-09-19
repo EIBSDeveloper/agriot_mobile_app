@@ -1,124 +1,21 @@
-[
-  {
-    "url": "http://192.168.3.87:8000/Api/add_machinery/114?lang=en",
-    "payload": {
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 2,
-      "inventory_category": 2,
-      "inventory_items": 2,
-      "machinery_type": "1",
-      "fuel_capacity": 12,
-      "paid_amount": "12",
-      "purchase_amount": "212",
-      "description": "",
-      "documents": []
-    }
-  },
-  {
-    "url": "http://192.168.3.87:8000/Api/add_fuel/114",
-    "payload": {
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 6,
-      "inventory_category": 6,
-      "inventory_items": 6,
-      "quantity": "20",
-      "purchase_amount": "2000",
-      "paid_amount": "2000",
-      "description": null,
-      "documents": []
-    }
-  },
-  {
-    "url": "http://192.168.3.87:8000/Api/add_vehicle/114/?lang=en",
-    "payload": {
-      "farmer_id": "114",
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 1,
-      "inventory_category": 1,
-      "inventory_items": 1,
-      "register_number": "",
-      "owner_name": "",
-      "date_of_registration": "2025-09-16",
-      "registration_valid_till": "2025-09-30",
-      "engine_number": null,
-      "chasis_number": null,
-      "running_kilometer": 0.0,
-      "service_frequency": 1,
-      "service_frequency_unit": 0,
-      "fuel_capacity": 0.0,
-      "average_mileage": 0.0,
-      "purchase_amount": 123.0,
-      "paid_amount": "1212",
-      "insurance": false,
-      "description": null,
-      "documents": []
-    }
-  },
-  {
-    "url": "http://192.168.3.87:8000/Api/add_tools/114?lang=en",
-    "payload": {
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 3,
-      "inventory_category": 3,
-      "inventory_items": 3,
-      "quantity": "10",
-      "quantity_unit": 1,
-      "purchase_amount": "12",
-      "paid_amount": "21",
-      "description": null,
-      "documents": []
-    }
-  },
-  {
-    "url": "http://192.168.3.87:8000/Api/add_pesticides/114?lang=en",
-    "payload": {
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 4,
-      "inventory_category": 4,
-      "inventory_items": 4,
-      "quantity": "12",
-      "quantity_unit": 1,
-      "purchase_amount": "12",
-      "paid_amount": "121",
-      "description": null,
-      "documents": []
-    }
-  },
-  {
-    "url": "http://192.168.3.87:8000/Api/add_fertilizer/114?lang=en",
-    "payload": {
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 5,
-      "inventory_category": 5,
-      "inventory_items": 5,
-      "quantity": "12",
-      "quantity_unit": 1,
-      "purchase_amount": "20",
-      "paid_amount": "20",
-      "description": null,
-      "documents": []
-    }
-  },
-  {
-    "url": "http://192.168.3.87:8000/Api/add_seeds/114?lang=en",
-    "payload": {
-      "date_of_consumption": "2025-09-16",
-      "vendor": 52,
-      "inventory_type": 7,
-      "inventory_category": 7,
-      "inventory_items": 7,
-      "quantity": "12",
-      "quantity_unit": 1,
-      "purchase_amount": "12",
-      "paid_amount": "10",
-      "description": null,
-      "documents": []
-    }
-  }
-]
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "name": "Python Debugger: Django",
+            "type": "debugpy",
+            "request": "launch",
+            "args": [
+                "runserver",
+                "0.0.0.0:8000",
+                "--noreload"
+            ],
+            "django": true,
+            "autoStartBrowser": false,
+            "console": "integratedTerminal",
+            "jinja": false,
+            "program": "${workspaceFolder}\\starterkit\\manage.py"
+        }
+    ]
+}

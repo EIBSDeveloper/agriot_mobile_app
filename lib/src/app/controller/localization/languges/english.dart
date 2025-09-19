@@ -548,5 +548,8 @@ class English {
     "select_market": "Select Market",
     "select_inventory_types": "Select Inventory Types",
     "loading_markets": "Loading Markets...",
+    "add_purchase":"Add Purchase",
+    "general_expense":"General Expense",
+    "general": "General"
   };
 }

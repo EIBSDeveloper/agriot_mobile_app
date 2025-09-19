@@ -26,8 +26,6 @@ class ConsumptionView extends StatelessWidget {
               const SizedBox(height: 16),
               _buildInventoryTypeDropdown(),
               const SizedBox(height: 16),
-              _buildInventoryCategoryDropdown(),
-              const SizedBox(height: 16),
               _buildInventoryItemDropdown(),
               const SizedBox(height: 16),
               _buildCropDropdown(), const SizedBox(height: 16),
@@ -139,7 +137,7 @@ class ConsumptionView extends StatelessWidget {
       items: _controller.crop,
       selectedItem: _controller.selectedCropType.value,
       onChanged: (land) => _controller.changeCrop(land!),
-      label: "${'crop'.tr} *",
+      label: 'crop'.tr,
     ),
   );
 
@@ -167,33 +165,7 @@ class ConsumptionView extends StatelessWidget {
     ),
   );
 
-  Widget _buildInventoryCategoryDropdown() => Obx(
-    () => InputCardStyle(
-      child: DropdownButtonFormField<int>(
-        decoration: InputDecoration(
-          labelText: "${'inventory_category'.tr} *",
-          border: InputBorder.none,
-        ),
-        icon: const Icon(Icons.keyboard_arrow_down),
-        validator: (value) => value == null ? 'required_field'.tr : null,
-        initialValue: _controller.selectedInventoryCategory.value,
-        items: _controller.inventoryCategories
-            .map(
-              (category) => DropdownMenuItem<int>(
-                value: category.id,
-                child: Text(category.name),
-              ),
-            )
-            .toList(),
-        onChanged: _controller.selectedInventoryType.value != null
-            ? (value) {
-                _controller.setInventoryCategory(value!);
-              }
-            : null,
-      ),
-    ),
-  );
-
+ 
   Widget _buildInventoryItemDropdown() => Obx(
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
@@ -212,7 +184,7 @@ class ConsumptionView extends StatelessWidget {
             )
             .toList(),
         onChanged: (value) =>
-            _controller.selectedInventoryCategory.value != null
+            _controller.selectedInventoryType.value != null
             ? _controller.setInventoryItem(value!)
             : null,
       ),

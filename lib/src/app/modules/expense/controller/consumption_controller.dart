@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_repository.dart';
@@ -20,24 +19,24 @@ class ConsumptionController extends GetxController {
   final formKey = GlobalKey<FormState>();
   // Observable variables
   RxList<InventoryTypeModel> inventoryTypes = <InventoryTypeModel>[].obs;
-  RxList<InventoryCategoryModel> inventoryCategories =
-      <InventoryCategoryModel>[].obs;
+  // RxList<InventoryCategoryModel> inventoryCategories =
+  //     <InventoryCategoryModel>[].obs;
   RxList<InventoryItemModel> inventoryItems = <InventoryItemModel>[].obs;
   RxBool isLoading = false.obs;
-  RxBool isCategoryLoading = false.obs;
+  // RxBool isCategoryLoading = false.obs;
   RxBool isTypeLoading = false.obs;
   RxBool isInventoryLoading = false.obs;
   RxBool documentTypesLoading = false.obs;
 
   // Form fields
   Rx<DateTime> selectedDate = DateTime.now().obs;
-  final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;
+  final Rx<CropModel> selectedCropType = CropModel(id: 0, name: 'Other').obs;
   final RxList<CropModel> crop = <CropModel>[].obs;
   final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
   Rxn<int> selectedInventoryType = Rxn<int>();
   Rxn<String> selectedInventoryTypeName = Rxn<String>();
-  Rxn<int> selectedInventoryCategory = Rxn<int>();
+  // Rxn<int> selectedInventoryCategory = Rxn<int>();
   Rxn<int> selectedInventoryItem = Rxn<int>();
   RxString quantity = ''.obs;
   RxString description = ''.obs;
@@ -95,8 +94,6 @@ class ConsumptionController extends GetxController {
 
   Future<void> setInventoryType(int typeId) async {
     selectedInventoryType.value = typeId;
-    selectedInventoryCategory.value = null;
-    inventoryCategories.clear();
     selectedInventoryItem.value = null;
     inventoryItems.clear();
 
@@ -105,16 +102,8 @@ class ConsumptionController extends GetxController {
     startKilometer.value = '';
     endKilometer.value = '';
     toolItems.value = '';
-    await fetchInventoryCategories(typeId);
+    await fetchInventoryItems(typeId);
   }
-
-  Future<void> setInventoryCategory(int categoryId) async {
-    selectedInventoryCategory.value = categoryId;
-    selectedInventoryItem.value = null;
-    inventoryItems.clear();
-    await fetchInventoryItems(categoryId);
-  }
-
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
@@ -163,7 +152,7 @@ class ConsumptionController extends GetxController {
         setInventoryType(inventoryType.value!);
       }
     } catch (e) {
-     showError( 'Failed to fetch inventory types'.tr);
+      showError('Failed to fetch inventory types'.tr);
     } finally {
       isTypeLoading(false);
     }
@@ -193,33 +182,18 @@ class ConsumptionController extends GetxController {
     }
   }
 
-  Future<void> fetchInventoryCategories(int inventoryTypeId) async {
-    try {
-      isCategoryLoading(true);
-      final categories = await _repository.fetchInventoryCategories(
-        inventoryTypeId,
-      );
-      inventoryCategories.assignAll(categories);
-      if (inventoryCategories.isNotEmpty && inventoryCategory.value != null) {
-        setInventoryCategory(inventoryCategory.value!);
-      }
-    } catch (e) {
-     showError('Failed to fetch inventory categories'.tr);
-    } finally {
-      isCategoryLoading(false);
-    }
-  }
-
-  Future<void> fetchInventoryItems(int inventoryCategoryId) async {
+  Future<void> fetchInventoryItems(int inventoryTypeyId) async {
     try {
       isInventoryLoading(true);
-      final items = await _repository.fetchInventoryItems(inventoryCategoryId);
+      final items = await _repository.fetchInventoryItems(inventoryTypeyId);
       inventoryItems.assignAll(items);
       if (inventoryItem.value != null) {
         setInventoryItem(inventoryItem.value!);
+      } else {
+        setInventoryItem(inventoryItems.first.id);
       }
     } catch (e) {
-     showError( 'Failed to fetch inventory items'.tr);
+      showError('Failed to fetch inventory items'.tr);
     } finally {
       isInventoryLoading(false);
     }
@@ -232,19 +206,18 @@ class ConsumptionController extends GetxController {
     try {
       isLoading(true);
 
-      // Prepare the request body based on inventory type
-      var s = requiresUsageHours ? usageHours.value : quantity.value;
+    
       final Map<String, dynamic> requestBody = {
         "date_of_consumption": selectedDate.value.toIso8601String().split(
           'T',
         )[0],
-        "crop": selectedCropType.value.id,
+        if (selectedCropType.value.id != 0) "crop": selectedCropType.value.id,
         "inventory_type": selectedInventoryType.value.toString(),
-        "inventory_category": selectedInventoryCategory.value,
+        // "inventory_category": selectedInventoryType.value,
         "inventory_items": selectedInventoryItem.value,
         "description": description.value,
         "farmer": farmerId,
-        "quantity_utilized": s,
+        "quantity_utilized": requiresUsageHours ? usageHours.value : quantity.value,
       };
 
       // Add conditional fields
@@ -266,15 +239,15 @@ class ConsumptionController extends GetxController {
       final success = await _repository.submitConsumption(requestBody);
 
       if (success) {
-        showSuccess( 'Consumption recorded successfully'.tr);
+        showSuccess('Consumption recorded successfully'.tr);
         // clearForm();
         return true;
       } else {
-        showError( 'Failed to record consumption'.tr);
+        showError('Failed to record consumption'.tr);
         return false;
       }
     } catch (e) {
-      showError( 'Error: $e');
+      showError('Error: $e');
       return false;
     } finally {
       isLoading(false);
@@ -287,7 +260,7 @@ class ConsumptionController extends GetxController {
         ? crop.first
         : CropModel(id: 0, name: '');
     selectedInventoryType.value = null;
-    selectedInventoryCategory.value = null;
+    // selectedInventoryCategory.value = null;
     selectedInventoryItem.value = null;
     quantity.value = '';
     description.value = '';
@@ -300,7 +273,7 @@ class ConsumptionController extends GetxController {
   bool get isFormValid {
     bool basicValid =
         selectedInventoryType.value != null &&
-        selectedInventoryCategory.value != null &&
+        // selectedInventoryCategory.value != null &&
         selectedInventoryItem.value != null &&
         quantity.value.isNotEmpty &&
         selectedCropType.value.id != 0;

@@ -142,11 +142,10 @@ class ConsumptionPurchaseRepository {
       final response = await _httpService.get(
         '/inventory_purchase_list/$farmerId/$type/$itemId?page=$page',
       );
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        List<PurchaseItem> purchaseRecords = data
+        List<PurchaseItem> purchaseRecords = (data as List)
             .map((json) => PurchaseItem.fromJson(json))
             .toList();
 
@@ -158,6 +157,7 @@ class ConsumptionPurchaseRepository {
       rethrow;
     }
   }
+
   Future<List<ConsumptionItem>> getConsumptionList({
     required int itemId,
     required int type,
@@ -174,7 +174,7 @@ class ConsumptionPurchaseRepository {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        List<ConsumptionItem> consumptionRecords = data
+        List<ConsumptionItem> consumptionRecords = (data as List)
             .map((json) => ConsumptionItem.fromJson(json))
             .toList();
 

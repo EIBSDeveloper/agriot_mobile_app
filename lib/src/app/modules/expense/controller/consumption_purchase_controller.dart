@@ -1,4 +1,3 @@
-import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_purchase_repository.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/purchases_add_repository.dart';
@@ -10,6 +9,7 @@ import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../service/utils/utils.dart';
+import '../model/inventory_type_model.dart';
 
 class ConsumptionPurchaseController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -20,7 +20,7 @@ class ConsumptionPurchaseController extends GetxController
   RxInt consumptionPage = 0.obs;
   RxBool isLoading = false.obs;
   var selectedInventoryType = Rxn<int>();
-  var selectedInventoryCategory = Rxn<int>();
+  // var selectedInventoryCategory = Rxn<int>();
   var selectedInventoryItem = Rxn<int>();
   RxString selectedInventoryTypeName = 'Fuel'.obs;
   RxList<ConsumptionItem> consumptionData = <ConsumptionItem>[].obs;
@@ -30,10 +30,10 @@ class ConsumptionPurchaseController extends GetxController
   // 0 = Consumption, 1 = Purchase
   final RxBool isCategoryLoading = false.obs;
   final RxBool isinventoryLoading = false.obs;
-  var inventoryCategories = <InventoryCategoryModel>[].obs;
+  var inventoryTypes = <InventoryTypeModel>[].obs;
   var inventoryItems = <InventoryItemModel>[].obs;
   final Rxn<int> inventoryType = Rxn<int>();
-  final Rxn<int> inventoryCategory = Rxn<int>();
+  // final Rxn<int> inventoryCategory = Rxn<int>();
   final Rxn<int> inventoryItem = Rxn<int>();
   RxBool isLoadingMorePurchase = false.obs;
   RxBool isLoadingMoreConsumption = false.obs;
@@ -56,15 +56,15 @@ class ConsumptionPurchaseController extends GetxController
     if (arguments?["id"] != null) {
       inventoryType.value = arguments?["id"];
     }
-    if (arguments?["category"] != null) {
-      inventoryCategory.value = arguments?["category"];
-    }
+    // if (arguments?["category"] != null) {
+    //   inventoryCategory.value = arguments?["category"];
+    // }
     if (arguments?["item"] != null) {
       inventoryItem.value = arguments?["item"];
     }
     selectedInventoryTypeName.value = getType(inventoryType.value ?? 0);
+    fetchInventoryCategories();
 
-    setInventoryType(inventoryType.value ?? 0);
     purchaseScrollController.addListener(_onPurchaseScroll);
     consumptionScrollController.addListener(_onConsumptionScroll);
   }
@@ -96,26 +96,19 @@ class ConsumptionPurchaseController extends GetxController
 
   void setInventoryType(int typeId) {
     selectedInventoryType.value = typeId;
-    selectedInventoryCategory.value = null;
     selectedInventoryItem.value = null;
-    fetchInventoryCategories(typeId);
-  }
-
-  void setInventoryCategory(int categoryId) {
-    selectedInventoryCategory.value = categoryId;
-    selectedInventoryItem.value = null;
-    fetchInventoryItems(categoryId);
+    fetchInventoryItems(typeId);
   }
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
-    loadData();
+    refreshData();
   }
 
   Future<void> refreshData() async {
     // Reset pagination on refresh
-    purchasePage.value = 1;
-    consumptionPage.value = 1;
+    purchasePage.value = 0;
+    consumptionPage.value = 0;
     hasMorePurchase.value = true;
     hasMoreConsumption.value = true;
 
@@ -124,22 +117,21 @@ class ConsumptionPurchaseController extends GetxController
     consumptionData.clear();
 
     // Load fresh data
-    await loadData();
+    loadMorePurchaseData();
+    loadMoreConsumptionData();
   }
 
-  Future<void> fetchInventoryCategories(int inventoryTypeId) async {
+  Future<void> fetchInventoryCategories() async {
     try {
       isCategoryLoading(true);
-      final response = await purchasesrepository.fetchInventoryCategories(
-        inventoryTypeId,
-      );
-      inventoryCategories.value = response;
-      if (inventoryCategory.value != null) {
-        selectedInventoryCategory.value = inventoryCategory.value;
-        setInventoryCategory(inventoryCategory.value!);
-      } else if (inventoryCategories.isNotEmpty) {
-        selectedInventoryCategory.value = inventoryCategories.first.id;
-        setInventoryCategory(inventoryCategories.first.id);
+      final response = await purchasesrepository.fetchInventoryTypes();
+      inventoryTypes.value = response;
+      if (inventoryType.value != null) {
+        selectedInventoryType.value = inventoryType.value;
+        setInventoryType(inventoryType.value!);
+      } else if (inventoryTypes.isNotEmpty) {
+        selectedInventoryType.value = inventoryTypes.first.id;
+        setInventoryType(inventoryTypes.first.id);
       }
     } catch (e) {
       showError('Failed to fetch inventory categories');
@@ -179,11 +171,6 @@ class ConsumptionPurchaseController extends GetxController
     }
   }
 
-  loadData() {
-    loadMorePurchaseData();
-    loadMoreConsumptionData();
-  }
-
   Future<void> loadMorePurchaseData() async {
     if (selectedInventoryItem.value == null) return;
     if (isLoadingMorePurchase.value || !hasMorePurchase.value) return;
@@ -213,8 +200,9 @@ class ConsumptionPurchaseController extends GetxController
   }
 
   Future<void> loadMoreConsumptionData() async {
-    if (isLoadingMoreConsumption.value || !hasMoreConsumption.value) return;
     if (selectedInventoryItem.value == null) return;
+    if (isLoadingMoreConsumption.value || !hasMoreConsumption.value) return;
+
     try {
       isLoadingMoreConsumption(true);
       consumptionPage.value++;
@@ -230,15 +218,16 @@ class ConsumptionPurchaseController extends GetxController
         showWarning('no_records_found'.tr);
       }
     } catch (e) {
+      consumptionPage.value--;
       showError('failed_to_load_data'.tr);
     } finally {
-      isLoading(false);
+      isLoadingMoreConsumption(false);
     }
   }
 
   void reLoad(result) {
     if (result ?? false) {
-      loadData();
+      refreshData();
     }
   }
 
@@ -248,7 +237,7 @@ class ConsumptionPurchaseController extends GetxController
         Routes.fuelConsumption,
         arguments: {
           "type": selectedInventoryType.value,
-          "category": selectedInventoryCategory.value,
+          // "category": selectedInventoryCategory.value,
           "item": selectedInventoryItem.value,
         },
       )?.then((result) {
@@ -260,7 +249,7 @@ class ConsumptionPurchaseController extends GetxController
           '/fuel-expenses-entry',
           arguments: {
             "id": selectedInventoryType.value,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {
@@ -271,7 +260,7 @@ class ConsumptionPurchaseController extends GetxController
           '/vehicle_entry',
           arguments: {
             "id": selectedInventoryType.value,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {
@@ -282,7 +271,7 @@ class ConsumptionPurchaseController extends GetxController
           '/machinery_entry',
           arguments: {
             "id": selectedInventoryType.value,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {
@@ -293,7 +282,7 @@ class ConsumptionPurchaseController extends GetxController
           '/fertilizer_entry',
           arguments: {
             "id": selectedInventoryType.value,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
         )?.then((result) {

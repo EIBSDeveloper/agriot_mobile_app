@@ -35,7 +35,7 @@ class ConsumptionList extends StatelessWidget {
             child: Center(
               child: isLoadingMore
                   ? const CircularProgressIndicator()
-                  : Text('no_more_data'.tr),
+                  : const SizedBox.shrink(),
             ),
           );
         }

@@ -26,7 +26,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                buildInventoryCategoryDropdown(),
+                buildInventoryTypeDropdown(),
                 const SizedBox(width: 16),
                 buildInventoryItemDropdown(),
               ],
@@ -114,7 +114,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
     ),
   );
 
-  Widget buildInventoryCategoryDropdown() => Expanded(
+  Widget buildInventoryTypeDropdown() => Expanded(
     child: Obx(
       () => Column(
         children: [
@@ -122,13 +122,13 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             child: DropdownButtonFormField<int>(
               isExpanded: true,
               decoration: InputDecoration(
-                labelText: 'Inventory Category'.tr,
+                labelText: 'Inventory Type'.tr,
                 border: InputBorder.none,
               ),
 
               icon: const Icon(Icons.keyboard_arrow_down),
-              initialValue: controller.selectedInventoryCategory.value,
-              items: controller.inventoryCategories
+              initialValue: controller.selectedInventoryType.value,
+              items: controller.inventoryTypes
                   .map(
                     (category) => DropdownMenuItem<int>(
                       value: category.id,
@@ -141,7 +141,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   )
                   .toList(),
               onChanged: (value) {
-                controller.setInventoryCategory(value!);
+                controller.setInventoryType(value!);
               },
             ),
           ),
@@ -176,7 +176,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
               )
               .toList(),
           onChanged: (value) =>
-              controller.selectedInventoryCategory.value != null
+              controller.selectedInventoryType.value != null
               ? controller.setInventoryItem(value!)
               : null,
         ),

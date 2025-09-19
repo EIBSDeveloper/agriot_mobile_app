@@ -55,7 +55,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
     padding: const EdgeInsets.all(8.0),
     child: Row(
       children: [
-        _buildTabButton('both', 'both'.tr),
+        // _buildTabButton('both', 'both'.tr),
         _buildTabButton('customer', 'customer'.tr),
         _buildTabButton('vendor', 'vendor'.tr),
       ],

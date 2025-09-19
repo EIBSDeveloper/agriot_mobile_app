@@ -13,7 +13,7 @@ import 'package:image_picker/image_picker.dart';
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();
   // final AddressService _addressService = Get.find();
-  final RxString selectedFilter = 'both'.obs;
+  final RxString selectedFilter = 'customer'.obs;
   final RxList<VendorCustomer?> vendorCustomerList = <VendorCustomer>[].obs;
   final RxBool isLoading = false.obs;
   // Should be set from auth or previous screen

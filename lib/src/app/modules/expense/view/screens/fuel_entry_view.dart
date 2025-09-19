@@ -20,8 +20,6 @@ class FuelEntryView extends GetView<PurchasesAddController> {
             // Date Picker
             controller.buildDateField(),
             const SizedBox(height: 16),
-            controller.buildInventoryCategoryDropdown(),
-            const SizedBox(height: 16),
             controller.buildInventoryItemDropdown(),
             const SizedBox(height: 16),
 

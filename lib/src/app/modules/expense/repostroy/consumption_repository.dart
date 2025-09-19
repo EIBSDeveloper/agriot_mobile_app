@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/document_type_model.dart';
-import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
@@ -28,18 +27,7 @@ class ConsumptionRepository {
     }
   }
 
-  Future<List<InventoryCategoryModel>> fetchInventoryCategories(
-    int typeId,
-  ) async {
-    final response = await _httpService.get('/get_inventory_category/$typeId');
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => InventoryCategoryModel.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to fetch inventory categories');
-    }
-  }
+ 
 
   Future<List<InventoryItemModel>> fetchInventoryItems(int categoryId) async {
     final response = await _httpService.get('/get_inventory_items/$categoryId');

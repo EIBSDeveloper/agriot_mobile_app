@@ -20,8 +20,6 @@ class VehicleView extends GetView<PurchasesAddController> {
           children: [
             controller.buildDateField(),
             const SizedBox(height: 16),
-            controller.buildInventoryCategoryDropdown(),
-            const SizedBox(height: 16),
             controller.buildInventoryItemDropdown(),
             const SizedBox(height: 16),
             // Vendor Dropdown

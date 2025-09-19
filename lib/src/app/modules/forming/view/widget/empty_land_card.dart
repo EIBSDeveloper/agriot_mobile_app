@@ -12,7 +12,7 @@ class EmptyLandCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => view
       ? Padding(
-        padding: const EdgeInsets.only(top: 150),
+        padding:  EdgeInsets.only(top: Get.size.height*0.1),
         child: Center(
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),

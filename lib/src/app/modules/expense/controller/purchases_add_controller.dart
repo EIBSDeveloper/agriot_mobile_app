@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
-import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
@@ -28,7 +27,6 @@ class PurchasesAddController extends GetxController {
 
   // Form fields
   var selectedInventoryType = Rxn<int>();
-  var selectedInventoryCategory = Rxn<int>();
   var selectedInventoryItem = Rxn<int>();
   final RxString selectedDate = ''.obs;
   final RxString selectedType = ''.obs;
@@ -39,7 +37,6 @@ class PurchasesAddController extends GetxController {
   final RxString litre = ''.obs;
   final RxString description = ''.obs;
   final RxList<String> documents = <String>[].obs;
-  var inventoryCategories = <InventoryCategoryModel>[].obs;
   var inventoryItems = <InventoryItemModel>[].obs;
   final machineryType = 'Fuel'.obs;
   final fuelCapacityController = TextEditingController();
@@ -105,7 +102,7 @@ class PurchasesAddController extends GetxController {
     fetchVendorList();
     fetchUnit();
     setInventoryType(arguments['id']);
-    fetchInventoryCategories(arguments['id']);
+    fetchInventoryItems(arguments['id']);
   }
 
   bool get requiresUnit {
@@ -115,12 +112,6 @@ class PurchasesAddController extends GetxController {
 
   void setInventoryType(int typeId) {
     selectedInventoryType.value = typeId;
-    selectedInventoryCategory.value = null;
-    selectedInventoryItem.value = null;
-  }
-
-  void setInventoryCategory(int categoryId) {
-    selectedInventoryCategory.value = categoryId;
     selectedInventoryItem.value = null;
   }
 
@@ -134,27 +125,6 @@ class PurchasesAddController extends GetxController {
       vendorList.assignAll(response);
     } catch (e) {
       showError('Failed to fetch customers: $e');
-    }
-  }
-
-  Future<void> fetchInventoryCategories(int inventoryTypeId) async {
-    try {
-      isCategoryLoading(true);
-      final response = await _repository.fetchInventoryCategories(
-        inventoryTypeId,
-      );
-      inventoryCategories.value = response;
-      if (inventoryCategory.value != null) {
-        selectedInventoryCategory.value = inventoryCategory.value;
-        inventoryCategoryUpdate(inventoryCategory.value);
-      } else if (inventoryCategories.isNotEmpty) {
-        selectedInventoryCategory.value = inventoryCategories.first.id;
-        inventoryCategoryUpdate(inventoryCategories.first.id);
-      }
-    } catch (e) {
-      showError('Failed to fetch inventory categories');
-    } finally {
-      isCategoryLoading(false);
     }
   }
 
@@ -245,11 +215,6 @@ class PurchasesAddController extends GetxController {
     selectedUnit.value = crop;
   }
 
-  void inventoryCategoryUpdate(int? value) {
-    setInventoryCategory(value!);
-    fetchInventoryItems(value);
-  }
-
   //Submit Form
 
   Future<void> submitFuelForm() async {
@@ -264,7 +229,7 @@ class PurchasesAddController extends GetxController {
         dateOfConsumption: selectedDate.value,
         vendor: selectedVendor.value ?? 0,
         inventoryType: selectedInventoryType.value!,
-        inventoryCategory: selectedInventoryCategory.value!,
+        inventoryCategory: selectedInventoryType.value!,
         inventoryItems: selectedInventoryItem.value!,
         quantity: litre.value,
         purchaseAmount: purchaseAmount.value,
@@ -282,7 +247,7 @@ class PurchasesAddController extends GetxController {
           arguments: {
             "id": fuelEntry.inventoryType,
             'tab': 1,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
           preventDuplicates: true,
@@ -311,7 +276,7 @@ class PurchasesAddController extends GetxController {
         vendor: selectedVendor.value!,
         inventoryType:
             selectedInventoryType.value!, // Map to your actual values
-        inventoryCategory: selectedInventoryCategory.value!,
+        inventoryCategory: selectedInventoryType.value!,
         inventoryItems: selectedInventoryItem.value!,
         machineryType: machineryType.value == 'Fuel' ? '1' : '2',
         fuelCapacity: int.tryParse(fuelCapacityController.text) ?? 0,
@@ -332,7 +297,7 @@ class PurchasesAddController extends GetxController {
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
           preventDuplicates: true,
@@ -356,15 +321,14 @@ class PurchasesAddController extends GetxController {
       return json;
     }).toList();
     try {
-       AppDataController appData = Get.find();
-     
-     
+      AppDataController appData = Get.find();
+
       final vehicle = VehicleModel(
         farmerId: appData.userId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
         vendor: selectedVendor.value ?? 0,
         inventoryType: selectedInventoryType.value!, // Assuming default value
-        inventoryCategory: selectedInventoryCategory.value ?? 0,
+        inventoryCategory: selectedInventoryType.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
         registerNumber: regNoController.text,
         paidAmount: paidAmount.value,
@@ -434,7 +398,7 @@ class PurchasesAddController extends GetxController {
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
           preventDuplicates: true,
@@ -463,7 +427,7 @@ class PurchasesAddController extends GetxController {
         dateOfConsumption: selectedDate.value,
         vendor: selectedVendor.value!,
         inventoryType: selectedInventoryType.value!,
-        inventoryCategory: selectedInventoryCategory.value!,
+        inventoryCategory: selectedInventoryType.value!,
 
         inventoryItems: selectedInventoryItem.value!,
         quantity: litre.value,
@@ -486,7 +450,7 @@ class PurchasesAddController extends GetxController {
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
-            "category": selectedInventoryCategory.value,
+            // "category": selectedInventoryCategory.value,
             "item": selectedInventoryItem.value,
           },
           preventDuplicates: true,
@@ -629,36 +593,6 @@ class PurchasesAddController extends GetxController {
     ),
   );
 
-  Widget buildInventoryCategoryDropdown() => Obx(
-    () => Column(
-      children: [
-        InputCardStyle(
-          child: DropdownButtonFormField<int>(
-            decoration: InputDecoration(
-              labelText: "${'Inventory Category'.tr} *",
-              border: InputBorder.none,
-            ),
-
-            icon: const Icon(Icons.keyboard_arrow_down),
-            initialValue: selectedInventoryCategory.value,
-            items: inventoryCategories
-                .map(
-                  (category) => DropdownMenuItem<int>(
-                    value: category.id,
-                    child: Text(category.name),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              inventoryCategoryUpdate(value);
-            },
-          ),
-        ),
-        //  ErrorText(error: getErrorForField('vendor')),
-      ],
-    ),
-  );
-
   Widget buildInventoryItemDropdown() => Obx(
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
@@ -676,7 +610,7 @@ class PurchasesAddController extends GetxController {
                   DropdownMenuItem<int>(value: item.id, child: Text(item.name)),
             )
             .toList(),
-        onChanged: (value) => selectedInventoryCategory.value != null
+        onChanged: (value) => selectedInventoryType.value != null
             ? setInventoryItem(value!)
             : null,
       ),

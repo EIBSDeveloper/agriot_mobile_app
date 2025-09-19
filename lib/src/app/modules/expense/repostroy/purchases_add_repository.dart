@@ -31,6 +31,7 @@ class PurchasesAddRepository {
       rethrow;
     }
   }
+
   Future<List<Unit>> getUnitList() async {
     try {
       final response = await _httpService.get('/area_units');
@@ -46,6 +47,7 @@ class PurchasesAddRepository {
       throw Exception('Failed to load crops: ${e.toString()}');
     }
   }
+
   Future<Map<String, dynamic>> addMachinery(Machinery machinery) async {
     final farmerId = _appDataController.userId.value;
     try {
@@ -80,7 +82,7 @@ class PurchasesAddRepository {
         return [];
       }
     } catch (e) {
-     showError( 'Failed to fetch inventory types');
+      showError('Failed to fetch inventory types');
       return [];
     }
   }
@@ -116,7 +118,7 @@ class PurchasesAddRepository {
         return [];
       }
     } catch (e) {
-   showError('Failed to fetch inventory categories');
+      showError('Failed to fetch inventory categories');
       return [];
     }
   }
@@ -136,7 +138,7 @@ class PurchasesAddRepository {
         return [];
       }
     } catch (e) {
-   showError( 'Failed to fetch inventory items');
+      showError('Failed to fetch inventory items');
       return [];
     }
   }

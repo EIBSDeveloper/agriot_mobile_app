@@ -338,13 +338,15 @@ urlpatterns = [
     path('best_practice_schedule/<int:farmer_id>/<int:land_id>/<int:my_crop_id>/<int:schedule_id>/',get_schedule_detail, name='get_schedule_detail'),
 
     path('crop_summary/<int:farmer_id>/<int:land_id>/<int:crop_id>/', get_crop_summary, name='crop-summary'),
+    
+    
     # region Add paths Changed by Bala
     path('inventory_purchase_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_purchase_list, name='get_inventory_purchase_list'),
     path('inventory_cunsumption_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_consumption_list, name='get_inventory_consumption_list'),
-    # path('get_inventory_items_with_quantity/<int:farmer_id>/<int:inventory_category_id>/', get_inventory_items_with_quantity, name='get_inventory_items_with_quantity'), 
+    path('inventory_item_quantity/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_item_quantity, name='get_inventory_item_quantity'), 
     path('inventory_purchase_details/<int:farmer_id>/<int:inventory_type_id>/<int:id>', get_inventory_purchase_details, name='get_inventory_purchase_details'),
     path('inventory_cunsumption_details/<int:farmer_id>/<int:inventory_type_id>/<int:id>', get_inventory_cusumption_details, name='get_inventory_cusumption_details'),
-   
+    path('inventory_types_quantity/<int:farmer_id>/', get_inventory_types_quantity, name='get_inventory_types_quantity'),
     # endregion
 
 ]

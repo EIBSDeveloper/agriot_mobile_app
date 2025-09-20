@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/expense/model/consumption_record.dart';
 import 'package:argiot/src/app/modules/expense/view/widgets/month_day_format.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 class ConsumptionList extends StatelessWidget {
   final List<ConsumptionItem> records;
   final int type;
@@ -42,7 +43,7 @@ class ConsumptionList extends StatelessWidget {
 
         final record = records[index];
         return Card(
-           margin: const EdgeInsets.symmetric(horizontal: 10, vertical:6),
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
@@ -55,13 +56,21 @@ class ConsumptionList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (record.cropId != null)
-                        Text(record.cropName??'', style: Get.textTheme.titleMedium),
-                      const SizedBox(height: 4),
+                        Text(
+                          record.cropName ?? '',
+                          style: Get.textTheme.titleMedium,
+                        ),
+                      if (record.startKilometer != null && record.endKilometer != null) ...[
+                        Text(
+                          "${record.startKilometer} km → ${record.endKilometer} km",
+                          style: Get.textTheme.titleMedium,
+                        ),
+                      ],
                     ],
                   ),
                 ),
                 Text(
-                  '${record.quantity} ${record.unitType} ',
+                  '${record.quantity ?? record.usageHours ?? "--"} ${record.unitType} ',
                   style: Get.textTheme.titleMedium,
                 ),
               ],

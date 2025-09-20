@@ -26548,7 +26548,7 @@ def create_inventory_with_documents(request):
                 crop = MyCrop.objects.get(id=data.get('crop'))
                 # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-            except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist) as e:
+            except (Farmer.DoesNotExist, MyCrop.DoesNotExist,  InventoryItems.DoesNotExist) as e:
                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last fuel instance for the selected inventory items and inventory type
@@ -26620,7 +26620,7 @@ def create_inventory_with_documents(request):
             # For inventory type 2, these fields are required
             try:
                 farmer = Farmer.objects.get(id=data.get('farmer'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
                 date_of_consumption = data.get('date_of_consumption')
@@ -26638,7 +26638,7 @@ def create_inventory_with_documents(request):
                 if not usage_hours or usage_hours <= 0:
                     return Response({'error': 'Usage hours must be greater than zero for inventory type 2'}, status=status.HTTP_400_BAD_REQUEST)
 
-            except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist) as e:
+            except (Farmer.DoesNotExist,  InventoryItems.DoesNotExist, MyCrop.DoesNotExist) as e:
                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Create new inventory object for type 2
@@ -26647,7 +26647,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=date_of_consumption,
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 usage_hours=usage_hours,  # usage_hours is now a Decimal
                 description=data.get('description'),
@@ -26857,9 +26857,9 @@ def create_inventory_with_documents(request):
                 # Fetch necessary objects
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-            except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+            except (Farmer.DoesNotExist, MyCrop.DoesNotExist,  InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last inventory instance for the selected inventory items and inventory type
@@ -26904,7 +26904,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -26915,19 +26915,19 @@ def create_inventory_with_documents(request):
             )
 
             # Update the corresponding MyPesticides instance
-            if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
-                try:
-                    # Fetch the MyPesticides instance linked to the inventory items
-                    pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
+            # if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
+            try:
+                # Fetch the MyPesticides instance linked to the inventory items
+                pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
 
-                    # Deduct quantity from the available stock in MyPesticides
-                    if pesticide_instance.available_quans >= quantity_utilized:
-                        pesticide_instance.available_quans -= quantity_utilized
-                        pesticide_instance.save()
-                    else:
-                        return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
-                except MyPesticides.DoesNotExist:
-                    return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+                # Deduct quantity from the available stock in MyPesticides
+                if pesticide_instance.available_quans >= quantity_utilized:
+                    pesticide_instance.available_quans -= quantity_utilized
+                    pesticide_instance.save()
+                else:
+                    return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+            except MyPesticides.DoesNotExist:
+                return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -27093,9 +27093,9 @@ def create_inventory_with_documents(request):
                 # Fetch necessary objects
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-            except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+            except (Farmer.DoesNotExist, MyCrop.DoesNotExist,  InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last inventory instance for the selected inventory items and inventory type
@@ -27140,7 +27140,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -27151,19 +27151,19 @@ def create_inventory_with_documents(request):
             )
 
             # Update the corresponding MySeeds instance
-            if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
-                try:
-                    # Fetch the MySeeds instance linked to the inventory items
-                    seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
+            # if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
+            try:
+                # Fetch the MySeeds instance linked to the inventory items
+                seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
 
-                    # Deduct quantity from the available stock in MySeeds
-                    if seeds_instance.available_quans >= quantity_utilized:
-                        seeds_instance.available_quans -= quantity_utilized
-                        seeds_instance.save()
-                    else:
-                        return Response({'error': 'Not enough seeds available in stock'}, status=status.HTTP_400_BAD_REQUEST)
-                except MySeeds.DoesNotExist:
-                    return Response({'error': 'Seeds record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+                # Deduct quantity from the available stock in MySeeds
+                if seeds_instance.available_quans >= quantity_utilized:
+                    seeds_instance.available_quans -= quantity_utilized
+                    seeds_instance.save()
+                else:
+                    return Response({'error': 'Not enough seeds available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+            except MySeeds.DoesNotExist:
+                return Response({'error': 'Seeds record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
 
         # elif inventory_type.id == 5:
         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
@@ -27328,7 +27328,7 @@ def create_inventory_with_documents(request):
                 # Fetch necessary objects
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
@@ -27375,7 +27375,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -27386,21 +27386,21 @@ def create_inventory_with_documents(request):
             )
 
             # Update the corresponding MyFertilizers instance
-            if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
-                try:
-                    fertilizer_instance = MyFertilizers.objects.get(
-                        farmer=farmer,
-                        inventory_items=inventory_items
-                    )
+            # if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
+            try:
+                fertilizer_instance = MyFertilizers.objects.get(
+                    farmer=farmer,
+                    inventory_items=inventory_items
+                )
 
-                    if fertilizer_instance.available_quans >= quantity_utilized:
-                        fertilizer_instance.available_quans -= quantity_utilized
-                        fertilizer_instance.save()
-                    else:
-                        return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+                if fertilizer_instance.available_quans >= quantity_utilized:
+                    fertilizer_instance.available_quans -= quantity_utilized
+                    fertilizer_instance.save()
+                else:
+                    return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
 
-                except MyFertilizers.DoesNotExist:
-                    return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+            except MyFertilizers.DoesNotExist:
+                return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
 
 
         # elif inventory_type.id == 3:  # MyTools specific logic (new part)
@@ -27576,7 +27576,7 @@ def create_inventory_with_documents(request):
             try:
                 # Get the necessary fields for MyTools
                 farmer = Farmer.objects.get(id=data.get('farmer'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
                 
                 # Ensure the necessary fields for tools
@@ -27586,7 +27586,7 @@ def create_inventory_with_documents(request):
                 # Validate tools-related fields
                 if not items or usage_hours <= 0:
                     return Response({'error': 'Items and valid usage_hours are required for tools inventory.'}, status=status.HTTP_400_BAD_REQUEST)
-            except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+            except (Farmer.DoesNotExist, InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last tools instance for the selected inventory items and inventory type
@@ -27644,7 +27644,7 @@ def create_inventory_with_documents(request):
                 farmer=farmer,
                 date_of_consumption=data.get('date_of_consumption'),
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -27745,7 +27745,7 @@ def create_inventory_with_documents(request):
             try:
                 # Get the necessary fields for MyVehicle
                 farmer = Farmer.objects.get(id=data.get('farmer'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
                 crop = MyCrop.objects.get(id=data.get('crop'))  # Crop field is required for MyVehicle
                 
@@ -27753,7 +27753,7 @@ def create_inventory_with_documents(request):
                 start_kilometer = Decimal(data.get('start_kilometer', '0'))  # Make sure it is Decimal
                 end_kilometer = Decimal(data.get('end_kilometer', '0'))  # Make sure it is Decimal
                 
-            except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
+            except (Farmer.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, category, inventory items or crop'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Check for required fields
@@ -27812,7 +27812,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 # quantity_utilized=quantity_utilized,
                 # available_quans=available_quans_in_inventory,
@@ -36800,6 +36800,143 @@ def get_crop_summary(request, farmer_id, land_id, crop_id):
 # region Add new api function by Bala
 
 @api_view(['GET'])
+def get_inventory_types_quantity(request, farmer_id):
+    try:
+        my_fuels = MyFuel.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_vehicles = MyVehicle.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_machinery = MyMachinery.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_tools = MyTools.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_seeds = MySeeds.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_fertilizers = MyFertilizers.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_pesticides = MyPesticides.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+
+        total_fuel_liters = sum([float(fuel.quantity) if fuel.quantity is not None else 0 for fuel in my_fuels])
+        total_vehicle_count = my_vehicles.count()
+        total_machinery_count = my_machinery.count()
+        total_tool_quantity = sum([float(tool.quantity) if tool.quantity is not None else 0 for tool in my_tools])
+        total_seeds_quantity = sum([float(seeds.quantity) if seeds.quantity is not None else 0 for seeds in my_seeds])
+        total_fertilizers_quantity = sum([float(fertilizers.quantity) if fertilizers.quantity is not None else 0 for fertilizers in my_fertilizers])
+        total_pesticides_quantity = sum([float(pesticides.quantity) if pesticides.quantity is not None else 0 for pesticides in my_pesticides])
+
+        response_data = [
+            {
+                'id': 1,
+                'name': 'Vehicle',
+                'unit_type': "No's",
+                'quantity': total_vehicle_count
+            },
+            {
+                'id': 2,
+                'name': 'Machinery',
+                'unit_type': "No's", 
+                'quantity': total_machinery_count
+            },
+            {
+                'id': 3,
+                'name': 'Tools',
+                'unit_type': "No's",
+                'quantity': int(total_tool_quantity)
+            },
+            {
+                'id': 4,
+                'name': 'Pesticides',
+                'unit_type': "kg",
+                'quantity': int(total_pesticides_quantity)
+            },
+            {
+                'id': 5,
+                'name': 'Fertilizers',
+                'unit_type': "kg",
+                'quantity': int(total_fertilizers_quantity)
+            },
+            {
+                'id': 6,
+                'name': 'Fuel',
+                'unit_type': "liter",
+                'quantity': int(total_fuel_liters)
+            },
+            {
+                'id': 7,
+                'name': 'Seeds',
+                'unit_type': "kg",
+                'quantity': int(total_seeds_quantity)
+            }
+        ]
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response(
+            {"error": f"An error occurred: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+    except Exception as e:
+        return Response(
+            {"error": "Item not found.", "message": str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+@api_view(['GET'])
+def get_inventory_item_quantity(request, farmer_id, inventory_type_id, inventory_items_id):
+    language_code = request.GET.get('lang', 'en') 
+
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+    inventory_item = get_object_or_404(InventoryItems, id=inventory_items_id)
+
+    qs = MyInventory.objects.filter(
+        farmer=farmer,
+        inventory_type=inventory_type,
+        inventory_items=inventory_item
+    )
+    inventory_map = {
+        1: ("Vehicle",False, ""),  
+        2: ("Machinery",False, ""),   
+        3: ("Tools",False, ""),   
+        4: ("Pesticides",True, "kg"),   
+        5: ("Fertilizers",True, "kg"),  
+        6: ("Fuel",True, "liter"),
+        7: ("Seeds",True, "kg"),   
+    }
+    inventory_type, has_quantity, unit_type = inventory_map[inventory_type.id]
+    if not qs.exists():
+        return Response(
+            {"detail": "No inventory items found for the given category."},
+            status=404
+        )
+
+    # Example: only return id & quantity
+    data = list(qs.values("id", "available_quans"))[-1]
+    data['name'] = inventory_type
+
+    if has_quantity:
+        data['unit_type'] = unit_type
+
+    return Response(data, status=200)
+
+@api_view(['GET'])
+def get_inventory_items(request, inventory_type_id):
+    language_code = request.GET.get('lang', 'en')  # Default to English
+
+    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+    
+    inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
+
+    if not inventory_items.exists():
+        return Response(
+            {"error": "Category not found.", "message": f"No inventory items found for the given category - id {id}."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    serializer = InventoryItemsSerializer(inventory_items, many=True, context={'language_code': language_code})
+    
+    return Response({        
+        "data": serializer.data
+    }, status=200)
+ 
+@api_view(['GET'])
 def get_inventory_purchase_list(request, farmer_id, inventory_type_id, inventory_items_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
@@ -36857,7 +36994,6 @@ def get_inventory_purchase_list(request, farmer_id, inventory_type_id, inventory
     response_data = [format_purchase(p) for p in paginated_purchases]
     return Response(response_data, status=status.HTTP_200_OK)
 
-
 @api_view(['GET'])
 def get_inventory_consumption_list(request, farmer_id, inventory_type_id, inventory_items_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
@@ -36889,8 +37025,8 @@ def get_inventory_consumption_list(request, farmer_id, inventory_type_id, invent
         }, status=status.HTTP_400_BAD_REQUEST)
     inventory_map = {
         1: (False, ""),  
-        2: (False, ""),   
-        3: (False, ""),   
+        2: (False, "hrs"),   
+        3: (False, "hrs"),   
         4: (True, "kg"),   
         5: (True, "kg"),  
         6: (True, "liter"),
@@ -36902,54 +37038,112 @@ def get_inventory_consumption_list(request, farmer_id, inventory_type_id, invent
     response_data = [
         {
             'id': int(inv.id),
-            'quantity': float(inv.quantity_utilized or 0),
+            'quantity': int(inv.quantity_utilized) if inv.quantity_utilized is not None else None,
             'date_of_consumption': str(inv.date_of_consumption or "N/A"),
             'unit_type': unit_type,
-            'start_kilometer': float(inv.start_kilometer or 0),
-            'end_kilometer': float(inv.end_kilometer or 0),
-            'usage_hours': float(inv.usage_hours or 0),
-            'rental': int(inv.rental or 1),
+            'start_kilometer': float(inv.start_kilometer) if inv.start_kilometer is not None else None,
+            'end_kilometer': float(inv.end_kilometer) if inv.end_kilometer is not None else None,
+            'usage_hours': float(inv.usage_hours) if inv.usage_hours is not None else None,
+            'rental': int(inv.rental or 0),
             'crop_id': int(inv.crop.id) if inv.crop else None,
             'crop_name': inv.crop.crop.get_translated_value("name", language_code) if inv.crop else "Unknown Crop",
         }
         for inv in paginated
-    ] 
+    ]
+
 
     return Response(response_data, status=status.HTTP_200_OK)
 
-
 @api_view(['GET'])
 def get_inventory_purchase_details(request, farmer_id, inventory_type_id, id):
-    # Map inventory_type_id to (Model, has_quantity, unit)
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
+    # Map inventory_type_id to (Model, has_quantity, unit,docModel)
     inventory_map = {
-        1: (MyVehicle, False, ""),  
-        2: (MyMachinery, False, ""),   
-        3: (MyTools, False, ""),   
-        4: (MyPesticides, True, "kg"),   
-        5: (MyFertilizers, True, "kg"),  
-        6: (MyFuel, True, "liter"),
-        7: (MySeeds, True, "kg"),   
+        1: (MyVehicle, False, "", MyVehicleDocuments, 'vehicle_id'),  
+        2: (MyMachinery, False, "", MyMachineryDocuments, 'machinary_id'),   
+        3: (MyTools, False, "", MyToolsDocuments, 'tools_id'),   
+        4: (MyPesticides, True, "kg", MyPesticidesDocuments, 'pest_id'),   
+        5: (MyFertilizers, True, "kg", MyFertilizersDocuments, 'fertilizers_id'),  
+        6: (MyFuel, True, "liter", MyFuelDocuments, 'fuel_id'),
+        7: (MySeeds, True, "kg", MyseedsDocuments, 'seeds_id'),   
     }
+
+    Model, has_quantity, unit, documentModel, documentModelGet = inventory_map[inventory_type_id]
 
     if inventory_type_id not in inventory_map:
         return Response({"detail": "Invalid inventory type."}, status=400)
 
-    Model, has_quantity, unit = inventory_map[inventory_type_id]
+
     farmer = get_object_or_404(Farmer, id=farmer_id)
     try:
         item = Model.objects.select_related('vendor').get(id=id, farmer=farmer)
     except Model.DoesNotExist:
-        return Response({"detail": "Item not found."}, status=404)
-
+        return Response(
+            {"error": "Item not found.", "message": f"No inventory found with id {id}."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
     data = {
         "id": item.id,
-        "date_of_consumption": str(item.date_of_consumption or "N/A"),
+        "date_of_consumption": str(item.date_of_consumption) if hasattr(item, 'date_of_consumption') and item.date_of_consumption else None,
         "purchase_amount": str(item.purchase_amount or "0.00"),
         "vendor": {
             "id": getattr(item.vendor, "id", None),
-            "name": getattr(item.vendor, "name", "Unknown"),
-        }
+            "name": getattr(item.vendor, "name", None),
+        },
+        "inventory_type": {
+            "id": item.inventory_type.id if item.inventory_type else None,
+            "name": item.inventory_type.get_translated_value("name", language_code) if item.inventory_type else "Unknown",
+        },
+        "inventory_items": {
+            "id": item.inventory_items.id if item.inventory_items else None,
+            "name": item.inventory_items.get_translated_value("name", language_code) if item.inventory_items else None,
+        },
+        "quantity_unit": (item.quantity_unit.get_translated_value("name", language_code) if hasattr(item, 'quantity_unit') and item.quantity_unit else None ),
+        "status": item.status if hasattr(item, "status") else None,
+        "register_number": item.register_number if hasattr(item, "register_number") and item.register_number else None,
+        "owner_name": item.get_translated_value("owner_name", language_code) if hasattr(item, "owner_name") and item.owner_name else None,
+        "date_of_registration": str(item.date_of_registration) if hasattr(item, "date_of_registration") and item.date_of_registration else None,
+        "engine_number": item.engine_number if hasattr(item, "engine_number") and item.engine_number else None,
+        "chasis_number": item.chasis_number if hasattr(item, "chasis_number") and item.chasis_number else None,
+        "running_kilometer": int(item.running_kilometer) if hasattr(item, "running_kilometer") and item.running_kilometer else 0,
+        "average_mileage": int(item.average_mileage) if hasattr(item, "average_mileage") and item.average_mileage else 0,
+        "insurance": item.insurance if hasattr(item, "insurance") else None,
+        "company_name": item.get_translated_value("company_name", language_code) if hasattr(item, "company_name") and item.company_name else None,
+        "insurance_no": item.insurance_no if hasattr(item, "insurance_no") and item.insurance_no else None,
+        "insurance_amount": int(item.insurance_amount) if hasattr(item, "insurance_amount") and item.insurance_amount else 0,
+        "insurance_start_date": str(item.insurance_start_date) if hasattr(item, "insurance_start_date") and item.insurance_start_date else None,
+        "insurance_end_date": str(item.insurance_end_date) if hasattr(item, "insurance_end_date") and item.insurance_end_date else None,
+        "insurance_renewal_date": str(item.insurance_renewal_date) if hasattr(item, "insurance_renewal_date") and item.insurance_renewal_date else None,
+        "fuel_capacity": int(item.fuel_capacity) if hasattr(item, "fuel_capacity") and item.fuel_capacity else 0,
+        "warranty_start_date": str(item.warranty_start_date) if hasattr(item, "warranty_start_date") and item.warranty_start_date else None,
+        "warranty_end_date": str(item.warranty_end_date) if hasattr(item, "warranty_end_date") and item.warranty_end_date else None,
+        "description": item.description if item.description else None,
+        "documents": []
     }
+
+    machinery_documents = documentModel.objects.filter(**{documentModelGet: item})
+    for doc in machinery_documents:
+        file_type = doc.file_type.get_translated_value("name", language_code) if doc.file_type else "Unknown"
+        file_type_id = doc.file_type.id if doc.file_type else None
+        document_data = {
+            'id': doc.id,
+            'document': request.build_absolute_uri(f'/SuperAdmin{doc.document.url}' if doc.document else doc.document.url) if doc.document else "",
+        }
+
+        # Group documents by file_type
+        if file_type not in data['documents']:
+            data['documents'][file_type] = {
+                'id': file_type_id,
+                'name': file_type,
+                'documents': []
+            }
+        data['documents'][file_type]['documents'].append(document_data)
+
+ 
     if has_quantity:
         data.update({
             "quantity": str(getattr(item, "quantity", "0.00")),
@@ -36958,77 +37152,85 @@ def get_inventory_purchase_details(request, farmer_id, inventory_type_id, id):
 
     return Response(data)
 
-
 @api_view(['GET'])
-def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id): 
-    farmer = get_object_or_404(Farmer, id=farmer_id)
-    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
+    # Validate inventory type early
+    inventory_map = {
+        1: (False, "", MyVehicleDocuments),
+        2: (False, "hrs", MyMachineryDocuments),
+        3: (False, "hrs", MyToolsDocuments),
+        4: (True, "kg", MyPesticidesDocuments),
+        5: (True, "kg", MyFertilizersDocuments),
+        6: (True, "liter", MyFuelDocuments),
+        7: (True, "kg", MyseedsDocuments),
+    }
 
-    inventory = MyInventory.objects.filter(id=id).select_related('crop', 'crop__crop').first()
+    inventory_type_data = inventory_map.get(inventory_type_id)
+    if not inventory_type_data:
+        return Response(
+            {"error": "Invalid inventory type."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    has_quantity, unit_type, DocumentModel = inventory_type_data
+
+    # Get inventory object with related fields
+    inventory = MyInventory.objects.select_related(
+        'crop__crop', 'inventory_items', 'inventory_type'
+    ).filter(id=id).first()
 
     if not inventory:
         return Response(
             {"error": "Item not found.", "message": f"No inventory found with id {id}."},
-            status=status.HTTP_404_NOT_FOUND
+            status=status.HTTP_400_BAD_REQUEST
         )
 
     language_code = request.headers.get('Accept-Language', 'en')
 
+    # Helper for safe attribute fetching and translation
+    def safe_translated(obj, attr):
+        return obj.get_translated_value(attr, language_code) if obj else None
+
     response_data = {
         'id': inventory.id,
-        'quantity': str(inventory.quantity_utilized) if inventory.quantity_utilized else "0.00",
-        'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else "N/A",
-        'start_kilometer': str(inventory.start_kilometer) if inventory.start_kilometer else "0.00",
-        'end_kilometer': str(inventory.end_kilometer) if inventory.end_kilometer else "0.00",
-        'usage_hours': str(inventory.usage_hours) if inventory.usage_hours else "0.00",
-        'rental': str(inventory.rental) if inventory.rental else "1",
-        'crop_id': inventory.crop.id if inventory.crop else None,
-        'crop_name': inventory.crop.crop.get_translated_value("name", language_code) if inventory.crop else "Unknown Crop",
-        'created_at': str(inventory.created_at) if inventory.created_at else "N/A",
-        'updated_at': str(inventory.updated_at) if inventory.updated_at else "N/A",
+        'quantity': int(inventory.quantity_utilized) if inventory.quantity_utilized else None,
+        'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else None,
+        'start_kilometer': int(inventory.start_kilometer) if inventory.start_kilometer else None,
+        'end_kilometer': int(inventory.end_kilometer) if inventory.end_kilometer else None,
+        'usage_hours': int(inventory.usage_hours) if inventory.usage_hours else None,
+        'rental': int(inventory.rental) if inventory.rental else None,
+        'crop_id': getattr(inventory.crop, 'id', None),
+        'crop_name': safe_translated(inventory.crop.crop if inventory.crop else None, "name"),
+        'inventory_items': {
+            'id': getattr(inventory.inventory_items, 'id', None),
+            'name': safe_translated(inventory.inventory_items, "name") or "Unknown",
+        },
+        'inventory_type': {
+            'id': getattr(inventory.inventory_type, 'id', None),
+            'name': safe_translated(inventory.inventory_type, "name") or "Unknown",
+        },
+        'description': safe_translated(inventory, "description"),
+        'documents': []
     }
+
+    # Group documents by file_type
+    documents = DocumentModel.objects.filter(fuel=inventory.fuel_purchase).select_related('file_type')
+    grouped_documents = defaultdict(lambda: {'id': None, 'name': '', 'documents': []})
+
+    for doc in documents:
+        file_type = safe_translated(doc.file_type, "name") or "Unknown"
+        file_type_id = getattr(doc.file_type, 'id', None)
+        document_url = request.build_absolute_uri(f'/SuperAdmin{doc.document.url}') if doc.document else ""
+
+        grouped_documents[file_type]['id'] = file_type_id
+        grouped_documents[file_type]['name'] = file_type
+        grouped_documents[file_type]['documents'].append({
+            'id': doc.id,
+            'document': document_url,
+        })
+
+    response_data['documents'] = list(grouped_documents.values())
 
     return Response(response_data, status=status.HTTP_200_OK)
 
-
-@api_view(['GET'])
-def get_inventory_items(request, inventory_type_id):
-    language_code = request.GET.get('lang', 'en')  # Default to English
-
-    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
-    
-    inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
-
-    if not inventory_items.exists():
-        return Response({"detail": "No inventory items found for the given category."}, status=404)
-
-    serializer = InventoryItemsSerializer(inventory_items, many=True, context={'language_code': language_code})
-    
-    return Response({        
-        "data": serializer.data
-    }, status=200)
- 
-
-# @api_view(['GET'])
-# def get_inventory_items_with_quantity(request, farmer_id, inventory_category_id):
-#     language_code = request.GET.get('lang', 'en')  
-
-#     try:
-#         inventory_category = InventoryCategory.objects.get(id=inventory_category_id, status=0)
-        
-#     except InventoryCategory.DoesNotExist:
-#         return Response({"detail": "Inventory category not found or inactive."}, status=404)
-
-#     inventory_items = InventoryItems.objects.filter(inventory_category=inventory_category, status=0)
-
-#     if not inventory_items.exists():
-#         return Response({"detail": "No inventory items found for the given category."}, status=404)
-
-#     serializer = InventoryItemsSerializer(inventory_items, many=True, context={'language_code': language_code})
-    
-#     return Response({
-#        serializer.data
-#     }, status=200)
-    
-    
 # endregion

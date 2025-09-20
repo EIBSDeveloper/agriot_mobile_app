@@ -1,0 +1,77 @@
+Customer
+
+customer_payables_list/userid
+customer_receivables_list/userid
+response
+[
+            {
+                "id": 196,
+                "name": "sam",
+                "business_name": sam shop",
+                "is_credit": false,
+                "balance": 900
+            }
+]
+
+
+Vendor
+
+vendor_payables_list/userid
+vendor_receivables_list/userid
+response
+[
+            {
+                "id": 180,
+                "name": "suman",
+                "business_name": "pet shop",
+                "is_credit": true,
+                "balance": 0
+            },
+]
+
+Customer Details
+
+customer_payables_Details/userid/id
+customer_receivables_list/userid/id
+
+            {
+                "id": 196,
+                "name": "sam",
+                "business_name": "",
+                "image": "",
+                "sales":
+                       [
+                    {
+                        "id": 170,
+                        "date": "2025-09-12",
+                        "crop_id": 402,
+                        "crop_name": "Cotton",
+                        "total_amount": 2000.0,
+                        "amount_paid": 3000.0,
+                        "received_amount": 0.0,
+                        "to_amount": 0.0
+                    }
+                ]
+            }
+
+
+Vendor Details
+vendor_payables_list/userid/id
+vendor_receivables_list/userid/id
+
+            {
+                "id": 180,
+                "name": "suman",
+                "business_name": "pet shop",
+                "image": "",
+                "expenses": [
+                    {
+                        "id": 145,
+                        "date": "2025-09-12",
+                        "total_amount": 2000.0,
+                        "amount_paid": 0.0,
+                        "received_amount": 0.0,
+                        "to_amount": 0.0
+                    }
+                ],
+            }

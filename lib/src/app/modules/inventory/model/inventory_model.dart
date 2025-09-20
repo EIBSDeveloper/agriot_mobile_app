@@ -1,108 +1,100 @@
-// class InventoryModel {
-//   final InventoryFuel fuel;
-//   final InventoryVehicle vehicle;
-//   final InventoryMachinery machinery;
-//   final InventoryTools tools;
-//   final InventoryPesticides pesticides;
-//   final InventoryFertilizers fertilizers;
-//   final InventorySeeds seeds;
+import '../../expense/model/inventory_item.dart';
+import '../../expense/model/vendor.dart';
+import 'inventory_item.dart';
 
-//   InventoryModel({
-//     required this.fuel,
-//     required this.vehicle,
-//     required this.machinery,
-//     required this.tools,
-//     required this.pesticides,
-//     required this.fertilizers,
-//     required this.seeds,
-//   });
+class InventoryRecord {
+  int id;
+  String dateOfConsumption;
+  String purchaseAmount;
+  Vendor vendor;
+  InventoryType inventoryType;
+  InventoryItem inventoryItems;
+  String? quantityUnit;
+  int status;
+  String? registerNumber;
+  String? ownerName;
+  String? dateOfRegistration;
+  String? engineNumber;
+  String? chasisNumber;
+  int runningKilometer;
+  int averageMileage;
+  String? insurance;
+  String? companyName;
+  String? insuranceNo;
+  int insuranceAmount;
+  String? insuranceStartDate;
+  String? insuranceEndDate;
+  String? insuranceRenewalDate;
+  int fuelCapacity;
+  String? warrantyStartDate;
+  String? warrantyEndDate;
+  String? description;
+  List<dynamic> documents;
+  String quantity;
+  String unitType;
 
-//   factory InventoryModel.fromJson(Map<String, dynamic> json) => InventoryModel(
-//       fuel: InventoryFuel.fromJson(json['fuel']),
-//       vehicle: InventoryVehicle.fromJson(json['vehicle']),
-//       machinery: InventoryMachinery.fromJson(json['machinery']),
-//       tools: InventoryTools.fromJson(json['tools']),
-//       pesticides: InventoryPesticides.fromJson(json['pesticides']),
-//       fertilizers: InventoryFertilizers.fromJson(json['fertilizers']),
-//       seeds: InventorySeeds.fromJson(json['seeds']),
-//     );
-// }
+  InventoryRecord({
+    required this.id,
+    required this.dateOfConsumption,
+    required this.purchaseAmount,
+    required this.vendor,
+    required this.inventoryType,
+    required this.inventoryItems,
+    this.quantityUnit,
+    required this.status,
+    this.registerNumber,
+    this.ownerName,
+    this.dateOfRegistration,
+    this.engineNumber,
+    this.chasisNumber,
+    required this.runningKilometer,
+    required this.averageMileage,
+    this.insurance,
+    this.companyName,
+    this.insuranceNo,
+    required this.insuranceAmount,
+    this.insuranceStartDate,
+    this.insuranceEndDate,
+    this.insuranceRenewalDate,
+    required this.fuelCapacity,
+    this.warrantyStartDate,
+    this.warrantyEndDate,
+    this.description,
+    required this.documents,
+    required this.quantity,
+    required this.unitType,
+  });
 
-// class InventoryFuel {
-//   final double totalQuantity;
-//   final int id;
-//   // final String name ;
+  factory InventoryRecord.fromJson(Map<String, dynamic> json) => InventoryRecord(
+      id: json['id'],
+      dateOfConsumption: json['date_of_consumption'],
+      purchaseAmount: json['purchase_amount'],
+      vendor: Vendor.fromJson(json['vendor']),
+      inventoryType: InventoryType.fromJson(json['inventory_type']),
+      inventoryItems: InventoryItem.fromJson(json['inventory_items']),
+      quantityUnit: json['quantity_unit'],
+      status: json['status'],
+      registerNumber: json['register_number'],
+      ownerName: json['owner_name'],
+      dateOfRegistration: json['date_of_registration'],
+      engineNumber: json['engine_number'],
+      chasisNumber: json['chasis_number'],
+      runningKilometer: json['running_kilometer'],
+      averageMileage: json['average_mileage'],
+      insurance: json['insurance'],
+      companyName: json['company_name'],
+      insuranceNo: json['insurance_no'],
+      insuranceAmount: json['insurance_amount'],
+      insuranceStartDate: json['insurance_start_date'],
+      insuranceEndDate: json['insurance_end_date'],
+      insuranceRenewalDate: json['insurance_renewal_date'],
+      fuelCapacity: json['fuel_capacity'],
+      warrantyStartDate: json['warranty_start_date'],
+      warrantyEndDate: json['warranty_end_date'],
+      description: json['description'],
+      documents: List<dynamic>.from(json['documents'] ?? []),
+      quantity: json['quantity'],
+      unitType: json['unit_type'],
+    );
 
-//   InventoryFuel({required this.totalQuantity,required this.id});
-
-//   factory InventoryFuel.fromJson(Map<String, dynamic> json) => InventoryFuel(
-//       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
-//       id: json['id'],
-//     );
-// }
-
-// class InventoryVehicle {
-//   final double totalFuelCapacity;
-//  final int id;
-//   InventoryVehicle({required this.totalFuelCapacity,required this.id});
-
-//   factory InventoryVehicle.fromJson(Map<String, dynamic> json) => InventoryVehicle(
-//        id: json['id'],
-//       totalFuelCapacity: double.tryParse(json['total_fuel_capacity'].toString()) ?? 0.0,
-//     );
-// }
-
-// class InventoryMachinery {
-//   final double totalFuelCapacity;
-//  final int id;
-//   InventoryMachinery({required this.totalFuelCapacity,required this.id});
-
-//   factory InventoryMachinery.fromJson(Map<String, dynamic> json) => InventoryMachinery(
-//        id: json['id'],
-//       totalFuelCapacity: double.tryParse(json['total_fuel_capacity'].toString()) ?? 0.0,
-//     );
-// }
-
-// class InventoryTools {
-//   final double totalQuantity;
-//  final int id;
-//   InventoryTools({required this.totalQuantity,required this.id});
-
-//   factory InventoryTools.fromJson(Map<String, dynamic> json) => InventoryTools(
-//        id: json['id'],
-//       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
-//     );
-// }
-
-// class InventoryPesticides {
-//   final double totalQuantity; final int id;
-
-//   InventoryPesticides({required this.totalQuantity,required this.id});
-
-//   factory InventoryPesticides.fromJson(Map<String, dynamic> json) => InventoryPesticides(
-//        id: json['id'],
-//       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
-//     );
-// }
-
-// class InventoryFertilizers {
-//   final double totalQuantity;
-//  final int id;
-//   InventoryFertilizers({required this.totalQuantity,required this.id});
-
-//   factory InventoryFertilizers.fromJson(Map<String, dynamic> json) => InventoryFertilizers(
-//        id: json['id'],
-//       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
-//     );
-// }
-
-// class InventorySeeds {
-//   final double totalQuantity;
-//  final int id;
-//   InventorySeeds({required this.totalQuantity,required this.id});
-
-//   factory InventorySeeds.fromJson(Map<String, dynamic> json) => InventorySeeds(
-//        id: json['id'],
-//       totalQuantity: double.tryParse(json['total_quantity'].toString()) ?? 0.0,
-//     );
-// }
+}

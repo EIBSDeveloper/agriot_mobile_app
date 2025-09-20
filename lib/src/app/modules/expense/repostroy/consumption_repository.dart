@@ -1,33 +1,28 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/document_type_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
-import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
+
+import '../../../controller/app_controller.dart';
+import '../../inventory/model/inventory_item.dart';
 
 class ConsumptionRepository {
   final HttpService _httpService = Get.find<HttpService>();
 
-  Future<List<InventoryTypeModel>> fetchInventoryTypes(String farmerId) async {
-    final response = await _httpService.get('/purchase_list/$farmerId/');
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final types = <InventoryTypeModel>[];
-
-      data.forEach((key, value) {
-        if (key != 'language' && value is Map<String, dynamic>) {
-          types.add(InventoryTypeModel.fromJson(key, value));
-        }
-      });
-
-      return types;
-    } else {
-      throw Exception('Failed to fetch inventory types');
+  final AppDataController appDeta = Get.put(AppDataController());
+  Future<List<InventoryType>> getInventory() async {
+    try {
+      final farmerId = appDeta.userId;
+      final response = await _httpService.get(
+        '/inventory_types_quantity/$farmerId',
+      );
+      final response2 = jsonDecode(response.body) as List;
+return response2.map((data) => InventoryType.fromJson(data)).toList();
+    } catch (e) {
+      rethrow;
     }
   }
-
- 
 
   Future<List<InventoryItemModel>> fetchInventoryItems(int categoryId) async {
     final response = await _httpService.get('/get_inventory_items/$categoryId');

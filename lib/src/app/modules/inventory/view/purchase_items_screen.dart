@@ -32,159 +32,53 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
 
         return ListView(
           children: [
-          
-            _buildInventoryItem(
-              'fuel'.tr,
-              '${inventory.fuel.totalQuantity.round()} Ltr',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'fuel',
-                  inventory.fuel.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/fuel-expenses-entry',
-                  arguments: {"id": inventory.fuel.id},
-                )?.then((res) {
-                  controller.loadInventory();
-                });
-              },
+            ...inventory.map(
+              (item) => _buildInventoryItem(
+                item.name,
+                '${item.quantity?.round()} ${item.unitType}',
+                open: () {
+                  controller.navigateToCategoryDetail(item.id, tab: 1);
+                },
+                onTap: () {
+                  if (item.id == 6) {
+                    Get.toNamed(
+                      '/fuel-expenses-entry',
+                      arguments: {"id": item.id},
+                    )?.then((res) {
+                      controller.loadInventory();
+                    });
+                  } else if (item.id == 1) {
+                    Get.toNamed(
+                      '/vehicle_entry',
+                      arguments: {"id": item.id},
+                    )?.then((res) {
+                      if (res ?? false) {
+                        controller.loadInventory();
+                      }
+                    });
+                  } else if (item.id == 2) {
+                    Get.toNamed(
+                      '/machinery_entry',
+                      arguments: {"id": item.id},
+                    )?.then((res) {
+                      if (res ?? false) {
+                        controller.loadInventory();
+                      }
+                    });
+                  } else  {
+                    Get.toNamed(
+                      '/fertilizer_entry',
+                      arguments: {"id": item.id},
+                    )?.then((res) {
+                      if (res ?? false) {
+                        controller.loadInventory();
+                      }
+                    });
+                  } 
+                },
+              ),
             ),
-            const Divider(),
-            _buildInventoryItem(
-              'vehicle'.tr,
-              '${inventory.vehicle.totalFuelCapacity.round()}',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'vehicle',
-                  inventory.vehicle.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/vehicle_entry',
-                  arguments: {"id": inventory.vehicle.id},
-                )?.then((res) {
-                  if (res ?? false) {
-                    controller.loadInventory();
-                  }
-                });
-              },
-            ),
-            const Divider(),
-            _buildInventoryItem(
-              'machinery'.tr,
-              '${inventory.machinery.totalFuelCapacity.round()}',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'machinery',
-                  inventory.machinery.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/machinery_entry',
-                  arguments: {"id": inventory.machinery.id},
-                )?.then((res) {
-                  if (res ?? false) {
-                    controller.loadInventory();
-                  }
-                });
-              },
-            ),
-            const Divider(),
-            _buildInventoryItem(
-              'tools'.tr,
-              '${inventory.tools.totalQuantity.round()}',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'tools',
-                  inventory.tools.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/fertilizer_entry',
-                  arguments: {"id": inventory.tools.id},
-                )?.then((res) {
-                  if (res ?? false) {
-                    controller.loadInventory();
-                  }
-                });
-              },
-            ),
-            const Divider(),
-            _buildInventoryItem(
-              "${'pesticides'.tr} / ${'fertilizers'.tr}",
-              '${inventory.pesticides.totalQuantity.round()} kg',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'pesticides',
-                  inventory.pesticides.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/fertilizer_entry',
-                  arguments: {"id": inventory.pesticides.id},
-                )?.then((res) {
-                  if (res ?? false) {
-                    controller.loadInventory();
-                  }
-                });
-              },
-            ),
-            // const Divider(),
-            // _buildInventoryItem(
-            //   'fertilizers'.tr,
-            //   '${inventory.fertilizers.totalQuantity.round()} kg',
-            //   open: () {
-            //     controller.navigateToCategoryDetail(
-            //       'fertilizers',
-            //       inventory.fertilizers.id,
-            //       tab: 1,
-            //     );
-            //   },
-            //   onTap: () {
-            //     Get.toNamed(
-            //       '/fertilizer_entry',
-            //       arguments: {"id": inventory.fertilizers.id},
-            //     )?.then((res) {
-            //       if (res ?? false) {
-            //         controller.loadInventory();
-            //       }
-            //     });
-            //   },
-            // ),
-            const Divider(),
-            _buildInventoryItem(
-              'seeds'.tr,
-              '${inventory.seeds.totalQuantity.round()} kg',
-              open: () {
-                controller.navigateToCategoryDetail(
-                  'seeds',
-                  inventory.seeds.id,
-                  tab: 1,
-                );
-              },
-              onTap: () {
-                Get.toNamed(
-                  '/fertilizer_entry',
-                  arguments: {"id": inventory.seeds.id},
-                )?.then((res) {
-                  if (res ?? false) {
-                    controller.loadInventory();
-                  }
-                });
-              },
-            ),      const Divider(),
-              _buildInventoryItem(
+           _buildInventoryItem(
               "general_expense".tr,
               '',
               open: () {},
@@ -203,56 +97,61 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
     String quantity, {
     Function()? onTap,
     Function()? open,
-  }) => InkWell(
-    onTap:  open,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade300, width: 1),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Title Text
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 16),
-              overflow: TextOverflow.ellipsis,
+  }) => Column(
+    children: [
+      InkWell(
+        onTap: open,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.shade300, width: 1),
             ),
           ),
-
-          // Quantity with tap handler (open)
-          // if (quantity.isNotEmpty)
-            InkWell(
-              onTap: onTap,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    // Text(
-                    // quantity.isNotEmpty?  '($quantity)  ':'',
-                    //   style: TextStyle(
-                    //     color: Colors.green.shade700,
-                    //     fontWeight: FontWeight.bold,
-                    //   ),
-                    // ),
-                    Icon(Icons.add, color: Colors.green.shade700),
-                  ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Title Text
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-        ],
+
+              // Quantity with tap handler (open)
+              // if (quantity.isNotEmpty)
+              InkWell(
+                onTap: onTap,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      // Text(
+                      // quantity.isNotEmpty?  '($quantity)  ':'',
+                      //   style: TextStyle(
+                      //     color: Colors.green.shade700,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
+                      Icon(Icons.add, color: Colors.green.shade700),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-    ),
+      const Divider(),
+    ],
   );
 }

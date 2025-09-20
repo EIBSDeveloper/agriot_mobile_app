@@ -1,4 +1,3 @@
-import 'package:argiot/src/app/modules/vendor_customer/model/item.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
@@ -8,6 +7,8 @@ import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../inventory/model/inventory_item.dart';
 
 
 class VendorCustomerController extends GetxController {
@@ -118,14 +119,14 @@ class VendorCustomerController extends GetxController {
   //Market end
 
   //inventory
-  Rxn<PurchaseModel> purchaseModel = Rxn<PurchaseModel>();
+  Rxn<List<InventoryType>> purchaseModel = Rxn<List<InventoryType>>();
   RxSet<String> selectedKeys = <String>{}.obs;
   RxBool isinveroryLoading = false.obs;
 
   Future<void> loadPurchaseList() async {
     try {
       isinveroryLoading.value = true;
-      final result = await _repository.fetchPurchaseList();
+      final result = await _repository.getInventory();
       purchaseModel.value = result;
     } catch (e) {
       print('Error loading purchase list: $e');
@@ -197,13 +198,13 @@ class VendorCustomerController extends GetxController {
         id: id,
         type: selectedType.value,
         customerName:
-            selectedType.value == 'customer' || selectedType.value == 'both'
+            selectedType.value == 'customer' 
             ? nameController.text
             : null,
         vendorName: selectedType.value == 'vendor' ? nameController.text : null,
         shopName: shopNameController.text,
         businessName:
-            selectedType.value == 'vendor' || selectedType.value == 'both'
+            selectedType.value == 'vendor' 
             ? shopNameController.text
             : null,
         mobileNo: mobileController.text,
@@ -218,18 +219,17 @@ class VendorCustomerController extends GetxController {
         marketIds: selectedMarket.value?.id != null
             ? [selectedMarket.value!.id]
             : [],
-        inventoryTypeIds:
-            selectedType.value == 'vendor' || selectedType.value == 'both'
-            ? (purchaseModel.value != null)
-                  ? selectedKeys
-                        .where(
-                          (key) => purchaseModel.value!.items.containsKey(key),
-                        )
-                        .map((key) => purchaseModel.value!.items[key]!.id)
-                        .toList()
-                  : null
-            : null,
-        // imageBase64: imageBase64.value,
+        // inventoryTypeIds:
+        //     selectedType.value == 'vendor' 
+        //     ? (purchaseModel.value != null)
+        //           ? selectedKeys
+        //                 .where(
+        //                   (key) => purchaseModel.value!.containsKey(key),
+        //                 )
+        //                 .map((key) => purchaseModel.value!.items[key]!.id)
+        //                 .toList()
+        //           : null
+        //     : null,
       );
       int newId = 0;
       if (id != null) {

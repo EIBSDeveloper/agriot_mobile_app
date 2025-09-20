@@ -6,7 +6,6 @@ import 'package:argiot/src/app/modules/expense/model/fertilizer_response.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
-import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
 
@@ -14,13 +13,14 @@ import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
+import '../../inventory/model/inventory_item.dart';
 import '../../sales/model/unit.dart';
 
 class PurchasesAddRepository {
   final HttpService _httpService = Get.find<HttpService>();
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   Future<Map<String, dynamic>> addFuelEntry(FuelEntryModel fuelEntry) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.post(
         '/add_fuel/$farmerId',
@@ -49,7 +49,7 @@ class PurchasesAddRepository {
   }
 
   Future<Map<String, dynamic>> addMachinery(Machinery machinery) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.post(
         '/add_machinery/$farmerId',
@@ -61,35 +61,19 @@ class PurchasesAddRepository {
     }
   }
 
-  Future<List<InventoryTypeModel>> fetchInventoryTypes() async {
-    final farmerId = _appDataController.userId.value;
+  Future<List<InventoryType>> getInventory() async {
     try {
-      final response = await _httpService.get('/purchase_list/$farmerId/');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-
-        List<InventoryTypeModel> inventoryTypes = [];
-
-        data.forEach((key, value) {
-          if (key != 'language' && value is Map<String, dynamic>) {
-            inventoryTypes.add(InventoryTypeModel.fromJson(key, value));
-          }
-        });
-
-        return inventoryTypes;
-      } else {
-        return [];
-      }
+      final farmerId = appDeta.userId;
+      final response = await _httpService.get('/inventory_types_quantity/$farmerId');
+      final response2 = jsonDecode(response.body) as List;
+return response2.map((data) => InventoryType.fromJson(data)).toList();
     } catch (e) {
-      showError('Failed to fetch inventory types');
-      return [];
+      rethrow;
     }
   }
-
   Future<List<Customer>> getVendorList() async {
     try {
-      final farmerId = _appDataController.userId;
+      final farmerId = appDeta.userId;
       final response = await _httpService.get('/get_vendor/$farmerId');
       var decode = json.decode(response.body);
       var map = decode
@@ -144,7 +128,7 @@ class PurchasesAddRepository {
   }
 
   Future addVehicle(VehicleModel vehicle) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.post(
         '/add_vehicle/$farmerId/',
@@ -160,7 +144,7 @@ class PurchasesAddRepository {
   }
 
   Future<FertilizerResponse> addFertilizer(FertilizerModel fertilizer) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
 
     try {
       var endpoint = '/add_fertilizer/$farmerId/';

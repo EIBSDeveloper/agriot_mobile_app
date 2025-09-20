@@ -1,16 +1,17 @@
 import 'dart:convert';
-import 'package:argiot/src/app/modules/vendor_customer/model/item.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
+import '../../inventory/model/inventory_item.dart';
+
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   Future<List> getVendorCustomerList(int type) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       String endpoint;
       switch (type) {
@@ -46,14 +47,19 @@ class VendorCustomerRepository {
     }
   }
 
-  Future<PurchaseModel> fetchPurchaseList() async {
-    final farmerId = _appDataController.userId;
-    final response = await _httpService.get('/purchase_list/$farmerId');
-    return PurchaseModel.fromJson(json.decode(response.body));
+   Future<List<InventoryType>> getInventory() async {
+    try {
+      final farmerId = appDeta.userId;
+      final response = await _httpService.get('/inventory_types_quantity/$farmerId');
+      final response2 = jsonDecode(response.body) as List;
+return response2.map((data) => InventoryType.fromJson(data)).toList();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> daleteDetails(int id, String type) async {
-    final userId = _appDataController.userId;
+    final userId = appDeta.userId;
     var endPoint = '';
     if (type == 'customer') {
       endPoint = '/deactivate_my_customer/$userId/';
@@ -70,7 +76,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> addCustomer(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       var json2 = formData.toJson();
       final response = await _httpService.post(
@@ -88,7 +94,7 @@ class VendorCustomerRepository {
     }
   }
   Future<int> editCustomer(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       var json2 = formData.toJson();
       final response = await _httpService.put(
@@ -107,7 +113,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> addVendor(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       var json2 = formData.toJson();
       json2['farmer'] = farmerId;
@@ -123,7 +129,7 @@ class VendorCustomerRepository {
   }
 
   Future<int>editVendor(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       var json2 = formData.toJson();
       json2['farmer'] = farmerId;
@@ -139,7 +145,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> addBoth(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       var json2 = formData.toJson();
       json2["is_customer_is_vendor"] = "yes";
@@ -159,7 +165,7 @@ class VendorCustomerRepository {
     }
   }
   Future<int> editBoth(VendorCustomerFormData formData) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       var json2 = formData.toJson();
       json2["is_customer_is_vendor"] = "yes";

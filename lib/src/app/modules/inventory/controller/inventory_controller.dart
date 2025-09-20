@@ -1,14 +1,14 @@
-import 'package:argiot/src/app/modules/inventory/model/inventory_model.dart';
 import 'package:argiot/src/app/modules/inventory/repostory/inventory_repository.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
+import '../model/inventory_item.dart';
 
 class InventoryController extends GetxController {
   final InventoryRepository _repository = InventoryRepository();
 
-  final Rx<InventoryModel?> inventory = Rx<InventoryModel?>(null);
+  final Rx<List<InventoryType>?> inventory = Rx<List<InventoryType>?>(null);
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
@@ -42,7 +42,7 @@ class InventoryController extends GetxController {
     });
   }
 
-  void navigateToCategoryDetail(String category, int id, {int tab = 0}) {
+  void navigateToCategoryDetail( int id, {int tab = 0}) {
     Get.toNamed('/consumption-purchase', arguments: {"id": id, 'tab': tab});
   }
 }

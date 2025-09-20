@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
-import 'package:argiot/src/app/modules/expense/model/inventory_type_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_repository.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../document/model/add_document_model.dart';
+import '../../inventory/model/inventory_item.dart';
 
 class ConsumptionController extends GetxController {
   final ConsumptionRepository _repository = ConsumptionRepository();
@@ -18,7 +18,7 @@ class ConsumptionController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
   // Observable variables
-  RxList<InventoryTypeModel> inventoryTypes = <InventoryTypeModel>[].obs;
+  RxList<InventoryType> inventoryTypes = <InventoryType>[].obs;
   // RxList<InventoryCategoryModel> inventoryCategories =
   //     <InventoryCategoryModel>[].obs;
   RxList<InventoryItemModel> inventoryItems = <InventoryItemModel>[].obs;
@@ -143,10 +143,9 @@ class ConsumptionController extends GetxController {
   }
 
   Future<void> fetchInventoryTypes() async {
-    final farmerId = _appDataController.userId.value;
     try {
       isTypeLoading(true);
-      final types = await _repository.fetchInventoryTypes(farmerId);
+      final types = await _repository.getInventory();
       inventoryTypes.assignAll(types);
       if (inventoryType.value != null) {
         setInventoryType(inventoryType.value!);

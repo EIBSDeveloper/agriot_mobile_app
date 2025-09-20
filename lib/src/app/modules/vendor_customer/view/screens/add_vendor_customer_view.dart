@@ -18,8 +18,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         key: controller.formKey,
         child: Column(
           children: [
-            if (controller.selectedType.value == 'vendor' ||
-                controller.selectedType.value == 'both')
+            if (controller.selectedType.value == 'vendor')
               _buildInventoryTypeSection(),
 
             _buildBasicInfoSection(),
@@ -86,15 +85,10 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           return Center(child: Text('no_data_available'.tr));
         }
 
-        final items = model.items;
 
-        final options = items.entries.map((entry) {
-          final key = entry.key;
-          return MultiSelectItem<String>(key, key);
-        }).toList();
 
         return MultiSelectDialogField<String>(
-          items: options,
+          items:  model.map((item)=> MultiSelectItem<String>(item.name, item.name)).toList(),
           dialogHeight: 300,
           initialValue: controller.selectedKeys.toList(),
           title: Text('select_inventory_types'.tr),

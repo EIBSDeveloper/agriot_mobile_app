@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../service/utils/utils.dart';
-import '../model/inventory_type_model.dart';
+import '../../inventory/model/inventory_item.dart';
 
 class ConsumptionPurchaseController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -30,7 +30,7 @@ class ConsumptionPurchaseController extends GetxController
   // 0 = Consumption, 1 = Purchase
   final RxBool isCategoryLoading = false.obs;
   final RxBool isinventoryLoading = false.obs;
-  var inventoryTypes = <InventoryTypeModel>[].obs;
+  var inventoryTypes = <InventoryType>[].obs;
   var inventoryItems = <InventoryItemModel>[].obs;
   final Rxn<int> inventoryType = Rxn<int>();
   // final Rxn<int> inventoryCategory = Rxn<int>();
@@ -127,7 +127,7 @@ class ConsumptionPurchaseController extends GetxController
   Future<void> fetchInventoryCategories() async {
     try {
       isCategoryLoading(true);
-      final response = await purchasesrepository.fetchInventoryTypes();
+      final response = await purchasesrepository.getInventory();
       inventoryTypes.value = response;
       if (inventoryType.value != null) {
         selectedInventoryType.value = inventoryType.value;
@@ -191,9 +191,9 @@ class ConsumptionPurchaseController extends GetxController
 
       purchaseData.addAll(data);
 
-      if (purchaseData.isEmpty) {
-        showWarning('no_records_found'.tr);
-      }
+      // if (purchaseData.isEmpty) {
+      //   showWarning('no_records_found'.tr);
+      // }
     } catch (e) {
       purchasePage.value--;
       showError('failed_to_load_data'.tr);
@@ -217,9 +217,9 @@ class ConsumptionPurchaseController extends GetxController
       );
 
       consumptionData.addAll(data);
-      if (consumptionData.isEmpty) {
-        showWarning('no_records_found'.tr);
-      }
+      // if (consumptionData.isEmpty) {
+      //   showWarning('no_records_found'.tr);
+      // }
     } catch (e) {
       consumptionPage.value--;
       showError('failed_to_load_data'.tr);

@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/expense/model/document_category.dart';
 
-import 'package:argiot/src/app/modules/expense/model/inventory_type.dart';
 
+import '../../inventory/model/inventory_item.dart';
 import 'inventory_category.dart';
 import 'inventory_item.dart';
 import 'vendor.dart';

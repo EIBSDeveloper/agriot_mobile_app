@@ -46,7 +46,7 @@ class ConsumptionController extends GetxController {
   RxString toolItems = ''.obs;
 
   Rxn<int> inventoryType = Rxn<int>();
-  Rxn<int> inventoryCategory = Rxn<int>();
+  // Rxn<int> inventoryCategory = Rxn<int>();
   Rxn<int> inventoryItem = Rxn<int>();
 
   // Getter to check if current inventory type requires usage hours
@@ -79,9 +79,7 @@ class ConsumptionController extends GetxController {
     if (arguments?["type"] != null) {
       inventoryType.value = arguments?["type"];
     }
-    if (arguments?["category"] != null) {
-      inventoryCategory.value = arguments?["category"];
-    }
+
     if (arguments?["item"] != null) {
       inventoryItem.value = arguments?["item"];
     }
@@ -108,7 +106,6 @@ class ConsumptionController extends GetxController {
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
     if (inventoryItem.value != null) {
-      inventoryCategory.value = null;
       inventoryType.value = null;
       inventoryItem.value = null;
     }
@@ -205,7 +202,6 @@ class ConsumptionController extends GetxController {
     try {
       isLoading(true);
 
-    
       final Map<String, dynamic> requestBody = {
         "date_of_consumption": selectedDate.value.toIso8601String().split(
           'T',
@@ -216,7 +212,9 @@ class ConsumptionController extends GetxController {
         "inventory_items": selectedInventoryItem.value,
         "description": description.value,
         "farmer": farmerId,
-        "quantity_utilized": requiresUsageHours ? usageHours.value : quantity.value,
+        "quantity_utilized": requiresUsageHours
+            ? usageHours.value
+            : quantity.value,
       };
 
       // Add conditional fields

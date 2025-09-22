@@ -1,4 +1,3 @@
-
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart';
 import 'package:flutter/material.dart';
@@ -7,17 +6,8 @@ import 'package:get/get.dart';
 import '../../../../widgets/my_network_image.dart';
 import '../../../../widgets/title_text.dart';
 
-
 class ScheduleDetailsPage extends StatefulWidget {
-  const ScheduleDetailsPage({
-    required this.landId,
-    required this.cropId,
-    required this.scheduleId,
-    super.key,
-  });
-  final int landId;
-  final int cropId;
-  final int scheduleId;
+  const ScheduleDetailsPage({super.key});
 
   @override
   State<ScheduleDetailsPage> createState() => _ScheduleDetailsPageState();
@@ -30,9 +20,9 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   void initState() {
     super.initState();
     controller.setParameters(
-      lId: widget.landId,
-      cId: widget.cropId,
-      sId: widget.scheduleId,
+      lId: Get.arguments['landId'],
+      cId: Get.arguments['cropId'],
+      sId: Get.arguments['scheduleId'],
     );
 
     // Delay execution until after the first build

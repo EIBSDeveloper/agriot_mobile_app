@@ -19,7 +19,7 @@ class ProfileView extends GetView<ProfileController> {
       actions: [
         IconButton(
           onPressed: () {
-            Get.toNamed('/vendor-customer');
+            Get.toNamed(  Routes.vendorCustomer,);
           },
           icon: const Icon(Icons.account_box),
         ),

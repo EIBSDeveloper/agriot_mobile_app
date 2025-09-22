@@ -1,16 +1,16 @@
 import 'package:argiot/src/app/modules/expense/controller/purchase_details_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/service/utils/utils.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class FuelInventoryView extends GetView<InventoryDetailsController> {
-  const FuelInventoryView({super.key});
+class PurchaseDetails extends GetView<InventoryDetailsController> {
+  const PurchaseDetails({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: CustomAppBar(title: getType(Get.arguments?['type']??'')),
+      appBar: const CustomAppBar(title: "Purchase Details"),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());

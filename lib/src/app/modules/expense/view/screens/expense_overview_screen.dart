@@ -192,16 +192,14 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                           item.inventoryItems.name,
                           style: Get.textTheme.bodyLarge,
                         ),
-                        if (item.availableQuans != null &&
+                        if (
                             item.inventorytype.id != 1 &&
                             item.inventorytype.id != 2) ...[
                           const SizedBox(height: 4),
                           Text(
-                            'quantity'.trParams({
-                              'quantity': item.availableQuans.toString(),
-                            }),
+                            "${'quantity'.tr} ${item.quantity}",
                             style: Get.textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey,
+                             
                             ),
                           ),
                         ],

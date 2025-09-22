@@ -11,13 +11,13 @@ class CunsumptionDetailsRepository {
 
   
   Future<PurchaseDetailModel> getCunsumptionDetail(
-    int fuelId,
+    int cunsumptionId,
     int inventoryType,
   ) async {
     final farmerId = _appDataController.userId.value;
     try {
     
-      final response = await httpService.get("/inventory_purchase_details/$farmerId/$inventoryType/$fuelId", );
+      final response = await httpService.get("/inventory_purchase_details/$farmerId/$inventoryType/$cunsumptionId", );
 
       if (response.statusCode == 200) {
         return PurchaseDetailModel.fromJson(

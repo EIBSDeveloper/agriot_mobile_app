@@ -5,6 +5,7 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_routes.dart';
 import '../../../service/utils/enums.dart';
 import '../../document/document.dart';
 class ConsumptionView extends StatelessWidget {
@@ -282,7 +283,7 @@ class ConsumptionView extends StatelessWidget {
                 Get
                   ..back(result: true)
                   ..toNamed(
-                    '/consumption-purchase',
+                     Routes.consumptionPurchaseList,
                     arguments: {"id": _controller.selectedInventoryType.value},
                     preventDuplicates: true,
                   );

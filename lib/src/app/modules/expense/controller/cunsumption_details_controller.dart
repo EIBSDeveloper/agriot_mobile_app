@@ -3,6 +3,7 @@ import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../routes/app_routes.dart';
 import '../repostroy/cunsumption_details_repository.dart';
 
 class CunsumptionDetailsController extends GetxController {
@@ -81,6 +82,6 @@ class CunsumptionDetailsController extends GetxController {
   }
 
   void viewDocument(String documentUrl) {
-    Get.toNamed('/document_viewer', arguments: documentUrl);
+    Get.toNamed( Routes.docViewer, arguments: documentUrl);
   }
 }

@@ -118,7 +118,7 @@ class LandCard extends StatelessWidget {
                     (crop) => InkWell(
                       onTap: () {
                         Get.toNamed(
-                          '/crop-overview',
+                          Routes.cropOverview,
                           arguments: {'landId': land.id, 'cropId': crop.id},
                         )?.then((result) {
                           if (result ?? false) {

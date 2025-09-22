@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
-import '../../../service/utils/utils.dart';
 import '../../inventory/model/inventory_item.dart';
 import '../model/inventory_item_quantity.dart';
 
@@ -252,7 +251,7 @@ class ConsumptionPurchaseController extends GetxController
     } else {
       if (selectedInventoryType.value == 6) {
         Get.toNamed(
-          '/fuel-expenses-entry',
+            Routes.addFuel,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -262,7 +261,7 @@ class ConsumptionPurchaseController extends GetxController
         });
       } else if (selectedInventoryType.value == 1) {
         Get.toNamed(
-          '/vehicle_entry',
+            Routes.addVehicle,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -272,7 +271,7 @@ class ConsumptionPurchaseController extends GetxController
         });
       } else if (selectedInventoryType.value == 2) {
         Get.toNamed(
-          '/machinery_entry',
+       Routes.addMachinery,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -282,7 +281,7 @@ class ConsumptionPurchaseController extends GetxController
         });
       } else {
         Get.toNamed(
-          '/fertilizer_entry',
+         Routes.addInventoryItem,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,

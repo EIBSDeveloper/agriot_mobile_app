@@ -1,11 +1,11 @@
 import 'package:argiot/src/app/modules/expense/controller/expense_controller.dart';
-import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
 
 class AddExpenseScreen extends GetView<ExpenseController> {
@@ -34,8 +34,8 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 label: "${'crop'.tr} ",
               ),
               const SizedBox(height: 16),
-             InputCardStyle(
-               
+              InputCardStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: TextFormField(
                   readOnly: true,
                   controller: TextEditingController(
@@ -45,8 +45,11 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                   ),
                   decoration: InputDecoration(
                     labelText: "${'Date'.tr} *",
-                    
-                    suffixIcon:  Icon(Icons.calendar_today,color: Get.theme.primaryColor,),
+
+                    suffixIcon: Icon(
+                      Icons.calendar_today,
+                      color: Get.theme.primaryColor,
+                    ),
                     border: InputBorder.none,
                   ),
                   onTap: () => controller.selectDate(context),
@@ -59,38 +62,55 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 ),
               ),
               const SizedBox(height: 16),
-              InputCardStyle(
-               
-                child: DropdownButtonFormField<ExpenseType>(
-                  initialValue: controller.selectedExpenseType.value.id == 0
-                      ? null
-                      : controller.selectedExpenseType.value,
+              Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => InputCardStyle(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: DropdownButtonFormField<int>(
+                          // validator: (value) => value == null ? 'required_field'.tr : null,
+                          decoration: InputDecoration(
+                            labelText: 'vendor'.tr,
+                            border: InputBorder.none,
+                          ),
 
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  items: controller.expenseTypes
-                      .map(
-                        (type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type.name),
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          initialValue: controller.selectedVendor.value,
+                          onChanged: (value) =>
+                              controller.selectedVendor.value = value,
+                          items: controller.vendorList
+                              .map(
+                                (customer) => DropdownMenuItem<int>(
+                                  value: customer.id,
+                                  child: Text(customer.name),
+                                ),
+                              )
+                              .toList(),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (type) => controller.selectedExpenseType(type!),
-                  decoration: InputDecoration(
-                    labelText: "${'Type of Expense'.tr}  *",
-                    border: InputBorder.none,
+                      ),
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select an expense type'.tr;
-                    }
-                    return null;
-                  },
-                ),
+                  Card(
+                    color: Get.theme.primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      onPressed: () {
+                        Get.toNamed(
+                          Routes.addVendorCustomer,
+                          arguments: {"type": 'vendor'},
+                        )?.then((result) {
+                          controller.fetchVendorList();
+                        });
+                      },
+                      icon: const Icon(Icons.add),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
-            InputCardStyle(
-               
+              InputCardStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -114,8 +134,8 @@ class AddExpenseScreen extends GetView<ExpenseController> {
               ),
 
               const SizedBox(height: 16),
-            InputCardStyle(
-               
+              InputCardStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: TextFormField(
                   maxLines: 3,
                   decoration: InputDecoration(

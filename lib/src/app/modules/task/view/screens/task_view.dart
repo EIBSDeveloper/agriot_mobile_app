@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
@@ -39,7 +40,7 @@ class TaskView extends GetView<TaskController> {
                     backgroundColor: Get.theme.primaryColor,
                   ),
                   onPressed: () {
-                    Get.toNamed('/schedules')?.then((reslut) {
+                    Get.toNamed( Routes.schedules)?.then((reslut) {
                       if (reslut != null) {
                         controller.loadTasks();
                       }

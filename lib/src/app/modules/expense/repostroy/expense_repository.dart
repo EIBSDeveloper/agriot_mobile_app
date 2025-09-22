@@ -11,13 +11,15 @@ import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
+import '../model/customer.dart';
+
 
 class ExpenseRepository {
   final HttpService _httpService = Get.find<HttpService>();
 
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   Future<TotalExpense> getTotalExpense(String timePeriod) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.post(
         '/total_expense_and_purchase/$farmerId/',
@@ -30,7 +32,7 @@ class ExpenseRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',
@@ -50,7 +52,7 @@ class ExpenseRepository {
   }
 
   Future<ExpenseResponse> getExpenses(String timePeriod) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.post(
         '/both_farmer_expense_purchase_list/$farmerId/',
@@ -61,9 +63,23 @@ class ExpenseRepository {
       throw Exception('Failed to load expenses: $e');
     }
   }
+    Future<List<Customer>> getVendorList() async {
+    try {
+      final farmerId = appDeta.userId;
+      final response = await _httpService.get('/get_vendor/$farmerId');
+      var decode = json.decode(response.body);
+      var map = decode
+          .map<Customer>((item) => Customer.fromJson(item))
+          .toList();
+      return map;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 
   Future<List<Chart>> getExpenseSummary(String timePeriod) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
       final response = await _httpService.post('/expense-totals/', {
         'farmer_id': farmerId,
@@ -106,7 +122,7 @@ class ExpenseRepository {
     String description, {
     List<Map<String, dynamic>>? documents,
   }) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = appDeta.userId;
     try {
       final response = await _httpService.post('/add_expense/$farmerId', {
         'my_crop': myCrop,

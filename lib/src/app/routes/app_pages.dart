@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/auth/view/screens/walkthrough_view.dart';
 
 import 'package:argiot/src/app/modules/expense/binding/fuel_inventory_binding.dart';
-import 'package:argiot/src/app/modules/expense/view/screens/fuel_inventory_view.dart';
+import 'package:argiot/src/app/modules/expense/view/screens/purchase_details.dart';
 import 'package:argiot/src/app/modules/map_view/bindings/land_map_view_binding.dart';
 import 'package:argiot/src/app/modules/profile/views/screens/profile_edit_view.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_binding.dart';
@@ -36,8 +36,9 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_c
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';
 
-
 import '../modules/document/document.dart';
+import '../modules/expense/binding/cunsumption_detail_binding.dart';
+import '../modules/expense/view/screens/consumption_details.dart';
 import '../modules/sales/view/screens/add_deduction_view.dart';
 import '../modules/task/view/screens/schedule_details_page.dart';
 import '../modules/map_view/view/screens/land_map_view.dart';
@@ -211,7 +212,7 @@ class AppPages {
       page: () => const ProfileEditView(),
       binding: ProfileEditBinding(),
     ),
-  GetPage(
+    GetPage(
       name: Routes.purchaseItems,
       page: () => const PurchaseItemsScreen(),
       binding: InventoryBinding(),
@@ -270,48 +271,49 @@ class AppPages {
     ),
     // lib/routes/app_pages.dart (add these routes)
     GetPage(
-      name: '/schedules',
+      name: Routes.schedules,
       page: () => const ScheduleListPage(),
       binding: ScheduleBinding(),
     ),
     GetPage(
-      name: '/schedule-details',
-      page: () => ScheduleDetailsPage(
-        landId: Get.arguments['landId'],
-        cropId: Get.arguments['cropId'],
-        scheduleId: Get.arguments['scheduleId'],
-      ),
+      name: Routes.scheduleDeatils,
+      page: () => const ScheduleDetailsPage(),
       binding: ScheduleBinding(),
     ),
     GetPage(
-      name: '/fuel-expenses-entry',
+      name:Routes.addFuel,
       page: () => const FuelEntryView(),
       binding: FuelEntryBinding(),
     ),
     GetPage(
-      name: '/machinery_entry',
+      name: Routes.addMachinery,
       page: () => const MachineryEntryScreen(),
       binding: FuelEntryBinding(),
     ),
     GetPage(
-      name: '/vehicle_entry',
+      name:Routes.addVehicle,
       page: () => const VehicleView(),
       binding: FuelEntryBinding(),
     ),
     GetPage(
-      name: '/fertilizer_entry',
+      name: Routes.addInventoryItem,
       page: () => const FertilizerScreen(),
       binding: FuelEntryBinding(),
     ),
     GetPage(
-      name: '/consumption-purchase',
+      name:Routes.consumptionPurchaseList ,
       page: () => const ConsumptionPurchaseView(),
       binding: ConsumptionPurchaseBinding(),
     ),
     GetPage(
-      name: '/fuel_inventory',
-      page: () => const FuelInventoryView(),
+      name: Routes.inventoryPurchaseDetail,
+      page: () => const PurchaseDetails(),
       binding: FuelInventoryBinding(),
+    ),
+    GetPage(
+      name: Routes.inventoryConsumptionDetails,
+      page: () => const ConsumptionDetails(),
+      binding: CunsumptionDetailBinding(),
     ),
     // GetPage(
     //   name: '/inventory/:type/:id',

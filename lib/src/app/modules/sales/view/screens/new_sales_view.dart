@@ -170,7 +170,7 @@ class _NewSalesViewState extends State<NewSalesView> {
           onPressed: () async {
             PackageUsage? package = await findLimit();
             if (package!.customerBalance > 0) {
-              Get.toNamed('/add-vendor-customer')?.then((result) {
+              Get.toNamed( Routes.addVendorCustomer)?.then((result) {
                 controller.fetchCustomerList();
               });
             } else {

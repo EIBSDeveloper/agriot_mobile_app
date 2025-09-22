@@ -26,7 +26,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => InputCardStyle(
+  Widget build(BuildContext context) => InputCardStyle(        padding: const EdgeInsets.symmetric(horizontal: 8),
     child: DropdownButtonFormField<T>(
       key: key,
       initialValue: selectedItem,

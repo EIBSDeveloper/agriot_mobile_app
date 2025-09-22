@@ -3,6 +3,8 @@ import 'package:argiot/src/app/modules/expense/view/widgets/month_day_format.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../routes/app_routes.dart';
+
 class ConsumptionList extends StatelessWidget {
   final List<ConsumptionItem> records;
   final int type;
@@ -42,38 +44,47 @@ class ConsumptionList extends StatelessWidget {
         }
 
         final record = records[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                MonthDayFormat(date: record.dateOfConsumption),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (record.cropId != null)
-                        Text(
-                          record.cropName ?? '',
-                          style: Get.textTheme.titleMedium,
-                        ),
-                      if (record.startKilometer != null && record.endKilometer != null) ...[
-                        Text(
-                          "${record.startKilometer} km → ${record.endKilometer} km",
-                          style: Get.textTheme.titleMedium,
-                        ),
+        return InkWell(
+          onTap: () {
+            Get.toNamed(
+              Routes.inventoryConsumptionDetails,
+              arguments: {"id": record.id, 'type': type},
+            );
+          },
+          child: Card(
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  MonthDayFormat(date: record.dateOfConsumption),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (record.cropId != null)
+                          Text(
+                            record.cropName ?? '',
+                            style: Get.textTheme.titleMedium,
+                          ),
+                        if (record.startKilometer != null &&
+                            record.endKilometer != null) ...[
+                          Text(
+                            "${record.startKilometer} km → ${record.endKilometer} km",
+                            style: Get.textTheme.titleMedium,
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-                Text(
-                  '${record.quantity ?? record.usageHours ?? "--"} ${record.unitType} ',
-                  style: Get.textTheme.titleMedium,
-                ),
-              ],
+                  Text(
+                    '${record.quantity ?? record.usageHours ?? "--"} ${record.unitType} ',
+                    style: Get.textTheme.titleMedium,
+                  ),
+                ],
+              ),
             ),
           ),
         );

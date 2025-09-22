@@ -243,7 +243,7 @@ class PurchasesAddController extends GetxController {
       if (response['success'] == true) {
         Get.back(result: true);
         Get.toNamed(
-          '/consumption-purchase',
+          Routes.consumptionPurchaseList,
           arguments: {
             "id": fuelEntry.inventoryType,
             'tab': 1,
@@ -293,7 +293,7 @@ class PurchasesAddController extends GetxController {
       if (response['success'] == true) {
         Get.back(result: true);
         Get.toNamed(
-          '/consumption-purchase',
+          Routes.consumptionPurchaseList,
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
@@ -394,7 +394,7 @@ class PurchasesAddController extends GetxController {
       if (status['success']) {
         Get.back(result: true);
         Get.toNamed(
-          '/consumption-purchase',
+          Routes.consumptionPurchaseList,
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
@@ -446,7 +446,7 @@ class PurchasesAddController extends GetxController {
         Get.back(result: true);
 
         Get.toNamed(
-          '/consumption-purchase',
+            Routes.consumptionPurchaseList,
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
@@ -650,7 +650,7 @@ class PurchasesAddController extends GetxController {
           color: Colors.white,
           onPressed: () {
             Get.toNamed(
-              '/add-vendor-customer',
+               Routes.addVendorCustomer,
               arguments: {"type": 'vendor'},
             )?.then((result) {
               fetchVendorList();

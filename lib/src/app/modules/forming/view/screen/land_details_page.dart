@@ -26,7 +26,7 @@ class LandDetailView extends GetView<LandDetailController> {
             color: Get.theme.primaryColor,
             onPressed: () {
               Get.toNamed(
-                '/add-land',
+                 Routes.addLand,
                 arguments: {'landId': controller.landId.value},
               )?.then((result) {
                 controller.loadData();

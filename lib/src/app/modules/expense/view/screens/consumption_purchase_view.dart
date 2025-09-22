@@ -51,8 +51,8 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
             padding: const EdgeInsets.only(
               right: 15,
               left: 15,
-              bottom: 4,
-              top: 4,
+              bottom: 5,
+              top: 5,
             ),
             child: Row(
               children: [

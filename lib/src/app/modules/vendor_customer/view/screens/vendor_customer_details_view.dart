@@ -6,6 +6,8 @@ import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../routes/app_routes.dart';
+
 class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
   const VendorCustomerDetailsView({super.key});
 
@@ -168,7 +170,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
 
     // Navigate to edit screen
     Get.toNamed(
-      '/add-vendor-customer',
+      Routes.addVendorCustomer,
       arguments: {'isEditing': true, 'id': item.id},
     );
   }

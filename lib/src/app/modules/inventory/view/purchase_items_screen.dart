@@ -42,14 +42,14 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                 onTap: () {
                   if (item.id == 6) {
                     Get.toNamed(
-                      '/fuel-expenses-entry',
+                      Routes.addFuel,
                       arguments: {"id": item.id},
                     )?.then((res) {
                       controller.loadInventory();
                     });
                   } else if (item.id == 1) {
                     Get.toNamed(
-                      '/vehicle_entry',
+                      Routes.addVehicle,
                       arguments: {"id": item.id},
                     )?.then((res) {
                       if (res ?? false) {
@@ -58,7 +58,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     });
                   } else if (item.id == 2) {
                     Get.toNamed(
-                      '/machinery_entry',
+                    Routes.addMachinery,
                       arguments: {"id": item.id},
                     )?.then((res) {
                       if (res ?? false) {
@@ -67,7 +67,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     });
                   } else  {
                     Get.toNamed(
-                      '/fertilizer_entry',
+                      Routes.addInventoryItem,
                       arguments: {"id": item.id},
                     )?.then((res) {
                       if (res ?? false) {

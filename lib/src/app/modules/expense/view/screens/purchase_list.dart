@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../routes/app_routes.dart';
 import '../../model/purchase_record.dart';
 import '../widgets/month_day_format.dart';
+
 class PurchaseList extends StatelessWidget {
   final List<PurchaseItem> records;
   final int type;
@@ -45,13 +46,13 @@ class PurchaseList extends StatelessWidget {
         return InkWell(
           onTap: () {
             Get.toNamed(
-              '/fuel_inventory',
+              Routes.inventoryPurchaseDetail,
               arguments: {"id": record.id, 'type': type},
             );
           },
           child: Card(
             elevation: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical:6),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -64,14 +65,14 @@ class PurchaseList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          record.vendor?.name??" ",
+                          record.vendor?.name ?? " ",
                           style: Get.textTheme.titleMedium,
                         ),
                         const SizedBox(height: 4),
-                        if(record.quantity != null)
-                        Text(
-                          '${record.quantity!.round()} ${record.unitType}',
-                        ),
+                        if (record.quantity != null)
+                          Text(
+                            '${record.quantity!.round()} ${record.unitType}',
+                          ),
                       ],
                     ),
                   ),

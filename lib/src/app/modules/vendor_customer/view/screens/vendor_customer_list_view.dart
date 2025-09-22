@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dar
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/pop_messages.dart';
 import '../../../../service/utils/utils.dart';
 import '../../../../widgets/toggle_bar.dart';
@@ -93,7 +94,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         icon: Icon(Icons.call, color: Get.theme.primaryColor),
       ),
       onTap: () =>
-          Get.toNamed('/vendor-customer-details', arguments: {'id': item.id}),
+          Get.toNamed( Routes.vendorCustomerDetails, arguments: {'id': item.id}),
     ),
   );
 
@@ -120,7 +121,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
               onTap: () {
                 Get.back();
                 controller.selectedType.value = 'customer';
-                Get.toNamed('/add-vendor-customer');
+                Get.toNamed( Routes.addVendorCustomer);
               },
             ),
             ListTile(
@@ -129,18 +130,9 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
               onTap: () {
                 Get.back();
                 controller.selectedType.value = 'vendor';
-                Get.toNamed('/add-vendor-customer');
+                Get.toNamed( Routes.addVendorCustomer,);
               },
             ),
-            // ListTile(
-            //   title: Text('both'.tr),
-            //   leading: const Icon(Icons.people_alt),
-            //   onTap: () {
-            //     Get.back();
-            //     controller.selectedType.value = 'both';
-            //     Get.toNamed('/add-vendor-customer');
-            //   },
-            // ),
           ],
         ),
       ),

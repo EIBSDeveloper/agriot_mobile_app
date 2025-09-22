@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../model/customer.dart';
+
 
 class ExpenseController extends GetxController {
   final ExpenseRepository _repository = Get.find<ExpenseRepository>();
@@ -37,9 +39,9 @@ class ExpenseController extends GetxController {
   final expenseTypes = <ExpenseType>[].obs;
   final fileTypes = <FileType>[].obs;
   final isLoading = false.obs;
-
+  var selectedVendor = Rx<int?>(null);
   var cardexpenses = <Chart>[].obs;
-
+  var vendorList = <Customer>[].obs;
   var cardtotalExpenses = 0.0.obs;
 
   // ✅ Color list moved here
@@ -105,6 +107,14 @@ class ExpenseController extends GetxController {
     }
   }
 
+  Future<void> fetchVendorList() async {
+    try {
+      final response = await _repository.getVendorList();
+      vendorList.assignAll(response);
+    } catch (e) {
+      showError('Failed to fetch customers: $e');
+    }
+  }
   Future<void> loadFileTypes() async {
     try {
       final types = await _repository.getFileTypes();

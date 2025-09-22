@@ -43,6 +43,6 @@ class InventoryController extends GetxController {
   }
 
   void navigateToCategoryDetail( int id, {int tab = 0}) {
-    Get.toNamed('/consumption-purchase', arguments: {"id": id, 'tab': tab});
+    Get.toNamed(  Routes.consumptionPurchaseList, arguments: {"id": id, 'tab': tab});
   }
 }

@@ -43,7 +43,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
           ),
         ),
         Obx(
-          () => Container(
+          () => controller.inventoryItemQuantity.value?.unitType != null?Container(
             width: double.infinity,
             decoration: BoxDecoration(
               color: Get.theme.primaryColor.withAlpha(50),
@@ -66,14 +66,14 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
                   ),
                 ),
                 Text(
-                  "00 liter",
+                  "${controller.inventoryItemQuantity.value?.availableQuans??0} ${controller.inventoryItemQuantity.value?.unitType??" "}",
                   style: Get.theme.textTheme.bodyMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-          ),
+          ):const SizedBox.shrink(),
         ),
         // const Divider(),
         Expanded(

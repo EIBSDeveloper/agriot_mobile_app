@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 
 import '../../inventory/model/inventory_item.dart';
 import '../../sales/model/unit.dart';
+import '../model/inventory_item_quantity.dart';
 
 class PurchasesAddRepository {
   final HttpService _httpService = Get.find<HttpService>();
@@ -64,13 +65,16 @@ class PurchasesAddRepository {
   Future<List<InventoryType>> getInventory() async {
     try {
       final farmerId = appDeta.userId;
-      final response = await _httpService.get('/inventory_types_quantity/$farmerId');
+      final response = await _httpService.get(
+        '/inventory_types_quantity/$farmerId',
+      );
       final response2 = jsonDecode(response.body) as List;
-return response2.map((data) => InventoryType.fromJson(data)).toList();
+      return response2.map((data) => InventoryType.fromJson(data)).toList();
     } catch (e) {
       rethrow;
     }
   }
+
   Future<List<Customer>> getVendorList() async {
     try {
       final farmerId = appDeta.userId;
@@ -125,6 +129,29 @@ return response2.map((data) => InventoryType.fromJson(data)).toList();
       showError('Failed to fetch inventory items');
       return [];
     }
+  }
+
+  Future<InventoryItemQuantity?> fetchInventoryItemsQuantity(
+    int inventoryTypeId,
+    int inventoryItemId,
+  ) async {
+    try {
+      final farmerId = appDeta.userId;
+      final response = await _httpService.get(
+        '/inventory_item_quantity/$farmerId/$inventoryTypeId/$inventoryItemId',
+      );
+
+      // if (response.statusCode == 200) {
+
+      return InventoryItemQuantity.fromJson(json.decode(response.body));
+      // }
+      //  else {
+      //   return ;
+      // }
+    } catch (e) {
+      // showError('Failed to fetch inventory items');
+    }
+    return null;
   }
 
   Future addVehicle(VehicleModel vehicle) async {

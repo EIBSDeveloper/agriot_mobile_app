@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../../routes/app_routes.dart';
 import '../../../service/utils/utils.dart';
 import '../../inventory/model/inventory_item.dart';
+import '../model/inventory_item_quantity.dart';
 
 class ConsumptionPurchaseController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -22,7 +23,8 @@ class ConsumptionPurchaseController extends GetxController
   var selectedInventoryType = Rxn<int>();
   // var selectedInventoryCategory = Rxn<int>();
   var selectedInventoryItem = Rxn<int>();
-  RxString selectedInventoryTypeName = 'Fuel'.obs;
+  final Rxn<InventoryItemQuantity> inventoryItemQuantity =
+      Rxn<InventoryItemQuantity>();
   RxList<ConsumptionItem> consumptionData = <ConsumptionItem>[].obs;
   RxList<PurchaseItem> purchaseData = <PurchaseItem>[].obs;
   // var currentTabIndex = 0.obs;
@@ -33,7 +35,6 @@ class ConsumptionPurchaseController extends GetxController
   var inventoryTypes = <InventoryType>[].obs;
   var inventoryItems = <InventoryItemModel>[].obs;
   final Rxn<int> inventoryType = Rxn<int>();
-  // final Rxn<int> inventoryCategory = Rxn<int>();
   final Rxn<int> inventoryItem = Rxn<int>();
   RxBool isLoadingMorePurchase = false.obs;
   RxBool isLoadingMoreConsumption = false.obs;
@@ -51,18 +52,13 @@ class ConsumptionPurchaseController extends GetxController
     var tab = Get.arguments["tab"];
     if (tab != null) {
       tabController.animateTo(tab);
-      // currentTabIndex.value = tab;
     }
     if (arguments?["id"] != null) {
       inventoryType.value = arguments?["id"];
     }
-    // if (arguments?["category"] != null) {
-    //   inventoryCategory.value = arguments?["category"];
-    // }
     if (arguments?["item"] != null) {
       inventoryItem.value = arguments?["item"];
     }
-    selectedInventoryTypeName.value = getType(inventoryType.value ?? 0);
     fetchInventoryCategories();
 
     purchaseScrollController.addListener(_onPurchaseScroll);
@@ -102,12 +98,22 @@ class ConsumptionPurchaseController extends GetxController
 
   void setInventoryItem(int itemId) {
     selectedInventoryItem.value = itemId;
+
     refreshData();
   }
 
   Future<void> refreshData() async {
+    await getItemQuantity();
     purchaseRefresh();
     cunsumptionRefresh();
+  }
+
+  Future<void> getItemQuantity() async {
+      inventoryItemQuantity.value = await purchasesrepository
+        .fetchInventoryItemsQuantity(
+          selectedInventoryType.value!,
+          selectedInventoryItem.value!,
+        );
   }
 
   void purchaseRefresh() {
@@ -118,7 +124,7 @@ class ConsumptionPurchaseController extends GetxController
   }
 
   void cunsumptionRefresh() {
-     consumptionPage.value = 0;
+    consumptionPage.value = 0;
     hasMoreConsumption.value = true;
     consumptionData.clear();
     loadMoreConsumptionData();
@@ -163,6 +169,7 @@ class ConsumptionPurchaseController extends GetxController
       final response = await purchasesrepository.fetchInventoryItems(
         inventoryCategoryId,
       );
+
       inventoryItems.value = response;
       if (inventoryItem.value != null) {
         setInventoryItem(inventoryItem.value!);
@@ -190,10 +197,6 @@ class ConsumptionPurchaseController extends GetxController
       );
 
       purchaseData.addAll(data);
-
-      // if (purchaseData.isEmpty) {
-      //   showWarning('no_records_found'.tr);
-      // }
     } catch (e) {
       purchasePage.value--;
       showError('failed_to_load_data'.tr);
@@ -217,9 +220,6 @@ class ConsumptionPurchaseController extends GetxController
       );
 
       consumptionData.addAll(data);
-      // if (consumptionData.isEmpty) {
-      //   showWarning('no_records_found'.tr);
-      // }
     } catch (e) {
       consumptionPage.value--;
       showError('failed_to_load_data'.tr);
@@ -230,7 +230,8 @@ class ConsumptionPurchaseController extends GetxController
 
   void reLoad(result) {
     if (result ?? false) {
-     purchaseRefresh();
+         getItemQuantity();
+      purchaseRefresh();
     }
   }
 
@@ -243,7 +244,8 @@ class ConsumptionPurchaseController extends GetxController
           "item": selectedInventoryItem.value,
         },
       )?.then((result) {
-        if(result??false){
+        if (result ?? false) {
+             getItemQuantity();
           cunsumptionRefresh();
         }
       });

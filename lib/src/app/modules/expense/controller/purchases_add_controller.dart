@@ -455,12 +455,12 @@ class PurchasesAddController extends GetxController {
           },
           preventDuplicates: true,
         );
-        showError('fertilizer_add_success'.tr);
+        showSuccess('Added Success'.tr);
       } else {
         showError(response.message);
       }
     } catch (e) {
-      showError('fertilizer_add_failed'.tr);
+      showError('Added failed'.tr);
     } finally {
       isLoading.value = false;
     }

@@ -15,56 +15,54 @@ import '../../../service/utils/utils.dart';
 import '../view/widgets/crop_details_bottom_sheet.dart';
 
 class LandMapViewController extends GetxController {
+  // Variables
   final LandMapViewRepository _repository = LandMapViewRepository();
-  var isLoading = true.obs;
   final AppDataController appDataController = Get.find();
+  final ScheduleCrop allCrop = ScheduleCrop(id: 0, name: "All");
+
+  var isLoading = true.obs;
   var lands = <ScheduleLand>[].obs;
-  final Rx<CropDetails?> cropDetails = Rx<CropDetails?>(null);
+  var landpolyline = <LatLng>[].obs;
   var selectedLand = Rxn<ScheduleLand>();
   var selectedCrop = Rxn<ScheduleCrop>();
-  final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);
   var mapType = MapType.normal.obs;
   var cameraPosition = const CameraPosition(
     target: LatLng(12.9716, 77.5946),
     zoom: 14,
   ).obs;
-  final ScheduleCrop allCrop = ScheduleCrop(id: 0, name: "All");
 
-  var landpolyline = <LatLng>[].obs;
+  final Rx<CropDetails?> cropDetails = Rx<CropDetails?>(null);
+  final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);
   Rx<LandMapData?> landMapDetails = Rx<LandMapData?>(null);
+  final RxInt landId = 0.obs;
+  final RxInt cropId = 0.obs;
 
   GoogleMapController? mapController;
   LatLngBounds? pendingBounds;
   final polygons = <Polygon>{}.obs;
   final markers = <Marker>{}.obs;
-  final RxInt landId = 0.obs;
-  final RxInt cropId = 0.obs;
-
+  // Getters
+  List<ScheduleCrop> get cropsForSelectedLand =>
+      selectedLand.value?.crops ?? [];
+  // Lifecycle
   @override
   void onInit() {
     super.onInit();
     landId.value = Get.arguments?['landId'] ?? 0;
-
     cropId.value = Get.arguments?['cropId'] ?? 0;
     fetchLandsAndCrops();
   }
 
-  List<ScheduleCrop> get cropsForSelectedLand =>
-      selectedLand.value?.crops ?? [];
-
-  Future<void> fetchWeatherData(double lat, double lon) async {
-    weatherData.value = await _repository.getWeatherData(lat, lon);
-  }
-
+  // Methods
   void selectLand(ScheduleLand? land) {
     selectedLand.value = land;
-    selectedCrop.value = allCrop; //  reset to All
+    selectedCrop.value = allCrop; // reset to All
     fetchLandsAndCropMap();
   }
 
   void selectCrop(ScheduleCrop? crop) {
     selectedCrop.value = crop ?? allCrop;
-    fetchLandsAndCropMap(); //  refresh polygons + zoom
+    fetchLandsAndCropMap(); // refresh polygons + zoom
   }
 
   void changeMapType(MapType type) {
@@ -120,7 +118,7 @@ class LandMapViewController extends GetxController {
     }
   }
 
-  Future<void> fetchLandsAndCropsDetails(cropId) async {
+  Future<void> fetchLandsAndCropsDetails(int cropId) async {
     try {
       // isLoading(true);
       final result = await _repository.fetcCropDetails(
@@ -131,7 +129,6 @@ class LandMapViewController extends GetxController {
     } finally {
       // isLoading(false);
     }
-    return;
   }
 
   Future<Set<Marker>> buildCropMarkers(List<CropMapData> crops) async {
@@ -144,6 +141,7 @@ class LandMapViewController extends GetxController {
       final cropPoints = crop.geoMarks!
           .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))
           .toList();
+
       final center = LatLng(
         cropPoints.map((e) => e.latitude).reduce((a, b) => a + b) /
             cropPoints.length,
@@ -156,7 +154,8 @@ class LandMapViewController extends GetxController {
       if (crop.cropImage != null && crop.cropImage!.isNotEmpty) {
         try {
           final bytes = await getBytesFromUrl(crop.cropImage!, width: 120);
-          icon = BitmapDescriptor.bytes(bytes);
+          // ignore: deprecated_member_use
+          icon = BitmapDescriptor.fromBytes(bytes);
         } catch (e) {
           print("Failed to load crop image: $e");
         }
@@ -242,12 +241,18 @@ class LandMapViewController extends GetxController {
         ),
       ),
     );
+
     fetchWeatherData(crop.geoMarks![0][0], crop.geoMarks![0][1]);
-    await fetchLandsAndCropsDetails(crop.cropId);
+    await fetchLandsAndCropsDetails(crop.cropId!);
     Get.back();
+
     Get.bottomSheet(
       isScrollControlled: true,
       CropDetailsBottomSheet(crop: crop),
     );
+  }
+
+  Future<void> fetchWeatherData(double lat, double lon) async {
+    weatherData.value = await _repository.getWeatherData(lat, lon);
   }
 }

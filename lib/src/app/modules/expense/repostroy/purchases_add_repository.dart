@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/expense/model/customer.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_model.dart';
 import 'package:argiot/src/app/modules/expense/model/fertilizer_response.dart';
 import 'package:argiot/src/app/modules/expense/model/fuel_entry_model.dart';
-import 'package:argiot/src/app/modules/expense/model/inventory_category_model.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/model/machinery.dart';
 import 'package:argiot/src/app/modules/expense/model/vehicle_model.dart';
@@ -89,27 +88,27 @@ class PurchasesAddRepository {
     }
   }
 
-  Future<List<InventoryCategoryModel>> fetchInventoryCategories(
-    int inventoryTypeId,
-  ) async {
-    try {
-      final response = await _httpService.get(
-        '/get_inventory_category/$inventoryTypeId',
-      );
+  // Future<List<InventoryCategoryModel>> fetchInventoryCategories(
+  //   int inventoryTypeId,
+  // ) async {
+  //   try {
+  //     final response = await _httpService.get(
+  //       '/get_inventory_category/$inventoryTypeId',
+  //     );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data
-            .map((json) => InventoryCategoryModel.fromJson(json))
-            .toList();
-      } else {
-        return [];
-      }
-    } catch (e) {
-      showError('Failed to fetch inventory categories');
-      return [];
-    }
-  }
+  //     if (response.statusCode == 200) {
+  //       final List<dynamic> data = json.decode(response.body);
+  //       return data
+  //           .map((json) => InventoryCategoryModel.fromJson(json))
+  //           .toList();
+  //     } else {
+  //       return [];
+  //     }
+  //   } catch (e) {
+  //     showError('Failed to fetch inventory categories');
+  //     return [];
+  //   }
+  // }
 
   Future<List<InventoryItemModel>> fetchInventoryItems(
     int inventoryCategoryId,

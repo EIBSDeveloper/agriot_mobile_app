@@ -28,6 +28,7 @@ class ConsumptionList extends StatelessWidget {
     }
 
     return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       controller: scrollController,
       itemCount: records.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
@@ -53,8 +54,9 @@ class ConsumptionList extends StatelessWidget {
           },
           child: Card(
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            child: Padding(
+            child:  Container(
               padding: const EdgeInsets.all(12.0),
+         constraints: BoxConstraints(minHeight:    100<   Get.size.height*0.05?Get.size.height*0.05:100, ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -81,7 +83,9 @@ class ConsumptionList extends StatelessWidget {
                   ),
                   Text(
                     '${record.quantity ?? record.usageHours ?? "--"} ${record.unitType} ',
-                    style: Get.textTheme.titleMedium,
+                    style: Get.textTheme.titleMedium!.copyWith(
+                      color: Get.theme.primaryColor
+                    ),
                   ),
                 ],
               ),

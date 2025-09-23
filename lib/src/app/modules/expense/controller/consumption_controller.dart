@@ -11,8 +11,12 @@ import 'package:get/get.dart';
 
 import '../../document/model/add_document_model.dart';
 import '../../inventory/model/inventory_item.dart';
+import '../model/inventory_item_quantity.dart';
+import '../repostroy/purchases_add_repository.dart';
 
 class ConsumptionController extends GetxController {
+  final PurchasesAddRepository purchasesrepository = PurchasesAddRepository();
+
   final ConsumptionRepository _repository = ConsumptionRepository();
   final AppDataController _appDataController = Get.find();
 
@@ -27,6 +31,8 @@ class ConsumptionController extends GetxController {
   RxBool isTypeLoading = false.obs;
   RxBool isInventoryLoading = false.obs;
   RxBool documentTypesLoading = false.obs;
+  final Rxn<InventoryItemQuantity> inventoryItemQuantity =
+      Rxn<InventoryItemQuantity>();
 
   // Form fields
   Rx<DateTime> selectedDate = DateTime.now().obs;
@@ -84,6 +90,14 @@ class ConsumptionController extends GetxController {
       inventoryItem.value = arguments?["item"];
     }
     unawaited(fetchInventoryTypes());
+  }
+
+  Future<void> getItemQuantity() async {
+    inventoryItemQuantity.value = await purchasesrepository
+        .fetchInventoryItemsQuantity(
+          selectedInventoryType.value!,
+          selectedInventoryItem.value!,
+        );
   }
 
   void setSelectedDate(DateTime date) {
@@ -185,8 +199,10 @@ class ConsumptionController extends GetxController {
       inventoryItems.assignAll(items);
       if (inventoryItem.value != null) {
         setInventoryItem(inventoryItem.value!);
+        getItemQuantity();
       } else {
         setInventoryItem(inventoryItems.first.id);
+        getItemQuantity();
       }
     } catch (e) {
       showError('Failed to fetch inventory items'.tr);

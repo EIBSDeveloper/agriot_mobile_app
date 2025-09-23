@@ -165,6 +165,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       children: [
         Expanded(
           child: InputCardStyle(
+            
+              padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DropdownButtonFormField<TaskTypes>(
               initialValue: controller.selectedValue.value,
               icon: const Icon(Icons.keyboard_arrow_down),

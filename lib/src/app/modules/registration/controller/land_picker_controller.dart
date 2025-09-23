@@ -48,7 +48,7 @@ class LandPickerController extends GetxController {
       polylinePoints.add(tappedPoint);
       update();
     } else {
-     showSuccess( "You cannot mark outside the land boundary",
+     showError( "You cannot mark outside the land boundary",
         
       );
     }

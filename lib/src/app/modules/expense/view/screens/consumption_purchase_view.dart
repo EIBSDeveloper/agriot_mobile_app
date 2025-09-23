@@ -43,7 +43,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
           ),
         ),
         Obx(
-          () => controller.inventoryItemQuantity.value?.unitType != null?Container(
+          () => controller.inventoryItemQuantity.value?.unitType != null? Container(
             width: double.infinity,
             decoration: BoxDecoration(
               color: Get.theme.primaryColor.withAlpha(50),

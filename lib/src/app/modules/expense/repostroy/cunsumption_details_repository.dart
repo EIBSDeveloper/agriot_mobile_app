@@ -1,26 +1,27 @@
 import 'dart:convert';
-import 'package:argiot/src/app/controller/app_controller.dart';
-import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
+
+import '../../../controller/app_controller.dart';
+import '../model/cunsumption_detail_model.dart';
 
 class CunsumptionDetailsRepository {
   final HttpService httpService = Get.find<HttpService>();
 
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
 
   
-  Future<PurchaseDetailModel> getCunsumptionDetail(
+  Future<CunsumptionDetailModel> getCunsumptionDetail(
     int cunsumptionId,
     int inventoryType,
   ) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = appDeta.userId.value;
     try {
     
-      final response = await httpService.get("/inventory_purchase_details/$farmerId/$inventoryType/$cunsumptionId", );
+      final response = await httpService.get("/inventory_cunsumption_details/$farmerId/$inventoryType/$cunsumptionId", );
 
       if (response.statusCode == 200) {
-        return PurchaseDetailModel.fromJson(
+        return CunsumptionDetailModel.fromJson(
           json.decode(response.body),
         );
       } else {

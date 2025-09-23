@@ -411,6 +411,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                         name: guideline.description,
                         id: 1,
                       ),
+                      videoUrl: guideline.description,
+                      document:  guideline.document,
                       description: guideline.description,
                       status: 0,
                       mediaType: guideline.mediaType,

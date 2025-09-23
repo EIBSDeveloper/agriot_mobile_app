@@ -58,6 +58,7 @@ class AddTask extends GetView<TaskController> {
             // Schedule Date
             Obx(
               () => InputCardStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ListTile(
                   title: Text("${'schedule_date'.tr} *"),
                   subtitle: Text(
@@ -148,6 +149,8 @@ class AddTask extends GetView<TaskController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               InputCardStyle(
+                                
+              padding: const EdgeInsets.symmetric(horizontal: 8),
                                 child: ListTile(
                                   title: Text("${'schedule_end_date'.tr} *"),
                                 contentPadding: EdgeInsets.zero,
@@ -193,12 +196,13 @@ class AddTask extends GetView<TaskController> {
 
             // Description
             InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 decoration: InputDecoration(
                   labelText: 'description'.tr,
                   border: InputBorder.none,
                 ),
-                maxLines: 2,
+                maxLines: 3,
                 onChanged: (value) => controller.description.value = value,
               ),
             ),

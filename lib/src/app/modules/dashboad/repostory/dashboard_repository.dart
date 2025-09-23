@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/dashboad/model/finance_data.dart';
-import 'package:argiot/src/app/modules/dashboad/model/guideline.dart';
 import 'package:argiot/src/app/modules/dashboad/model/land_v_s_crop_model.dart';
 import 'package:argiot/src/app/modules/dashboad/model/market_price.dart';
 import 'package:argiot/src/app/modules/dashboad/model/payment_summary.dart';
@@ -8,6 +7,7 @@ import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:get/get.dart';
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
+import '../../guideline/model/guideline.dart';
 import '../../near_me/model/models.dart';
 import '../../task/model/task.dart';
 

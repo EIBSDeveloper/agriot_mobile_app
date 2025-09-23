@@ -1,9 +1,9 @@
-import 'package:argiot/src/app/modules/expense/model/fuel_inventory_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
+import '../model/cunsumption_detail_model.dart';
 import '../repostroy/cunsumption_details_repository.dart';
 
 class CunsumptionDetailsController extends GetxController {
@@ -13,7 +13,7 @@ class CunsumptionDetailsController extends GetxController {
   final RxInt inventoryType = 0.obs;
 
   final isLoading = true.obs;
-  final fuelInventory = Rx<PurchaseDetailModel?>(null);
+  final fuelInventory = Rx<CunsumptionDetailModel?>(null);
   final error = RxString('');
 
   @override

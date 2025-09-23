@@ -41,7 +41,7 @@ class PurchaseDetails extends GetView<InventoryDetailsController> {
       }),
     );
 
-  Widget _buildFuelDetailContent(PurchaseDetailModel fuel) => SingleChildScrollView(
+  Widget _buildFuelDetailContent(PurchaseDetailModel details) => SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,91 +49,88 @@ class PurchaseDetails extends GetView<InventoryDetailsController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(fuel.inventoryItem.name, style: Get.textTheme.headlineSmall),
+              Text(details.inventoryItems!.name, style: Get.textTheme.headlineSmall),
             ],
           ),
           const SizedBox(height: 24),
-
           // Basic Information
-          _buildInfoRow('date'.tr, fuel.date),
-          _buildInfoRow('inventory_type'.tr, fuel.inventoryType.name),
-          _buildInfoRow('inventory_category'.tr, fuel.inventoryCategory.name),
-          _buildInfoRow('vendor'.tr, fuel.vendor.name),
-          _buildInfoRow('purchase_amount'.tr, '${fuel.purchaseAmount} '),
-          _buildInfoRow('quantity'.tr, '${fuel.quantity} L'),
+          _buildInfoRow('date'.tr, details.dateOfConsumption.toString()),
+          _buildInfoRow('inventory_type'.tr, details.inventoryType?.name??""),
+          _buildInfoRow('vendor'.tr, details.vendor?.name),
+          _buildInfoRow('purchase_amount'.tr, '${details.purchaseAmount} '),
+          _buildInfoRow('quantity'.tr, '${details.quantity} ${details.quantityUnit}'),
 
           const Divider(height: 32),
 
           // Uploaded Documents
           Text('documents'.tr, style: Get.textTheme.titleMedium),
-          const SizedBox(height: 16),
-          _buildDocumentsSection(fuel),
+          // const SizedBox(height: 16),
+          // _buildDocumentsSection(fuel),
 
           const Divider(height: 32),
 
           // Description
           Text('description'.tr, style: Get.textTheme.titleMedium),
           const SizedBox(height: 8),
-          Text(fuel.description, style: Get.textTheme.bodyLarge),
+          Text(details.description??" ", style: Get.textTheme.bodyLarge),
         ],
       ),
     );
 
-  Widget _buildInfoRow(String label, String value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: Get.textTheme.bodyMedium),
-          Text(value, style: Get.textTheme.titleMedium),
-        ],
-      ),
-    );
+  Widget _buildInfoRow(String label, String? value) => value!=null ?Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: Get.textTheme.bodyMedium),
+        Text(value, style: Get.textTheme.titleMedium),
+      ],
+    ),
+  ):const SizedBox.square();
+  // Widget _buildDocumentsSection(PurchaseDetailModel fuel) {
+  //   final allDocuments = fuel.documents
+  //       .expand((category) => category.documents)
+  //       .toList();
 
-  Widget _buildDocumentsSection(PurchaseDetailModel fuel) {
-    final allDocuments = fuel.documents
-        .expand((category) => category.documents)
-        .toList();
+  //   if (allDocuments.isEmpty) {
+  //     return Text('no_documents_available'.tr);
+  //   }
 
-    if (allDocuments.isEmpty) {
-      return Text('no_documents_available'.tr);
-    }
-
-    return Wrap(
-      spacing: 16,
-      runSpacing: 16,
-      children: allDocuments.map((document) => GestureDetector(
-          onTap: () => controller.viewDocument(document.uploadDocument),
-          child: Container(
-            width: 100,
-            height: 120,
-            decoration: BoxDecoration(
-              border: Border.all(color: Get.theme.colorScheme.outline),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: Icon(
-                    Icons.picture_as_pdf,
-                    size: 48,
-                    color: Get.theme.colorScheme.primary,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    document.documentCategory.name,
-                    style: Get.textTheme.labelSmall,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )).toList(),
-    );
-  }
+  //   return Wrap(
+  //     spacing: 16,
+  //     runSpacing: 16,
+  //     children: allDocuments.map((document) => GestureDetector(
+  //         onTap: () => controller.viewDocument(document.uploadDocument),
+  //         child: Container(
+  //           width: 100,
+  //           height: 120,
+  //           decoration: BoxDecoration(
+  //             border: Border.all(color: Get.theme.colorScheme.outline),
+  //             borderRadius: BorderRadius.circular(8),
+  //           ),
+  //           child: Column(
+  //             children: [
+  //               Expanded(
+  //                 child: Icon(
+  //                   Icons.picture_as_pdf,
+  //                   size: 48,
+  //                   color: Get.theme.colorScheme.primary,
+  //                 ),
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.all(8),
+  //                 child: Text(
+  //                   document.documentCategory.name,
+  //                   style: Get.textTheme.labelSmall,
+  //                   textAlign: TextAlign.center,
+  //                   maxLines: 2,
+  //                   overflow: TextOverflow.ellipsis,
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       )).toList(),
+  //   );
+  // }
 }

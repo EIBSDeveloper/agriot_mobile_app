@@ -13,6 +13,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../modules/expense/controller/consumption_controller.dart';
 import '../controller/user_limit.dart';
+import '../modules/expense/repostroy/consumption_repository.dart';
+import '../modules/expense/repostroy/purchases_add_repository.dart';
 import '../modules/forming/controller/forming_date_controller.dart';
 import '../modules/inventory/controller/inventory_controller.dart';
 import '../controller/app_controller.dart';
@@ -262,5 +264,7 @@ class ConsumptionBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => ConsumptionController());
+    Get.lazyPut(() => ConsumptionRepository());
+    Get.lazyPut(() => PurchasesAddRepository());
   }
 }

@@ -27,6 +27,7 @@ class PurchaseList extends StatelessWidget {
     }
 
     return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       controller: scrollController,
       itemCount: records.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
@@ -53,8 +54,13 @@ class PurchaseList extends StatelessWidget {
           child: Card(
             elevation: 1,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.all(12.0),
+              constraints: BoxConstraints(
+                minHeight: 100 < Get.size.height * 0.05
+                    ? Get.size.height * 0.05
+                    : 100,
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

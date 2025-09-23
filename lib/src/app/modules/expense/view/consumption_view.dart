@@ -8,9 +8,10 @@ import 'package:get/get.dart';
 import '../../../routes/app_routes.dart';
 import '../../../service/utils/enums.dart';
 import '../../document/document.dart';
+
 class ConsumptionView extends StatelessWidget {
   ConsumptionView({super.key});
-  final ConsumptionController _controller = Get.find<ConsumptionController>();
+  final ConsumptionController controller = Get.find<ConsumptionController>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -19,8 +20,9 @@ class ConsumptionView extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
         child: Form(
-          key: _controller.formKey,
+          key: controller.formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildDatePicker(),
 
@@ -31,65 +33,78 @@ class ConsumptionView extends StatelessWidget {
               const SizedBox(height: 16),
               _buildCropDropdown(), const SizedBox(height: 16),
               Obx(
-                () => !_controller.requiresUsageHours
+                () =>
+                    controller.inventoryItemQuantity.value?.availableQuans !=
+                        null
+                    ? Text(
+                        "Availability: ${controller.inventoryItemQuantity.value?.availableQuans ?? ''} ${controller.inventoryItemQuantity.value?.unitType ?? ""}",
+                        style: Get.theme.textTheme.bodyMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              Obx(
+                () => !controller.requiresUsageHours
                     ? _buildQuantityField()
                     : const SizedBox.shrink(),
               ),
               Obx(
-                () => !_controller.requiresUsageHours
+                () => !controller.requiresUsageHours
                     ? const SizedBox(height: 16)
                     : const SizedBox.shrink(),
               ),
 
               // Conditional fields based on inventory type
               Obx(
-                () => _controller.requiresUsageHours
+                () => controller.requiresUsageHours
                     ? _buildUsageHoursField()
                     : const SizedBox.shrink(),
               ),
               Obx(
-                () => _controller.requiresUsageHours
+                () => controller.requiresUsageHours
                     ? const SizedBox(height: 16)
                     : const SizedBox.shrink(),
               ),
 
               Obx(
-                () => _controller.requiresKilometerFields
+                () => controller.requiresKilometerFields
                     ? _buildStartKilometerField()
                     : const SizedBox.shrink(),
               ),
               Obx(
-                () => _controller.requiresKilometerFields
+                () => controller.requiresKilometerFields
                     ? const SizedBox(height: 16)
                     : const SizedBox.shrink(),
               ),
 
               Obx(
-                () => _controller.requiresKilometerFields
+                () => controller.requiresKilometerFields
                     ? _buildEndKilometerField()
                     : const SizedBox.shrink(),
               ),
               Obx(
-                () => _controller.requiresKilometerFields
+                () => controller.requiresKilometerFields
                     ? const SizedBox(height: 16)
                     : const SizedBox.shrink(),
               ),
 
               Obx(
-                () => _controller.requiresToolItems
+                () => controller.requiresToolItems
                     ? _buildToolItemsField()
                     : const SizedBox.shrink(),
               ),
               Obx(
-                () => _controller.requiresToolItems
+                () => controller.requiresToolItems
                     ? const SizedBox(height: 16)
                     : const SizedBox.shrink(),
               ),
 
               const Divider(),
               _buildDocumentsSection(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               const Divider(),
+              const SizedBox(height: 12),
               _buildDescriptionField(),
               const SizedBox(height: 24),
               _buildSaveButton(),
@@ -100,7 +115,7 @@ class ConsumptionView extends StatelessWidget {
     ),
   );
   Widget _buildDocumentsSection() => DocumentsSection(
-    documentItems: _controller.documentItems,
+    documentItems: controller.documentItems,
     type: DocTypes.inventory,
   );
 
@@ -114,19 +129,19 @@ class ConsumptionView extends StatelessWidget {
         ),
         readOnly: true,
         controller: TextEditingController(
-          text: _controller.selectedDate.value.toLocal().toString().split(
+          text: controller.selectedDate.value.toLocal().toString().split(
             ' ',
           )[0],
         ),
         onTap: () async {
           final DateTime? picked = await showDatePicker(
             context: Get.context!,
-            initialDate: _controller.selectedDate.value,
+            initialDate: controller.selectedDate.value,
             firstDate: DateTime(2000),
             lastDate: DateTime(2100),
           );
-          if (picked != null && picked != _controller.selectedDate.value) {
-            _controller.setSelectedDate(picked);
+          if (picked != null && picked != controller.selectedDate.value) {
+            controller.setSelectedDate(picked);
           }
         },
       ),
@@ -135,9 +150,9 @@ class ConsumptionView extends StatelessWidget {
 
   Widget _buildCropDropdown() => Obx(
     () => MyDropdown(
-      items: _controller.crop,
-      selectedItem: _controller.selectedCropType.value,
-      onChanged: (land) => _controller.changeCrop(land!),
+      items: controller.crop,
+      selectedItem: controller.selectedCropType.value,
+      onChanged: (land) => controller.changeCrop(land!),
       label: 'crop'.tr,
     ),
   );
@@ -152,21 +167,20 @@ class ConsumptionView extends StatelessWidget {
 
         icon: const Icon(Icons.keyboard_arrow_down),
         validator: (value) => value == null ? 'required_field'.tr : null,
-        initialValue: _controller.selectedInventoryType.value,
-        items: _controller.inventoryTypes
+        initialValue: controller.selectedInventoryType.value,
+        items: controller.inventoryTypes
             .map(
               (type) =>
                   DropdownMenuItem<int>(value: type.id, child: Text(type.name)),
             )
             .toList(),
         onChanged: (value) {
-          _controller.setInventoryType(value!);
+          controller.setInventoryType(value!);
         },
       ),
     ),
   );
 
- 
   Widget _buildInventoryItemDropdown() => Obx(
     () => InputCardStyle(
       child: DropdownButtonFormField<int>(
@@ -177,43 +191,65 @@ class ConsumptionView extends StatelessWidget {
 
         icon: const Icon(Icons.keyboard_arrow_down),
         validator: (value) => value == null ? 'required_field'.tr : null,
-        initialValue: _controller.selectedInventoryItem.value,
-        items: _controller.inventoryItems
+        initialValue: controller.selectedInventoryItem.value,
+        items: controller.inventoryItems
             .map(
               (item) =>
                   DropdownMenuItem<int>(value: item.id, child: Text(item.name)),
             )
             .toList(),
-        onChanged: (value) =>
-            _controller.selectedInventoryType.value != null
-            ? _controller.setInventoryItem(value!)
+        onChanged: (value) => controller.selectedInventoryType.value != null
+            ? controller.setInventoryItem(value!)
             : null,
       ),
     ),
   );
 
-  Widget _buildQuantityField() => Row(
-    children: [
-      Expanded(
-        flex: 3,
-        child: InputCardStyle(
-          child: TextFormField(
-            decoration: InputDecoration(
-              labelText: "${'quantity'.tr} *",
-              border: InputBorder.none,
-            ),
+  Widget _buildQuantityField() {
+    final availableQuans =
+        controller.inventoryItemQuantity.value?.availableQuans;
+    final enteredQuantity = int.tryParse(controller.quantity.value) ?? 0;
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: InputCardStyle(
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: "${'quantity'.tr} *",
+                border: InputBorder.none,
+              ),
+              style: TextStyle(
+                color:
+                    (availableQuans != null && availableQuans < enteredQuantity)
+                    ? Colors.red
+                    : null,
+              ),
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'required_field'
+                      .tr; 
+                }
 
-            keyboardType: TextInputType.number,
-            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-            onChanged: _controller.setQuantity,
+                if (availableQuans != null &&
+                    availableQuans < enteredQuantity) {
+                  return "${"please_enter_less_than".tr} $availableQuans";
+                }
+
+                return null; // Valid input
+              },
+
+              onChanged: controller.setQuantity,
+            ),
           ),
         ),
-      ),
-      //              if(  _controller.requiresUnit) Expanded(
-      // flex:2,
-      //               child: child)
-    ],
-  );
+        //              if(  _controller.requiresUnit) Expanded(
+        // flex:2,
+        //               child: child)
+      ],
+    );
+  }
 
   Widget _buildUsageHoursField() => InputCardStyle(
     child: TextFormField(
@@ -222,7 +258,7 @@ class ConsumptionView extends StatelessWidget {
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
-      onChanged: _controller.setUsageHours,
+      onChanged: controller.setUsageHours,
     ),
   );
 
@@ -234,7 +270,7 @@ class ConsumptionView extends StatelessWidget {
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
       keyboardType: TextInputType.number,
-      onChanged: _controller.setStartKilometer,
+      onChanged: controller.setStartKilometer,
     ),
   );
 
@@ -246,7 +282,7 @@ class ConsumptionView extends StatelessWidget {
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
       keyboardType: TextInputType.number,
-      onChanged: _controller.setEndKilometer,
+      onChanged: controller.setEndKilometer,
     ),
   );
 
@@ -257,7 +293,7 @@ class ConsumptionView extends StatelessWidget {
         border: InputBorder.none,
       ),
       validator: (value) => value == null ? 'required_field'.tr : null,
-      onChanged: _controller.setToolItems,
+      onChanged: controller.setToolItems,
     ),
   );
 
@@ -269,22 +305,22 @@ class ConsumptionView extends StatelessWidget {
         border: InputBorder.none,
       ),
       maxLines: 3,
-      onChanged: _controller.setDescription,
+      onChanged: controller.setDescription,
     ),
   );
 
   Widget _buildSaveButton() => Obx(
     () => ElevatedButton(
-      onPressed: _controller.isLoading.value
+      onPressed: controller.isLoading.value
           ? null
           : () async {
-              final success = await _controller.submitConsumption();
+              final success = await controller.submitConsumption();
               if (success) {
                 Get
                   ..back(result: true)
                   ..toNamed(
-                     Routes.consumptionPurchaseList,
-                    arguments: {"id": _controller.selectedInventoryType.value},
+                    Routes.consumptionPurchaseList,
+                    arguments: {"id": controller.selectedInventoryType.value},
                     preventDuplicates: true,
                   );
               }
@@ -292,7 +328,7 @@ class ConsumptionView extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
       ),
-      child: _controller.isLoading.value
+      child: controller.isLoading.value
           ? const CircularProgressIndicator()
           : Text('save'.tr),
     ),

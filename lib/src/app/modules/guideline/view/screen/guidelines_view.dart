@@ -59,6 +59,7 @@ class GuidelinesView extends GetView<GuidelineController> {
       Expanded(
         child: Obx(
           () => InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 8),
             child: DropdownButtonFormField2<GuidelineCategory>(
               isExpanded: true,
               decoration: const InputDecoration(

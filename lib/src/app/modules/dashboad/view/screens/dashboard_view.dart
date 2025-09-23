@@ -7,13 +7,11 @@ import 'package:argiot/src/app/widgets/finance_line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
-import '../../../guideline/model/guideline.dart';
 import '../../../../../payable/pages/payables_receivables/payables_receivables_screen.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../home/contoller/bottombar_contoller.dart';
-import '../../../guideline/model/guideline_category.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
 import '../../../map_view/view/widgets/task_card.dart';
 import '../../controller/dashboard_controller.dart';
@@ -460,29 +458,14 @@ class DashboardView extends GetView<DashboardController> {
             return ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: controller.guidelines.length,
-              itemBuilder: (context, index) {
-                final guideline = controller.guidelines[index];
-                return SizedBox(
+              itemBuilder: (context, index) => SizedBox(
                   width: 300,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 10),
                     child: GuidelineCard(
-                      guideline: Guideline(
-                        id: guideline.id,
-                        name: guideline.name,
-                        guidelinestype: guideline.description,
-                        guidelinescategory: GuidelineCategory(
-                          name: guideline.description,
-                          id: 1,
-                        ),
-                        description: guideline.description,
-                        status: 0,
-                        mediaType: guideline.mediaType,
-                      ),
-                    ),
-                  ),
-                );
-              },
+                      guideline: controller.guidelines[index]
+                  ),)
+                ),
             );
           }),
         ),

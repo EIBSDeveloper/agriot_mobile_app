@@ -179,7 +179,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                 children: [
                   MonthDayFormat(
                     date: DateFormat(
-                      "dd/MM/yyyy",
+                      "dd-MM-yyyy",
                     ).parse(item.dateOfConsumption),
                   ),
                   const SizedBox(width: 8),

@@ -10,7 +10,6 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../inventory/model/inventory_item.dart';
 
-
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();
   // final AddressService _addressService = Get.find();
@@ -111,9 +110,7 @@ class VendorCustomerController extends GetxController {
   }
 
   void showError(String message) {
-     showError(message,
-      
-    );
+    showError(message);
   }
 
   //Market end
@@ -197,14 +194,12 @@ class VendorCustomerController extends GetxController {
       final formData = VendorCustomerFormData(
         id: id,
         type: selectedType.value,
-        customerName:
-            selectedType.value == 'customer' 
+        customerName: selectedType.value == 'customer'
             ? nameController.text
             : null,
         vendorName: selectedType.value == 'vendor' ? nameController.text : null,
         shopName: shopNameController.text,
-        businessName:
-            selectedType.value == 'vendor' 
+        businessName: selectedType.value == 'vendor'
             ? shopNameController.text
             : null,
         mobileNo: mobileController.text,
@@ -219,17 +214,13 @@ class VendorCustomerController extends GetxController {
         marketIds: selectedMarket.value?.id != null
             ? [selectedMarket.value!.id]
             : [],
-        // inventoryTypeIds:
-        //     selectedType.value == 'vendor' 
-        //     ? (purchaseModel.value != null)
-        //           ? selectedKeys
-        //                 .where(
-        //                   (key) => purchaseModel.value!.containsKey(key),
-        //                 )
-        //                 .map((key) => purchaseModel.value!.items[key]!.id)
-        //                 .toList()
-        //           : null
-        //     : null,
+        inventoryTypeIds: selectedType.value == 'vendor'
+            ? [
+                ...purchaseModel.value!
+                    .where((inventory) => selectedKeys.contains(inventory.name))
+                    .map((inventory) => inventory.id),
+              ]
+            : null,
       );
       int newId = 0;
       if (id != null) {

@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/home/views/screens/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../contoller/bottombar_contoller.dart';
@@ -9,7 +10,9 @@ class Home extends GetView<BottomBarContoller> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: const ProfileAppBar(),
+    drawer: const MyDrawer(),
     body: SafeArea(
+      
       child: PageView.builder(
         controller: controller.pageController,
         itemCount: controller.pages.length,

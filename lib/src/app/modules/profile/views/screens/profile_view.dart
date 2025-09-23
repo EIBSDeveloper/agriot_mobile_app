@@ -16,14 +16,14 @@ class ProfileView extends GetView<ProfileController> {
     appBar: CustomAppBar(
       title: 'profile'.tr,
       showBackButton: true,
-      actions: [
-        IconButton(
-          onPressed: () {
-            Get.toNamed(  Routes.vendorCustomer,);
-          },
-          icon: const Icon(Icons.account_box),
-        ),
-      ],
+      // actions: [
+      //   IconButton(
+      //     onPressed: () {
+      //       Get.toNamed(  Routes.vendorCustomer,);
+      //     },
+      //     icon: const Icon(Icons.account_box),
+      //   ),
+      // ],
     ),
 
     body: Obx(() {

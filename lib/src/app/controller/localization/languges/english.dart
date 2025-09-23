@@ -122,6 +122,7 @@ class English {
     "loading_taluks": "Loading taluks...",
     "loading_villages": "Loading villages...",
     "required_field": "Required field",
+    "please_enter_less_than": "Please Enter Less Than",
     "invalid_phone": "Invalid phone number",
     "invalid_email": "Invalid email address",
     "pincode_length": "Pincode must be 6 digits",

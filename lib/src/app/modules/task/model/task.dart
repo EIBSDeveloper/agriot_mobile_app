@@ -22,13 +22,14 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     var status = json['status_id'] ?? json['schedule_status'];
+    var status2 = status!= null ?getTaskStatus(status):null;
     return Task(
     id: json['id'] ?? json['task_id'],
     cropType: json['crop_type'] ?? json['crop_name'],
     activityTypeName: json['activity_type_name'] ?? json['activity_type'] ?? '',
     cropImage: json['crop_image'],
     description: json['description'] ?? "",
-    status: status!= null ?getTaskStatus(status):null,
+    status: status2,
     taskDate: json["created_at"] != null
         ? DateTime.parse(json["created_at"])
         : null,

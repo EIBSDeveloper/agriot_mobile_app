@@ -474,6 +474,7 @@ class PurchasesAddController extends GetxController {
       children: [
         Expanded(
           child: InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: TextFormField(
               decoration: InputDecoration(
                 labelText: selectedInventoryType.value == 6
@@ -510,6 +511,7 @@ class PurchasesAddController extends GetxController {
 
   Widget buildPurchaseAmountField() => Obx(
     () => InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextFormField(
         validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         decoration: InputDecoration(
@@ -526,6 +528,7 @@ class PurchasesAddController extends GetxController {
 
   Widget buildPaidAmountField() => Obx(
     () => InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextFormField(
         decoration: InputDecoration(
           labelText: "${'paid_amount'.tr} *",
@@ -563,6 +566,7 @@ class PurchasesAddController extends GetxController {
     () => Column(
       children: [
         InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
           child: InkWell(
             onTap: () => selectDate1(),
             child: InputDecorator(
@@ -580,9 +584,12 @@ class PurchasesAddController extends GetxController {
                         : 'select_date'.tr,
                     style: Get.theme.textTheme.bodyLarge,
                   ),
-                  Icon(
-                    Icons.calendar_today,
-                    color: Get.theme.colorScheme.primary,
+                  Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.calendar_today,
+                      color: Get.theme.colorScheme.primary,
+                    ),
                   ),
                 ],
               ),
@@ -595,6 +602,7 @@ class PurchasesAddController extends GetxController {
 
   Widget buildInventoryItemDropdown() => Obx(
     () => InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonFormField<int>(
         validator: (value) => value == null ? 'required_field'.tr : null,
         decoration: InputDecoration(
@@ -622,6 +630,7 @@ class PurchasesAddController extends GetxController {
       Expanded(
         child: Obx(
           () => InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DropdownButtonFormField<int>(
               // validator: (value) => value == null ? 'required_field'.tr : null,
               decoration:  InputDecoration(

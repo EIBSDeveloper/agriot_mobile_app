@@ -41,7 +41,7 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:/Users/Bala/Downloads/my_new/argiot/agriot.jks")
+            storeFile = file("C:/Users/IT/Documents/Bala Files/agriot_mobile_app/agriot-api.txt")
             storePassword = "EIBS@123"
             keyAlias = "myreleasekey"
             keyPassword = "EIBS@123"

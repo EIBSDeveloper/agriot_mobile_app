@@ -43,18 +43,18 @@ class LandViewPage extends GetView<LandController> {
                 // validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
               gap,
-              _buildTextField(
-                controller: controller.pincodeController,
-                label: 'Pincode *',
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Required field' : null,
-                keyboardType: TextInputType.number,
-              ),
-              gap,
+              // _buildTextField(
+              //   controller: controller.pincodeController,
+              //   label: 'Pincode *',
+              //   inputFormatters: [
+              //     FilteringTextInputFormatter.digitsOnly,
+              //     LengthLimitingTextInputFormatter(6),
+              //   ],
+              //   validator: (value) =>
+              //       value?.isEmpty ?? true ? 'Required field' : null,
+              //   keyboardType: TextInputType.number,
+              // ),
+              // gap,
               Row(
                 children: [
                   Expanded(

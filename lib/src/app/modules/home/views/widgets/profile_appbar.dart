@@ -15,11 +15,12 @@ class ProfileAppBar extends GetView<UserProfileController>
 
   @override
   Widget build(BuildContext context) => AppBar(
+    iconTheme: IconThemeData(color: Get.theme.primaryColor),
     backgroundColor: Get.theme.colorScheme.primaryContainer.withAlpha(180),
-    title: SizedBox(
+    title: Get.size.width> 450? SizedBox(
       height: 40,
       child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
-    ),
+    ): null,
     actions: [
       IconButton(
         onPressed: showLanguageDialog,

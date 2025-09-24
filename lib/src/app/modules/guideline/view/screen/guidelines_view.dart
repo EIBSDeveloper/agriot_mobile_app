@@ -72,10 +72,7 @@ class GuidelinesView extends GetView<GuidelineController> {
               hint: Text('select_category'.tr),
               value: controller.selectedCategory.value,
               items: [
-                DropdownMenuItem<GuidelineCategory>(
-                  value: GuidelineCategory(id: 0, name: "All"),
-                  child: Text("All", style: Get.textTheme.bodyMedium),
-                ),
+             
                 ...controller.categories.map(
                   (category) => DropdownMenuItem<GuidelineCategory>(
                     value: category,

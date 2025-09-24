@@ -141,6 +141,7 @@ class LandController extends GetxController {
           id: survey.id,
           surveyNo: survey.surveyNo!,
           measurement: survey.measurementValue.toString(),
+          unit:  landUnits.firstWhere((unit)=> unit.name==survey.measurementUnit)
         ),
       );
     }

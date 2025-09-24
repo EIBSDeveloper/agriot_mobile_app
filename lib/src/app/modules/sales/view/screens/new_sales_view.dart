@@ -142,10 +142,11 @@ class _NewSalesViewState extends State<NewSalesView> {
     children: [
       Expanded(
         child: InputCardStyle(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: DropdownButtonFormField<int>(
             icon: const Icon(Icons.keyboard_arrow_down),
             decoration: InputDecoration(
-              labelText: 'customer'.tr,
+              labelText: "${'customer'.tr } * ",
               border: InputBorder.none,
             ),
             initialValue: controller.selectedCustomer.value,
@@ -184,6 +185,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   );
 
   Widget _buildDatePicker() => InputCardStyle(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
     child: InkWell(
       onTap: () async {
         final selected = await showDatePicker(
@@ -207,7 +209,10 @@ class _NewSalesViewState extends State<NewSalesView> {
             Text(
               '${controller.selectedDate.value.day}/${controller.selectedDate.value.month}/${controller.selectedDate.value.year}',
             ),
-            const Icon(Icons.calendar_today),
+            const Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Icon(Icons.calendar_today),
+            ),
           ],
         ),
       ),
@@ -215,9 +220,11 @@ class _NewSalesViewState extends State<NewSalesView> {
   );
 
   Widget _buildSalesQuantityField() => InputCardStyle(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
     child: TextFormField(
+
       decoration: InputDecoration(
-        labelText: 'sales_quantity'.tr,
+        labelText: "${'sales_quantity'.tr } *",
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,
@@ -247,6 +254,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   );
 
   Widget _buildQuantityAmountField() => InputCardStyle(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
     child: TextFormField(
       decoration: InputDecoration(
         labelText: 'amount_per_unit'.tr,
@@ -334,9 +342,10 @@ class _NewSalesViewState extends State<NewSalesView> {
   );
 
   Widget _buildAmountPaidField() => InputCardStyle(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
     child: TextFormField(
       decoration: InputDecoration(
-        labelText: 'amount_paid'.tr,
+        labelText: "${'amount_paid'.tr} *",
         border: InputBorder.none,
       ),
       initialValue: controller.amountPaid.value,

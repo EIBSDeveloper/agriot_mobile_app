@@ -190,7 +190,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
             controller: controller.descriptionController,
             label: 'Description',
 
-            height: 100,
+            maxLines: 3,
           ),
         ],
       ),
@@ -200,7 +200,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-    double? height,
+    int? maxLines,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
     List<TextInputFormatter>? inputFormatters,
@@ -216,7 +216,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
         isDense: true,
         suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
       ),
-
+maxLines:maxLines ,
       validator: validator,
       keyboardType: keyboardType,
       readOnly: readOnly,

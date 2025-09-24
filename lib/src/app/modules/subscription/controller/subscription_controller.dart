@@ -61,7 +61,7 @@ class SubscriptionController extends GetxController {
       final response = await repository.getFarmerUsage();
       usage.value = response;
     } catch (e) {
-      throw Exception('Failed to load usage: ${e.toString()}');
+      // throw Exception('Failed to load usage: ${e.toString()}');
     }
   }
 

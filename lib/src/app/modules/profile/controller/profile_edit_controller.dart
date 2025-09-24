@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../service/utils/utils.dart';
+
 class ProfileEditController extends GetxController {
   // Services & Repositories
   final ProfileRepository _profileRepository = Get.find();
@@ -102,7 +104,8 @@ class ProfileEditController extends GetxController {
     nameController.text = profile.name;
     emailController.text = profile.email;
     companyController.text = profile.companyName ?? '';
-
+    taxNoController.text = profile.taxNo ?? '';
+    descriptionController.text = profile.description ?? '';
     // Address fields
     doorNoController.text = profile.doorNo;
     pincodeController.text = profile.pincode.toString();
@@ -121,7 +124,7 @@ class ProfileEditController extends GetxController {
         locationController.text = '${latitude.value}, ${longitude.value}';
       }
     } catch (e) {
-      showError( 'Failed to pick location');
+      showError('Failed to pick location');
     }
   }
 
@@ -154,6 +157,7 @@ class ProfileEditController extends GetxController {
         "description": descriptionController.text.trim(),
         "company_name": companyController.text.trim(),
         "tax_no": taxNoController.text.trim(),
+        "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
         if (base64Image.isNotEmpty) "img": "data:image/png;base64,$base64Image",
       });
 

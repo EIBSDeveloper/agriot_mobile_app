@@ -132,93 +132,22 @@ class SubscriptionPlansScreen extends StatelessWidget {
 
     return [
       _buildFeatureItem(
-        'land_management'.tr,
+        'land'.tr,
         package.myLandCount,
         package.myLandCount > 0,
         textColor,
       ),
       _buildFeatureItem(
-        'crops_management'.tr,
+        'crop'.tr,
         package.myCropsCount,
         package.myCropsCount > 0,
         textColor,
       ),
+
       _buildFeatureItem(
-        'expense_tracking'.tr,
-        package.myExpenseCount,
-        package.myExpenseCount > 0,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'sales_tracking'.tr,
-        package.mySaleCount,
-        package.mySaleCount > 0,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'customer_management'.tr,
-        package.customerCount,
-        package.customerCount > 0,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'vehicle_management'.tr,
-        package.myVechicleCount,
-        package.isMyVechicle,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'machinery_management'.tr,
-        package.myMachineryCount,
-        package.isMymachinery,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'tools_management'.tr,
-        package.mytoolsCount,
-        package.isMytools,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'inventory_products'.tr,
-        package.myinventoryProducts,
-        package.isMyinventory,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'inventory_purchases'.tr,
-        package.myinventoryPurchase,
-        package.isMyinventory,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'inventory_vendors'.tr,
-        package.myinventoryVendors,
-        package.isMyinventory,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'employee_attendance'.tr,
+        'manager'.tr,
         package.employeeCount,
         package.isAttendance,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'payouts'.tr,
-        package.isPayouts ? 1 : 0,
-        package.isPayouts,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'widgets'.tr,
-        package.isWidget ? 1 : 0,
-        package.isWidget,
-        textColor,
-      ),
-      _buildFeatureItem(
-        'using_package'.tr,
-        package.isUsingPackage ? 1 : 0,
-        package.isUsingPackage,
         textColor,
       ),
     ];

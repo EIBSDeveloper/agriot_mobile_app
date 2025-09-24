@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/guideline/model/guideline.dart';
 
 import 'package:argiot/src/app/modules/guideline/model/guideline_category.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
+
 import 'package:get/get.dart';
 
 import '../repository/guideline_repository.dart';
@@ -43,7 +44,11 @@ class GuidelineController extends GetxController {
 
       // Load categories
       final categoriesList = await _repository.getGuidelineCategories();
-      categories.assignAll(categoriesList);
+
+      categories.assignAll([
+        GuidelineCategory(id: 0, name: "All"),
+        ...categoriesList,
+      ]);
     } catch (e) {
       showError('Failed to load data');
     } finally {
@@ -101,7 +106,7 @@ class GuidelineController extends GetxController {
       results = results
           .where((g) => g.guidelinescategory!.id == selectedCategory.value?.id)
           .toList();
-    } 
+    }
 
     filteredGuidelines.assignAll(results);
   }

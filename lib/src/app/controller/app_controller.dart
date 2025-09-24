@@ -4,7 +4,7 @@ import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
 import 'package:get/get.dart';
 
 class AppDataController extends GetxController {
-  RxString userId = '312'.obs;
+  RxString userId = '339'.obs;
   RxString emailId = ''.obs;
   RxString username = ''.obs;
   // RxBool error = false.obs;
@@ -18,3 +18,4 @@ class AppDataController extends GetxController {
   String weatherApiKey = 'f0dd3d4a11a1446a7e29124d1911268b';
 }
 //339
+//369

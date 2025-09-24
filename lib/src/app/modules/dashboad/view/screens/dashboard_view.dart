@@ -42,27 +42,32 @@ class DashboardView extends GetView<DashboardController> {
               ),
             ),
             // Widgets based on configuration
-            if (controller.lands.isNotEmpty&&  controller.widgetConfig.value.weatherAndPayments) ...[
+            if (controller.lands.isNotEmpty &&
+                controller.widgetConfig.value.weatherAndPayments) ...[
               _buildWeatherAndPaymentsCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.lands.isNotEmpty&& controller.widgetConfig.value.expensesSales) ...[
+            if (controller.lands.isNotEmpty &&
+                controller.widgetConfig.value.expensesSales) ...[
               _buildFinanceGraphCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.lands.isNotEmpty&& controller.widgetConfig.value.guidelines!) ...[
+            if (controller.lands.isNotEmpty &&
+                controller.widgetConfig.value.guidelines!) ...[
               _buildGuidelinesCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.lands.isNotEmpty&& controller.widgetConfig.value.marketPrice) ...[
+            if (controller.lands.isNotEmpty &&
+                controller.widgetConfig.value.marketPrice) ...[
               _buildMarketPricesCard(),
               const SizedBox(height: 16),
             ],
 
-            if (controller.lands.isNotEmpty&&  controller.widgetConfig.value.scheduleTask) ...[
+            if (controller.lands.isNotEmpty &&
+                controller.widgetConfig.value.scheduleTask) ...[
               _buildTasksCard(),
               const SizedBox(height: 16),
             ],
@@ -459,13 +464,12 @@ class DashboardView extends GetView<DashboardController> {
               scrollDirection: Axis.horizontal,
               itemCount: controller.guidelines.length,
               itemBuilder: (context, index) => SizedBox(
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: GuidelineCard(
-                      guideline: controller.guidelines[index]
-                  ),)
+                width: 300,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: GuidelineCard(guideline: controller.guidelines[index]),
                 ),
+              ),
             );
           }),
         ),
@@ -539,8 +543,21 @@ class DashboardView extends GetView<DashboardController> {
 
           // Build header row widgets
           final headerCells = <Widget>[
-            TitleText('trending_crops'.tr),
-            for (var market in displayMarkets) TitleText(market.tr),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Text(
+                'trending_crops'.tr,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            for (var market in displayMarkets)
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Text(
+                  market.tr,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
           ];
 
           // Build data rows dynamically for each product

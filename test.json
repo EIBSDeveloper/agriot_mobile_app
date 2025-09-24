@@ -1,0 +1,79 @@
+{
+  "screen": "Update Employee Advance Screen",
+  "purpose": "Enable users to update an employee's advance details, including the addition of a new advance amount and providing a description of the change.",
+  "ui_elements": {
+    "static": [
+      "Screen title: 'Update Employee Advance'",
+      "Labels: Employee Type, Employee, Previous Advance, Total Advance, Description",
+      "Pre-filled Employee Name and ID (e.g., 'Raghu E - 9845784512')",
+      "Pre-filled Previous Advance and Total Advance amounts"
+    ],
+    "dynamic": [
+      "Dropdown for Employee Type",
+      "Dropdown for Employee selection",
+      "TextField for Advance Amount",
+      "TextField for Total Advance (pre-filled based on calculation)",
+      "TextField for Description"
+    ]
+  },
+  "layout_recommendations": [
+    "Use Scaffold with a SingleChildScrollView to ensure the screen handles overflow properly",
+    "Column for vertical alignment of fields",
+    "Padding with EdgeInsets.symmetric(16) around main content for spacing",
+    "Row widget for labels and input fields to maintain alignment",
+    "Text styling with Theme.of(context).textTheme for consistency",
+    "SizedBox for spacing between fields",
+    "Action buttons ('Cancel' and 'Update Employee') should be placed at the bottom in a Row widget"
+  ],
+  "input_controls": [
+    {
+      "type": "dropdown",
+      "label": "Employee Type",
+      "options": ["Monthly Salaries", "Hourly Work", "Contract"],
+      "required": true
+    },
+    {
+      "type": "dropdown",
+      "label": "Employee",
+      "options": ["Raghu E - 9845784512", "Employee 2", "Employee 3"],
+      "required": true
+    },
+    {
+      "type": "text_field",
+      "label": "Advance Amount",
+      "keyboard": "number",
+      "required": true
+    },
+    {
+      "type": "text_field",
+      "label": "Total Advance",
+      "keyboard": "number",
+      "enabled": false,
+      "required": true
+    },
+    {
+      "type": "text_field",
+      "label": "Description",
+      "keyboard": "text",
+      "required": false
+    }
+  ],
+  "user_interactions": [
+    "Select from Employee Type dropdown",
+    "Select an Employee from the dropdown list",
+    "Enter the Advance Amount in the text field",
+    "Total Advance field auto-updates based on the calculation of Previous Advance + Advance Amount",
+    "Tap 'Cancel' button clears the form and navigates back",
+    "Tap 'Update Employee' button triggers form validation and updates employee advance"
+  ],
+  "validation_rules": {
+    "employee_type": "required",
+    "employee": "required",
+    "advance_amount": "required, numeric >= 0",
+    "description": "optional, text"
+  },
+  "actions": [
+    { "type": "button", "label": "Cancel", "action": "clear_form_and_navigate_back" },
+    { "type": "button", "label": "Update Employee", "action": "submit_form_and_update_advance" }
+  ]
+}

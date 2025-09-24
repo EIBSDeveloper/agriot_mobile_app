@@ -75,65 +75,11 @@ class SubscriptionUsageScreen extends StatelessWidget {
                           packageUsage.mycropsCount,
                         ),
                         _buildUsageItem(
-                          'expense_limit'.tr,
+                          'manager_limit'.tr,
                           packageUsage.expenseCountUsed,
                           packageUsage.myexpenseCount,
                         ),
-                        _buildUsageItem(
-                          'sales_limit'.tr,
-                          packageUsage.salesCountUsed,
-                          packageUsage.mysaleCount,
-                        ),
-                        _buildUsageItem(
-                          'customer_limit'.tr,
-                          packageUsage.customerCountUsed,
-                          packageUsage.customerCount,
-                        ),
-                        _buildUsageItem(
-                          'fuel_limit'.tr,
-                          packageUsage.myfuelCountUsed,
-                          packageUsage.myfuelCount,
-                        ),
-                        _buildUsageItem(
-                          'vehicle_limit'.tr,
-                          packageUsage.myvehicleCountUsed,
-                          packageUsage.myvechicleCount,
-                        ),
-                        _buildUsageItem(
-                          'machinery_limit'.tr,
-                          packageUsage.mymachineryCountUsed,
-                          packageUsage.mymachineryCount,
-                        ),
-                        _buildUsageItem(
-                          'tools_limit'.tr,
-                          packageUsage.mytoolsCountUsed,
-                          packageUsage.mytoolsCount,
-                        ),
-                        _buildUsageItem(
-                          'pesticides_limit'.tr,
-                          packageUsage.mypesticidesCountUsed,
-                          packageUsage.mypesticidesCount,
-                        ),
-                        _buildUsageItem(
-                          'fertilizers_limit'.tr,
-                          packageUsage.myfertilizersCountUsed,
-                          packageUsage.myfertilizersCount,
-                        ),
-                        _buildUsageItem(
-                          'seeds_limit'.tr,
-                          packageUsage.myseedsCountUsed,
-                          packageUsage.myseedsCount,
-                        ),
-                        _buildUsageItem(
-                          'inventory_vendors_limit'.tr,
-                          packageUsage.myvendorCountUsed,
-                          packageUsage.myinventoryVendors,
-                        ),
-                        _buildUsageItem(
-                          'employee_limit'.tr,
-                          packageUsage.employeeCountUsed,
-                          packageUsage.employeeCount,
-                        ),
+                       
                       ],
                     ),
                   ),

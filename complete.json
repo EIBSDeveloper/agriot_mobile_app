@@ -284,129 +284,138 @@
   },
   "screens": [
     {
-      "screen": "Fuel Inventory Detail Screen",
-      "purpose": "Provide a read-only view of detailed fuel inventory information including vendor, amount, quantity, uploaded documents, and description for reference and record verification.",
+      "screen": "Update Employee Payouts Screen",
+      "purpose": "Allow the user to update and manage the payouts for an employee, including entering deductions, payout amount, and payment details.",
       "ui_elements": {
         "static": [
-          "AppBar with logo (Agriot WiFarm)",
-          "Notification icon",
-          "Profile avatar",
-          "Back arrow icon",
-          "Screen title (Petrol)",
-          "Labels: Date, Inventory Type, Inventory Category, Vendor, Purchase Amount, Quantity",
-          "Section titles: Uploaded Documents, Description"
+          "Screen title: 'Update Employee Payouts'",
+          "Labels: Employee Type, Work Type, Employee Name, Advance, Date of Payouts, Balance Advance, To Pay",
+          "Pre-filled Employee Name and ID (e.g., 'Raghu E - 9845784512')",
+          "Pre-filled Advance and Balance Advance amounts",
+          "Static text for each label (e.g., 'Monthly Salaries', 'Planting Work', etc.)"
         ],
         "dynamic": [
-          "Text values for Date, Inventory Type, Inventory Category, Vendor, Purchase Amount, Quantity",
-          "Icons for edit and delete actions",
-          "Document thumbnails with view icons (Bill, Receipt)",
-          "Multiline text description content"
+          "DatePicker for Date of Payouts",
+          "TextField for Deduction of Advance Amount",
+          "TextField for Payouts Amount",
+          "TextField for To Pay",
+          "TextField for Description"
         ]
       },
       "layout_recommendations": [
-        "Use Scaffold with AppBar",
-        "SingleChildScrollView to allow vertical scrolling",
-        "Column for structured vertical layout",
-        "Row for label-value pairs (aligned with spaceBetween)",
-        "Card or Container with padding for grouped content",
-        "Divider before 'Uploaded Documents' section",
-        "Consistent typography: labels in caption style, values in titleMedium",
-        "IconButton for edit and delete placed near the title"
+        "Use Scaffold with a SingleChildScrollView to accommodate multiple input fields and avoid overflow",
+        "Column for vertical alignment of fields",
+        "Padding with EdgeInsets.symmetric(16) to create space around elements",
+        "Row widget to place labels and input fields side by side where applicable",
+        "Text styling with Theme.of(context).textTheme for consistent font style",
+        "Use SizedBox for spacing between fields",
+        "Action buttons ('Cancel' and 'Update Payouts') placed at the bottom in a Row widget"
       ],
-      "input_controls": [],
+      "input_controls": [
+        {
+          "type": "date_picker",
+          "label": "Date of Payouts",
+          "required": true
+        },
+        {
+          "type": "text_field",
+          "label": "Deduction of Advance Amount",
+          "keyboard": "number",
+          "required": true
+        },
+        {
+          "type": "text_field",
+          "label": "Payouts Amount",
+          "keyboard": "number",
+          "required": true
+        },
+        {
+          "type": "text_field",
+          "label": "To Pay",
+          "keyboard": "number",
+          "required": false
+        },
+        {
+          "type": "text_field",
+          "label": "Description",
+          "keyboard": "text",
+          "required": false
+        }
+      ],
       "user_interactions": [
-        "Tap back arrow → navigate to previous screen",
-        "Tap edit icon → navigate to Edit Fuel Entry screen",
-        "Tap delete icon → show confirmation dialog, then remove record on confirm",
-        "Tap document thumbnail → open full-screen document viewer",
-        "Scroll → to view all details if overflow"
+        "Tap on date field opens the calendar picker",
+        "Text fields are editable with numeric input for amounts",
+        "Tap 'Cancel' button clears the form and navigates back",
+        "Tap 'Update Payouts' button triggers form validation and updates payouts"
       ],
-      "validation_rules": {},
+      "validation_rules": {
+        "date_of_payouts": "required, valid_date_format",
+        "deduction_of_advance_amount": "required, numeric >= 0",
+        "payouts_amount": "required, numeric >= 0",
+        "to_pay": "numeric >= 0 (optional)",
+        "description": "optional, text"
+      },
       "actions": [
         {
-          "type": "icon_button",
-          "label": "Edit",
-          "action": "navigate_to_edit_screen"
+          "type": "button",
+          "label": "Cancel",
+          "action": "clear_form_and_navigate_back"
         },
         {
-          "type": "icon_button",
-          "label": "Delete",
-          "action": "show_delete_confirmation"
-        },
-        {
-          "type": "tap_thumbnail",
-          "label": "View Document",
-          "action": "open_document_viewer"
+          "type": "button",
+          "label": "Update Payouts",
+          "action": "submit_form_and_update_payouts"
         }
       ]
     }
   ],
   "api_details": [
     {
-      "Endpoint Name": "Fuel View",
-      "HTTP Method": "POST",
-      "URL Path": "/get_myfuel/<Farmer Id>/",
-      "Request Body": {
-        "my_fuel": 9
-      },
-      "Response Body": {
-        "fuel_data": {
-          "farmer": {
-            "id": 1,
-            "name": "Dharshan"
-          },
-          "fuel_id": 9,
-          "quantity": 20.0,
-          "purchase_amount": 300.0,
-          "description": "Add Fuel",
-          "date": "2025-03-25",
-          "inventory_item": {
-            "id": 6,
-            "name": "MMFuel"
-          },
-          "inventory_type": {
-            "id": 6,
-            "name": "Fuel"
-          },
-          "inventory_category": {
-            "id": 6,
-            "name": "MFuel"
-          },
-          "vendor": {
-            "id": 1,
-            "name": "Updated Vendor Name"
-          },
-          "documents": [
-            {
-              "category_id": 4,
-              "documents": [
-                {
-                  "id": 1,
-                  "document_category": {
-                    "id": 4,
-                    "name": "Expense"
-                  },
-                  "upload_document": "http://192.168.3.24:1710/SuperAdmin/media/myFuel_documents/fuel_1_4_0.png",
-                  "language": {
-                    "default": "en"
-                  }
-                },
-                {
-                  "id": 2,
-                  "document_category": {
-                    "id": 4,
-                    "name": "Expense"
-                  },
-                  "upload_document": "http://192.168.3.24:1710/SuperAdmin/media/myFuel_documents/fuel_1_4_1.jpeg",
-                  "language": {
-                    "default": "en"
-                  }
-                }
-              ]
-            }
-          ]
+      "Endpoint Name": "Employee Payouts Details",
+      "HTTP Method": "Get",
+      "URL Path": "/get_employee_list/formerID/emloyeeId",
+      "Response Body": [
+        {
+          "id": 12,
+          "name": "Bala",
+          "profile": "",
+          "joing_date": "12-02-2025",
+          "user_name": null,
+          "password": null,
+          "gender": "male",
+          "role": "Emplyee",
+          "salary_type": "regular",
+          "salary": 1000,
+          "mobile_number": 8608080510,
+          "alternative_mobile_number": 8608080510,
+          "email_id": "bala00@gmail.com",
+          "pincode": 121312,
+          "discription": ""
         }
-      }
+      ]
+    },
+    {
+      "Endpoint Name": "Employee Payouts add",
+      "HTTP Method": "post",
+      "URL Path": "/add_employe_Payouts/formerID/emloyeeId",
+      "Post Body": [
+        {
+          "name": "manager",
+          "profile": "",
+          "joing_date": "12-02-2025",
+          "user_name": null,
+          "password": null,
+          "gender": "male",
+          "role": "Manager",
+          "salary_type": "regular",
+          "salary": 1000,
+          "mobile_number": 8602280510,
+          "alternative_mobile_number": 8602280510,
+          "email_id": "balaqq00@gmail.com",
+          "pincode": 121312,
+          "discription": ""
+        }
+      ]
     }
   ]
 }

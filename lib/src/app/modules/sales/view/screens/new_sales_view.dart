@@ -185,7 +185,7 @@ class _NewSalesViewState extends State<NewSalesView> {
   );
 
   Widget _buildDatePicker() => InputCardStyle(
-    padding: const EdgeInsets.symmetric(horizontal: 8),
+    // padding: const EdgeInsets.symmetric(horizontal: 8),
     child: InkWell(
       onTap: () async {
         final selected = await showDatePicker(
@@ -200,7 +200,7 @@ class _NewSalesViewState extends State<NewSalesView> {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: 'date'.tr,
+          labelText: 'date'.tr,contentPadding: EdgeInsets.zero,
           border: InputBorder.none,
         ),
         child: Row(

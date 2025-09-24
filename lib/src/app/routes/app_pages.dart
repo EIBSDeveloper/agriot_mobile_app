@@ -37,6 +37,9 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_custo
 import 'package:get/get.dart';
 
 import '../modules/document/document.dart';
+import '../modules/employee/bindings/employee_manager_binding.dart';
+import '../modules/employee/view/screen/employee_details_view.dart';
+import '../modules/employee/view/screen/employee_manager_view.dart';
 import '../modules/expense/binding/cunsumption_detail_binding.dart';
 import '../modules/expense/view/screens/consumption_details.dart';
 import '../modules/sales/view/screens/add_deduction_view.dart';
@@ -281,7 +284,7 @@ class AppPages {
       binding: ScheduleBinding(),
     ),
     GetPage(
-      name:Routes.addFuel,
+      name: Routes.addFuel,
       page: () => const FuelEntryView(),
       binding: FuelEntryBinding(),
     ),
@@ -291,7 +294,7 @@ class AppPages {
       binding: FuelEntryBinding(),
     ),
     GetPage(
-      name:Routes.addVehicle,
+      name: Routes.addVehicle,
       page: () => const VehicleView(),
       binding: FuelEntryBinding(),
     ),
@@ -301,7 +304,7 @@ class AppPages {
       binding: FuelEntryBinding(),
     ),
     GetPage(
-      name:Routes.consumptionPurchaseList ,
+      name: Routes.consumptionPurchaseList,
       page: () => const ConsumptionPurchaseView(),
       binding: ConsumptionPurchaseBinding(),
     ),
@@ -314,6 +317,16 @@ class AppPages {
       name: Routes.inventoryConsumptionDetails,
       page: () => const ConsumptionDetails(),
       binding: CunsumptionDetailBinding(),
+    ),
+    GetPage(
+      name: Routes.employeeManager,
+      page: () => const EmployeeManagerView(),
+      binding: EmployeeManagerBinding(),
+    ),
+    GetPage(
+      name: Routes.employeeDetails,
+      page: () => const EmployeeDetailsView(),
+      binding: EmployeeDetailsBinding(),
     ),
     // GetPage(
     //   name: '/inventory/:type/:id',

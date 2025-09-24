@@ -75,12 +75,13 @@ abstract class Routes {
 
   //
   static const inventory = '/inventory';
-  static const consumptionPurchaseList ='/consumption-purchase';
+  static const consumptionPurchaseList = '/consumption-purchase';
   static const inventoryPurchaseDetail = '/inventory_purchase_detail';
   static const inventoryConsumptionDetails = '/inventory_consumption_detail';
+  static const employeeManager = '/employee-manager';
+  static const employeeDetails = '/employee-details';
+  static const addDocument = '/addDocument';
+  static const fuelConsumption = '/fuel-consumption';
 
-  static const String addDocument = '/addDocument';
-  static const String fuelConsumption = '/fuel-consumption';
-
-  static const String landMapView = '/land-map';
+  static const landMapView = '/land-map';
 }

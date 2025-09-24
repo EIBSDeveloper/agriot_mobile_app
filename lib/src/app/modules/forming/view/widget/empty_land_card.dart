@@ -12,8 +12,8 @@ class EmptyLandCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => view
       ? Padding(
-        padding:  EdgeInsets.only(top: Get.size.height*0.1),
-        child: Center(
+          padding: EdgeInsets.only(top: Get.size.height * 0.1),
+          child: Center(
             child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               shape: RoundedRectangleBorder(
@@ -24,7 +24,10 @@ class EmptyLandCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   gradient: LinearGradient(
-                    colors: [Colors.green.shade100, Colors.green.shade50],
+                    colors: [
+                      Get.theme.colorScheme.onPrimaryContainer,
+                      Get.theme.colorScheme.onPrimaryContainer,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -43,22 +46,19 @@ class EmptyLandCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
+                    Text(
                       'No Land Added Yet!',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: Get.theme.primaryColor,
                       ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
                       'Start by adding your land to explore opportunities.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.black87),
                     ),
                     const SizedBox(height: 20),
                     SizedBox(
@@ -69,9 +69,8 @@ class EmptyLandCard extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          backgroundColor: Colors.green,
-                          elevation: 4,
-                          shadowColor: Colors.greenAccent,
+                          backgroundColor: Get.theme.primaryColor,
+                          elevation: 0,
                         ),
                         onPressed: () {
                           Get.toNamed(Routes.addLand)?.then((result) {
@@ -91,6 +90,6 @@ class EmptyLandCard extends StatelessWidget {
               ),
             ),
           ),
-      )
+        )
       : const SizedBox.shrink();
 }

@@ -21,86 +21,91 @@ class AppDrawer extends StatelessWidget {
             children: [
               Image.asset(AppImages.logo, height: 80),
               const SizedBox(height: 10),
-              const Text('Welcome', style: TextStyle(fontSize: 24)),
+              const Text(
+                'Welcome',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),
-          _buildDrawerItem(
-                  icon: Icons.people,
-                  label: "User Management",
-                  onTap: () => Get.back(),
-                ),
-                _buildDrawerItem(
-                  icon: Icons.fact_check,
-                  label: "Attendance",
-                  onTap: () => Get.back(),
-                ),
-                _buildDrawerItem(
-                  icon: Icons.payments,
-                  label: "Employee Payouts",
-                  onTap: () => Get.back(),
-                ),
-                _buildDrawerItem(
-                  icon: Icons.account_balance_wallet,
-                  label: "My Outstanding",
-                  onTap: () {
-                    Get.back();
-                    Get.to(const PayablesReceivablesPage());
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.contacts,
-                  label: "My Contacts",
-                  onTap: () {
-                    Get.back();Get.toNamed(Routes.vendorCustomer);
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.data_exploration_outlined,
-                  label: "Sales",
-                  onTap: () {
-                    Get.back();Get.toNamed(Routes.sales);
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.store,
-                  label: "Markets",
-                  onTap: () {
-                    Get.back();Get.toNamed(Routes.nearMe);
-                  },
-                ),
-                _buildDrawerItem(
-                  icon: Icons.subscriptions,
-                  label: "Subscription",
-                  onTap: () {
-                    Get.back();Get.toNamed(Routes.subscriptionPlans);
-                  },
-                ),
-             
-       
+        _buildDrawerItem(
+          icon: Icons.people,
+          label: "employee_manager".tr,
+          onTap: () {
+            Get.back();
+            Get.toNamed(Routes.employeeManager);
+          },
+        ),
+        _buildDrawerItem(
+          icon: Icons.fact_check,
+          label: "Attendance",
+          onTap: () => Get.back(),
+        ),
+        _buildDrawerItem(
+          icon: Icons.payments,
+          label: "Employee Payouts",
+          onTap: () => Get.back(),
+        ),
+        _buildDrawerItem(
+          icon: Icons.account_balance_wallet,
+          label: "My Outstanding",
+          onTap: () {
+            Get.back();
+            Get.to(const PayablesReceivablesPage());
+          },
+        ),
+        _buildDrawerItem(
+          icon: Icons.contacts,
+          label: "My Contacts",
+          onTap: () {
+            Get.back();
+            Get.toNamed(Routes.vendorCustomer);
+          },
+        ),
+        _buildDrawerItem(
+          icon: Icons.data_exploration_outlined,
+          label: "Sales",
+          onTap: () {
+            Get.back();
+            Get.toNamed(Routes.sales);
+          },
+        ),
+        _buildDrawerItem(
+          icon: Icons.store,
+          label: "Markets",
+          onTap: () {
+            Get.back();
+            Get.toNamed(Routes.nearMe);
+          },
+        ),
+        _buildDrawerItem(
+          icon: Icons.subscriptions,
+          label: "Subscription",
+          onTap: () {
+            Get.back();
+            Get.toNamed(Routes.subscriptionPlans);
+          },
+        ),
       ],
     ),
-
   );
-  
+
   /// Reusable Drawer Item
   Widget _buildDrawerItem({
     required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) => ListTile(
-      leading: Icon(icon, color: Get.theme.colorScheme.primary),
-      title: Text(
-        label,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: Get.theme.colorScheme.onSurface,
-        ),
+    leading: Icon(icon, color: Get.theme.colorScheme.primary),
+    title: Text(
+      label,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: Get.theme.colorScheme.onSurface,
       ),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: onTap,
-    );
-
-
+    ),
+    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+    onTap: onTap,
+  );
 }

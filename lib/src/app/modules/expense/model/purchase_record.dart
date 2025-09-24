@@ -19,7 +19,9 @@ class PurchaseItem {
 
   factory PurchaseItem.fromJson(Map<String, dynamic> json) => PurchaseItem(
     id: json["id"],
-    dateOfConsumption: json["date_of_consumption"] == null
+    dateOfConsumption:
+        (json["date_of_consumption"] == null ||
+            json["date_of_consumption"] == "N/A")
         ? DateTime.now()
         : DateTime.parse(json["date_of_consumption"]),
     purchaseAmount: json["purchase_amount"],

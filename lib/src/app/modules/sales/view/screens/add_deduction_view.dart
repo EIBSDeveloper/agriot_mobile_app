@@ -67,12 +67,14 @@ class AddDeductionView extends StatelessWidget {
               ),
             ),
           ),
-        IconButton.filled(
+      Card(
+            color: Get.theme.primaryColor,
+            child: IconButton(
           onPressed: () {
             controller.isNewReason.value = !controller.isNewReason.value;
           },
-          icon: const Icon(Icons.add),
-        ),
+          icon: const Icon(Icons.add,color: Colors.white,),
+        ),)
       ],
     ),
   );
@@ -81,6 +83,7 @@ class AddDeductionView extends StatelessWidget {
     children: [
       Expanded(
         child: InputCardStyle(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: TextFormField(
             controller: _chargesController,
             decoration: InputDecoration(
@@ -110,7 +113,7 @@ class AddDeductionView extends StatelessWidget {
   );
 
   Widget _buildTypeSelector() => Obx(
-    () => InputCardStyle(
+    () => InputCardStyle(          padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonFormField<String>(
         initialValue: _selectedType.value,
         onChanged: (String? newValue) {

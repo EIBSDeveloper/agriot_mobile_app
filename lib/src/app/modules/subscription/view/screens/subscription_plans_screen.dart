@@ -45,7 +45,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+
           child: Column(
             children: [
               const SizedBox(height: 16),
@@ -80,50 +80,55 @@ class SubscriptionPlansScreen extends StatelessWidget {
     Package package, {
     bool isSelected = false,
     VoidCallback? onSelect,
-  }) => Card(
-    margin: const EdgeInsets.only(bottom: 16),
-
-    color: isSelected ? Get.theme.colorScheme.primary : null,
-    child: InkWell(
-      onTap: onSelect,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  }) => Column(
+    children: [
+      Card(
+        margin: const EdgeInsets.only(bottom: 8,top: 8,right: 10,left: 10),
+        elevation: 1,
+        color: isSelected ? Get.theme.colorScheme.primary : null,
+        child: InkWell(
+          onTap: onSelect,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TitleText(
-                  package.name,
-                  color: isSelected ? Colors.white : null,
-                ),
-                RadioGroup(
-                  groupValue: isSelected ? package : null,
-                  onChanged: (p) => onSelect?.call(),
-                  child: Radio<Package>(
-                    value: package,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TitleText(
+                      package.name,
+                      color: isSelected ? Colors.white : null,
+                    ),
+                    RadioGroup(
+                      groupValue: isSelected ? package : null,
+                      onChanged: (p) => onSelect?.call(),
+                      child: Radio<Package>(
+                        value: package,
 
-                    activeColor: isSelected
-                        ? Get.theme.colorScheme.onPrimary
-                        : Get.theme.colorScheme.primary,
+                        activeColor: isSelected
+                            ? Get.theme.colorScheme.onPrimary
+                            : Get.theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${package.formattedPrice} • ${package.durationText}',
+                  style: Get.textTheme.titleMedium?.copyWith(
+                    color: isSelected ? Get.theme.colorScheme.onPrimary : null,
                   ),
                 ),
+                const SizedBox(height: 16),
+                ..._buildFeatureList(package, isSelected),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              '${package.formattedPrice} • ${package.durationText}',
-              style: Get.textTheme.titleMedium?.copyWith(
-                color: isSelected ? Get.theme.colorScheme.onPrimary : null,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ..._buildFeatureList(package, isSelected),
-          ],
+          ),
         ),
       ),
-    ),
+      const Divider(),
+    ],
   );
   // {
 

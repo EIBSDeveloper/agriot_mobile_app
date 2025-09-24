@@ -23,7 +23,7 @@ class App extends StatelessWidget {
     locale: Get.deviceLocale,
     fallbackLocale: const Locale('en', 'US'),
     initialBinding: AppBinding(),
-    initialRoute: Routes.splash,
+    initialRoute: Routes.home,
     getPages: AppPages.routes,
     debugShowCheckedModeBanner: false,
   );

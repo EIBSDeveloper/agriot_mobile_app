@@ -5,26 +5,22 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+
 class AddVendorCustomerView extends GetView<VendorCustomerController> {
   const AddVendorCustomerView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'add_${controller.selectedType}'.tr),
+    appBar: CustomAppBar(title: 'add_contact'.tr),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
         key: controller.formKey,
         child: Column(
           children: [
-            if (controller.selectedType.value == 'vendor')
-              _buildInventoryTypeSection(),
-
             _buildBasicInfoSection(),
             _buildLocationSection(),
             _buildFinancialSection(),
-            // _buildImageSection(),
             _buildSubmitButton(),
           ],
         ),
@@ -47,10 +43,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             decoration: InputDecoration(
               labelText: "${'select_market'.tr}*",
               border: InputBorder.none,
-              // contentPadding: const EdgeInsets.symmetric(
-              //   horizontal: 16,
-              //   vertical: 12,
-              // ),
             ),
             items: controller.markets
                 .map(
@@ -69,61 +61,39 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
       ],
     );
   });
-
-  Widget _buildInventoryTypeSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text("${'inventory_type'.tr} *", style: Get.textTheme.titleSmall),
-      const SizedBox(height: 8),
-      Obx(() {
-        if (controller.isinveroryLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        final model = controller.purchaseModel.value;
-        if (model == null) {
-          return Center(child: Text('no_data_available'.tr));
-        }
-
-
-
-        return MultiSelectDialogField<String>(
-          items:  model.map((item)=> MultiSelectItem<String>(item.name, item.name)).toList(),
-          dialogHeight: 300,
-          initialValue: controller.selectedKeys.toList(),
-          title: Text('select_inventory_types'.tr),
-          itemsTextStyle: const TextStyle(color: Colors.black),
-          selectedItemsTextStyle: const TextStyle(color: Colors.black),
-          searchHintStyle: const TextStyle(color: Colors.black),
-          searchTextStyle: const TextStyle(color: Colors.black),
-          buttonText: Text('select_inventory_types'.tr),
-          selectedColor: Get.theme.primaryColor,
-          chipDisplay: MultiSelectChipDisplay(
-            textStyle: const TextStyle(color: Colors.black),
-            chipColor: Get.theme.colorScheme.primary.withAlpha(140),
-            onTap: (value) => controller.toggleSelection(value),
-          ),
-          onConfirm: (values) {
-            controller.setSelectedKeys(values.toSet());
-          },
-        );
-      }),
-      const SizedBox(height: 16),
-    ],
-  );
-
+  
   Widget _buildBasicInfoSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text('basic_info'.tr, style: Get.textTheme.titleSmall),
       const SizedBox(height: 8),
       InputCardStyle(
+        child: DropdownButtonFormField<String>(
+          isExpanded: true,
+
+          icon: const Icon(Icons.keyboard_arrow_down),
+          initialValue: controller.selectedType.value,
+          decoration: InputDecoration(
+            labelText: 'select_contact'.tr,
+            border: InputBorder.none,
+          ),
+          items: [
+            DropdownMenuItem(value: 'customer', child: Text('customer'.tr)),
+            DropdownMenuItem(value: 'vendor', child: Text('vendor'.tr)),
+          ],
+          onChanged: (String? value) {
+            controller.selectedType.value = value!;
+          },
+        ),
+      ),
+      const SizedBox(height: 12),
+
+      InputCardStyle(
         child: TextFormField(
           controller: controller.nameController,
           decoration: InputDecoration(
             border: InputBorder.none,
-            labelText:
-                "${controller.selectedType.value == 'customer' ? 'customer_name'.tr : 'vendor_name'.tr}*",
+            labelText: "${'name'.tr} *",
           ),
           validator: (value) =>
               value?.isEmpty ?? true ? 'required_field'.tr : null,
@@ -167,11 +137,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         child: TextFormField(
           controller: controller.shopNameController,
           decoration: InputDecoration(
-            labelText:
-                controller.selectedType.value == 'customer' ||
-                        controller.selectedType.value == 'both'
-                    ? "${'shop_name'.tr} *"
-                    : "${'business_name'.tr} *",
+            labelText: "${'business_name'.tr} *",
             border: InputBorder.none,
           ),
         ),
@@ -180,6 +146,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
       _buildMarketTypeSection(),
     ],
   );
+
 
   Widget _buildLocationSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,7 +221,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
 
       const SizedBox(height: 12),
       InputCardStyle(
-              
         child: TextFormField(
           controller: controller.descriptionController,
           decoration: InputDecoration(
@@ -270,9 +236,11 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
 
   Widget _buildSubmitButton() => Obx(
     () => ElevatedButton(
-      onPressed: controller.isSubmitting.value ? null :(){
-          controller.submitForm(id:  Get.arguments?["id"]);
-      },
+      onPressed: controller.isSubmitting.value
+          ? null
+          : () {
+              controller.submitForm(id: Get.arguments?["id"]);
+            },
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(double.infinity, 50),
         backgroundColor: Get.theme.primaryColor,

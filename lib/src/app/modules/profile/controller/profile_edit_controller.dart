@@ -101,6 +101,7 @@ class ProfileEditController extends GetxController {
 
   void _populateForm(ProfileModel profile) {
     // Basic info
+    imagePath.value= profile.imgUrl??'';
     nameController.text = profile.name;
     emailController.text = profile.email;
     companyController.text = profile.companyName ?? '';

@@ -576,5 +576,7 @@ class English {
     "regular": "Regular",
     "not_available": "Not Available",
     "address_not_provided": "Address not provided",
+    "add_contact": "Add Contact",
+    "select_contact": 'Select Contact',
   };
 }

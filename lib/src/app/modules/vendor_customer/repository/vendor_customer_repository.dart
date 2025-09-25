@@ -5,7 +5,6 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_for
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
-import '../../inventory/model/inventory_item.dart';
 
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
@@ -47,16 +46,7 @@ class VendorCustomerRepository {
     }
   }
 
-   Future<List<InventoryType>> getInventory() async {
-    try {
-      final farmerId = appDeta.userId;
-      final response = await _httpService.get('/inventory_types_quantity/$farmerId');
-      final response2 = jsonDecode(response.body) as List;
-return response2.map((data) => InventoryType.fromJson(data)).toList();
-    } catch (e) {
-      rethrow;
-    }
-  }
+   
 
   Future<Map<String, dynamic>> daleteDetails(int id, String type) async {
     final userId = appDeta.userId;

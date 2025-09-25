@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import '../../../../routes/app_routes.dart';
 import '../../../../widgets/title_text.dart';
 import '../../controller/profile_controller.dart';
 import '../../model/profile_model.dart';
+
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
@@ -33,7 +33,7 @@ class ProfileView extends GetView<ProfileController> {
 
       final profile = controller.profile.value;
       if (profile == null) {
-        return  Center(child: Text('no_profile_data_available'.tr));
+        return Center(child: Text('no_profile_data_available'.tr));
       }
 
       return RefreshIndicator(
@@ -103,69 +103,30 @@ class ProfileView extends GetView<ProfileController> {
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
-          InkWell(
-            onTap: () {
-              if (profile.imgUrl!.isNotEmpty) {
-                Get.toNamed(Routes.docViewer, arguments: profile.imgUrl);
-              }
-            },
-            child: Stack(
-              children: [
-                if (controller.isSubmitting.value)
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Get.theme.colorScheme.primaryContainer,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: LoadingAnimationWidget.hexagonDots(
-                        color: Get.theme.primaryColor,
-                        size: 40,
-                      ),
-                    ),
-                  )
-                else if (profile.imgUrl!.isNotEmpty)
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Get.theme.colorScheme.primaryContainer,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: MyNetworkImage(profile.imgUrl!),
-                    ),
-                  )
-                else
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundImage: controller.imagePath.value.isEmpty
-                        ? null
-                        : FileImage(File(controller.imagePath.value))
-                              as ImageProvider,
-                    child: controller.imagePath.value.isEmpty
-                        ? const Icon(Icons.person, size: 40)
-                        : const SizedBox(),
-                  ),
-
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: controller.pickImage,
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Get.theme.primaryColor,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+          if (controller.isSubmitting.value)
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Get.theme.colorScheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: LoadingAnimationWidget.hexagonDots(
+                  color: Get.theme.primaryColor,
+                  size: 40,
                 ),
-              ],
-            ),
-          ),
+              ),
+            )
+          else if (profile.imgUrl!.isNotEmpty)
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: Get.theme.colorScheme.primaryContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: MyNetworkImage(profile.imgUrl!),
+              ),
+            )
+          else
+            const CircleAvatar(radius: 40, child: Icon(Icons.person, size: 40)),
+
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -230,7 +191,10 @@ class ProfileView extends GetView<ProfileController> {
               'validity'.tr,
               '${subscription.packageValidity} ${subscription.packageDuration}',
             ),
-            _buildSubscriptionDetailRow('start_date'.tr, subscription.startDate),
+            _buildSubscriptionDetailRow(
+              'start_date'.tr,
+              subscription.startDate,
+            ),
             _buildSubscriptionDetailRow('end_date'.tr, subscription.endDate),
             _buildSubscriptionDetailRow(
               'remaining_days'.tr,

@@ -7593,6 +7593,7 @@ def add_expense(request, farmer_id):
 
     try:
         farmer = get_object_or_404(Farmer, id=farmer_id)
+        vendor = get_object_or_404(Farmer, id=request.data.get('vendor'))
         print(f"Fetching farmer with id: {farmer_id}")
 
         subscription = farmer.subscriptions.filter(status=0).first()
@@ -7616,6 +7617,7 @@ def add_expense(request, farmer_id):
         file_data = request.data.get('document', [])
         type_expenses_id = request.data.get('type_expenses')
         amount = request.data.get('amount')
+        paidAmount = request.data.get('paid_amount')
         description = request.data.get('description', '')  # Optional, default to empty string
         created_day = request.data.get('created_day')
 
@@ -7635,6 +7637,8 @@ def add_expense(request, farmer_id):
             'farmer': farmer,
             'my_crop': get_object_or_404(MyCrop, id=my_crop_id),
             'type_expenses': type_expenses,
+            'vendor': vendor,
+            'paid_amount': paidAmount,
             'amount': amount,
             'description': description,
             'created_day': created_day,
@@ -41872,6 +41876,9 @@ def get_vendors_receivables_list(request, farmer_id):
         vendors_receivables_data.append(vendor_info)
 
     return Response(vendors_receivables_data, status=status.HTTP_200_OK)
+
+
+
 
 # endregion
 

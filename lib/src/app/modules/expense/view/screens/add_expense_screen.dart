@@ -132,6 +132,30 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                   },
                 ),
               ),
+              const SizedBox(height: 16),
+              InputCardStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'PaidAmount'.tr,
+
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (value) =>
+                      controller.amount(double.tryParse(value) ?? 0),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an amount'.tr;
+                    }
+                    if (double.tryParse(value) == null ||
+                        double.parse(value) <= 0) {
+                      return 'Please enter a valid amount'.tr;
+                    }
+                    return null;
+                  },
+                ),
+              ),
 
               const SizedBox(height: 16),
               InputCardStyle(

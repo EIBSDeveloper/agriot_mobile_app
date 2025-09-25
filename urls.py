@@ -376,8 +376,7 @@ name='get_inventory_items_by_category'),
     #vendors Outstanding
     path('vendors_payables_list/<int:farmer_id>',get_vendors_payables_list, name='get_vendors_payables_list'),
     path('vendors_receivables_list/<int:farmer_id>/',get_vendors_receivables_list, name='get_vendors_receivables_list'),
-
-
+   
 ]
 
 

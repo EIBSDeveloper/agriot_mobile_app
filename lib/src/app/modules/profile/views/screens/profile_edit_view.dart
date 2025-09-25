@@ -45,9 +45,10 @@ class ProfileEditView extends GetView<ProfileEditController> {
       children: [
         Obx(() {
           if (controller.imagePath.isNotEmpty) {
+            var startsWith = controller.imagePath.startsWith('http');
             return CircleAvatar(
               radius: 50,
-              backgroundImage: controller.imagePath.startsWith('http')
+              backgroundImage: startsWith
                   ? CachedNetworkImageProvider(controller.imagePath.value)
                   : FileImage(File(controller.imagePath.value))
                         as ImageProvider,

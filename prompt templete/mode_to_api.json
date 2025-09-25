@@ -1,0 +1,17 @@
+{
+  "prompt": "Convert the following Django model class code into a structured JSON representation with model name, field names, types, and attributes such as max_length, default, required, related_model, related_name, auto_now, auto_now_add, etc.\n\nInput:\n\"\"\"\nclass Duration(models.Model):\n    name = models.CharField(max_length=200)\n    code = models.IntegerField(null=True,blank=True)\n    status = models.IntegerField(default=0,null=True,blank=True)\n    created_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)\n    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True, related_name='duration_created_by')\n    updated_at = models.DateTimeField(auto_now=True,null=True,blank=True)\n    updated_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)\n    translate_json = models.JSONField(null=True, blank=True)\n\"\"\"\n\nExpected Output (JSON format):",
+  "response_format": "json",
+  "example_output": {
+    "model_name": "Duration",
+    "fields": [
+      {"name": "name", "type": "CharField", "max_length": 200, "required": true},
+      {"name": "code", "type": "IntegerField", "required": false},
+      {"name": "status", "type": "IntegerField", "required": false, "default": 0},
+      {"name": "created_at", "type": "DateTimeField", "auto_now_add": true, "required": false},
+      {"name": "created_by", "type": "ForeignKey", "related_model": "CustomUser", "required": false, "related_name": "duration_created_by"},
+      {"name": "updated_at", "type": "DateTimeField", "auto_now": true, "required": false},
+      {"name": "updated_by", "type": "ForeignKey", "related_model": "CustomUser", "required": false},
+      {"name": "translate_json", "type": "JSONField", "required": false}
+    ]
+  }
+}

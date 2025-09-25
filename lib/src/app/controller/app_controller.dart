@@ -4,7 +4,7 @@ import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
 import 'package:get/get.dart';
 
 class AppDataController extends GetxController {
-  RxString userId = '339'.obs;
+  RxString userId = ''.obs;
   RxString emailId = ''.obs;
   RxString username = ''.obs;
   // RxBool error = false.obs;

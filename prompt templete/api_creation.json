@@ -1,0 +1,49 @@
+{
+  "task": "Generate Django REST Framework APIs with Swagger",
+  "model_name": "ModelNameHere",
+  "fields": [
+    {"name": "field1", "type": "CharField", "max_length": 50, "required": true},
+    {"name": "field2", "type": "ForeignKey", "related_model": "OtherModel", "required": false},
+    {"name": "field3", "type": "IntegerField", "required": false, "default": 0}
+  ],
+  "requirements": {
+    "apis": [
+      "create",
+      "update",
+      "delete",
+      "status_update",
+      "get_list_with_search_and_pagination",
+      "get_detail"
+    ],
+    "swagger_documentation": true,
+    "memory_optimization": true,
+    "select_related_prefetch_for_foreign_keys": true,
+    "pagination": {
+      "type": "PageNumberPagination",
+      "default_page_size": 10,
+      "page_size_query_param": "page_size"
+    },
+    "error_handling": {
+      "format": {"status_code": "int", "error": "string", "message": "string"},
+      "status_codes": [400, 404, 500]
+    },
+    "validation": {
+      "required_fields": true,
+      "foreign_key_exists": true,
+      "field_type_check": true
+    },
+    "response_format": "JSON",
+    "optimizations": [
+      "only_fields_needed_for_list",
+      "select_related_for_foreign_keys",
+      "minimal_loops",
+      "dynamic_update_only_provided_fields"
+    ],
+    "tags": "ModelNameHere Management"
+  },
+  "example_error_response": {
+    "status_code": 400,
+    "error": "validation_error",
+    "message": "Field X is required"
+  }
+}

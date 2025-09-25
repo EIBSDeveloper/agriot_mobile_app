@@ -11,7 +11,7 @@ class LandPickerController extends GetxController {
   var selectedLocation = Rxn<LatLng>();
   var address = ''.obs;
   var landPolylin = <LatLng>[].obs;
-    final RxList<List<LatLng>?> priviesCropCoordinates = <List<LatLng>?>[].obs;
+  final RxList<List<LatLng>?> priviesCropCoordinates = <List<LatLng>?>[].obs;
   var zoom = false.obs;
   var croppolyiline = <LatLng>[].obs;
   var polylinePoints = <LatLng>[].obs;
@@ -41,16 +41,13 @@ class LandPickerController extends GetxController {
   }
 
   void onMapTap(LatLng tappedPoint) {
-  
     // Check if tapped point is inside the main polygon
-    if (landPolylin.isEmpty||_isPointInPolygon(tappedPoint, landPolylin)) {
+    if (landPolylin.isEmpty || _isPointInPolygon(tappedPoint, landPolylin)) {
       selectedLocation.value = tappedPoint;
       polylinePoints.add(tappedPoint);
       update();
     } else {
-     showError( "You cannot mark outside the land boundary",
-        
-      );
+      showError("You cannot mark outside the land boundary");
     }
   }
 
@@ -60,6 +57,10 @@ class LandPickerController extends GetxController {
   }
 
   void confirmSelection() {
+    if (polylinePoints.isEmpty || polylinePoints.length < 3) {
+      showWarning("Please check: Invalid land boundary");
+      return;
+    }
     Get.back(result: convertLatLngListToList(polylinePoints));
   }
 

@@ -85,7 +85,7 @@ class DashboardView extends GetView<DashboardController> {
             lands: controller.lands,
             color: Colors.transparent,
             selectedLand: controller.selectedLand.value,
-            onChanged: (land) => controller.changeLand(land!),
+            onChanged: (land) => controller.changeLand(land),
           ),
         ),
       ),

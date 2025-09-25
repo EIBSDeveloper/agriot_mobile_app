@@ -321,7 +321,7 @@ class ProfileView extends GetView<ProfileController> {
       children: [
         Icon(icon, size: 20, color: Get.theme.primaryColor),
         const SizedBox(width: 12),
-        Flexible(child: Text(value, style: Get.textTheme.bodyLarge!)),
+        Flexible(child: Text(value, style: Get.textTheme.bodyLarge)),
       ],
     ),
   );
@@ -343,7 +343,7 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(value, style: Get.textTheme.bodyLarge!),
+                Text(value, style: Get.textTheme.bodyLarge),
               ],
             ),
           ),

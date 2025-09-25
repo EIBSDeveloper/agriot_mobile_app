@@ -30,7 +30,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
               MyDropdown(
                 items: controller.crop,
                 selectedItem: controller.selectedCrop.value,
-                onChanged: (crop) => controller.selectedCrop(crop!),
+                onChanged: (crop) => controller.selectedCrop(crop),
                 label: "${'crop'.tr} ",
               ),
               const SizedBox(height: 16),

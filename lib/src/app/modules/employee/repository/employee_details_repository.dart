@@ -1,16 +1,15 @@
-import 'dart:convert';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/employee/model/employee_details_model.dart';
-import 'package:argiot/src/app/service/http/http_service.dart';
+// import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 class EmployeeDetailsRepository extends GetxController {
-  final HttpService _httpService = Get.find<HttpService>();
+  // final HttpService _httpService = Get.find<HttpService>();
 
   final AppDataController appData = Get.find();
 
   Future<EmployeeDetailsModel> getEmployeeDetails(int detailID) async {
-    final farmerId = appData.userId.value;
+    // final farmerId = appData.userId.value;
     try {
       // final response = await _httpService.get(
       //   '/get_employee_list/$farmerId/$detailID',

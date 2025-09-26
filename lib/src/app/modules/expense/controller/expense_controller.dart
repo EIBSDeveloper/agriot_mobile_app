@@ -1,10 +1,7 @@
-
-
 import 'package:argiot/src/app/modules/expense/model/expense.dart';
 import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/expense_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_summary.dart';
-import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
 import 'package:argiot/src/app/modules/expense/model/file_type.dart';
 import 'package:argiot/src/app/modules/expense/model/purchase.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
@@ -14,7 +11,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../model/customer.dart';
-
 
 class ExpenseController extends GetxController {
   final ExpenseRepository _repository = Get.find<ExpenseRepository>();
@@ -32,11 +28,12 @@ class ExpenseController extends GetxController {
   final isPurchase = false.obs;
   final selectedCrop = CropModel(id: 0, name: '').obs;
   final selectedDate = DateTime.now().obs;
-  final selectedExpenseType = ExpenseType(id: 0, name: '').obs;
-  final amount = 0.0.obs;
+  // final selectedExpenseType = ExpenseType(id: 0, name: '').obs;
+  final RxInt amount = 0.obs;
+  final RxInt paidamonut = 0.obs;
   final description = ''.obs;
   final RxList<CropModel> crop = <CropModel>[].obs;
-  final expenseTypes = <ExpenseType>[].obs;
+  // final expenseTypes = <ExpenseType>[].obs;
   final fileTypes = <FileType>[].obs;
   final isLoading = false.obs;
   var selectedVendor = Rx<int?>(null);
@@ -56,7 +53,7 @@ class ExpenseController extends GetxController {
   void onInit() {
     super.onInit();
     loadExpenseData();
-    loadExpenseTypes();
+
     loadFileTypes();
   }
 
@@ -68,13 +65,12 @@ class ExpenseController extends GetxController {
       await fetchCrop();
       // final summary = await _repository.getExpenseSummary(selectedPeriod.value);
       // expenseSummary.assignAll(summary);
-    
 
       final response = await _repository.getExpenses(selectedPeriod.value);
       expenses.assignAll(response.expenses);
       purchases.assignAll(response.purchases);
 
-        cardexpenses.clear();
+      cardexpenses.clear();
       final summary = await _repository.getExpenseSummary(selectedPeriod.value);
 
       cardexpenses.addAll(summary);
@@ -83,27 +79,18 @@ class ExpenseController extends GetxController {
         (sum, item) => sum + item.totalAmount,
       );
     } catch (e) {
-     showError('Error', );
+      showError('Error');
     } finally {
       isLoading(false);
     }
   }
 
   Future<void> fetchCrop() async {
-       final cropList = await _repository.getCropList();
+    final cropList = await _repository.getCropList();
     crop.assignAll(cropList);
-    
+
     if (cropList.isNotEmpty) {
       selectedCrop.value = cropList.first;
-    }
-  }
-
-  Future<void> loadExpenseTypes() async {
-    try {
-      final types = await _repository.getExpenseTypes();
-      expenseTypes.assignAll(types);
-    } catch (e) {
-      showError( 'Failed to load expense types');
     }
   }
 
@@ -115,44 +102,44 @@ class ExpenseController extends GetxController {
       showError('Failed to fetch customers: $e');
     }
   }
+
   Future<void> loadFileTypes() async {
     try {
       final types = await _repository.getFileTypes();
       fileTypes.assignAll(types);
     } catch (e) {
-      showError( 'Failed to load file types');
+      showError('Failed to load file types');
     }
   }
 
   Future<bool> submitExpense() async {
     if (selectedCrop.value.id == 0) {
-      showError( 'Please select a crop');
+      showError('Please select a crop');
       return false;
     }
-    if (selectedExpenseType.value.id == 0) {
-      showError('Please select an expense type');
-      return false;
-    }
+
     if (amount.value <= 0) {
-      showError( 'Please enter a valid amount');
+      showError('Please enter a valid amount');
       return false;
     }
 
     try {
       isLoading(true);
       final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate.value);
+
       final success = await _repository.addExpense(
-        selectedCrop.value.id,
-        amount.value,
-        selectedExpenseType.value.id,
-        formattedDate,
-        description.value,
+        createdDay: formattedDate,
+        myCrop: selectedCrop.value.id,
+        amount: amount.value,
+        vendor: selectedVendor.value,
+        paidamonut: paidamonut.value,
+        description: description.value,
       );
 
       if (success['success']) {
         Get.back();
         loadExpenseData();
-        showSuccess( 'Expense added successfully');
+        showSuccess('Expense added successfully');
         return true;
       } else {
         showError('${success['message']}');

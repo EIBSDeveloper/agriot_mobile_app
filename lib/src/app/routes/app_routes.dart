@@ -82,6 +82,7 @@ abstract class Routes {
   static const employeeDetails = '/employee-details';
   static const addDocument = '/addDocument';
   static const fuelConsumption = '/fuel-consumption';
-
+ static const String updateEmployeePayouts = '/update_employee_payouts';
+ static const String updateEmployeeAdvance = '/update_employee_advance';
   static const landMapView = '/land-map';
 }

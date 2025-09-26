@@ -37,9 +37,13 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_custo
 import 'package:get/get.dart';
 
 import '../modules/document/document.dart';
+import '../modules/employee/bindings/employee_advance_binding.dart';
 import '../modules/employee/bindings/employee_manager_binding.dart';
+import '../modules/employee/bindings/update_employee_payouts_binding.dart';
+import '../modules/employee/view/screen/employee_advance_controller.dart';
 import '../modules/employee/view/screen/employee_details_view.dart';
 import '../modules/employee/view/screen/employee_manager_view.dart';
+import '../modules/employee/view/screen/update_employee_payouts_view.dart';
 import '../modules/expense/binding/cunsumption_detail_binding.dart';
 import '../modules/expense/view/screens/consumption_details.dart';
 import '../modules/sales/view/screens/add_deduction_view.dart';
@@ -327,6 +331,18 @@ class AppPages {
       name: Routes.employeeDetails,
       page: () => const EmployeeDetailsView(),
       binding: EmployeeDetailsBinding(),
+    ),
+    GetPage(
+      name: Routes.updateEmployeePayouts,
+      page: () => const UpdateEmployeePayoutsView(),
+      binding: UpdateEmployeePayoutsBinding(),
+      transition: Transition.cupertino,
+    ),
+     GetPage(
+      name: Routes.updateEmployeeAdvance,
+      page: () => const UpdateEmployeeAdvanceView(),
+      binding: EmployeeAdvanceBinding(),
+      transition: Transition.cupertino,
     ),
     // GetPage(
     //   name: '/inventory/:type/:id',

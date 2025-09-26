@@ -133,30 +133,30 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   MonthDayFormat(
-                    date: DateFormat("dd-MM-yyyy").parse(item.createdDay),
+                    date: DateFormat("dd/MM/yyyy").parse(item.createdDay),
                   ),
                   const SizedBox(width: 8),
 
                   /// Left section (title + subtitle)
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.typeExpenses.name,
-                          style: Get.textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          item.myCrop.name,
-                          style: Get.textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Text(
+                  //         item.typeExpenses.name,
+                  //         style: Get.textTheme.bodyLarge,
+                  //       ),
+                  //       const SizedBox(height: 4),
+                  //       Text(
+                  //         item.myCrop.name,
+                  //         style: Get.textTheme.bodyMedium?.copyWith(
+                  //           color: Colors.grey[600],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
 
                   Text(
                     '₹${item.amount.toStringAsFixed(2)}',

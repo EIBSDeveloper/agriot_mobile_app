@@ -35,12 +35,12 @@ class GuidelineController extends GetxController {
       filteredGuidelines.assignAll(guidelinesList);
 
       // Extract unique crops from guidelines
-      final uniqueCrops = guidelines
-          .where((g) => g.crop != null)
-          .map((g) => g.crop!)
-          .toSet()
-          .toList();
-      crops.assignAll(uniqueCrops);
+      // final uniqueCrops = guidelines
+      //     .where((g) => g.crop != null)
+      //     .map((g) => g.crop!)
+      //     .toSet()
+      //     .toList();
+      // crops.assignAll(uniqueCrops);
 
       // Load categories
       final categoriesList = await _repository.getGuidelineCategories();
@@ -97,9 +97,9 @@ class GuidelineController extends GetxController {
     var results = guidelines.toList();
 
     if (selectedCrop.value != null) {
-      results = results
-          .where((g) => g.crop?.id == selectedCrop.value?.id)
-          .toList();
+      // results = results
+      //     .where((g) => g.crop?.id == selectedCrop.value?.id)
+      //     .toList();
     }
 
     if (selectedCategory.value != null && selectedCategory.value!.id != 0) {

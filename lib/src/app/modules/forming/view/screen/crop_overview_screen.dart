@@ -2,7 +2,6 @@ import 'package:argiot/src/app/modules/dashboad/view/widgets/bi_pie_chart.dart';
 import 'package:argiot/src/app/modules/dashboad/view/widgets/chart_data.dart';
 import 'package:argiot/src/app/modules/forming/controller/crop_details_controller.dart';
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
-import 'package:argiot/src/app/modules/forming/model/schedule.dart';
 import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/service/utils/utils.dart';
@@ -15,9 +14,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../../core/app_icons.dart';
 import '../../../../service/utils/enums.dart';
-import '../../../guideline/model/guideline.dart';
 import '../../../../routes/app_routes.dart';
-import '../../../guideline/model/guideline_category.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
 import '../../../map_view/view/widgets/task_card.dart';
 
@@ -395,49 +392,22 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: overview.guidelines.length,
-            itemBuilder: (context, index) {
-              final guideline = overview.guidelines[index];
-
-              return SizedBox(
+            itemBuilder: (context, index) => SizedBox(
                 width: 300,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: GuidelineCard(
-                    guideline: Guideline(
-                      id: guideline.id,
-                      name: guideline.name,
-                      guidelinestype: guideline.description,
-                      guidelinescategory: GuidelineCategory(
-                        name: guideline.description,
-                        id: 1,
-                      ),
-                      videoUrl: guideline.description,
-                      document:  guideline.document,
-                      description: guideline.description,
-                      status: 0,
-                      mediaType: guideline.mediaType,
-                    ),
+                    guideline:  overview.guidelines[index]
                   ),
                 ),
-              );
-            },
+              ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildTasksSection(CropOverview overview) {
-    if (overview.schedules.isEmpty) return const SizedBox();
-
-    // Group schedules by date
-    final schedulesByDate = <String, List<Schedule>>{};
-    for (final schedule in overview.schedules) {
-      final date = schedule.startDate;
-      schedulesByDate.putIfAbsent(date, () => []).add(schedule);
-    }
-
-    return Column(
+  Widget _buildTasksSection(CropOverview overview) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -569,7 +539,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         const SizedBox(height: 180),
       ],
     );
-  }
 
   Widget _buildCalendarSection() => Card(
     elevation: 0,

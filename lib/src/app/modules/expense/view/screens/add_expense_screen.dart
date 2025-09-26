@@ -21,7 +21,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
       child: Form(
         key: _formKey,
         child: Obx(() {
-          if (controller.isLoading.value && controller.expenseTypes.isEmpty) {
+          if (controller.isLoading.value ) {
             return const Center(child: CircularProgressIndicator());
           }
           return Column(
@@ -119,13 +119,13 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     border: InputBorder.none,
                   ),
                   onChanged: (value) =>
-                      controller.amount(double.tryParse(value) ?? 0),
+                      controller.amount(int.tryParse(value) ?? 0),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an amount'.tr;
                     }
-                    if (double.tryParse(value) == null ||
-                        double.parse(value) <= 0) {
+                    if (int.tryParse(value) == null ||
+                        int.parse(value) <= 0) {
                       return 'Please enter a valid amount'.tr;
                     }
                     return null;
@@ -143,7 +143,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                     border: InputBorder.none,
                   ),
                   onChanged: (value) =>
-                      controller.amount(double.tryParse(value) ?? 0),
+                      controller.paidamonut(int.tryParse(value) ?? 0),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an amount'.tr;

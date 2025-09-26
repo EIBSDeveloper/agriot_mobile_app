@@ -3,12 +3,14 @@ import 'package:argiot/src/app/modules/document/controller/document_controller.d
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
+import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'document_thumbnail.dart';
+
 class AddDocumentView extends StatefulWidget {
   const AddDocumentView({super.key});
 
@@ -27,7 +29,7 @@ class _AddDocumentViewState extends State<AddDocumentView> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar:  CustomAppBar(title: 'add_document'.tr),
+    appBar: CustomAppBar(title: 'add_document'.tr),
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -183,7 +185,8 @@ class _AddDocumentViewState extends State<AddDocumentView> {
     width: double.infinity,
     child: ElevatedButton(
       onPressed: () {
-        if (controller.formKey.currentState!.validate()) {
+        if (controller.formKey.currentState!.validate() &&
+            controller.uploadedDocs.isNotEmpty) {
           final documents = AddDocumentModel(
             documents: controller.uploadedDocs.toList(),
             fileType: controller.selectedDocument.value.id,
@@ -194,6 +197,8 @@ class _AddDocumentViewState extends State<AddDocumentView> {
           );
 
           Get.back(result: documents);
+        }else{
+          showError("Please upload document");
         }
       },
       child: Text('add_document'.tr),

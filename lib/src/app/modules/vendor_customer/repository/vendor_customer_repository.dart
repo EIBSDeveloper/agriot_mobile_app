@@ -5,6 +5,7 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_for
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
+import '../../inventory/model/inventory_item.dart';
 
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
@@ -35,6 +36,19 @@ class VendorCustomerRepository {
     }
   }
 
+  Future<List<InventoryType>> getInventory() async {
+    try {
+      final farmerId = appDeta.userId;
+      final response = await _httpService.get(
+        '/inventory_types_quantity/$farmerId',
+      );
+      final response2 = jsonDecode(response.body) as List;
+      return response2.map((data) => InventoryType.fromJson(data)).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<Market>> getMarkets() async {
     try {
       final response = await _httpService.get('/list_market_names');
@@ -45,8 +59,6 @@ class VendorCustomerRepository {
       throw Exception('Failed to load markets: $e');
     }
   }
-
-   
 
   Future<Map<String, dynamic>> daleteDetails(int id, String type) async {
     final userId = appDeta.userId;
@@ -83,6 +95,7 @@ class VendorCustomerRepository {
       throw Exception('Error adding customer: $e');
     }
   }
+
   Future<int> editCustomer(VendorCustomerFormData formData) async {
     final farmerId = appDeta.userId;
     try {
@@ -118,12 +131,15 @@ class VendorCustomerRepository {
     }
   }
 
-  Future<int>editVendor(VendorCustomerFormData formData) async {
+  Future<int> editVendor(VendorCustomerFormData formData) async {
     final farmerId = appDeta.userId.value;
     try {
       var json2 = formData.toJson();
       json2['farmer'] = farmerId;
-      final response = await _httpService.put('/update_vendor/$farmerId/', json2);
+      final response = await _httpService.put(
+        '/update_vendor/$farmerId/',
+        json2,
+      );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body)['id'] ?? 0;
       } else {
@@ -154,6 +170,7 @@ class VendorCustomerRepository {
       throw Exception('Error adding customer/vendor: $e');
     }
   }
+
   Future<int> editBoth(VendorCustomerFormData formData) async {
     final farmerId = appDeta.userId;
     try {

@@ -123,6 +123,7 @@ class VendorAddRepository {
     required double paymentAmount,
     required String description,
     required String type,
+    required List documentItems,
   }) async {
     final url = Uri.parse(
       "$baseUrl/vendor_purchase_Payables_outstanding/$farmerId/$vendorId/",
@@ -145,6 +146,12 @@ class VendorAddRepository {
       if (type.toLowerCase() == "tools") "tool_purchase_id": fuelPurchaseId,
       "payment_amount": paymentAmount, // send as number
       "description": description,
+      "documents": documentItems.map((e) {
+        var json = e.toJson();
+        json['document'] = json['documents'][0];
+        json['documents'] = [];
+        return json;
+      }).toList(),
     };
 
     final response = await http.post(
@@ -174,6 +181,7 @@ class VendorAddRepository {
     required double paymentAmount,
     required String description,
     required String type,
+    required List documentItems,
   }) async {
     final url = Uri.parse(
       "$baseUrl/pay_purchase_outstanding/$farmerId/$vendorId/",
@@ -196,6 +204,13 @@ class VendorAddRepository {
       if (type.toLowerCase() == "tools") "tool_purchase_id": fuelPurchaseId,
       "payment_amount": paymentAmount, // send as number
       "description": description,
+      //"documents": documentItems,
+      "documents": documentItems.map((e) {
+        var json = e.toJson();
+        json['document'] = json['documents'][0];
+        json['documents'] = [];
+        return json;
+      }).toList(),
     };
 
     final response = await http.post(

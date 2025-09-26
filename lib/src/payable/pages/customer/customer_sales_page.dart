@@ -1,7 +1,6 @@
-import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:argiot/src/payable/pages/customer/customer_historydetails.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../controller/customer_add_controller/customer_add_controller.dart';
@@ -67,7 +66,7 @@ class CustomerSalesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCustomerCard(
+  /*  Widget _buildCustomerCard(
     BuildContext context,
     CustomerAddController addController,
     dynamic customer,
@@ -87,10 +86,9 @@ class CustomerSalesPage extends StatelessWidget {
               CircleAvatar(
                 radius: 30,
                 backgroundImage: customer.customerImage.isNotEmpty
-                    ? CachedNetworkImageProvider(customer.customerImage)
+                    ? NetworkImage(customer.customerImage)
                     : const AssetImage('assets/images/user_placeholder.png')
                           as ImageProvider,
-                          
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -148,40 +146,38 @@ class CustomerSalesPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        /*IconButton(
-                        icon: const Icon(
-                          Icons.add_circle,
-                          color: Colors.green,
-                          size: 28,
-                        ),
-                        onPressed: () {
-                          showPaymentBottomSheet(
-                            context: context,
-                            isPayable: isPayable,
-                            controller: addController,
-                            customerId: customer.customerId,
-                            customerName: customer.customerName,
-                            currentAmount: isPayable
-                                ? sale.topayAmount
-                                : sale.receivedAmount,
-                            salesId: sale.salesId,
-                          );
-                        },
-                      ),*/
                         IconButton(
-                          icon:  Icon(
+                          icon: Icon(
                             Icons.add_circle,
-                            color:    Get.theme.primaryColor,
+                            color: Get.theme.colorScheme.primary,
                             size: 28,
                           ),
                           onPressed: () {
+                            print(sale.salesId);
+                            print(
+                              "🔎 Opening balance for ${customer.customerName}: $amount",
+                            );
+
                             if (amount <= 0) {
-                              showError("No outstanding left");
+                              print(
+                                "❌ No outstanding left → cannot open bottom sheet",
+                              );
+                              Fluttertoast.showToast(
+                                msg: "No outstanding left",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
                               return;
                             }
 
+                            print(
+                              "✅ Opening balance available → opening payment bottom sheet",
+                            );
+
                             showPaymentBottomSheet(
-                              context: context,
                               isPayable: isPayable,
                               controller: addController,
                               customerId: customer.customerId,
@@ -196,7 +192,168 @@ class CustomerSalesPage extends StatelessWidget {
                         IconButton(
                           icon: const Icon(
                             Icons.history,
-                            color: Colors.blue,
+                            color: Colors.red,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Get.to(
+                              () => HistoryPage(
+                                customerId: customer.customerId,
+                                saleId: sale.salesId,
+                                isPayable: isPayable,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
+    ),
+  );*/
+
+  Widget _buildCustomerCard(
+    BuildContext context,
+    CustomerAddController addController,
+    dynamic customer,
+    bool isPayable,
+  ) => Container(
+    margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15),
+      border: Border.all(color: Colors.grey.shade300, width: 1),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withAlpha(100),
+          blurRadius: 6,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Customer Info
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: customer.customerImage.isNotEmpty
+                    ? NetworkImage(customer.customerImage)
+                    : const AssetImage('assets/images/user_placeholder.png')
+                          as ImageProvider,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      customer.customerName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      customer.shopName,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const Divider(height: 20, thickness: 1.2),
+
+          // Sales Info
+          Column(
+            children: customer.sales
+                .map<Widget>(
+                  (sale) => Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey.shade50,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${sale.cropName} (${sale.salesDate})",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "${'total'.tr}: ₹${sale.totalSalesAmount} | ${'paid'.tr}: ₹${sale.amountPaid}",
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.add_circle,
+                            color: Get.theme.colorScheme.primary,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            print(sale.salesId);
+                            print(
+                              "🔎 Opening balance for ${customer.customerName}: $amount",
+                            );
+
+                            if (amount <= 0) {
+                              print(
+                                "❌ No outstanding left → cannot open bottom sheet",
+                              );
+                              Fluttertoast.showToast(
+                                msg: "No outstanding left",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                              return;
+                            }
+
+                            print(
+                              "✅ Opening balance available → opening payment bottom sheet",
+                            );
+
+                            showPaymentBottomSheet(
+                              isPayable: isPayable,
+                              controller: addController,
+                              customerId: customer.customerId,
+                              customerName: customer.customerName,
+                              currentAmount:
+                                  amount, // 🔥 always use amount from page
+                              salesId: sale.salesId,
+                            );
+                          },
+                        ),
+
+                        IconButton(
+                          icon: const Icon(
+                            Icons.history,
+                            color: Colors.red,
                             size: 26,
                           ),
                           onPressed: () {

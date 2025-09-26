@@ -117,15 +117,16 @@ class BothCustomerVendor {
     required this.openingBalance,
   });
 
-  factory BothCustomerVendor.fromJson(Map<String, dynamic> json) => BothCustomerVendor(
-      id: json['id'],
-      customerName: json['customer_name'],
-      shopName: json['shop_name'],
-      vendorName: json['vendor_name'],
-      businessName: json['business_name'],
-      isCredit: json['is_credit'],
-      openingBalance: (json['opening_balance'] as num).toDouble(),
-    );
+  factory BothCustomerVendor.fromJson(Map<String, dynamic> json) =>
+      BothCustomerVendor(
+        id: json['id'],
+        customerName: json['customer_name'],
+        shopName: json['shop_name'],
+        vendorName: json['vendor_name'],
+        businessName: json['business_name'],
+        isCredit: json['is_credit'],
+        openingBalance: (json['opening_balance'] as num).toDouble(),
+      );
 }
 
 class PayablesReceivablesList {
@@ -202,13 +203,14 @@ class CustomerReceivable {
     required this.sales,
   });
 
-  factory CustomerReceivable.fromJson(Map<String, dynamic> json) => CustomerReceivable(
-      customerId: json["customer_id"],
-      customerName: json["customer_name"],
-      shopName: json["shop_name"],
-      customerImage: json["customer_image"],
-      sales: (json["sales"] as List).map((s) => Sale.fromJson(s)).toList(),
-    );
+  factory CustomerReceivable.fromJson(Map<String, dynamic> json) =>
+      CustomerReceivable(
+        customerId: json["customer_id"],
+        customerName: json["customer_name"],
+        shopName: json["shop_name"],
+        customerImage: json["customer_image"],
+        sales: (json["sales"] as List).map((s) => Sale.fromJson(s)).toList(),
+      );
 }
 
 class Sale {
@@ -233,13 +235,13 @@ class Sale {
   });
 
   factory Sale.fromJson(Map<String, dynamic> json) => Sale(
-      salesId: json["sales_id"],
-      salesDate: json["sales_date"],
-      cropId: json["crop_id"],
-      cropName: json["crop_name"],
-      totalSalesAmount: (json["total_sales_amount"] as num).toDouble(),
-      amountPaid: (json["amount_paid"] as num).toDouble(),
-      receivedAmount: (json["received_amount"] as num).toDouble(),
-      toPayAmount: (json["topay_amount"] as num).toDouble(),
-    );
+    salesId: json["sales_id"],
+    salesDate: json["sales_date"],
+    cropId: json["crop_id"],
+    cropName: json["crop_name"],
+    totalSalesAmount: (json["total_sales_amount"] as num).toDouble(),
+    amountPaid: (json["amount_paid"] as num).toDouble(),
+    receivedAmount: (json["received_amount"] as num).toDouble(),
+    toPayAmount: (json["topay_amount"] as num).toDouble(),
+  );
 }

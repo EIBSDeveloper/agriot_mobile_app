@@ -1,9 +1,8 @@
-import 'dart:convert';
-
-import 'package:argiot/src/app/service/utils/pop_messages.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 
+import '../../../app/modules/document/document.dart';
+import '../../../app/service/utils/enums.dart';
+import '../../../app/service/utils/utils.dart';
 import '../../repository/customer_add_repository/customer_add_repository.dart';
 
 class CustomerAddController extends GetxController {
@@ -16,6 +15,7 @@ class CustomerAddController extends GetxController {
 
   void clearFiles() {
     base64Files.clear();
+    documentItems.clear();
   }
 
   /// Add Payable
@@ -34,17 +34,23 @@ class CustomerAddController extends GetxController {
         "sale_id": saleId,
         "payment_amount": paymentAmount,
         "description": description,
+        "documents": documentItems.map((e) {
+          var json = e.toJson();
+          json['document'] = json['documents'][0];
+          json['documents'] = [];
+          return json;
+        }).toList(),
       };
 
       final response = await repository.postPayable(customerId, body);
 
       if (response.containsKey("detail")) {
-        showWarning( response["detail"]);
+        Get.snackbar("Info", response["detail"]);
       } else {
-         showSuccess( "Payable added successfully");
+        Get.snackbar("Success", "Payable added successfully");
       }
     } catch (e) {
-      showError( e.toString());
+      Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
@@ -57,57 +63,49 @@ class CustomerAddController extends GetxController {
     required int saleId,
     required String paymentAmount,
     required String description,
-    required List<String>? documents,
   }) async {
     try {
       isLoading.value = true;
-
+      print(documentItems.map((e) => e.toJson().toString()));
       final body = {
         "action": "create_pay",
         "date": date,
         "sale_id": saleId,
         "payment_amount": paymentAmount,
         "description": description,
-        "documents": [
-          {"file_type": 1, "documents": documents},
-        ],
+        "documents": documentItems.map((e) => e.toJson()).toList(),
       };
 
       final response = await repository.postReceivable(customerId, body);
 
       if (response.containsKey("detail")) {
-       showWarning( response["detail"]);
+        Get.snackbar("Info", response["detail"]);
       } else {
-         showSuccess("Receivable added successfully");
+        Get.snackbar("Success", "Receivable added successfully");
       }
     } catch (e) {
-     showError( e.toString());
+      Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// Pick Multiple Files
-  Future<void> pickMultipleFiles() async {
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'png', 'pdf'],
-        withData: true,
-      );
+  final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
-      if (result != null) {
-        base64Files.clear();
-        for (var file in result.files) {
-          if (file.bytes != null) {
-            String base64Str = base64Encode(file.bytes!);
-            base64Files.add({"fileName": file.name, "base64": base64Str});
-          }
-        }
-      } else {}
-    } catch (e) {
-     showError( "Failed to pick files: $e");
-    }
+  void addDocumentItem() {
+    Get.to(
+      const AddDocumentView(),
+      binding: DocumentBinding(),
+      arguments: {"id": getDocTypeId(DocTypes.payouts)},
+    )?.then((result) {
+      if (result != null && result is AddDocumentModel) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
+  }
+
+  void removeDocumentItem(int index) {
+    documentItems.removeAt(index);
   }
 }

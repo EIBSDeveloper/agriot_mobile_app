@@ -8,14 +8,12 @@ import '../../../app/controller/app_controller.dart';
 import '../../model/customer/customer_sales_model.dart';
 import '../../model/customer_history/customer_sales_history.dart';
 
-  final AppDataController appDeta = Get.put(AppDataController());
+final AppDataController appDeta = Get.put(AppDataController());
+
 class CustomerSalesRepository {
   final String baseUrl = "http://147.93.19.253:5000/Api/";
-final farmerId = appDeta.userId;
-  Future<List<CustomerPayable>> fetchCustomerPayables(
-  
-    int customerId,
-  ) async {
+  final farmerId = appDeta.userId;
+  Future<List<CustomerPayable>> fetchCustomerPayables(int customerId) async {
     final url = Uri.parse(
       "${baseUrl}customer_sales_payables_list/$farmerId?customer_id=$customerId",
     );
@@ -30,7 +28,6 @@ final farmerId = appDeta.userId;
   }
 
   Future<List<CustomerReceivable>> fetchCustomerReceivables(
-   
     int customerId,
   ) async {
     final url = Uri.parse(
@@ -48,7 +45,6 @@ final farmerId = appDeta.userId;
 
   // Fetch Payables History
   Future<List<PayableHistorymodel>> fetchPayablesHistory({
- 
     required int customerId,
     required int saleId,
   }) async {
@@ -69,7 +65,6 @@ final farmerId = appDeta.userId;
 
   // Fetch Payable History Details
   Future<PayableHistorymodel> fetchPayableDetail({
-   
     required int customerId,
     required int saleId,
     required int outstandingId,
@@ -89,7 +84,6 @@ final farmerId = appDeta.userId;
 
   // Fetch Receivables History
   Future<List<ReceivableHistorymodel>> fetchReceivablesHistory({
-   
     required int customerId,
     required int saleId,
   }) async {
@@ -111,7 +105,6 @@ final farmerId = appDeta.userId;
   // Fetch Receivable History Details
 
   Future<ReceivableHistorymodel?> fetchReceivableDetail({
-   
     required int customerId,
     required int saleId,
     required int outstandingId,

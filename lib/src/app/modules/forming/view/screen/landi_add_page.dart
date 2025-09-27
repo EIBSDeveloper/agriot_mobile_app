@@ -33,7 +33,7 @@ class LandViewPage extends GetView<LandController> {
             children: [
               _buildTextField(
                 controller: controller.landIdController,
-                label: 'Land Identification *',
+                label: 'Land Name *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
               gap,

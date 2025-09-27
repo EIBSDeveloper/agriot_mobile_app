@@ -60,15 +60,16 @@ class VehicleModel {
     this.description,
     this.documents,
   });
-
   Map<String, dynamic> toJson() => {
-    'farmer_id': farmerId,
+    'farmer_id': farmerId,"vehicle_name":"ets",
     'date_of_consumption': dateOfConsumption.toIso8601String().split('T')[0],
+    'purchase_date': dateOfConsumption.toIso8601String().split('T')[0],
     'vendor': vendor,
     'inventory_type': inventoryType,
     'inventory_category': inventoryCategory,
     'inventory_items': inventoryItems,
     'register_number': registerNumber,
+
     'owner_name': ownerName,
     'date_of_registration': dateOfRegistration?.toIso8601String().split('T')[0],
     'registration_valid_till': registrationValidTill?.toIso8601String().split(

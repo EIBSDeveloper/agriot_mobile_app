@@ -240,9 +240,9 @@ class VendorCustomerController extends GetxController {
       }
 
       if (newId > 0) {
-        Get.back();
+     
         fetchVendorCustomerList();
-        showSuccess('Added successfully');
+        showSuccess('Added successfully');   Get.back();
       }
     } catch (e) {
       showError('Failed to submit');

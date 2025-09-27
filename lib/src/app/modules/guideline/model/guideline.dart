@@ -3,7 +3,7 @@ import 'package:argiot/src/app/modules/guideline/model/guideline_category.dart';
 class Guideline {
   final int id;
   final String name;
-  final String guidelinestype;
+  final String? guidelinestype;
   final GuidelineCategory? guidelinescategory;
   final String description;
   final String? videoUrl;
@@ -13,8 +13,8 @@ class Guideline {
  Guideline({
     required this.id,
     required this.name,
-    required this.guidelinestype,
-    required this.guidelinescategory,
+    this.guidelinestype,
+    this.guidelinescategory,
     required this.description,
     this.videoUrl,
     this.document,
@@ -28,7 +28,7 @@ class Guideline {
     videoUrl: json['video_url'] ?? "",
     document: json['document'],
     mediaType: json['media_type'],
-    guidelinestype: json['guidelinestype'],
-    guidelinescategory: GuidelineCategory.fromJson(json['guidelinescategory']),
+    guidelinestype: json['guidelinestype']??"",
+    guidelinescategory:json['guidelinescategory']!= null? GuidelineCategory.fromJson(json['guidelinescategory']):null,
   );
 }

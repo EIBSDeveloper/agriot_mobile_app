@@ -11,11 +11,11 @@ import '../../model/customer_history/customer_sales_history.dart';
 final AppDataController appDeta = Get.put(AppDataController());
 
 class CustomerSalesRepository {
-  final String baseUrl = "http://147.93.19.253:5000/Api/";
-  final farmerId = appDeta.userId;
+  final String baseUrl = appDeta.baseUrl.value;
+  final farmerId = appDeta.userId.value;
   Future<List<CustomerPayable>> fetchCustomerPayables(int customerId) async {
     final url = Uri.parse(
-      "${baseUrl}customer_sales_payables_list/$farmerId?customer_id=$customerId",
+      "$baseUrl/customer_sales_payables_list/$farmerId?customer_id=$customerId",
     );
     final res = await http.get(url);
 
@@ -31,7 +31,7 @@ class CustomerSalesRepository {
     int customerId,
   ) async {
     final url = Uri.parse(
-      "${baseUrl}customer_sales_receivables_list/$farmerId?customer_id=$customerId",
+      "$baseUrl/customer_sales_receivables_list/$farmerId?customer_id=$customerId",
     );
     final res = await http.get(url);
 
@@ -49,7 +49,7 @@ class CustomerSalesRepository {
     required int saleId,
   }) async {
     final url = Uri.parse(
-      "${baseUrl}get_sales_payables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId",
+      "$baseUrl/get_sales_payables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId",
     );
     final res = await http.get(url);
 
@@ -70,7 +70,7 @@ class CustomerSalesRepository {
     required int outstandingId,
   }) async {
     final url = Uri.parse(
-      "${baseUrl}get_sales_payables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
+      "$baseUrl/get_sales_payables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
     final res = await http.get(url);
 
@@ -88,7 +88,7 @@ class CustomerSalesRepository {
     required int saleId,
   }) async {
     final url = Uri.parse(
-      "${baseUrl}customer_sales_receivables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId",
+      "$baseUrl/customer_sales_receivables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId",
     );
     final res = await http.get(url);
 
@@ -110,7 +110,7 @@ class CustomerSalesRepository {
     required int outstandingId,
   }) async {
     final url = Uri.parse(
-      "${baseUrl}customer_sales_receivables_outstanding_history/"
+      "$baseUrl/customer_sales_receivables_outstanding_history/"
       "$farmerId/?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
 

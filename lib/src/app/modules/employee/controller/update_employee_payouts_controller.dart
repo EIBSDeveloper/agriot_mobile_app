@@ -22,11 +22,12 @@ class UpdateEmployeePayoutsController extends GetxController {
   final RxString deductionError = ''.obs;
   final RxString payoutsError = ''.obs;
   final RxString toPayError = ''.obs;
+  final RxString payoutType = 'Advance'.obs;
 
   @override
   void onInit() {
     super.onInit();
-    loadEmployeeData();
+    // loadEmployeeData();
   }
 
   Future<void> loadEmployeeData() async {

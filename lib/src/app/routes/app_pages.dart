@@ -167,7 +167,7 @@ class AppPages {
     ),
     GetPage(
       name: Routes.addVendorCustomer,
-      page: () => const AddVendorCustomerView(),
+      page: () =>  AddVendorCustomerView(),
       binding: VendorCustomerBinding(),
     ),
     GetPage(

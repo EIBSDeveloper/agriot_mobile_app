@@ -7,8 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class AddVendorCustomerView extends GetView<VendorCustomerController> {
-  const AddVendorCustomerView({super.key});
+class AddVendorCustomerView extends StatelessWidget {
+  final VendorCustomerController controller = Get.put(VendorCustomerController());
+   AddVendorCustomerView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -22,6 +23,11 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             _buildBasicInfoSection(),
             _buildLocationSection(),
             _buildFinancialSection(),
+            Obx(
+              () => (controller.selectedType.value == 'vendor')
+                  ? _buildInventoryTypeSection()
+                  : const SizedBox.shrink(),
+            ),
             _buildSubmitButton(),
           ],
         ),
@@ -88,11 +94,7 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
         ),
       ),
       const SizedBox(height: 12),
-      Obx(
-        () => (controller.selectedType.value == 'vendor')
-            ? _buildInventoryTypeSection()
-            : const SizedBox.shrink(),
-      ),
+
       InputCardStyle(
         child: TextFormField(
           controller: controller.nameController,

@@ -7611,28 +7611,10 @@ def add_expense(request, farmer_id):
 
         print(f"Fetching farmer with id: {farmer_id}")
 
-        subscription = farmer.subscriptions.filter(status=0).first()
-        if not subscription or not subscription.packages:
-            return Response(
-                {"success": False, "message": "No active subscription found."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        package = subscription.packages
-        max_expense_count = package.myexpense_count
-        current_expense_count = MyExpense.objects.filter(farmer=farmer, status=0).count()
-
-        if current_expense_count >= max_expense_count:
-            return Response(
-                {"success": False, "message": f"Expense limit exceeded. You can add up to {max_expense_count} expenses with your current package."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-
         file_data = request.data.get('document', [])
         amount = request.data.get('amount')
         paidAmount = request.data.get('paid_amount')
-        description = request.data.get('description', '')  # Optional, default to empty string
+        description = request.data.get('description', '') 
         created_day = request.data.get('created_day')
 
         if  amount is None or not created_day:
@@ -7728,7 +7710,6 @@ def add_expense(request, farmer_id):
                         vendor.credit = True
                         vendor.debit = False
                     vendor.save()
-
 
         FarmerNotification.objects.create(
             farmer=farmer,
@@ -10527,17 +10508,17 @@ def add_customer(request, farmer_id):
         return Response({"detail": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
 
     # Check the farmer's subscription and customer limit
-    subscription = AddSubcription.objects.filter(farmers=farmer, status=0).first()
-    if subscription:
-        customer_limit = subscription.packages.customer_count or 0
-        current_customer_count = MyCustomer.objects.filter(
-            Q(status=0) | Q(status=1), farmer=farmer
-        ).count()
+    # subscription = AddSubcription.objects.filter(farmers=farmer, status=0).first()
+    # if subscription:
+    #     customer_limit = subscription.packages.customer_count or 0
+    #     current_customer_count = MyCustomer.objects.filter(
+    #         Q(status=0) | Q(status=1), farmer=farmer
+    #     ).count()
 
-        if current_customer_count >= customer_limit:
-            return Response({
-                'detail': f"You have already reached the maximum customer limit of {customer_limit} for your subscription package."
-            }, status=status.HTTP_400_BAD_REQUEST)
+    #     if current_customer_count >= customer_limit:
+    #         return Response({
+    #             'detail': f"You have already reached the maximum customer limit of {customer_limit} for your subscription package."
+    #         }, status=status.HTTP_400_BAD_REQUEST)
 
     data = request.data.copy()  # Make mutable copy
 
@@ -10547,31 +10528,31 @@ def add_customer(request, farmer_id):
         country_obj, _ = Country.objects.get_or_create(name=country_name.strip())
         data['country'] = country_obj.id
 
-    state_name = data.get('state_name')
-    if state_name and state_name.strip():
-        state_obj, _ = State.objects.get_or_create(name=state_name.strip(), country_id=data.get('country'))
-        data['state'] = state_obj.id
+    # state_name = data.get('state_name')
+    # if state_name and state_name.strip():
+    #     state_obj, _ = State.objects.get_or_create(name=state_name.strip(), country_id=data.get('country'))
+    #     data['state'] = state_obj.id
 
-    city_name = data.get('city_name')
-    if city_name and city_name.strip():
-        city_obj, _ = City.objects.get_or_create(name=city_name.strip(), state_id=data.get('state'), country_id=data.get('country'))
-        data['city'] = city_obj.id
+    # city_name = data.get('city_name')
+    # if city_name and city_name.strip():
+    #     city_obj, _ = City.objects.get_or_create(name=city_name.strip(), state_id=data.get('state'), country_id=data.get('country'))
+    #     data['city'] = city_obj.id
 
-    taluk_name = data.get('taluk_name')
-    if taluk_name and taluk_name.strip():
-        taluk_obj, _ = Taluk.objects.get_or_create(name=taluk_name.strip(), city_id=data.get('city'), state_id=data.get('state'), country_id=data.get('country'))
-        data['taluk'] = taluk_obj.id
+    # taluk_name = data.get('taluk_name')
+    # if taluk_name and taluk_name.strip():
+    #     taluk_obj, _ = Taluk.objects.get_or_create(name=taluk_name.strip(), city_id=data.get('city'), state_id=data.get('state'), country_id=data.get('country'))
+    #     data['taluk'] = taluk_obj.id
 
-    village_name = data.get('village_name')
-    if village_name and village_name.strip():
-        village_obj, _ = Village.objects.get_or_create(
-            name=village_name.strip(),
-            taluk_id=data.get('taluk'),
-            city_id=data.get('city'),
-            state_id=data.get('state'),
-            country_id=data.get('country')
-        )
-        data['village'] = village_obj.id
+    # village_name = data.get('village_name')
+    # if village_name and village_name.strip():
+    #     village_obj, _ = Village.objects.get_or_create(
+    #         name=village_name.strip(),
+    #         taluk_id=data.get('taluk'),
+    #         city_id=data.get('city'),
+    #         state_id=data.get('state'),
+    #         country_id=data.get('country')
+    #     )
+    #     data['village'] = village_obj.id
 
     # --- Handle base64 image ---
     customer_img = data.get('customer_img', None)
@@ -13497,6 +13478,7 @@ def get_task_list(request, id):
                 if task.my_crop and task.my_crop.crop and task.my_crop.land
                 else "No Crop Available"
             ),
+            "schedule_status":task.schedule_status if task.schedule_status else None,
             "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}') if task.my_crop.crop.img else "",
             "description": (
                 task.get_translated_value('schedule', language_code)
@@ -20097,93 +20079,8 @@ def add_machinery(request, farmer_id):
             machinery_instance.available_quans = total_fuel_capacity
             machinery_instance.save()
 
-        # --- Vendor Outstanding & Balance Update Logic ---
-        purchase_amount = float(data.get('purchase_amount', 0))
-        paid_amount = float(data.get('paid_amount', 0))
 
-        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
-        current_balance = vendor.opening_balance or 0
-        updated_balance = current_balance + net_change
-
-        if updated_balance > 0:
-            vendor.credit = True
-            vendor.debit = False
-            vendor.opening_balance = updated_balance
-        elif updated_balance < 0:
-            vendor.credit = False
-            vendor.debit = True
-            vendor.opening_balance = abs(updated_balance)
-        else:
-            vendor.credit = False
-            vendor.debit = False
-            vendor.opening_balance = 0
-
-        if net_change < 0:
-            vendor.payables = (vendor.payables or 0) + abs(net_change)
-        elif net_change > 0:
-            vendor.receivables = (vendor.receivables or 0) + net_change
-
-        vendor.save()
-
-        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
-            customer = vendor.customer
-            customer.opening_balance = vendor.opening_balance
-            customer.payables = vendor.payables
-            customer.receivables = vendor.receivables
-            customer.is_credit = vendor.credit
-            customer.save()
-
-        # Create Outstanding record
-        now = timezone.now()
-        balance = abs(net_change)
-
-        if net_change < 0:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                machinery_purchase=machinery_instance,
-                balance=purchase_amount,
-                paid=paid_amount,
-                to_pay=abs(net_change),
-                paid_date=now,
-                total_paid=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        elif net_change > 0:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                machinery_purchase=machinery_instance,
-                balance=balance,
-                paid=paid_amount,
-                to_receive=net_change,
-                received_date=now,
-                total_received=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        else:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                machinery_purchase=machinery_instance,
-                balance=0,
-                paid=paid_amount,
-                to_pay=0,
-                paid_date=now,
-                total_paid=paid_amount,
-                received=paid_amount,
-                to_receive=0,
-                received_date=now,
-                total_received=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-
+  
         # Notification
         FarmerNotification.objects.create(
             farmer=farmer,
@@ -21493,7 +21390,7 @@ def add_pesticides(request, farmer_id):
 
     # --- Validate required fields ---
     required_fields = [
-        'date_of_purchase', 'inventory_type', 'inventory_category',
+        'date_of_consumption', 'inventory_type', 'inventory_category',
         'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
@@ -41624,11 +41521,6 @@ def get_manager_user_detail(request, manager_id):
         "farmer": {"id": manager.farmer.id, "name": manager.farmer.name} if manager.farmer else None
     }
     return Response({"status_code": 200, "manager_user": data}, status=status.HTTP_200_OK)
-
-
-
-
-
 
 
 

@@ -131,9 +131,10 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   MonthDayFormat(
-                    date: DateFormat("dd/MM/yyyy").parse(item.createdDay),
+                    date: DateFormat("dd-MM-yyyy").parse(item.createdDay),
                   ),
                   const SizedBox(width: 8),
 

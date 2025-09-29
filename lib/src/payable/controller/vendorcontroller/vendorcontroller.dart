@@ -14,81 +14,59 @@ class VendorPurchaseController extends GetxController {
   var errorMessage = ''.obs;
 
   // Current Payables & Receivables
-  var vendorPayables = <VendorPayable>[].obs;
-  var vendorReceivables = <VendorPayable>[].obs;
+  var vendorPayables = Rxn<Vendormodel>();
+  var vendorReceivables = Rxn<Vendormodel>();
 
   // History
-  var vendorPayablesHistory = <VendorPayableHistoryModel>[].obs;
-  var vendorReceivablesHistory = <VendorReceivableHistoryModel>[].obs;
+  var vendorPayablesHistory = <VendorHistoryModel>[].obs;
+  var vendorReceivablesHistory = <VendorHistoryModel>[].obs;
 
-  // Load Payables
   Future<void> loadVendorPayables(int vendorId) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
       final response = await repository.fetchVendorPayables(vendorId);
-      vendorPayables.value = response.vendorInventoryData.payables ?? [];
+      vendorPayables.value = response; // 👈 directly from same model
     } catch (e) {
       errorMessage.value = e.toString();
     }
     isLoading.value = false;
   }
 
-  // Load Receivables
   Future<void> loadVendorReceivables(int vendorId) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
       final response = await repository.fetchVendorReceivables(vendorId);
-      vendorReceivables.value = response.vendorInventoryData.receivables ?? [];
+      vendorReceivables.value = response;
     } catch (e) {
       errorMessage.value = e.toString();
     }
     isLoading.value = false;
   }
 
-  // Load Payables History
-  Future<void> loadVendorPayablesHistory({
-    required int vendorId,
-    required String type,
-    required int fuelId,
-  }) async {
+  // Payables
+  Future<void> loadVendorPayablesHistory(int expenseId) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      final List<VendorPayableHistoryModel>? response = await repository
-          .fetchVendorPayablesHistory(
-            vendorId: vendorId,
-            fuelId: fuelId,
-            type: type,
-          );
-
-      // Directly assign the list
-      vendorPayablesHistory.value = response ?? [];
+      final response = await repository.fetchVendorPayablesHistory(expenseId);
+      vendorPayablesHistory.value = response;
     } catch (e) {
       errorMessage.value = e.toString();
     }
     isLoading.value = false;
   }
 
-  //Load Receivables History
-  Future<void> loadVendorReceivablesHistory({
-    required int vendorId,
-    required int fuelId,
-    required String type,
-  }) async {
+  // Receivables
+  Future<void> loadVendorReceivablesHistory(int expenseId) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      final List<VendorReceivableHistoryModel>? response = await repository
-          .fetchVendorReceivablesHistory(
-            vendorId: vendorId,
-            fuelId: fuelId,
-            type: type,
-          );
-
-      // Directly assign the list
-      vendorReceivablesHistory.value = response ?? [];
+      final response = await repository.fetchVendorReceivablesHistory(
+        expenseId,
+      );
+      vendorReceivablesHistory.value = response;
     } catch (e) {
       errorMessage.value = e.toString();
     }

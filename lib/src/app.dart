@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'app/controller/localization/app_translations.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
-import 'bot_ui.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -25,7 +24,7 @@ class App extends StatelessWidget {
     fallbackLocale: const Locale('en', 'US'),
     initialBinding: AppBinding(),
     // home: ChatPage(),
-    initialRoute: Routes.splash,
+    initialRoute: Routes.home,
     getPages: AppPages.routes,
     debugShowCheckedModeBanner: false,
   );

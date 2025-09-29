@@ -1,18 +1,24 @@
 import 'dart:convert';
+
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/attendence/model/attendencemodel.dart';
+import 'package:argiot/src/app/modules/attendence/repository/attendence_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+final AppDataController appDeta = Get.put(AppDataController());
+
 class AttendenceController extends GetxController {
+  final AttendanceRepository repository = Get.find();
   TextEditingController searchController = TextEditingController();
   RxString searchQuery = ''.obs;
   TextEditingController dateController = TextEditingController();
   var selectedDate = DateTime.now().obs;
   RxString currentMonthYear = DateFormat.yMMMM().format(DateTime.now()).obs;
 
-  var employees = <EmployeeModel>[
+  /* var employees = <EmployeeModel>[
     EmployeeModel(
       id: 1,
       name: "Raghu E",
@@ -52,7 +58,8 @@ class AttendenceController extends GetxController {
       salary: 10000,
       paidStatus: false,
     ),
-  ].obs;
+  ].obs;*/
+  var employees = <EmployeeModel>[].obs;
 
   // Persistent TextControllers for login/logout and salary
   var loginControllers = <int, TextEditingController>{}.obs;
@@ -65,6 +72,8 @@ class AttendenceController extends GetxController {
   void onInit() {
     super.onInit();
     dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    // 🚀 Call API to load employees
+    loadEmployeeslist();
 
     for (int i = 0; i < employees.length; i++) {
       loginControllers[i] = TextEditingController(text: employees[i].login);
@@ -155,5 +164,26 @@ class AttendenceController extends GetxController {
 
   void updateMonthYear(DateTime date) {
     currentMonthYear.value = DateFormat.yMMMM().format(date);
+  }
+
+  /// 🔥 Fetch Employees from API
+  Future<void> loadEmployeeslist() async {
+    final date = dateController.text; // current selected date
+    final fetchedEmployees = await repository.fetchEmployees(date: date);
+
+    employees.assignAll(fetchedEmployees);
+
+    // Setup controllers
+    loginControllers.clear();
+    logoutControllers.clear();
+    salaryControllers.clear();
+
+    for (var i = 0; i < employees.length; i++) {
+      loginControllers[i] = TextEditingController(text: employees[i].login);
+      logoutControllers[i] = TextEditingController(text: employees[i].logout);
+      salaryControllers[i] = TextEditingController(
+        text: employees[i].salary?.toString() ?? '',
+      );
+    }
   }
 }

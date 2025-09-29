@@ -6,16 +6,12 @@ import '../../model/vendor/vendor_history_model.dart';
 import '../../repository/vendor_repository/vendor_repository.dart';
 
 class VendorHistoryPage extends StatelessWidget {
-  final int vendorId;
-  final int fuelId;
-  final String type;
-  final bool isPayable;
+  final int expenseId;
+  final bool isPayable; // Add this
 
   VendorHistoryPage({
     super.key,
-    required this.vendorId,
-    required this.fuelId,
-    required this.type,
+    required this.expenseId,
     required this.isPayable,
   });
 
@@ -27,17 +23,9 @@ class VendorHistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (isPayable) {
-        controller.loadVendorPayablesHistory(
-          vendorId: vendorId,
-          type: type,
-          fuelId: fuelId,
-        );
+        controller.loadVendorPayablesHistory(expenseId);
       } else {
-        controller.loadVendorReceivablesHistory(
-          vendorId: vendorId,
-          type: type,
-          fuelId: fuelId,
-        );
+        controller.loadVendorReceivablesHistory(expenseId);
       }
     });
 
@@ -143,7 +131,7 @@ class VendorHistoryPage extends StatelessWidget {
           itemCount: historyList.length,
           itemBuilder: (context, index) {
             if (isPayable) {
-              final item = historyList[index] as VendorPayableHistoryModel;
+              final item = historyList[index] as VendorHistoryModel;
               return _buildHistoryCard(
                 context,
                 isPayable: true,
@@ -177,24 +165,23 @@ class VendorHistoryPage extends StatelessWidget {
                 },
               );
             } else {
-              final item = historyList[index] as VendorReceivableHistoryModel;
+              final item = historyList[index] as VendorHistoryModel;
               return _buildHistoryCard(
                 context,
                 isPayable: false,
-                title: '${'date'.tr} ${item.receivedDate}',
+                title: '${'date'.tr} ${item.paidDate}',
                 fields: {
                   'payment_amount'.tr:
                       '₹${item.paymentAmount.toStringAsFixed(2)}',
                   'balance'.tr: '₹${item.balance.toStringAsFixed(2)}',
-                  'received'.tr: '₹${item.received.toStringAsFixed(2)}',
-                  'to_receive'.tr: '₹${item.toReceive.toStringAsFixed(2)}',
-                  'total_received'.tr:
-                      '₹${item.totalReceived.toStringAsFixed(2)}',
-                  'received_date'.tr: item.receivedDate,
+                  'received'.tr: '₹${item.paid.toStringAsFixed(2)}',
+                  'to_receive'.tr: '₹${item.toPay.toStringAsFixed(2)}',
+                  'total_received'.tr: '₹${item.totalPaid.toStringAsFixed(2)}',
+                  'received_date'.tr: item.paidDate,
                   'description'.tr: item.description ?? '-',
                 },
                 onEyeTap: () {
-                  _showHistoryDetailsDialog(
+                  /*_showHistoryDetailsDialog(
                     context,
                     id: item.id,
                     fields: {
@@ -209,7 +196,7 @@ class VendorHistoryPage extends StatelessWidget {
                       'description'.tr: item.description ?? '-',
                     },
                     isPayable: false,
-                  );
+                  );*/
                 },
               );
             }
@@ -219,72 +206,6 @@ class VendorHistoryPage extends StatelessWidget {
     );
   }
 
-  /*  Widget _buildHistoryCard(
-    BuildContext context, {
-    required String title,
-    required Map<String, String> fields,
-    required VoidCallback onEyeTap,
-  }) => Card(
-    elevation: 4,
-    shadowColor: Colors.grey.shade300,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.remove_red_eye, color: Colors.black54),
-                onPressed: onEyeTap,
-              ),
-            ],
-          ),
-          const Divider(thickness: 1.2, height: 20, color: Colors.grey),
-          ...fields.entries.map(
-            (e) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    e.key,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  Flexible(
-                    child: Text(
-                      e.value,
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(fontSize: 14, color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );*/
   Widget _buildHistoryCard(
     BuildContext context, {
     required bool isPayable,

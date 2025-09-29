@@ -1,14 +1,18 @@
 import 'dart:convert';
 
 import 'package:argiot/src/app/bindings/app_binding.dart';
+import 'package:argiot/src/app/controller/app_controller.dart';
+import 'package:argiot/src/app/modules/manager/model/dropdown_model.dart';
 import 'package:argiot/src/app/modules/manager/model/permission_model.dart';
 import 'package:argiot/src/app/modules/registration/view/screen/landpicker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-import '../../../service/utils/enums.dart';
 import '../../../service/utils/pop_messages.dart';
+
+final AppDataController appDeta = Get.put(AppDataController());
 
 class ManagerController extends GetxController {
   final usernameController = TextEditingController();
@@ -19,20 +23,20 @@ class ManagerController extends GetxController {
   final emailController = TextEditingController();
   final locationController = TextEditingController();
   final addressController = TextEditingController();
-
-  var selectedEmployeeType = RxnString();
-var selectedGenderType = Rxn<GenderType>();
-var selectedRoleType = Rxn<RoleType>();
-
   final descriptionController = TextEditingController();
+
+  /// Selected values
+  var selectedEmployeeType = Rxn<EmployeeTypeModel>();
+  var selectedGenderType = Rxn<GenderModel>();
+  var selectedRoleType = Rxn<RoleModel>();
 
   var selectedWorkType = RxnString();
   var selectedManager = RxnString();
 
-  final employeeTypes = ['Monthly Salaries', 'Daily Wages'];
-final genderTypes = GenderType.values;
-  
-final roleTypes = RoleType.values;
+  /// Lists from API
+  var employeeTypes = <EmployeeTypeModel>[].obs;
+  var genderTypes = <GenderModel>[].obs;
+  var roleTypes = <RoleModel>[].obs;
 
   final workTypes = [
     'Planting work',
@@ -319,6 +323,7 @@ final roleTypes = RoleType.values;
   void onInit() {
     super.onInit();
     _loadPermissions();
+    fetchDropdownData();
   }
 
   void _loadPermissions() {
@@ -336,5 +341,46 @@ final roleTypes = RoleType.values;
   String getUpdatedJson() {
     final updated = permissions.map((k, v) => MapEntry(k, v.toJson()));
     return updated.toString();
+  }
+
+  /// Loading flag
+  var isLoading = false.obs;
+  Future<void> fetchDropdownData() async {
+    isLoading.value = true;
+
+    try {
+      /// Fetch employee types
+      final empRes = await http.get(
+        Uri.parse("${appDeta.baseUrl.value}/employee_types"),
+      );
+      if (empRes.statusCode == 200) {
+        final List data = jsonDecode(empRes.body);
+        employeeTypes.value = data
+            .map((e) => EmployeeTypeModel.fromJson(e))
+            .toList();
+      }
+
+      /// Fetch genders
+      final genderRes = await http.get(
+        Uri.parse("${appDeta.baseUrl.value}/genders"),
+      );
+      if (genderRes.statusCode == 200) {
+        final List data = jsonDecode(genderRes.body);
+        genderTypes.value = data.map((e) => GenderModel.fromJson(e)).toList();
+      }
+
+      /// Fetch roles
+      final roleRes = await http.get(
+        Uri.parse("${appDeta.baseUrl.value}/manager_roals"),
+      );
+      if (roleRes.statusCode == 200) {
+        final List data = jsonDecode(roleRes.body);
+        roleTypes.value = data.map((e) => RoleModel.fromJson(e)).toList();
+      }
+    } catch (e) {
+      print("Error fetching dropdown data: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

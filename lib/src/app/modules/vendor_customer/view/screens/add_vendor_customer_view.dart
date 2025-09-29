@@ -64,6 +64,9 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             onChanged: (Market? value) {
               controller.selectedMarket.value = value;
             },
+            validator: (value) => value == null
+                ? 'required_field'.tr
+                : null, // ✅ validation added
           ),
         ),
         const SizedBox(height: 12),
@@ -107,6 +110,9 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           onConfirm: (values) {
             controller.setSelectedKeys(values.toSet());
           },
+          validator: (values) => values == null || values.isEmpty
+              ? 'required_field'.tr
+              : null, // ✅ validation
         );
       }),
       const SizedBox(height: 16),
@@ -179,6 +185,9 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
                 : "${'business_name'.tr} *",
             border: InputBorder.none,
           ),
+          validator: (value) => value == null || value.trim().isEmpty
+              ? 'required_field'.tr
+              : null, // ✅ validation
         ),
       ),
       const SizedBox(height: 12),
@@ -252,6 +261,16 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
           controller: controller.gstNoController,
           decoration: InputDecoration(
             labelText: 'gst_number'.tr,
+            border: InputBorder.none,
+          ),
+        ),
+      ),
+      const SizedBox(height: 12),
+      InputCardStyle(
+        child: TextFormField(
+          controller: controller.taxNoController,
+          decoration: InputDecoration(
+            labelText: 'Tax Number',
             border: InputBorder.none,
           ),
         ),

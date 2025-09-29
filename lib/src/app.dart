@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/bindings/app_binding.dart';
-import 'package:argiot/src/core/app_theme.dart';
 import 'package:argiot/src/app/routes/app_pages.dart';
+import 'package:argiot/src/core/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -23,7 +23,7 @@ class App extends StatelessWidget {
     locale: Get.deviceLocale,
     fallbackLocale: const Locale('en', 'US'),
     initialBinding: AppBinding(),
-    initialRoute: Routes.home,
+    initialRoute: Routes.splash,
     getPages: AppPages.routes,
     debugShowCheckedModeBanner: false,
   );

@@ -1,7 +1,6 @@
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
-
 import 'package:argiot/src/app/modules/vendor_customer/repository/vendor_customer_repository.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
@@ -245,6 +244,8 @@ class VendorCustomerController extends GetxController {
         Get.back();
         fetchVendorCustomerList();
         showSuccess('Added successfully');
+        // ✅ Reset the form after submit
+        clearForm();
       }
     } catch (e) {
       showError('Failed to submit');

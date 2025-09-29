@@ -39,7 +39,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               ToggleBar(
                 onTap: (index) => controller.changeTab(index),
                 activePageIndex: controller.selectedTab.value,
-                buttonsList: ["all".tr, "general".tr, "inventory".tr],
+                buttonsList: ["all".tr, "general".tr, "inventory".tr, "sales".tr],
               ),
               const SizedBox(height: 10),
               _buildTransactionList(),
@@ -134,7 +134,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   MonthDayFormat(
-                    date: DateFormat("dd-MM-yyyy").parse(item.createdDay),
+                    date: DateFormat("dd/MM/yyyy").parse(item.createdDay),
                   ),
                   const SizedBox(width: 8),
 
@@ -180,7 +180,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                 children: [
                   MonthDayFormat(
                     date: DateFormat(
-                      "dd-MM-yyyy",
+                      "dd/MM/yyyy",
                     ).parse(item.dateOfConsumption),
                   ),
                   const SizedBox(width: 8),

@@ -17,3 +17,15 @@ enum InventoryTypes {
 }
 
 enum TaskTypes { all, completed, waiting, inProgress, pending, cancelled }
+
+enum RoleType {
+  employee,
+  subAdmin,
+  manager,
+}
+
+enum GenderType {
+  male,
+  female,
+  transgender,
+}

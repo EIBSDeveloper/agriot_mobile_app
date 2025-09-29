@@ -36,6 +36,9 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_c
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';
 
+import '../modules/attendence/bindings/attendence_binding.dart';
+import '../modules/attendence/view/screens/add_attendence_screen.dart';
+import '../modules/attendence/view/screens/attendence_list_screen.dart';
 import '../modules/document/document.dart';
 import '../modules/employee/bindings/employee_advance_binding.dart';
 import '../modules/employee/bindings/employee_manager_binding.dart';
@@ -46,6 +49,7 @@ import '../modules/employee/view/screen/employee_manager_view.dart';
 import '../modules/employee/view/screen/update_employee_payouts_view.dart';
 import '../modules/expense/binding/cunsumption_detail_binding.dart';
 import '../modules/expense/view/screens/consumption_details.dart';
+import '../modules/manager/view/screen/create_manager_screen.dart';
 import '../modules/sales/view/screens/add_deduction_view.dart';
 import '../modules/task/view/screens/schedule_details_page.dart';
 import '../modules/map_view/view/screens/land_map_view.dart';
@@ -343,6 +347,24 @@ class AppPages {
       page: () => const UpdateEmployeeAdvanceView(),
       binding: EmployeeAdvanceBinding(),
       transition: Transition.cupertino,
+    ),
+   
+    GetPage(
+      name: Routes.employeeAdd,
+      page: () => const CreateManagerScreen(),
+      binding: EmployeeAdd(),
+    ),
+    
+    GetPage(
+      name: Routes.addAttendence,
+      page: () => AddAttendenceScreen(),
+      binding: AttendenceBinding(),
+    ),
+
+    GetPage(
+      name: Routes.attendencelistscreen,
+      page: () => Attendancelistscreen(),
+      binding: AttendenceBinding(),
     ),
     // GetPage(
     //   name: '/inventory/:type/:id',

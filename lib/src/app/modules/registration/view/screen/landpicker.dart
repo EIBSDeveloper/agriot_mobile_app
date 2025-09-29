@@ -9,14 +9,14 @@ class LocationPickerView extends GetView<LocationPickerController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(
+    appBar: const CustomAppBar(
       title: 'Select Location',
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.my_location),
-          onPressed: controller.getCurrentLocation,
-        ),
-      ],
+      // actions: [
+      //   IconButton(
+      //     icon: const Icon(Icons.my_location),
+      //     onPressed: controller.getCurrentLocation,
+      //   ),
+      // ],
     ),
     body: Stack(
       children: [
@@ -69,7 +69,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
         ),
         Positioned(
           right: 20,
-          bottom: 200,
+          bottom: 150,
           child: FloatingActionButton(
             onPressed: controller.getCurrentLocation,
             backgroundColor: Get.theme.primaryColor,

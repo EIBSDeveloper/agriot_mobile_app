@@ -66,7 +66,7 @@ class UpdateEmployeePayoutsView
   );
 
   Widget _buildEmployeeInfo() => Obx(() {
-    var data = controller.employeeData.value;
+    var _ = controller.employeeData.value;
     // if (data == null) return const SizedBox();
 
     return Padding(

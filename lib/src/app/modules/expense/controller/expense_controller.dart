@@ -115,6 +115,7 @@ class ExpenseController extends GetxController {
   Future<bool> submitExpense() async {
     if (selectedCrop.value.id == 0) {
       showError('Please select a crop');
+
       return false;
     }
 

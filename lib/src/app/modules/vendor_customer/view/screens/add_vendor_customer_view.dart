@@ -7,25 +7,27 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class AddVendorCustomerView extends GetView<VendorCustomerController> {
-  const AddVendorCustomerView({super.key});
+class AddVendorCustomerView extends StatelessWidget {
+  final VendorCustomerController controller = Get.put(VendorCustomerController());
+   AddVendorCustomerView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'add_${controller.selectedType}'.tr),
+    appBar: CustomAppBar(title: 'add_contact'.tr),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
         key: controller.formKey,
         child: Column(
           children: [
-            if (controller.selectedType.value == 'vendor')
-              _buildInventoryTypeSection(),
-
             _buildBasicInfoSection(),
             _buildLocationSection(),
             _buildFinancialSection(),
-            // _buildImageSection(),
+            Obx(
+              () => (controller.selectedType.value == 'vendor')
+                  ? _buildInventoryTypeSection()
+                  : const SizedBox.shrink(),
+            ),
             _buildSubmitButton(),
           ],
         ),
@@ -48,10 +50,6 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
             decoration: InputDecoration(
               labelText: "${'select_market'.tr}*",
               border: InputBorder.none,
-              // contentPadding: const EdgeInsets.symmetric(
-              //   horizontal: 16,
-              //   vertical: 12,
-              // ),
             ),
             items: controller.markets
                 .map(
@@ -125,12 +123,32 @@ class AddVendorCustomerView extends GetView<VendorCustomerController> {
       Text('basic_info'.tr, style: Get.textTheme.titleSmall),
       const SizedBox(height: 8),
       InputCardStyle(
+        child: DropdownButtonFormField<String>(
+          isExpanded: true,
+
+          icon: const Icon(Icons.keyboard_arrow_down),
+          initialValue: controller.selectedType.value,
+          decoration: InputDecoration(
+            labelText: 'select_contact'.tr,
+            border: InputBorder.none,
+          ),
+          items: [
+            DropdownMenuItem(value: 'customer', child: Text('customer'.tr)),
+            DropdownMenuItem(value: 'vendor', child: Text('vendor'.tr)),
+          ],
+          onChanged: (String? value) {
+            controller.selectedType.value = value!;
+          },
+        ),
+      ),
+      const SizedBox(height: 12),
+
+      InputCardStyle(
         child: TextFormField(
           controller: controller.nameController,
           decoration: InputDecoration(
             border: InputBorder.none,
-            labelText:
-                "${controller.selectedType.value == 'customer' ? 'customer_name'.tr : 'vendor_name'.tr}*",
+            labelText: "${'name'.tr} *",
           ),
           validator: (value) =>
               value?.isEmpty ?? true ? 'required_field'.tr : null,

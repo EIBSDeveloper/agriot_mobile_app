@@ -25,7 +25,7 @@ class EditTask extends GetView<TaskDetailsController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-         const ButtomSheetScrollButton(),
+              const ButtomSheetScrollButton(),
               const Text(
                 'Edit Task',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -81,9 +81,6 @@ class EditTask extends GetView<TaskDetailsController> {
                   ),
                   maxLines: 3,
                   onChanged: (value) => controller.description.value = value,
-                  validator: (value) => value?.isEmpty ?? true
-                      ? 'Please enter description'
-                      : null,
                 ),
               ),
               const SizedBox(height: 16),

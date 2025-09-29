@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/map_view/controller/land_map_view_control
 import 'package:argiot/src/app/modules/map_view/model/crop_map_data.dart';
 import 'package:argiot/src/app/modules/map_view/view/widgets/task_card.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
+import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -31,7 +32,7 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
           Row(
             children: [
               if (crop.cropImage != null)
-                Image.network(crop.cropImage!, height: 80, width: 80),
+               MyNetworkImage(crop.cropImage!, height: 80, width: 80),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -80,8 +80,15 @@ abstract class Routes {
   static const inventoryConsumptionDetails = '/inventory_consumption_detail';
   static const employeeManager = '/employee-manager';
   static const employeeDetails = '/employee-details';
+  static const employeeAdd = '/employee-add';
+
+  static const String addAttendence = '/addAttendence';
+  static const String attendencelistscreen = '/Attendencelistscreen';
+
+
   static const addDocument = '/addDocument';
   static const fuelConsumption = '/fuel-consumption';
-
+ static const String updateEmployeePayouts = '/update_employee_payouts';
+ static const String updateEmployeeAdvance = '/update_employee_advance';
   static const landMapView = '/land-map';
 }

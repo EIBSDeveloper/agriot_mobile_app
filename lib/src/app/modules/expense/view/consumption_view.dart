@@ -153,7 +153,7 @@ class ConsumptionView extends StatelessWidget {
       items: controller.crop,
       selectedItem: controller.selectedCropType.value,
       onChanged: (land) => controller.changeCrop(land!),
-      label: 'crop'.tr,
+      label: "${'crop'.tr} *",
     ),
   );
 
@@ -228,8 +228,7 @@ class ConsumptionView extends StatelessWidget {
               keyboardType: TextInputType.number,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'required_field'
-                      .tr; 
+                  return 'required_field'.tr;
                 }
 
                 if (availableQuans != null &&
@@ -314,6 +313,18 @@ class ConsumptionView extends StatelessWidget {
       onPressed: controller.isLoading.value
           ? null
           : () async {
+              //  Obx(
+              //   () =>
+              //       controller.inventoryItemQuantity.value?.availableQuans !=
+              //           null
+              //       ? Text(
+              //           "Availability: ${controller.inventoryItemQuantity.value?.availableQuans ?? ''} ${controller.inventoryItemQuantity.value?.unitType ?? ""}",
+              //           style: Get.theme.textTheme.bodyMedium!.copyWith(
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         )
+              //       : const SizedBox.shrink(),
+              // );
               final success = await controller.submitConsumption();
               if (success) {
                 Get

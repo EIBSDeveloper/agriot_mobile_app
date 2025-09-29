@@ -27,7 +27,7 @@ class LandView extends GetView<RegLandController> {
           onChanged: (value) {
             controller.formKey.currentState!.validate();
           },
-          label: 'Land Identification *',
+          label: 'Land Name *',
           validator: (value) => value!.isEmpty ? 'Required field' : null,
         ),
         gap,

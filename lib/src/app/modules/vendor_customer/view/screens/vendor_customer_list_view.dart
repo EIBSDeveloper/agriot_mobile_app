@@ -4,11 +4,8 @@ import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_custome
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
-import '../../../../service/utils/pop_messages.dart';
 import '../../../../service/utils/utils.dart';
 import '../../../../widgets/toggle_bar.dart';
-import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
-import '../../../subscription/model/package_usage.dart';
 
 class VendorCustomerListView extends GetView<VendorCustomerController> {
   const VendorCustomerListView({super.key});
@@ -41,13 +38,9 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
     ),
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
-      onPressed: () async {
-        PackageUsage? package = await findLimit();
-        if (package!.customerBalance > 0) {
-          _showAddDialog();
-        } else {
-          showDefaultGetXDialog('vendor_customer'.tr);
-        }
+      onPressed: () {
+        Get.back();
+        Get.toNamed(Routes.addVendorCustomer);
       },
       child: const Icon(Icons.add),
     ),
@@ -55,16 +48,17 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
 
   Widget _buildFilterRow() => Padding(
     padding: const EdgeInsets.all(8.0),
-    child:Obx(()=> ToggleBar(
-      onTap: (index) {
-        controller.selectedFilter.value = index;
-        controller.fetchVendorCustomerList();
-      },
-      activePageIndex: controller.selectedFilter.value,
-      buttonsList: ["customer".tr, "vendor".tr],
-    )),
+    child: Obx(
+      () => ToggleBar(
+        onTap: (index) {
+          controller.selectedFilter.value = index;
+          controller.fetchVendorCustomerList();
+        },
+        activePageIndex: controller.selectedFilter.value,
+        buttonsList: ["customer".tr, "vendor".tr],
+      ),
+    ),
   );
-
 
   Widget _buildListItem(VendorCustomer item) => Card(
     elevation: 1,
@@ -94,49 +88,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         icon: Icon(Icons.call, color: Get.theme.primaryColor),
       ),
       onTap: () =>
-          Get.toNamed( Routes.vendorCustomerDetails, arguments: {'id': item.id}),
+          Get.toNamed(Routes.vendorCustomerDetails, arguments: {'id': item.id}),
     ),
   );
-
-  void _showAddDialog() {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        ),
-        height: 400,
-        child: Column(
-          children: [
-            const ButtomSheetScrollButton(),
-            Text(
-              'add_new'.tr,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              title: Text('customer'.tr),
-              leading: const Icon(Icons.person),
-              onTap: () {
-                Get.back();
-                controller.selectedType.value = 'customer';
-                Get.toNamed( Routes.addVendorCustomer);
-              },
-            ),
-            ListTile(
-              title: Text('vendor'.tr),
-              leading: const Icon(Icons.store),
-              onTap: () {
-                Get.back();
-                controller.selectedType.value = 'vendor';
-                Get.toNamed( Routes.addVendorCustomer,);
-              },
-            ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-    );
-  }
 }

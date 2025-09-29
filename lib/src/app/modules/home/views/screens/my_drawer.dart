@@ -44,8 +44,19 @@ class AppDrawer extends StatelessWidget {
         _buildDrawerItem(
           icon: Icons.payments,
           label: "Employee Payouts",
-          onTap: () => Get.back(),
+          onTap:  () {
+            Get.back();
+            Get.toNamed(Routes.updateEmployeePayouts);
+          },
         ),
+        // _buildDrawerItem(
+        //   icon: Icons.payments,
+        //   label: "Employee Payouts",
+        //   onTap:  () {
+        //     Get.back();
+        //     Get.toNamed(Routes.updateEmployeeAdvance);
+        //   },
+        // ),
         _buildDrawerItem(
           icon: Icons.account_balance_wallet,
           label: "My Outstanding",

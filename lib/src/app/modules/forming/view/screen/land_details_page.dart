@@ -171,7 +171,7 @@ class LandDetailView extends GetView<LandDetailController> {
                 ),
               ),
               subtitle: Text(
-                '${survey['survey_measurement_value']} ${survey['survey_measurement_unit']}',
+                '${double.tryParse(survey['survey_measurement_value'])?.round()??0} ${survey['survey_measurement_unit_name']}',
               ),
             ),
           );

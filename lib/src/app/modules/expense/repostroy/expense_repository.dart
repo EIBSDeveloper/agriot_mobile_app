@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_response.dart';
-import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
 import 'package:argiot/src/app/modules/expense/model/file_type.dart';
 import 'package:argiot/src/app/modules/expense/model/total_expense.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
@@ -93,15 +92,15 @@ class ExpenseRepository {
     }
   }
 
-  Future<List<ExpenseType>> getExpenseTypes() async {
-    try {
-      final response = await _httpService.get('/expenses');
-      var decode = json.decode(response.body);
-      return List<ExpenseType>.from(decode.map((x) => ExpenseType.fromJson(x)));
-    } catch (e) {
-      throw Exception('Failed to load expense types: $e');
-    }
-  }
+  // Future<List<ExpenseType>> getExpenseTypes() async {
+  //   try {
+  //     final response = await _httpService.get('/expenses');
+  //     var decode = json.decode(response.body);
+  //     return List<ExpenseType>.from(decode.map((x) => ExpenseType.fromJson(x)));
+  //   } catch (e) {
+  //     throw Exception('Failed to load expense types: $e');
+  //   }
+  // }
 
   Future<List<FileType>> getFileTypes() async {
     try {
@@ -115,11 +114,12 @@ class ExpenseRepository {
   }
 
   Future addExpense(
-    int myCrop,
-    double amount,
-    int typeExpenses,
-    String createdDay,
-    String description, {
+  {  int?  myCrop,
+  required  int amount,
+ required   String createdDay,
+    int? vendor,
+    int? paidamonut,
+    String? description, 
     List<Map<String, dynamic>>? documents,
   }) async {
     final farmerId = appDeta.userId;
@@ -127,8 +127,9 @@ class ExpenseRepository {
       final response = await _httpService.post('/add_expense/$farmerId', {
         'my_crop': myCrop,
         'amount': amount,
-        'type_expenses': typeExpenses,
         'created_day': createdDay,
+        'vendor':vendor,
+        'paid_amount':paidamonut,
         'description': description,
         if (documents != null) 'document': documents,
       });

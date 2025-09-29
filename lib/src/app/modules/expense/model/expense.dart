@@ -1,4 +1,3 @@
-import 'package:argiot/src/app/modules/expense/model/expense_type.dart';
 import 'package:argiot/src/app/modules/forming/model/crop.dart';
 
 import 'farmer.dart';
@@ -7,7 +6,6 @@ class Expense {
   final int id;
   final Farmer farmer;
   final Crop myCrop;
-  final ExpenseType typeExpenses;
   final double amount;
   final String description;
   final String createdDay;
@@ -16,7 +14,6 @@ class Expense {
     required this.id,
     required this.farmer,
     required this.myCrop,
-    required this.typeExpenses,
     required this.amount,
     required this.description,
     required this.createdDay,
@@ -26,7 +23,6 @@ class Expense {
       id: json['id'],
       farmer: Farmer.fromJson(json['farmer']),
       myCrop: Crop.fromJson(json['my_crop']),
-      typeExpenses: ExpenseType.fromJson(json['type_expenses']),
       amount: json['amount'].toDouble(),
       description: json['description'],
       createdDay: json['created_day'],

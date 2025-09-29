@@ -122,7 +122,7 @@ class ConsumptionController extends GetxController {
     if (inventoryItem.value != null) {
       inventoryType.value = null;
       inventoryItem.value = null;
-    }
+    }  getItemQuantity();
   }
 
   void setQuantity(String value) {

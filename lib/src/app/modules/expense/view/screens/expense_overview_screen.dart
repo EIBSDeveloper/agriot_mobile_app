@@ -39,7 +39,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               ToggleBar(
                 onTap: (index) => controller.changeTab(index),
                 activePageIndex: controller.selectedTab.value,
-                buttonsList: ["all".tr, "general".tr, "inventory".tr],
+                buttonsList: ["all".tr, "general".tr, "inventory".tr, "sales".tr],
               ),
               const SizedBox(height: 10),
               _buildTransactionList(),
@@ -131,32 +131,33 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   MonthDayFormat(
-                    date: DateFormat("dd-MM-yyyy").parse(item.createdDay),
+                    date: DateFormat("dd/MM/yyyy").parse(item.createdDay),
                   ),
                   const SizedBox(width: 8),
 
                   /// Left section (title + subtitle)
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.typeExpenses.name,
-                          style: Get.textTheme.bodyLarge,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          item.myCrop.name,
-                          style: Get.textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: Column(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Text(
+                  //         item.typeExpenses.name,
+                  //         style: Get.textTheme.bodyLarge,
+                  //       ),
+                  //       const SizedBox(height: 4),
+                  //       Text(
+                  //         item.myCrop.name,
+                  //         style: Get.textTheme.bodyMedium?.copyWith(
+                  //           color: Colors.grey[600],
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
 
                   Text(
                     '₹${item.amount.toStringAsFixed(2)}',
@@ -179,7 +180,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
                 children: [
                   MonthDayFormat(
                     date: DateFormat(
-                      "dd-MM-yyyy",
+                      "dd/MM/yyyy",
                     ).parse(item.dateOfConsumption),
                   ),
                   const SizedBox(width: 8),

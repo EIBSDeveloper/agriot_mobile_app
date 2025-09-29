@@ -15,7 +15,7 @@ class VendorPurchaseRepository {
   final baseURl = appDeta.baseUrl;
   Future<VendorPurchaseResponse> fetchVendorPayables(int vendorId) async {
     final url =
-        'http://147.93.19.253:5000/Api/vendor_purchase_payables_list/$farmerId?vendor_id=$vendorId';
+        '$baseURl/vendor_purchase_payables_list/$farmerId?vendor_id=$vendorId';
 
     final response = await http.get(Uri.parse(url));
 
@@ -28,7 +28,7 @@ class VendorPurchaseRepository {
 
   Future<VendorPurchaseResponse> fetchVendorReceivables(int vendorId) async {
     final url =
-        'http://147.93.19.253:5000/Api/vendor_purchase_receivables_list/$farmerId?vendor_id=$vendorId';
+        '$baseURl/vendor_purchase_receivables_list/$farmerId?vendor_id=$vendorId';
 
     final response = await http.get(Uri.parse(url));
 
@@ -46,7 +46,7 @@ class VendorPurchaseRepository {
     required String type,
   }) async {
     final url = Uri.parse(
-      'http://147.93.19.253:5000/Api/vendor_purchase_payables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
+      '$baseURl/vendor_purchase_payables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
     );
 
     try {
@@ -70,7 +70,7 @@ class VendorPurchaseRepository {
     required String type,
   }) async {
     final url = Uri.parse(
-      'http://147.93.19.253:5000/Api/vendor_purchase_receivables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
+      '$baseURl/vendor_purchase_receivables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
     );
 
     try {

@@ -237,3 +237,53 @@ String getTaskName(TaskTypes task) {
       return "All";
   }
 }
+
+
+extension RoleTypeExtension on RoleType {
+  String get name {
+    switch (this) {
+      case RoleType.employee:
+        return 'Employee';
+      case RoleType.subAdmin:
+        return 'Sub Admin';
+      case RoleType.manager:
+        return 'Manager';
+    }
+  }
+
+  int get id {
+    switch (this) {
+      case RoleType.employee:
+        return 1;
+      case RoleType.subAdmin:
+        return 2;
+      case RoleType.manager:
+        return 3;
+    }
+  }
+}
+
+
+extension GenderTypeExtension on GenderType {
+  String get name {
+    switch (this) {
+      case GenderType.male:
+        return 'Male';
+      case GenderType.female:
+        return 'Female';
+      case GenderType.transgender:
+        return 'TransGender';
+    }
+  }
+
+  int get id {
+    switch (this) {
+      case GenderType.male:
+        return 1;
+      case GenderType.female:
+        return 2;
+      case GenderType.transgender:
+        return 3;
+    }
+  }
+}

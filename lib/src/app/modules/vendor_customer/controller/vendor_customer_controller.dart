@@ -61,9 +61,8 @@ class VendorCustomerController extends GetxController {
       selectedType.value = type;
     }
     fetchVendorCustomerList();
-
-    loadMarkets();
     loadPurchaseList();
+    loadMarkets();
   }
 
   Future<void> deleteDetails(int id, String type) async {
@@ -81,6 +80,36 @@ class VendorCustomerController extends GetxController {
     }
   }
 
+  //inventory
+  Rxn<List<InventoryType>> purchaseModel = Rxn<List<InventoryType>>();
+  RxSet<String> selectedKeys = <String>{}.obs;
+  RxBool isinveroryLoading = false.obs;
+
+  Future<void> loadPurchaseList() async {
+    try {
+      isinveroryLoading.value = true;
+      final result = await _repository.getInventory();
+      purchaseModel.value = result;
+    } catch (e) {
+      print('Error loading purchase list: $e');
+    } finally {
+      isinveroryLoading.value = false;
+    }
+  }
+
+  void toggleSelection(String key) {
+    if (selectedKeys.contains(key)) {
+      selectedKeys.remove(key);
+    } else {
+      selectedKeys.add(key);
+    }
+  }
+
+  void setSelectedKeys(Set<String> keys) {
+    selectedKeys.assignAll(keys);
+  }
+
+  ////inventory end
   //Market
 
   Future<void> loadMarkets() async {
@@ -113,37 +142,6 @@ class VendorCustomerController extends GetxController {
   }
 
   //Market end
-
-  //inventory
-  Rxn<List<InventoryType>> purchaseModel = Rxn<List<InventoryType>>();
-  RxSet<String> selectedKeys = <String>{}.obs;
-  RxBool isinveroryLoading = false.obs;
-
-  Future<void> loadPurchaseList() async {
-    try {
-      isinveroryLoading.value = true;
-      final result = await _repository.getInventory();
-      purchaseModel.value = result;
-    } catch (e) {
-      print('Error loading purchase list: $e');
-    } finally {
-      isinveroryLoading.value = false;
-    }
-  }
-
-  void toggleSelection(String key) {
-    if (selectedKeys.contains(key)) {
-      selectedKeys.remove(key);
-    } else {
-      selectedKeys.add(key);
-    }
-  }
-
-  void setSelectedKeys(Set<String> keys) {
-    selectedKeys.assignAll(keys);
-  }
-
-  ////inventory end
 
   Future<void> fetchVendorCustomerList() async {
     try {
@@ -241,7 +239,7 @@ class VendorCustomerController extends GetxController {
       }
 
       if (newId > 0) {
-        Get.back();
+     
         fetchVendorCustomerList();
         showSuccess('Added successfully');
         // ✅ Reset the form after submit
@@ -270,19 +268,19 @@ class VendorCustomerController extends GetxController {
     imageBase64.value = '';
   }
 
-  @override
-  void onClose() {
-    nameController.dispose();
-    mobileController.dispose();
-    emailController.dispose();
-    shopNameController.dispose();
-    doorNoController.dispose();
-    pincodeController.dispose();
-    gstNoController.dispose();
-    taxNoController.dispose();
-    openingBalanceController.dispose();
-    descriptionController.dispose();
-    searchController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   nameController.dispose();
+  //   mobileController.dispose();
+  //   emailController.dispose();
+  //   shopNameController.dispose();
+  //   doorNoController.dispose();
+  //   pincodeController.dispose();
+  //   gstNoController.dispose();
+  //   taxNoController.dispose();
+  //   openingBalanceController.dispose();
+  //   descriptionController.dispose();
+  //   searchController.dispose();
+  //   super.onClose();
+  // }
 }

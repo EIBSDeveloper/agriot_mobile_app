@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/widgets/lower_case_text_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,9 @@ class KycView extends GetView<KycController> {
               _buildTextField(
                 controller: controller.emailController,
                 label: 'Email *',
+                inputFormatters: [
+                  LowerCaseTextFormatter(),
+                ],
                 validator: (value) =>
                     !GetUtils.isEmail(value!) ? 'Enter valid email' : null,
                 keyboardType: TextInputType.emailAddress,
@@ -50,11 +54,7 @@ class KycView extends GetView<KycController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildTextField(
-                controller: controller.doorNoController,
-                label: 'Address',
-              ),
-              gap,
+             
               _buildTextField(
                 controller: controller.pincodeController,
                 label: 'Pincode *',
@@ -66,6 +66,11 @@ class KycView extends GetView<KycController> {
                     ? ('Required field')
                     : (value.length != 6 ? "Ender 6 digit Pincode" : null),
                 keyboardType: TextInputType.number,
+              ),
+              gap,
+               _buildTextField(
+                controller: controller.doorNoController,
+                label: 'Address',
               ),
               gap,
               _buildTextField(
@@ -90,13 +95,11 @@ class KycView extends GetView<KycController> {
     required TextEditingController controller,
     required String label,
     List<TextInputFormatter>? inputFormatters,
-    String? Function(String?)? validator,
+    String? Function(String?)? validator, 
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) =>  InputCardStyle(
-               
-
+  }) => InputCardStyle(
     child: TextFormField(
       controller: controller,
       inputFormatters: inputFormatters,

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../service/utils/enums.dart';
 import '../../../service/utils/pop_messages.dart';
 
 class ManagerController extends GetxController {
@@ -20,12 +21,29 @@ class ManagerController extends GetxController {
   final addressController = TextEditingController();
 
   var selectedEmployeeType = RxnString();
-  var selectedGenderType = RxnString();
-  var selectedRoleType = RxnString();
+var selectedGenderType = Rxn<GenderType>();
+var selectedRoleType = Rxn<RoleType>();
+
+  final descriptionController = TextEditingController();
+
+  var selectedWorkType = RxnString();
+  var selectedManager = RxnString();
 
   final employeeTypes = ['Monthly Salaries', 'Daily Wages'];
-  final genderTypes = ['Male', 'Female', 'TransGender'];
-  final roleTypes = ['Sub Admin', 'Manager'];
+final genderTypes = GenderType.values;
+  
+final roleTypes = RoleType.values;
+
+  final workTypes = [
+    'Planting work',
+    'Cultivating work',
+    'Harvesting work',
+    'Irrigation',
+    'Pest Control Work',
+    'General Work',
+    'Add New',
+  ];
+  final managers = ['John Doe', 'Jane Smith', 'Alice Johnson'];
 
   final formKey = GlobalKey<FormState>();
 

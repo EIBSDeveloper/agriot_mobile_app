@@ -1,6 +1,10 @@
-import 'package:argiot/src/app/service/utils/pop_messages.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/modules/document/document.dart';
+
+import '../../../app/service/utils/enums.dart';
+import '../../../app/service/utils/utils.dart' show getDocTypeId;
 import '../../repository/vendor_add_repository/vendor_add_repository.dart';
 
 class VendorAddController extends GetxController {
@@ -13,7 +17,9 @@ class VendorAddController extends GetxController {
 
   var payables = Rxn<dynamic>();
   var receivables = Rxn<dynamic>();
-
+  void clearFiles() {
+    documentItems.clear();
+  }
   Future<void> addVendorPayable({
     required int vendorId,
     required int fuelPurchaseId,
@@ -35,16 +41,23 @@ class VendorAddController extends GetxController {
         paymentAmount: amount,
         description: description,
         type: type,
+        documentItems: documentItems,
       );
 
-    showSuccess(
+      Get.snackbar(
+        "Success",
         "Payment Created Successfully",
-      
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
     } catch (e) {
-      showError(
+      Get.snackbar(
+        "Error",
         e.toString(),
-      
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
       );
     } finally {
       isLoading.value = false;
@@ -73,19 +86,30 @@ class VendorAddController extends GetxController {
         paymentAmount: amount,
         description: description,
         type: type,
-      );
-
-  showSuccess(
-        "Payment Received Successfully",
-      
-      );
-    } catch (e) {
-     showError(
-        e.toString(),
-        
+        //documentItems: documentItems.map((e) => e.toJson()).toList(),
+        documentItems: documentItems,
       );
     } finally {
       isLoading.value = false;
     }
+  }
+
+  final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
+
+  void addDocumentItem() {
+    Get.to(
+      const AddDocumentView(),
+      binding: DocumentBinding(),
+      arguments: {"id": getDocTypeId(DocTypes.payouts)},
+    )?.then((result) {
+      if (result != null && result is AddDocumentModel) {
+        documentItems.add(result);
+      }
+      print(documentItems.toString());
+    });
+  }
+
+  void removeDocumentItem(int index) {
+    documentItems.removeAt(index);
   }
 }

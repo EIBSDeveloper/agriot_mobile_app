@@ -16,7 +16,7 @@ from django.db import transaction
 from decimal import Decimal
 from io import BytesIO
 import traceback
-from rest_framework.response import Response 
+from rest_framework.response import Response
 from .utils.fcm import send_fcm_message
 from rest_framework import status  
 import uuid
@@ -42,7 +42,7 @@ from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework import status 
-from .serializers import MyCustomerAddSerializer
+from .serializers import *
 from PIL import Image
 from django.utils import timezone
 from django.db import transaction
@@ -64,8 +64,7 @@ import datetime
 from django.db import IntegrityError
 # Create your views here.
 from decimal import Decimal, InvalidOperation
-from django.core.exceptions import ValidationError ,ObjectDoesNotExist 
-from rest_framework.exceptions import NotFound
+from django.core.exceptions import ValidationError
 import random
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
@@ -84,7 +83,17 @@ import logging
 from ai.utils import send_otp_email
 from ai.utils import send_notification_email
 from shapely.geometry import Point, Polygon
+# import imghdr
+import mimetypes
+import base64
+import traceback
 from rest_framework.pagination import PageNumberPagination
+from django.core.exceptions import ValidationError ,ObjectDoesNotExist
+from rest_framework.exceptions import NotFound
+from drf_spectacular.utils import extend_schema
+from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import OpenApiParameter
+
 
 logger = logging.getLogger('api')
 
@@ -748,16 +757,16 @@ def land_unit_list(request):
             item = {
                 "id": unit.id,
                 "name": unit.get_translated_value("name", language_code),
-                "landunitdef": unit.get_translated_value("landunitdef", language_code),
-                "description": unit.get_translated_value("description", language_code),
+                # "landunitdef": unit.get_translated_value("landunitdef", language_code),
+                # "description": unit.get_translated_value("description", language_code),
             }
             data.append(item)
 
         response_data = {
             "data": data,
-            "language": {
-                "default": "en"
-            },
+            # "language": {
+            #     "default": "en"
+            # },
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
@@ -4616,11 +4625,73 @@ def list_market_names(request):
     market_names = ManageMarketSerializer(markets, many=True).data   
     return Response(market_names, status=status.HTTP_200_OK)
 
-# region Get Inventory Summary Changed by Bala
+#priya
+# @api_view(['GET'])
+# def get_inventory_summary(request, id):
+#     inventory_data = []
+
+#     # Get Fuel Data
+#     fuel_items = MyFuel.objects.filter(farmer=id)
+#     total_fuel_quantity = sum([item.quantity for item in fuel_items])  # Summing up the quantities
+#     inventory_data.append({
+#         "inventory_type": "fuel",
+#         "total_quantity": total_fuel_quantity if fuel_items.exists() else 0
+#     })
+
+#     vehicle_count = MyVehicle.objects.filter(farmer=id).count()
+#     inventory_data.append({
+#         "inventory_type": "vehicle",
+#         "total_count": vehicle_count if vehicle_count > 0 else 0
+#     })
+
+
+#     # Get Machinery Data
+#     machinery_count = MyMachinery.objects.filter(farmer=id).count()
+#     inventory_data.append({
+#         "inventory_type": "machinery",
+#         "total_count": machinery_count if machinery_count > 0 else 0
+#     })
+
+#     # Get Tools Data
+#     tools_count = MyTools.objects.filter(farmer=id).count()
+#     inventory_data.append({
+#         "inventory_type": "tools",
+#         "total_count": tools_count if tools_count > 0 else 0
+#     })
+
+#     # Get Vehicle Data
+    
+#     # Get Pesticides Data
+#     pesticides_items = MyPesticides.objects.filter(farmer=id)
+#     total_pesticides_quantity = sum([item.quantity for item in pesticides_items])
+#     inventory_data.append({
+#         "inventory_type": "pesticides",
+#         "total_quantity": total_pesticides_quantity if pesticides_items.exists() else 0
+#     })
+
+#     # Get Fertilizer Data
+#     fertilizer_items = MyFertilizers.objects.filter(farmer=id)
+#     total_fertilizer_quantity = sum([item.quantity for item in fertilizer_items])
+#     inventory_data.append({
+#         "inventory_type": "fertilizer",
+#         "total_quantity": total_fertilizer_quantity if fertilizer_items.exists() else 0
+#     })
+
+#     # Get Seeds Data
+#     seeds_items = MySeeds.objects.filter(farmer=id)
+#     total_seeds_quantity = sum([item.quantity for item in seeds_items])
+#     inventory_data.append({
+#         "inventory_type": "seeds",
+#         "total_quantity": total_seeds_quantity if seeds_items.exists() else 0
+#     })
+
+#     return Response(inventory_data, status=status.HTTP_200_OK)
+
+#bala
 @api_view(['GET'])
 def get_inventory_summary(request, id):
     inventory_data = []
-
+ 
     # Get Fuel Data
     fuel_items = MyFuel.objects.filter(farmer=id)
     total_fuel_quantity = sum([item.quantity for item in fuel_items])
@@ -4630,7 +4701,7 @@ def get_inventory_summary(request, id):
         "total_quantity": total_fuel_quantity if fuel_items.exists() else 0,
         "unit_type": "liter"
     })
-
+ 
     # Vehicle Data
     vehicle_count = MyVehicle.objects.filter(farmer=id).count()
     inventory_data.append({
@@ -4639,7 +4710,7 @@ def get_inventory_summary(request, id):
         "total_count": vehicle_count if vehicle_count > 0 else 0,
         "unit_type": "count"
     })
-
+ 
     # Machinery Data
     machinery_count = MyMachinery.objects.filter(farmer=id).count()
     inventory_data.append({
@@ -4648,7 +4719,7 @@ def get_inventory_summary(request, id):
         "total_count": machinery_count if machinery_count > 0 else 0,
         "unit_type": "count"
     })
-
+ 
     # Tools Data
     tools_count = MyTools.objects.filter(farmer=id).count()
     inventory_data.append({
@@ -4657,7 +4728,7 @@ def get_inventory_summary(request, id):
         "total_count": tools_count if tools_count > 0 else 0,
         "unit_type": "count"
     })
-
+ 
     # Pesticides Data
     pesticides_items = MyPesticides.objects.filter(farmer=id)
     total_pesticides_quantity = sum([item.quantity for item in pesticides_items])
@@ -4667,7 +4738,7 @@ def get_inventory_summary(request, id):
         "total_quantity": total_pesticides_quantity if pesticides_items.exists() else 0,
         "unit_type": "kg"
     })
-
+ 
     # Fertilizer Data
     fertilizer_items = MyFertilizers.objects.filter(farmer=id)
     total_fertilizer_quantity = sum([item.quantity for item in fertilizer_items])
@@ -4677,7 +4748,7 @@ def get_inventory_summary(request, id):
         "total_quantity": total_fertilizer_quantity if fertilizer_items.exists() else 0,
         "unit_type": "kg"
     })
-
+ 
     # Seeds Data
     seeds_items = MySeeds.objects.filter(farmer=id)
     total_seeds_quantity = sum([item.quantity for item in seeds_items])
@@ -4687,10 +4758,111 @@ def get_inventory_summary(request, id):
         "total_quantity": total_seeds_quantity if seeds_items.exists() else 0,
         "unit_type": "kg"
     })
-
+ 
     return Response(inventory_data, status=status.HTTP_200_OK)
 
+# region Add new api function by Bala
+ 
+# @api_view(['GET'])
+# def get_inventory_purchase_list(request, farmer_id, inventory_type_id, inventory_items_id):
+ 
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+#     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+#     inventory_items = get_object_or_404(InventoryItems, id=inventory_items_id)
+ 
+#     inventories_qs = MyInventory.objects.filter(
+#         farmer=farmer,
+#         inventory_type=inventory_type,
+#         inventory_items=inventory_items,
+#         fuel_purchase__isnull=False,
+#     ).select_related('fuel_purchase__vendor')  
+ 
+#     fuel_data = inventories_qs.values(
+#         'fuel_purchase__id',
+#         'fuel_purchase__date_of_consumption',
+#         'fuel_purchase__quantity',
+#         'fuel_purchase__purchase_amount',
+#         'fuel_purchase__vendor__id',
+#         'fuel_purchase__vendor__name',
+#     )
+ 
+#     # Set up pagination: 10 items per page
+#     paginator = PageNumberPagination()
+#     paginator.page_size = 2
+ 
+#     # Paginate
+#     try:
+#         paginated_fuel_data = paginator.paginate_queryset(list(fuel_data), request)
+#     except NotFound:
+#         return Response(
+#             {
+#                 "error": "No more items.",
+#                 "message": "You have reached the end of the list."
+#             },
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+ 
+#     response_data = list(
+#     map(lambda item: {
+#         'id': item['fuel_purchase__id'],
+#         'date_of_consumption': str(item['fuel_purchase__date_of_consumption']) if item['fuel_purchase__date_of_consumption'] else "N/A",
+#         'quantity': str(item['fuel_purchase__quantity']) if item['fuel_purchase__quantity'] is not None else "0.00",
+#         'unit_type': "liter",
+#         'purchase_amount': str(item['fuel_purchase__purchase_amount']) if item['fuel_purchase__purchase_amount'] is not None else "0.00",
+#         'vendor': {
+#             'id': item['fuel_purchase__vendor__id'],
+#             'name': item['fuel_purchase__vendor__name'] or "Unknown",
+#         }
+#     }, paginated_fuel_data)
+#     )
+   
+#     return Response(response_data, status=status.HTTP_200_OK)
+ 
+ 
+# @api_view(['GET'])
+# def get_inventory_cusumption_list(request, farmer_id, inventory_type_id, inventory_items_id):
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+#     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+#     inventory_items = get_object_or_404(InventoryItems, id=inventory_items_id)
+ 
+#     inventories = MyInventory.objects.filter(
+#         farmer=farmer,
+#         inventory_type=inventory_type,
+#         inventory_items=inventory_items
+#     ).select_related('crop', 'crop__crop')  
+ 
+#     paginator = PageNumberPagination()
+#     paginator.page_size = 2
+ 
+#     try:
+#         paginated_inventories = paginator.paginate_queryset(list(inventories), request)
+#     except NotFound:
+#         return Response(
+#             {
+#                 "error": "No more items.",
+#                 "message": "You have reached the end of the list."
+#             },
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+#     response_data = list(
+#         map(lambda inventory: {
+#         'id': inventory.id,
+#         'quantity': str(inventory.quantity_utilized) if inventory.quantity_utilized else "0.00",
+#         'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else "N/A",
+#         'start_kilometer': str(inventory.start_kilometer) if inventory.start_kilometer else "0.00",
+#         'end_kilometer': str(inventory.end_kilometer) if inventory.end_kilometer else "0.00",
+#         'usage_hours': str(inventory.usage_hours) if inventory.usage_hours else "0.00",
+#         'rental': str(inventory.rental) if inventory.rental else "1",
+#         'crop_id': inventory.crop.id if inventory.crop else None,
+#         'crop_name': inventory.crop.crop.get_translated_value("name", language_code) if inventory.crop else "Unknown Crop",
+#         'created_at': str(inventory.created_at) if inventory.created_at else "N/A",
+#         'updated_at': str(inventory.updated_at) if inventory.updated_at else "N/A",
+#     }, paginated_inventories))
+ 
+#     return Response(response_data, status=status.HTTP_200_OK)
+ 
 # endregion
+ 
 
 # Fuel Inventory
 @api_view(['GET'])
@@ -7421,6 +7593,22 @@ def add_expense(request, farmer_id):
 
     try:
         farmer = get_object_or_404(Farmer, id=farmer_id)
+        vendor_id = request.data.get('vendor')
+        my_crop_id = request.data.get('my_crop')
+        vendor = None
+        if vendor_id:
+            try:
+                vendor = MyVendor.objects.get(id=vendor_id)
+            except MyVendor.DoesNotExist:
+                return Response({"success": False, "message": "Vendor not found."}, status=status.HTTP_404_NOT_FOUND)
+        crop = None
+        if my_crop_id:
+            try:
+                crop = MyCrop.objects.get(id=my_crop_id)
+            except MyCrop.DoesNotExist:
+                return Response({"success": False, "message": "crop not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
         print(f"Fetching farmer with id: {farmer_id}")
 
         subscription = farmer.subscriptions.filter(status=0).first()
@@ -7440,20 +7628,18 @@ def add_expense(request, farmer_id):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        my_crop_id = request.data.get('my_crop')
+
         file_data = request.data.get('document', [])
-        type_expenses_id = request.data.get('type_expenses')
         amount = request.data.get('amount')
+        paidAmount = request.data.get('paid_amount')
         description = request.data.get('description', '')  # Optional, default to empty string
         created_day = request.data.get('created_day')
 
-        if not my_crop_id or not type_expenses_id or amount is None or not created_day:
+        if  amount is None or not created_day:
             return Response(
                 {"success": False, "message": "my_crop, type_expenses, amount, and created_day are required."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
-        type_expenses = get_object_or_404(Expenses, id=type_expenses_id)
 
         allowed_file_types = ['application/pdf', 'image/jpeg', 'image/png']
         max_file_size = 10 * 1024 * 1024  # 10MB
@@ -7461,8 +7647,9 @@ def add_expense(request, farmer_id):
 
         expense_data = {
             'farmer': farmer,
-            'my_crop': get_object_or_404(MyCrop, id=my_crop_id),
-            'type_expenses': type_expenses,
+            'my_crop': crop,
+            'vendor': vendor,
+            'paid_amount': paidAmount,
             'amount': amount,
             'description': description,
             'created_day': created_day,
@@ -7470,6 +7657,85 @@ def add_expense(request, farmer_id):
         }
         expense = MyExpense.objects.create(**expense_data)
 
+        if amount != 0 and paidAmount  != 0  and amount != paidAmount and vendor_id:
+            if paidAmount > amount:  # Payables
+                outstanding = Outstanding.objects.create(
+                    farmer= farmer,
+                    vendor = vendor,
+                    expense=expense,
+                    balance= amount,
+                    paid= paidAmount,
+                    to_pay= float(paidAmount) - float(amount),
+                    paid_date=created_day,
+                    total_paid=paidAmount,
+                    identify=1,
+                    created_by=farmer.farmer_user,
+                    created_at=timezone.now()
+                )
+                if float(outstanding.to_pay) > 0:
+                    vendor.payables = (float(vendor.payables or 0)) + float(outstanding.to_pay)
+                    if vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit:
+                        if float(vendor.opening_balance) > float(outstanding.to_pay):
+                            vendor.credit = True
+                            vendor.debit = False
+                            vendor.opening_balance = float(vendor.opening_balance) - float(outstanding.to_pay)
+                        else:
+                            vendor.credit = False
+                            vendor.debit = True
+                            vendor.opening_balance = float(outstanding.to_pay) - float(vendor.opening_balance)
+                    elif vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit == False and vendor.debit:
+                        vendor.opening_balance = float(vendor.opening_balance) + float(outstanding.to_pay)
+                        vendor.credit = False
+                        vendor.debit = True
+                    else:
+                        vendor.opening_balance = float(outstanding.to_pay)
+                        vendor.credit = False
+                        vendor.debit = True
+                    vendor.save()
+
+            elif paidAmount <  amount:  # Receivables
+                outstanding = Outstanding.objects.create(
+                    farmer= farmer,
+                    vendor= vendor,
+                    expense=expense,
+                    balance=float(paidAmount) - float( amount),
+                    paid=paidAmount,
+                    to_receive=float(paidAmount) - float( amount),
+                    paid_date=created_day,
+                    received_date=created_day,
+                    total_received=paidAmount,
+                    identify=1,
+                    created_by=farmer.farmer_user,
+                    created_at=timezone.now()
+                )
+                if float(outstanding.to_receive) > 0:
+                    vendor.receivables = (float(vendor.receivables or 0)) + float(outstanding.to_receive)
+                    if vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit:
+                        vendor.opening_balance = float(vendor.opening_balance) + float(outstanding.to_receive)
+                        vendor.credit = True
+                        vendor.debit = False
+                    elif vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit == False and vendor.debit:
+                        if float(vendor.opening_balance) > float(outstanding.to_receive):
+                            vendor.credit = False
+                            vendor.debit = True
+                            vendor.opening_balance = float(vendor.opening_balance) - float(outstanding.to_receive)
+                        else:
+                            vendor.credit = True
+                            vendor.debit = False
+                            vendor.opening_balance = float(outstanding.to_receive) - float(vendor.opening_balance)
+                    else:
+                        vendor.opening_balance = float(outstanding.to_receive)
+                        vendor.credit = True
+                        vendor.debit = False
+                    vendor.save()
+
+
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='Expense',
+            message= 'Expense added successfully',
+            type='Expence'
+        )
         if file_data:
             for doc_data in file_data:
                 file_type_id = doc_data.get('file_type')
@@ -7525,7 +7791,6 @@ def add_expense(request, farmer_id):
                 "id": expense.id,
                 "farmer": expense.farmer.id,
                 "my_crop": expense.my_crop.id,
-                "type_expenses": expense.type_expenses.id,
                 "amount": expense.amount,
                 "description": expense.description,
                 "created_day": expense.created_day,
@@ -10577,33 +10842,14 @@ def get_guidelines(request):
         },
     }
 
-    MEDIA_TYPE_TRANSLATIONS = {
-        "document": {
-            "en": "Document",
-            "ta": "ஆவணம்",
-        },
-        "video": {
-            "en": "Video",
-            "ta": "வீடியோ",
-        },
-    }
 
     def translate_guidelines_type(guidelines_type, language_code):
         return GUIDELINES_TYPE_TRANSLATIONS.get(guidelines_type, {}).get(language_code, guidelines_type)
 
-    def translate_media_type(media_type, language_code):
-        return MEDIA_TYPE_TRANSLATIONS.get(media_type, {}).get(language_code, media_type)
 
     response_data = []
 
     for guideline in guidelines_query:
-        # parsed_video_url = urlparse(guideline.video_url) if guideline.video_url else None
-        # query_value = ""
-        # if parsed_video_url and parsed_video_url.query:
-        #     parsed_query = parse_qs(parsed_video_url.query)
-        #     query_value = parsed_query.get('si', [""])[0]  # Safely extract 'si' value
-
-        # Parse the video URL to extract the query parameters
         parsed_video_url = urlparse(guideline.video_url) if guideline.video_url else None
         query_value = ""
         
@@ -10626,18 +10872,9 @@ def get_guidelines(request):
                 "name": guideline.crop.get_translated_value("name", language_code) if guideline.crop else " "
             },
             "description": guideline.get_translated_value("description", language_code) if guideline.description else " ",
-            "created_at": guideline.created_at,
-            "status": guideline.status,
-            "video_url": {
-                "full": guideline.video_url,
-                "scheme": parsed_video_url.scheme if parsed_video_url else "",
-                "netloc": parsed_video_url.netloc if parsed_video_url else "",
-                "path": parsed_video_url.path if parsed_video_url else "",
-                "query": parsed_video_url.query if parsed_video_url else "",
-                "query_value": query_value
-            },
+            "video_url":  guideline.video_url,
             "document": request.build_absolute_uri(f'/SuperAdmin{guideline.document.url}' if guideline.document else guideline.document.url) if guideline.document else "",
-            "media_type": translate_media_type(guideline.media_type, language_code),
+            "media_type": guideline.media_type
         }
         response_data.append(data)
 
@@ -11966,11 +12203,6 @@ def get_otp(request):
                 existing_farmer.name,
                 existing_farmer.phone or True,
                 existing_farmer.email or True,
-                existing_farmer.country,
-                existing_farmer.state,
-                existing_farmer.city,
-                existing_farmer.taluk,
-                existing_farmer.village,
                 existing_farmer.pincode,
             ])
             name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
@@ -11984,36 +12216,6 @@ def get_otp(request):
                 "crop": has_my_crop,
                 "farmer": {
                     "id": existing_farmer.id,
-                    "name": name_to_display,
-                    "phone": existing_farmer.phone,
-                    "email": existing_farmer.email,
-                    "google_login": existing_farmer.google_login,
-                    # "country": {"id": existing_farmer.country.id if existing_farmer.country else None,
-                    #             "name": existing_farmer.country.name if existing_farmer.country else ""},
-                    # "state": {"id": existing_farmer.state.id if existing_farmer.state else None,
-                    #           "name": existing_farmer.state.name if existing_farmer.state else ""},
-                    # "city": {"id": existing_farmer.city.id if existing_farmer.city else None,
-                    #          "name": existing_farmer.city.name if existing_farmer.city else ""},
-                    # "taluk": {"id": existing_farmer.taluk.id if existing_farmer.taluk else None,
-                    #           "name": existing_farmer.taluk.name if existing_farmer.taluk else ""},
-                    # "village": {"id": existing_farmer.village.id if existing_farmer.village else None,
-                    #             "name": existing_farmer.village.name if existing_farmer.village else ""},
-                    "door_no": existing_farmer.door_no,
-                    "pincode": existing_farmer.pincode,
-                    "description": existing_farmer.description,
-                    "img": existing_farmer.img.url if existing_farmer.img else None,
-                    "company_name": existing_farmer.company_name,
-                    "tax_no": existing_farmer.tax_no,
-                    "username": existing_farmer.username,
-                    "subscription_package": {
-                        "id": existing_farmer.subscription_package.id if existing_farmer.subscription_package else None,
-                        "name": existing_farmer.subscription_package.name if existing_farmer.subscription_package else ""
-                    },
-                    "subscription_start_date": existing_farmer.subscription_start_date,
-                    "subscription_end_date": existing_farmer.subscription_end_date,
-                    "remaining_days": existing_farmer.remaining_days,
-                    "amounts": existing_farmer.amounts,
-                    "status": existing_farmer.status,
                     "language": {"default": "en"},
                     "otp": ""
                 }
@@ -12049,36 +12251,6 @@ def get_otp(request):
             "has_my_crop": False,
             "farmer": {
                 "id": farmer.id,
-                "name": name_to_display,
-                "phone": farmer.phone,
-                "email": farmer.email,
-                "google_login": farmer.google_login,
-                # "country": {"id": farmer.country.id if farmer.country else None,
-                #             "name": farmer.country.name if farmer.country else ""},
-                # "state": {"id": farmer.state.id if farmer.state else None,
-                #           "name": farmer.state.name if farmer.state else ""},
-                # "city": {"id": farmer.city.id if farmer.city else None,
-                #          "name": farmer.city.name if farmer.city else ""},
-                # "taluk": {"id": farmer.taluk.id if farmer.taluk else None,
-                #           "name": farmer.taluk.name if farmer.taluk else ""},
-                # "village": {"id": farmer.village.id if farmer.village else None,
-                #             "name": farmer.village.name if farmer.village else ""},
-                "door_no": farmer.door_no,
-                "pincode": farmer.pincode,
-                "description": farmer.description,
-                "img": farmer.img.url if farmer.img else "",
-                "company_name": farmer.company_name,
-                "tax_no": farmer.tax_no,
-                "username": farmer.username,
-                "subscription_package": {
-                    "id": farmer.subscription_package.id if farmer.subscription_package else None,
-                    "name": farmer.subscription_package.name if farmer.subscription_package else ""
-                },
-                "subscription_start_date": farmer.subscription_start_date,
-                "subscription_end_date": farmer.subscription_end_date,
-                "remaining_days": farmer.remaining_days,
-                "amounts": farmer.amounts,
-                "status": farmer.status,
                 "language": {"default": "en"},
                 "otp": ""
             },
@@ -12103,11 +12275,6 @@ def get_otp(request):
             existing_farmer.name,
             existing_farmer.phone or True,
             existing_farmer.email or True,
-            existing_farmer.country,
-            existing_farmer.state,
-            existing_farmer.city,
-            existing_farmer.taluk,
-            existing_farmer.village,
             existing_farmer.pincode,
         ])
         name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
@@ -12145,37 +12312,6 @@ def get_otp(request):
             "crop": has_my_crop,
             "farmer": {
                 "id": existing_farmer.id,
-                "name": name_to_display,
-                "phone": existing_farmer.phone,
-                "email": existing_farmer.email,
-                "google_login": existing_farmer.google_login if hasattr(existing_farmer, 'google_login') else False,
-                # "country": {"id": existing_farmer.country.id if existing_farmer.country else None,
-                #             "name": existing_farmer.country.name if existing_farmer.country else ""},
-                # "state": {"id": existing_farmer.state.id if existing_farmer.state else None,
-                #           "name": existing_farmer.state.name if existing_farmer.state else ""},
-                # "city": {"id": existing_farmer.city.id if existing_farmer.city else None,
-                #          "name": existing_farmer.city.name if existing_farmer.city else ""},
-                # "taluk": {"id": existing_farmer.taluk.id if existing_farmer.taluk else None,
-                #           "name": existing_farmer.taluk.name if existing_farmer.taluk else ""},
-                # "village": {"id": existing_farmer.village.id if existing_farmer.village else None,
-                #             "name": existing_farmer.village.name if existing_farmer.village else ""},
-                "door_no": existing_farmer.door_no,
-                "pincode": existing_farmer.pincode,
-                "description": existing_farmer.description,
-                "img": existing_farmer.img.url if existing_farmer.img else None,
-                "company_name": existing_farmer.company_name,
-                "tax_no": existing_farmer.tax_no,
-                "username": existing_farmer.username,
-                "subscription_package": {
-                    "id": existing_farmer.subscription_package.id if existing_farmer.subscription_package else None,
-                    "name": existing_farmer.subscription_package.name if existing_farmer.subscription_package else ""
-                },
-                "subscription_start_date": existing_farmer.subscription_start_date,
-                "subscription_end_date": existing_farmer.subscription_end_date,
-                "remaining_days": existing_farmer.remaining_days,
-                "amounts": existing_farmer.amounts,
-                "status": existing_farmer.status,
-                "language": {"default": "en"},
                 "otp": otp_value
             },
             "otp_sent": otp_sent
@@ -12226,36 +12362,6 @@ def get_otp(request):
         "has_my_crop": False,
         "farmer": {
             "id": farmer.id,
-            "name": farmer.name,
-            "phone": farmer.phone,
-            "email": farmer.email,
-            "google_login": False,
-            # "country": {"id": farmer.country.id if farmer.country else None,
-            #             "name": farmer.country.name if farmer.country else ""},
-            # "state": {"id": farmer.state.id if farmer.state else None,
-            #           "name": farmer.state.name if farmer.state else ""},
-            # "city": {"id": farmer.city.id if farmer.city else None,
-            #          "name": farmer.city.name if farmer.city else ""},
-            # "taluk": {"id": farmer.taluk.id if farmer.taluk else None,
-            #           "name": farmer.taluk.name if farmer.taluk else ""},
-            # "village": {"id": farmer.village.id if farmer.village else None,
-            #             "name": farmer.village.name if farmer.village else ""},
-            "door_no": farmer.door_no,
-            "pincode": farmer.pincode,
-            "description": farmer.description,
-            "img": farmer.img.url if farmer.img else "",
-            "company_name": farmer.company_name,
-            "tax_no": farmer.tax_no,
-            "username": farmer.username,
-            "subscription_package": {
-                "id": farmer.subscription_package.id if farmer.subscription_package else None,
-                "name": farmer.subscription_package.name if farmer.subscription_package else ""
-            },
-            "subscription_start_date": farmer.subscription_start_date,
-            "subscription_end_date": farmer.subscription_end_date,
-            "remaining_days": farmer.remaining_days,
-            "amounts": farmer.amounts,
-            "status": farmer.status,
             "language": {"default": "en"},
             "otp": otp_value
         },
@@ -18948,107 +19054,314 @@ def helpdesk_list(request):
 #         status=status.HTTP_400_BAD_REQUEST
 #     )
 
+# old 15-09-2025
+# @api_view(['POST'])
+# def add_vehicle(request, farmer_id):
+#     # Fetch the farmer instance based on the farmer_id
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+
+#     # Create a mutable copy of the data to ensure we can modify it
+#     mutable_data = request.data.copy()
+
+#     # Required fields
+#     required_fields = [
+#         'date_of_consumption', 'inventory_type', 'inventory_category', 'inventory_items',
+#         'vendor', 'register_number', 'owner_name', 'running_kilometer', 'purchase_amount', 'paid_amount'
+#     ]
+
+#     # Check for missing required fields
+#     missing_fields = [field for field in required_fields if field not in mutable_data or mutable_data[field] is None]
+#     if missing_fields:
+#         return Response({
+#             "success": False,
+#             "message": f"Missing required fields: {', '.join(missing_fields)}"
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Check for missing insurance fields if insurance is enabled
+#     if mutable_data.get('insurance', False):
+#         insurance_required_fields = ['company_name', 'insurance_no', 'insurance_amount', 'insurance_start_date', 'insurance_end_date', 'insurance_renewal_date']
+#         missing_insurance_fields = [field for field in insurance_required_fields if field not in mutable_data or mutable_data[field] is None]
+#         if missing_insurance_fields:
+#             return Response({
+#                 "success": False,
+#                 "message": f"Missing insurance fields: {', '.join(missing_insurance_fields)}"
+#             }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Handle the case where the fields are provided in the request data (whether required or optional)
+#     for field in mutable_data:
+#         if mutable_data[field] is None:
+#             mutable_data[field] = ""  # Replace None with empty string
+
+#     # Add the farmer, created_at, and created_by fields
+#     mutable_data['farmer'] = farmer.id
+#     mutable_data['created_at'] = timezone.now()
+#     mutable_data['created_by'] = farmer.farmer_user.id
+
+#     # Initialize the serializer with the mutable data
+#     serializer = MyVehicleAddSerializer(data=mutable_data)
+
+#     # Validate the serializer
+#     if serializer.is_valid():
+#         # Save the vehicle record (the vehicle instance is created here)
+#         vehicle_instance = serializer.save(farmer=farmer)
+
+#         # Handle the inventory_type and related inventory_item
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = mutable_data.get("inventory_items")
+
+#         if inventory_type_id and new_inventory_item_id:
+#             # Retrieve the new inventory item, which should have status=0 (active)
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             # Retrieve the last created MyVehicle entry with the same inventory_type and set previous inventory items to inactive
+#             last_inventory_item = MyVehicle.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=vehicle_instance.inventory_type,
+#                 inventory_items__status=0
+#             ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
+
+#             if last_inventory_item:
+#                 # Update the status of the previous inventory item to 1 (inactive)
+#                 MyVehicle.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=vehicle_instance.inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             # Set the new inventory item to the vehicle instance
+#             vehicle_instance.inventory_items = new_inventory_item
+
+#             # Save the updated vehicle instance
+#             vehicle_instance.save()
+
+#         # Handle documents uploaded with vehicles (optional)
+#         file_data = request.data.get('documents', None)  # Get the documents if provided
+#         if file_data:
+#             grouped_documents = {}
+
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response({
+#                         "success": False,
+#                         "message": f"No documents provided for file type {file_type_id}."
+#                     }, status=status.HTTP_400_BAD_REQUEST)
+
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": "New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+#                     file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)
+
+#                 else:
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)
+#                             if mime_type:
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+
+#                                 # Check file size (10MB max)
+#                                 max_file_size = 10 * 1024 * 1024  # 10MB
+#                                 if len(document_bytes) > max_file_size:
+#                                     return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 document_name = f"vehicle_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 vehicle_document_instance = MyVehicleDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     vehicle=vehicle_instance,
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 document_data = {
+#                                     'document_id': vehicle_document_instance.id,
+#                                     'document_category': {'id': file_type.id, 'name': file_type.name},
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {'default': 'en'}
+#                                 }
+
+#                                 grouped_documents[file_type_id].append(document_data)
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Format and return documents data
+#             formatted_documents = []
+#             for file_type_id, documents in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': documents
+#                 })
+#         else:
+#             formatted_documents = []
+
+#         # Handle optional fields if provided
+#         vehicle_instance.running_kilometer = mutable_data.get("running_kilometer", vehicle_instance.running_kilometer)
+#         vehicle_instance.service_frequency = mutable_data.get("service_frequency", vehicle_instance.service_frequency)
+#         vehicle_instance.service_frequency_unit = mutable_data.get("service_frequency_unit", vehicle_instance.service_frequency_unit)
+#         vehicle_instance.fuel_capacity = mutable_data.get("fuel_capacity", vehicle_instance.fuel_capacity)
+#         vehicle_instance.average_mileage = mutable_data.get("average_mileage", vehicle_instance.average_mileage)
+#         vehicle_instance.purchase_amount = mutable_data.get("purchase_amount", vehicle_instance.purchase_amount)
+#         vehicle_instance.insurance = mutable_data.get("insurance", vehicle_instance.insurance)
+#         vehicle_instance.company_name = mutable_data.get("company_name", vehicle_instance.company_name)
+#         vehicle_instance.insurance_no = mutable_data.get("insurance_no", vehicle_instance.insurance_no)
+#         vehicle_instance.insurance_amount = mutable_data.get("insurance_amount", vehicle_instance.insurance_amount)
+#         vehicle_instance.insurance_start_date = mutable_data.get("insurance_start_date", vehicle_instance.insurance_start_date)
+#         vehicle_instance.insurance_end_date = mutable_data.get("insurance_end_date", vehicle_instance.insurance_end_date)
+#         vehicle_instance.insurance_renewal_date = mutable_data.get("insurance_renewal_date", vehicle_instance.insurance_renewal_date)
+#         vehicle_instance.description = mutable_data.get("description", vehicle_instance.description)
+
+#         # Save the updated vehicle instance
+#         vehicle_instance.save()
+
+#         # Create Outstanding record based on purchase and paid amount
+#         purchase_amount = float(mutable_data.get('purchase_amount', 0))
+#         paid_amount = float(mutable_data.get('paid_amount', 0))
+
+#         balance = 0
+#         to_pay = 0
+#         to_receive = 0
+#         total_received = 0
+#         received_date = None
+ 
+#         if paid_amount < purchase_amount:
+#             balance = purchase_amount - paid_amount
+#             to_receive = balance
+#             total_received = paid_amount
+#             received_date = timezone.now() if paid_amount > 0 else None
+#         elif paid_amount > purchase_amount:
+#             balance = paid_amount - purchase_amount
+#             to_pay = balance
+#             total_received = paid_amount
+#             received_date = timezone.now()
+#         else:
+#             total_received = paid_amount
+#             received_date = timezone.now()
+
+#         # Create outstanding record
+#         Outstanding.objects.create(
+#             farmer=farmer,
+#             vendor=vehicle_instance.vendor,
+#             vehicle_purchase=vehicle_instance,
+#             balance=balance,
+#             to_pay=to_pay,
+#             to_receive=to_receive,
+#             paid_date=received_date,
+#             total_paid=total_received,
+#             received_date=received_date,
+#             total_received=total_received,
+#             payment_amount=paid_amount,
+#             created_by=farmer.farmer_user,
+#             created_at=timezone.now(),
+#             status=0
+#         )
+
+#         # Return the response with the vehicle and document details
+#         return Response({
+#             "success": True,
+#             "message": "Vehicle added successfully!",
+#             "data": serializer.data,
+#             "documents": formatted_documents,
+#             "language": {"default": "en"}
+#         }, status=status.HTTP_201_CREATED)
+
+#     # If serializer is invalid, return errors
+#     return Response({
+#         "success": False,
+#         "message": "Failed to add vehicle. Please check the input data.",
+#         "errors": serializer.errors
+#     }, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def add_vehicle(request, farmer_id):
-    # Fetch the farmer instance based on the farmer_id
     farmer = get_object_or_404(Farmer, id=farmer_id)
+    data = request.data.copy()
+    # user = farmer.farmer_user   # logged-in user
 
-    # Create a mutable copy of the data to ensure we can modify it
-    mutable_data = request.data.copy()
+    # --- If vehicle_id provided, reset previous vehicle and update outstanding ---
+    vehicle_id = data.get('vehicle_id')
+    if vehicle_id:
+        vehicle = get_object_or_404(MyVehicle, pk=vehicle_id)
+        vehicle.status = 0
+        vehicle.save()
 
-    # Required fields
+        # If you have an inventory related to vehicle, reset its status as well
+        try:
+            inv = MyInventory.objects.get(vehicle_purchase=vehicle)
+            inv.status = 0
+            inv.save()
+        except MyInventory.DoesNotExist:
+            pass  # No inventory linked, skip
+
+        # Optional: Create notification about vehicle reset/update
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='Vehicle Updated',
+            message=f'Vehicle {vehicle.registration_number} reset and updated.',
+            type='Vehicle'
+        )
+
+    # --- Validate required fields ---
     required_fields = [
-        'date_of_consumption', 'inventory_type', 'inventory_category', 'inventory_items',
-        'vendor', 'register_number', 'owner_name', 'running_kilometer', 'purchase_amount', 'paid_amount'
+      'vehicle_name', 'vendor', 'purchase_amount', 'paid_amount',
+        'purchase_date', 'registration_number'
     ]
-
-    # Check for missing required fields
-    missing_fields = [field for field in required_fields if field not in mutable_data or mutable_data[field] is None]
+    missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
         return Response({
             "success": False,
             "message": f"Missing required fields: {', '.join(missing_fields)}"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Check for missing insurance fields if insurance is enabled
-    if mutable_data.get('insurance', False):
-        insurance_required_fields = ['company_name', 'insurance_no', 'insurance_amount', 'insurance_start_date', 'insurance_end_date', 'insurance_renewal_date']
-        missing_insurance_fields = [field for field in insurance_required_fields if field not in mutable_data or mutable_data[field] is None]
-        if missing_insurance_fields:
-            return Response({
-                "success": False,
-                "message": f"Missing insurance fields: {', '.join(missing_insurance_fields)}"
-            }, status=status.HTTP_400_BAD_REQUEST)
+    # --- Validate vendor exists ---
+    vendor_id = data.get('vendor')
+    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    # Handle the case where the fields are provided in the request data (whether required or optional)
-    for field in mutable_data:
-        if mutable_data[field] is None:
-            mutable_data[field] = ""  # Replace None with empty string
+    # --- Prepare data for serializer ---
+    data['farmer'] = farmer.id
+    data['created_at'] = timezone.now()
+    data['created_by'] = farmer.farmer_user.id  # Assuming farmer_user is User instance
 
-    # Add the farmer, created_at, and created_by fields
-    mutable_data['farmer'] = farmer.id
-    mutable_data['created_at'] = timezone.now()
-    mutable_data['created_by'] = farmer.farmer_user.id
-
-    # Initialize the serializer with the mutable data
-    serializer = MyVehicleAddSerializer(data=mutable_data)
-
-    # Validate the serializer
+    serializer = MyVehicleAddSerializer(data=data)
     if serializer.is_valid():
-        # Save the vehicle record (the vehicle instance is created here)
-        vehicle_instance = serializer.save(farmer=farmer)
+        vehicle_instance = serializer.save()
 
-        # Handle the inventory_type and related inventory_item
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = mutable_data.get("inventory_items")
-
-        if inventory_type_id and new_inventory_item_id:
-            # Retrieve the new inventory item, which should have status=0 (active)
-            new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
-
-            # Retrieve the last created MyVehicle entry with the same inventory_type and set previous inventory items to inactive
-            last_inventory_item = MyVehicle.objects.filter(
-                farmer = farmer,
-                inventory_type=vehicle_instance.inventory_type,
-                inventory_items__status=0
-            ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
-
-            if last_inventory_item:
-                # Update the status of the previous inventory item to 1 (inactive)
-                MyVehicle.objects.filter(
-                    farmer = farmer,
-                    inventory_type=vehicle_instance.inventory_type,
-                    inventory_items=last_inventory_item.inventory_items
-                ).update(status=1)
-
-            # Set the new inventory item to the vehicle instance
-            vehicle_instance.inventory_items = new_inventory_item
-
-            # Save the updated vehicle instance
-            vehicle_instance.save()
-
-        # Handle documents uploaded with vehicles (optional)
-        file_data = request.data.get('documents', None)  # Get the documents if provided
+        # --- Documents handling (like add_fuel) ---
+        file_data = request.data.get('documents', None)
+        formatted_documents = []
         if file_data:
             grouped_documents = {}
-
             for doc_data in file_data:
                 file_type_id = doc_data.get('file_type')
                 documents = doc_data.get('documents', [])
 
                 if not documents:
-                    return Response({
-                        "success": False,
-                        "message": f"No documents provided for file type {file_type_id}."
-                    }, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
 
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": "New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
-                    
-                    file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)
-
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+                    file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)  # Assuming doctype 2 for vehicle docs
+                    file_type_id = file_type.id
                 else:
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
@@ -19062,16 +19375,14 @@ def add_vehicle(request, farmer_id):
                             if mime_type:
                                 document_data = document_base64.split(';base64,')[1]
                                 document_bytes = base64.b64decode(document_data)
+                                if len(document_bytes) > 10 * 1024 * 1024:
+                                    return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                # Check file size (10MB max)
-                                max_file_size = 10 * 1024 * 1024  # 10MB
-                                if len(document_bytes) > max_file_size:
-                                    return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
-
-                                document_name = f"vehicle_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"vehicle_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
-                                vehicle_document_instance = MyVehicleDocuments.objects.create(
+                                vehicle_doc = MyVehicleDocuments.objects.create(
                                     farmer=farmer,
                                     vehicle=vehicle_instance,
                                     file_type=file_type,
@@ -19080,94 +19391,45 @@ def add_vehicle(request, farmer_id):
                                     created_by=farmer.farmer_user
                                 )
 
-                                document_data = {
-                                    'document_id': vehicle_document_instance.id,
+                                grouped_documents[file_type_id].append({
+                                    'document_id': vehicle_doc.id,
                                     'document_category': {'id': file_type.id, 'name': file_type.name},
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
-                                    'language': {'default': 'en'}
-                                }
-
-                                grouped_documents[file_type_id].append(document_data)
+                                    'upload_document': request.build_absolute_uri(vehicle_doc.document.url),
+                                    'language': {"default": "en"}
+                                })
                             else:
-                                return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
                         else:
-                            return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
-
+                            return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
                     except Exception as e:
-                        return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Format and return documents data
-            formatted_documents = []
-            for file_type_id, documents in grouped_documents.items():
+            for file_type_id_key, docs in grouped_documents.items():
                 formatted_documents.append({
-                    'category_id': file_type_id,
-                    'documents': documents
+                    'category_id': file_type_id_key,
+                    'documents': docs
                 })
-        else:
-            formatted_documents = []
 
-        # Handle optional fields if provided
-        vehicle_instance.running_kilometer = mutable_data.get("running_kilometer", vehicle_instance.running_kilometer)
-        vehicle_instance.service_frequency = mutable_data.get("service_frequency", vehicle_instance.service_frequency)
-        vehicle_instance.service_frequency_unit = mutable_data.get("service_frequency_unit", vehicle_instance.service_frequency_unit)
-        vehicle_instance.fuel_capacity = mutable_data.get("fuel_capacity", vehicle_instance.fuel_capacity)
-        vehicle_instance.average_mileage = mutable_data.get("average_mileage", vehicle_instance.average_mileage)
-        vehicle_instance.purchase_amount = mutable_data.get("purchase_amount", vehicle_instance.purchase_amount)
-        vehicle_instance.insurance = mutable_data.get("insurance", vehicle_instance.insurance)
-        vehicle_instance.company_name = mutable_data.get("company_name", vehicle_instance.company_name)
-        vehicle_instance.insurance_no = mutable_data.get("insurance_no", vehicle_instance.insurance_no)
-        vehicle_instance.insurance_amount = mutable_data.get("insurance_amount", vehicle_instance.insurance_amount)
-        vehicle_instance.insurance_start_date = mutable_data.get("insurance_start_date", vehicle_instance.insurance_start_date)
-        vehicle_instance.insurance_end_date = mutable_data.get("insurance_end_date", vehicle_instance.insurance_end_date)
-        vehicle_instance.insurance_renewal_date = mutable_data.get("insurance_renewal_date", vehicle_instance.insurance_renewal_date)
-        vehicle_instance.description = mutable_data.get("description", vehicle_instance.description)
-
-        # Save the updated vehicle instance
+        # --- Optional fields update ---
+        optional_fields = [
+            "running_kilometer", "service_frequency", "service_frequency_unit", "fuel_capacity",
+            "average_mileage", "insurance", "company_name", "insurance_no", "insurance_amount",
+            "insurance_start_date", "insurance_end_date", "insurance_renewal_date", "description"
+        ]
+        for field in optional_fields:
+            if field in data:
+                setattr(vehicle_instance, field, data[field])
         vehicle_instance.save()
 
-        # Create Outstanding record based on purchase and paid amount
-        purchase_amount = float(mutable_data.get('purchase_amount', 0))
-        paid_amount = float(mutable_data.get('paid_amount', 0))
-
-        balance = 0
-        to_pay = 0
-        to_receive = 0
-        total_received = 0
-        received_date = None
-
-        if paid_amount < purchase_amount:
-            balance = purchase_amount - paid_amount
-            to_receive = balance
-            total_received = paid_amount
-            received_date = timezone.now() if paid_amount > 0 else None
-        elif paid_amount > purchase_amount:
-            balance = paid_amount - purchase_amount
-            to_pay = balance
-            total_received = paid_amount
-            received_date = timezone.now()
-        else:
-            total_received = paid_amount
-            received_date = timezone.now()
-
-        # Create outstanding record
-        Outstanding.objects.create(
+    
+        # Optional notification
+        FarmerNotification.objects.create(
             farmer=farmer,
-            vendor=vehicle_instance.vendor,
-            vehicle_purchase=vehicle_instance,
-            balance=balance,
-            to_pay=to_pay,
-            to_receive=to_receive,
-            paid_date=received_date,
-            total_paid=total_received,
-            received_date=received_date,
-            total_received=total_received,
-            payment_amount=paid_amount,
-            created_by=farmer.farmer_user,
-            created_at=timezone.now(),
-            status=0
+            name='New Vehicle Added',
+            message=f'Vehicle {vehicle_instance.registration_number} added successfully.',
+            type='Vehicle'
         )
 
-        # Return the response with the vehicle and document details
         return Response({
             "success": True,
             "message": "Vehicle added successfully!",
@@ -19176,10 +19438,9 @@ def add_vehicle(request, farmer_id):
             "language": {"default": "en"}
         }, status=status.HTTP_201_CREATED)
 
-    # If serializer is invalid, return errors
     return Response({
         "success": False,
-        "message": "Failed to add vehicle. Please check the input data.",
+        "message": "Validation failed.",
         "errors": serializer.errors
     }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -19376,54 +19637,240 @@ def add_vehicle(request, farmer_id):
 #         status=status.HTTP_400_BAD_REQUEST
 #     )
 
+#old 15-09-2025
+# @api_view(['POST'])
+# def add_machinery(request, farmer_id):
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+#     mutable_data = request.data.copy()
+
+#     # ---------------- Required Fields Validation ---------------- #
+#     required_fields = ['date_of_consumption', 'inventory_type', 'inventory_category',
+#                        'inventory_items', 'vendor', 'purchase_amount', 'paid_amount']
+
+#     missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+#     if missing_fields:
+#         return Response({
+#             "success": False,
+#             "message": f"Missing required fields: {', '.join(missing_fields)}"
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Conditional requirement for fuel_capacity
+#     machinery_type = int(mutable_data.get('machinery_type', -1))
+#     if machinery_type == 0 and not mutable_data.get('fuel_capacity'):
+#         return Response({
+#             "success": False,
+#             "message": "fuel_capacity is required for machinery_type = 0"
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # ---------------- Prepare Data ---------------- #
+#     if isinstance(mutable_data, list):
+#         for machinery_data in mutable_data:
+#             for field in machinery_data:
+#                 if machinery_data[field] is None:
+#                     machinery_data[field] = ""
+#             machinery_data['farmer'] = farmer.id
+#             machinery_data['created_at'] = timezone.now()
+#             machinery_data['created_by'] = farmer.farmer_user.id
+#     else:
+#         for field in mutable_data:
+#             if mutable_data[field] is None:
+#                 mutable_data[field] = ""
+#         mutable_data['farmer'] = farmer.id
+#         mutable_data['created_at'] = timezone.now()
+#         mutable_data['created_by'] = farmer.farmer_user.id
+
+#     # ---------------- Serializer ---------------- #
+#     serializer = MyMachineryAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+#     if serializer.is_valid():
+#         machinery_instance = serializer.save(farmer=farmer)
+
+#         # ---------------- Optional Document Uploads ---------------- #
+#         file_data = request.data.get('documents', None)
+#         if file_data:
+#             grouped_documents = {}
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response({"success": False, "message": f"No documents provided for file type {file_type_id}."},
+#                                     status=status.HTTP_400_BAD_REQUEST)
+
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+#                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)
+#                 else:
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)
+#                             if mime_type:
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+
+#                                 if len(document_bytes) > 10 * 1024 * 1024:
+#                                     return Response({'error': 'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 document_name = f"machinery_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 machinery_document_instance = MyMachineryDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     document=document_file,
+#                                     machinary=machinery_instance,
+#                                     file_type=file_type,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 document_info = {
+#                                     'document_id': machinery_document_instance.id,
+#                                     'document_category': {'id': file_type.id, 'name': file_type.name},
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {'default': 'en'}
+#                                 }
+
+#                                 grouped_documents[file_type_id].append(document_info)
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             formatted_documents = [{'category_id': file_type_id, 'documents': docs} for file_type_id, docs in grouped_documents.items()]
+#         else:
+#             formatted_documents = []
+
+#         # ---------------- Inventory Item Management ---------------- #
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = request.data.get("inventory_items")
+
+#         if inventory_type_id and new_inventory_item_id:
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             last_inventory_item = MyMachinery.objects.filter(
+#                 inventory_type=machinery_instance.inventory_type,
+#                 inventory_items__status=0
+#             ).latest('created_at')
+
+#             if last_inventory_item:
+#                 MyMachinery.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=machinery_instance.inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             machinery_instance.inventory_items = new_inventory_item
+
+#             # Recalculate available quantity
+#             total_quantity = MyMachinery.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total_quantity=Sum('fuel_capacity'))['total_quantity'] or 0
+
+#             machinery_instance.available_quans = total_quantity
+
+#         # ---------------- Optional Fields ---------------- #
+#         machinery_instance.fuel_capacity = request.data.get("fuel_capacity", machinery_instance.fuel_capacity)
+#         machinery_instance.purchase_amount = request.data.get("purchase_amount", machinery_instance.purchase_amount)
+#         machinery_instance.description = request.data.get("description", machinery_instance.description)
+#         machinery_instance.warranty_start_date = request.data.get("warranty_start_date", None)
+#         machinery_instance.warranty_end_date = request.data.get("warranty_end_date", None)
+
+#         # Save final instance
+#         machinery_instance.save()
+
+#         return Response({
+#             "success": True,
+#             "message": "Machinery added successfully!",
+#             "data": serializer.data,
+#             "documents": formatted_documents,
+#             "language": {"default": "en"}
+#         }, status=status.HTTP_201_CREATED)
+
+#     return Response({
+#         "success": False,
+#         "message": "Failed to add machinery. Please check the input data.",
+#         "errors": serializer.errors
+#     }, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def add_machinery(request, farmer_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
-    mutable_data = request.data.copy()
+    data = request.data.copy()
+    user = request.user  # logged-in user
 
-    # ---------------- Required Fields Validation ---------------- #
-    required_fields = ['date_of_consumption', 'inventory_type', 'inventory_category',
-                       'inventory_items', 'vendor', 'purchase_amount', 'paid_amount']
+    # --- If machinery_id provided, reset previous machinery and update outstanding ---
+    machinery_id = data.get('machinery_id')
+    if machinery_id:
+        machinery = get_object_or_404(MyMachinery, pk=machinery_id)
+        machinery.status = 0
+        machinery.save()
 
-    missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+        inv = get_object_or_404(MyInventory, machinery_purchase=machinery)
+        inv.status = 0
+        inv.save()
+      
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='New Machinery Purchase Created',
+            message=f'{machinery.inventory_items.name}',
+            type='Machinery'
+        )
+
+    # --- Validate required fields ---
+    required_fields = [
+        'date_of_consumption', 'inventory_type', 'inventory_category',
+        'inventory_items', 'vendor', 'purchase_amount', 'paid_amount'
+    ]
+    missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
         return Response({
             "success": False,
             "message": f"Missing required fields: {', '.join(missing_fields)}"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Conditional requirement for fuel_capacity
-    machinery_type = int(mutable_data.get('machinery_type', -1))
-    if machinery_type == 0 and not mutable_data.get('fuel_capacity'):
+    # Conditional requirement for fuel_capacity if machinery_type == 0
+    machinery_type = int(data.get('machinery_type', -1))
+    if machinery_type == 0 and not data.get('fuel_capacity'):
         return Response({
             "success": False,
             "message": "fuel_capacity is required for machinery_type = 0"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # ---------------- Prepare Data ---------------- #
-    if isinstance(mutable_data, list):
-        for machinery_data in mutable_data:
-            for field in machinery_data:
-                if machinery_data[field] is None:
-                    machinery_data[field] = ""
-            machinery_data['farmer'] = farmer.id
-            machinery_data['created_at'] = timezone.now()
-            machinery_data['created_by'] = farmer.farmer_user.id
-    else:
-        for field in mutable_data:
-            if mutable_data[field] is None:
-                mutable_data[field] = ""
-        mutable_data['farmer'] = farmer.id
-        mutable_data['created_at'] = timezone.now()
-        mutable_data['created_by'] = farmer.farmer_user.id
+    # --- Validate vendor and inventory_type relationship ---
+    vendor_id = data.get('vendor')
+    inventory_type_id = data.get('inventory_type')
+    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    # ---------------- Serializer ---------------- #
-    serializer = MyMachineryAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+        return Response({
+            "success": False,
+            "message": "This vendor is not associated with the selected inventory type."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # --- Prepare metadata for serializer ---
+    data['farmer'] = farmer.id
+    data['created_at'] = timezone.now()
+    data['created_by'] = farmer.farmer_user.id
+
+    serializer = MyMachineryAddSerializer(data=data)
     if serializer.is_valid():
-        machinery_instance = serializer.save(farmer=farmer)
+        machinery_instance = serializer.save()
 
-        # ---------------- Optional Document Uploads ---------------- #
+        # --- Optional Documents Handling ---
         file_data = request.data.get('documents', None)
+        formatted_documents = []
         if file_data:
             grouped_documents = {}
             for doc_data in file_data:
@@ -19431,14 +19878,14 @@ def add_machinery(request, farmer_id):
                 documents = doc_data.get('documents', [])
 
                 if not documents:
-                    return Response({"success": False, "message": f"No documents provided for file type {file_type_id}."},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                    return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
 
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)
+                    file_type_id = file_type.id
                 else:
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
@@ -19452,81 +19899,167 @@ def add_machinery(request, farmer_id):
                             if mime_type:
                                 document_data = document_base64.split(';base64,')[1]
                                 document_bytes = base64.b64decode(document_data)
-
                                 if len(document_bytes) > 10 * 1024 * 1024:
-                                    return Response({'error': 'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+                                    return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                document_name = f"machinery_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"machinery_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
-                                machinery_document_instance = MyMachineryDocuments.objects.create(
+                                machinery_doc = MyMachineryDocuments.objects.create(
                                     farmer=farmer,
-                                    document=document_file,
                                     machinary=machinery_instance,
                                     file_type=file_type,
+                                    document=document_file,
                                     created_at=timezone.now(),
                                     created_by=farmer.farmer_user
                                 )
 
-                                document_info = {
-                                    'document_id': machinery_document_instance.id,
+                                grouped_documents[file_type_id].append({
+                                    'document_id': machinery_doc.id,
                                     'document_category': {'id': file_type.id, 'name': file_type.name},
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
-                                    'language': {'default': 'en'}
-                                }
-
-                                grouped_documents[file_type_id].append(document_info)
+                                    'upload_document': request.build_absolute_uri(machinery_doc.document.url),
+                                    'language': {"default": "en"}
+                                })
                             else:
-                                return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
                         else:
-                            return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
-
+                            return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
                     except Exception as e:
-                        return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            formatted_documents = [{'category_id': file_type_id, 'documents': docs} for file_type_id, docs in grouped_documents.items()]
-        else:
-            formatted_documents = []
+            for file_type_id_key, docs in grouped_documents.items():
+                formatted_documents.append({
+                    'category_id': file_type_id_key,
+                    'documents': docs
+                })
 
-        # ---------------- Inventory Item Management ---------------- #
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = request.data.get("inventory_items")
-
+        # --- Inventory logic ---
+        new_inventory_item_id = data.get("inventory_items")
         if inventory_type_id and new_inventory_item_id:
             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
 
-            last_inventory_item = MyMachinery.objects.filter(
-                inventory_type=machinery_instance.inventory_type,
-                inventory_items__status=0
-            ).latest('created_at')
-
-            if last_inventory_item:
-                MyMachinery.objects.filter(
-                    farmer = farmer,
+            try:
+                last_item = MyMachinery.objects.filter(
+                    farmer=farmer,
                     inventory_type=machinery_instance.inventory_type,
-                    inventory_items=last_inventory_item.inventory_items
+                    inventory_items__status=0
+                ).latest('created_at')
+                # Mark last machinery's inventory_items status to 1 (inactive)
+                MyMachinery.objects.filter(
+                    farmer=farmer,
+                    inventory_type=machinery_instance.inventory_type,
+                    inventory_items=last_item.inventory_items
                 ).update(status=1)
+            except MyMachinery.DoesNotExist:
+                pass  # No previous machinery found
 
             machinery_instance.inventory_items = new_inventory_item
 
-            # Recalculate available quantity
-            total_quantity = MyMachinery.objects.filter(
-                farmer = farmer,
+            # Calculate total fuel_capacity for this inventory item & type for this farmer
+            total_fuel_capacity = MyMachinery.objects.filter(
+                farmer=farmer,
                 inventory_type=inventory_type_id,
                 inventory_items=new_inventory_item
-            ).aggregate(total_quantity=Sum('fuel_capacity'))['total_quantity'] or 0
+            ).aggregate(total=Sum('fuel_capacity'))['total'] or 0
 
-            machinery_instance.available_quans = total_quantity
+            machinery_instance.available_quans = total_fuel_capacity
+            machinery_instance.save()
 
-        # ---------------- Optional Fields ---------------- #
-        machinery_instance.fuel_capacity = request.data.get("fuel_capacity", machinery_instance.fuel_capacity)
-        machinery_instance.purchase_amount = request.data.get("purchase_amount", machinery_instance.purchase_amount)
-        machinery_instance.description = request.data.get("description", machinery_instance.description)
-        machinery_instance.warranty_start_date = request.data.get("warranty_start_date", None)
-        machinery_instance.warranty_end_date = request.data.get("warranty_end_date", None)
+        # --- Vendor Outstanding & Balance Update Logic ---
+        purchase_amount = float(data.get('purchase_amount', 0))
+        paid_amount = float(data.get('paid_amount', 0))
 
-        # Save final instance
-        machinery_instance.save()
+        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
+        current_balance = vendor.opening_balance or 0
+        updated_balance = current_balance + net_change
+
+        if updated_balance > 0:
+            vendor.credit = True
+            vendor.debit = False
+            vendor.opening_balance = updated_balance
+        elif updated_balance < 0:
+            vendor.credit = False
+            vendor.debit = True
+            vendor.opening_balance = abs(updated_balance)
+        else:
+            vendor.credit = False
+            vendor.debit = False
+            vendor.opening_balance = 0
+
+        if net_change < 0:
+            vendor.payables = (vendor.payables or 0) + abs(net_change)
+        elif net_change > 0:
+            vendor.receivables = (vendor.receivables or 0) + net_change
+
+        vendor.save()
+
+        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
+            customer = vendor.customer
+            customer.opening_balance = vendor.opening_balance
+            customer.payables = vendor.payables
+            customer.receivables = vendor.receivables
+            customer.is_credit = vendor.credit
+            customer.save()
+
+        # Create Outstanding record
+        now = timezone.now()
+        balance = abs(net_change)
+
+        if net_change < 0:
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                machinery_purchase=machinery_instance,
+                balance=purchase_amount,
+                paid=paid_amount,
+                to_pay=abs(net_change),
+                paid_date=now,
+                total_paid=paid_amount,
+                identify=2,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+        elif net_change > 0:
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                machinery_purchase=machinery_instance,
+                balance=balance,
+                paid=paid_amount,
+                to_receive=net_change,
+                received_date=now,
+                total_received=paid_amount,
+                identify=2,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+        else:
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                machinery_purchase=machinery_instance,
+                balance=0,
+                paid=paid_amount,
+                to_pay=0,
+                paid_date=now,
+                total_paid=paid_amount,
+                received=paid_amount,
+                to_receive=0,
+                received_date=now,
+                total_received=paid_amount,
+                identify=2,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+
+        # Notification
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='New Machinery Purchase Created',
+            message=f'{machinery_instance.inventory_items.name}',
+            type='Machinery'
+        )
 
         return Response({
             "success": True,
@@ -19538,7 +20071,7 @@ def add_machinery(request, farmer_id):
 
     return Response({
         "success": False,
-        "message": "Failed to add machinery. Please check the input data.",
+        "message": "Validation failed.",
         "errors": serializer.errors
     }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -19739,542 +20272,1349 @@ def add_machinery(request, farmer_id):
 #         status=status.HTTP_400_BAD_REQUEST
 #     )
 
+# old 15-09-2025
+# @api_view(['POST'])
+# def add_tools(request, farmer_id):
+#     # Fetch the farmer instance based on the farmer_id
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+
+#     # Create a mutable copy of the data to ensure we can modify it
+#     mutable_data = request.data.copy()
+
+#     # Ensure required fields are present
+#     required_fields = ['date_of_consumption', 'inventory_type', 'inventory_category', 'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount']
+#     missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+#     if missing_fields:
+#         return Response(
+#             {"success": False, "message": f"Missing required fields: {', '.join(missing_fields)}."},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     # Handle multiple tools data or a single tool entry
+#     if isinstance(mutable_data, list):
+#         for tool_data in mutable_data:
+#             for field in tool_data:
+#                 if tool_data[field] is None:
+#                     tool_data[field] = ""  # Replace None with empty string
+#             tool_data['farmer'] = farmer.id
+#             tool_data['created_at'] = timezone.now()
+#             tool_data['created_by'] = farmer.farmer_user.id
+#     else:
+#         for field in mutable_data:
+#             if mutable_data[field] is None:
+#                 mutable_data[field] = ""  # Replace None with empty string
+#         mutable_data['farmer'] = farmer.id
+#         mutable_data['created_at'] = timezone.now()
+#         mutable_data['created_by'] = farmer.farmer_user.id
+
+#     # Initialize the serializer with the mutable data
+#     serializer = MyToolsAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+
+#     # Validate the serializer
+#     if serializer.is_valid():
+#         # Save the tool record (the tool instance is created here)
+#         tool_instance = serializer.save(farmer=farmer)
+
+#         # Handle the inventory_type and related inventory_item
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = request.data.get("inventory_items")
+
+#         if inventory_type_id and new_inventory_item_id:
+#             # Retrieve the new inventory item, which should have status=0 (active)
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             # Retrieve the last created MyTools entry with the same inventory_type and set previous inventory items to inactive
+#             last_inventory_item = MyTools.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=tool_instance.inventory_type,
+#                 inventory_items__status=0
+#             ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
+
+#             if last_inventory_item:
+#                 # Update the status of the previous inventory item to 1 (inactive)
+#                 MyTools.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=tool_instance.inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             # Set the new inventory item to the tool instance
+#             tool_instance.inventory_items = new_inventory_item
+
+#             # Recalculate the available quantity for the inventory type
+#             total_quantity = MyTools.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+#             # Update the tool instance with the recalculated available quantity
+#             tool_instance.available_quans = total_quantity
+#             tool_instance.save()
+
+#         # Handle the documents uploaded with tools (optional)
+#         file_data = request.data.get('documents', None)  # Get the documents if provided
+#         if file_data:
+#             # Initialize grouped documents to handle file_type categorization
+#             grouped_documents = {}
+
+#             # Process each document and its corresponding file_type
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response(
+#                         {"success": False, "message": f"No documents provided for file type {file_type_id}."},
+#                         status=status.HTTP_400_BAD_REQUEST
+#                     )
+
+#                 # Check if file_type_id is None and create a new file type if necessary
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+#                     # Create a new file type if not exists
+#                     file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=4)  # Assuming doctype=4 for tools
+                    
+#                 else:
+#                     # Get the existing file type
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 # Process the documents, creating ToolDocument entries
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         # Validate MIME type (only image/jpeg, image/png, and application/pdf)
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)  # Validate the MIME type
+#                             if mime_type:
+#                                 # Extract the base64 data and decode it
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+
+#                                 # Check file size (10MB max)
+#                                 max_file_size = 10 * 1024 * 1024  # 10MB
+#                                 if len(document_bytes) > max_file_size:
+#                                     return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 # Create a document name and ContentFile
+#                                 document_name = f"tool_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 # Create ToolDocument instance and save it
+#                                 tool_document_instance = MyToolsDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     tools=tool_instance,  # Link to the tool instance
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 # Append the document info to the grouped_documents list
+#                                 document_data = {
+#                                     'document_id': tool_document_instance.id,
+#                                     'document_category': {
+#                                         'id': file_type.id,
+#                                         'name': file_type.name
+#                                     },
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {
+#                                         'default': 'en'
+#                                     }
+#                                 }
+
+#                                 grouped_documents[file_type_id].append(document_data)
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Prepare formatted document data for response
+#             formatted_documents = []
+#             for file_type_id, documents in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': documents
+#                 })
+#         else:
+#             formatted_documents = []  # If no documents are provided, return an empty list
+
+#         # Handle Outstanding record creation (like in the pesticide example)
+#         purchase_amount = float(mutable_data.get('purchase_amount', 0))
+#         paid_amount = float(mutable_data.get('paid_amount', 0))
+
+#         balance = 0
+#         paid = 0
+#         to_pay = 0
+#         paid_date = None
+#         total_paid = 0
+#         received = 0
+#         to_receive = 0
+#         received_date = None
+#         total_received = 0
+
+#         if paid_amount < purchase_amount:
+#             balance = purchase_amount - paid_amount
+#             to_receive = balance
+#             total_received = paid_amount
+#             received_date = timezone.now() if paid_amount > 0 else None
+#         elif paid_amount > purchase_amount:
+#             balance = paid_amount - purchase_amount
+#             to_pay = balance
+#             received = paid_amount
+#             total_received = paid_amount
+#             received_date = timezone.now()
+#         else:
+#             total_received = paid_amount
+#             received_date = timezone.now()
+
+#         Outstanding.objects.create(
+#             farmer=farmer,
+#             vendor=tool_instance.vendor,
+#             tool_purchase=tool_instance,
+#             balance=balance,
+#             paid=paid,
+#             to_pay=to_pay,
+#             paid_date=paid_date,
+#             total_paid=total_paid,
+#             received=received,
+#             to_receive=to_receive,
+#             received_date=received_date,
+#             total_received=total_received,
+#             payment_amount=paid_amount,
+#             created_by=farmer.farmer_user,
+#             created_at=timezone.now(),
+#             status=0
+#         )
+
+#         return Response(
+#             {
+#                 "success": True,
+#                 "message": "Tool added successfully!",
+#                 "data": serializer.data,
+#                 "documents": formatted_documents,  # Include the grouped and formatted documents if provided
+#                 "language": {
+#                     "default": "en"
+#                 }
+#             },
+#             status=status.HTTP_201_CREATED
+#         )
+
+#     # If serializer is invalid, return errors
+#     return Response(
+#         {
+#             "success": False,
+#             "message": "Failed to add tool. Please check the provided data.",
+#             "errors": serializer.errors
+#         },
+#         status=status.HTTP_400_BAD_REQUEST
+#     )
+
 @api_view(['POST'])
 def add_tools(request, farmer_id):
-    # Fetch the farmer instance based on the farmer_id
     farmer = get_object_or_404(Farmer, id=farmer_id)
+    data = request.data.copy()
+    user = request.user  # logged-in user
 
-    # Create a mutable copy of the data to ensure we can modify it
-    mutable_data = request.data.copy()
-
-    # Ensure required fields are present
-    required_fields = ['date_of_consumption', 'inventory_type', 'inventory_category', 'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount']
-    missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+    # Validate required fields
+    required_fields = [
+        'date_of_consumption', 'inventory_type',
+        'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+    ]
+    missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
-        return Response(
-            {"success": False, "message": f"Missing required fields: {', '.join(missing_fields)}."},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({
+            "success": False,
+            "message": f"Missing required fields: {', '.join(missing_fields)}"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Handle multiple tools data or a single tool entry
-    if isinstance(mutable_data, list):
-        for tool_data in mutable_data:
-            for field in tool_data:
-                if tool_data[field] is None:
-                    tool_data[field] = ""  # Replace None with empty string
-            tool_data['farmer'] = farmer.id
-            tool_data['created_at'] = timezone.now()
-            tool_data['created_by'] = farmer.farmer_user.id
-    else:
-        for field in mutable_data:
-            if mutable_data[field] is None:
-                mutable_data[field] = ""  # Replace None with empty string
-        mutable_data['farmer'] = farmer.id
-        mutable_data['created_at'] = timezone.now()
-        mutable_data['created_by'] = farmer.farmer_user.id
+    # Validate vendor and inventory_type relationship
+    vendor_id = data.get('vendor')
+    inventory_type_id = data.get('inventory_type')
+    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    # Initialize the serializer with the mutable data
-    serializer = MyToolsAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+        return Response({
+            "success": False,
+            "message": "This vendor is not associated with the selected inventory type."
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Validate the serializer
+    # Add farmer and metadata
+    data['farmer'] = farmer.id
+    data['created_at'] = timezone.now()
+    data['created_by'] = farmer.farmer_user.id
+
+    serializer = MyToolsAddSerializer(data=data)
     if serializer.is_valid():
-        # Save the tool record (the tool instance is created here)
-        tool_instance = serializer.save(farmer=farmer)
+        tool_instance = serializer.save()
 
-        # Handle the inventory_type and related inventory_item
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = request.data.get("inventory_items")
-
+        # Handle inventory_items and update previous inventory status to inactive
+        new_inventory_item_id = data.get("inventory_items")
         if inventory_type_id and new_inventory_item_id:
-            # Retrieve the new inventory item, which should have status=0 (active)
             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
 
-            # Retrieve the last created MyTools entry with the same inventory_type and set previous inventory items to inactive
-            last_inventory_item = MyTools.objects.filter(
-                farmer = farmer,
-                inventory_type=tool_instance.inventory_type,
-                inventory_items__status=0
-            ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
-
-            if last_inventory_item:
-                # Update the status of the previous inventory item to 1 (inactive)
-                MyTools.objects.filter(
-                    farmer = farmer,
+            try:
+                last_tool = MyTools.objects.filter(
+                    farmer=farmer,
                     inventory_type=tool_instance.inventory_type,
-                    inventory_items=last_inventory_item.inventory_items
-                ).update(status=1)
+                    inventory_items__status=0
+                ).latest('created_at')
 
-            # Set the new inventory item to the tool instance
+                # Mark last tool's inventory_items status to inactive
+                MyTools.objects.filter(
+                    farmer=farmer,
+                    inventory_type=tool_instance.inventory_type,
+                    inventory_items=last_tool.inventory_items
+                ).update(status=1)
+            except MyTools.DoesNotExist:
+                pass
+
             tool_instance.inventory_items = new_inventory_item
 
-            # Recalculate the available quantity for the inventory type
+            # Calculate total quantity for this inventory item & type for this farmer
             total_quantity = MyTools.objects.filter(
-                farmer = farmer,
+                farmer=farmer,
                 inventory_type=inventory_type_id,
                 inventory_items=new_inventory_item
-            ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+            ).aggregate(total=Sum('quantity'))['total'] or 0
 
-            # Update the tool instance with the recalculated available quantity
             tool_instance.available_quans = total_quantity
             tool_instance.save()
 
-        # Handle the documents uploaded with tools (optional)
-        file_data = request.data.get('documents', None)  # Get the documents if provided
+        # --- Handle optional documents ---
+        file_data = request.data.get('documents', None)
+        formatted_documents = []
         if file_data:
-            # Initialize grouped documents to handle file_type categorization
             grouped_documents = {}
 
-            # Process each document and its corresponding file_type
             for doc_data in file_data:
                 file_type_id = doc_data.get('file_type')
                 documents = doc_data.get('documents', [])
 
                 if not documents:
-                    return Response(
-                        {"success": False, "message": f"No documents provided for file type {file_type_id}."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+                    return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
 
-                # Check if file_type_id is None and create a new file type if necessary
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
-                    
-                    # Create a new file type if not exists
-                    file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=4)  # Assuming doctype=4 for tools
-                    
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+                    file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=4)  # Assuming doctype=4 for tools
+                    file_type_id = file_type.id
                 else:
-                    # Get the existing file type
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
                 if file_type_id not in grouped_documents:
                     grouped_documents[file_type_id] = []
 
-                # Process the documents, creating ToolDocument entries
                 for i, document_base64 in enumerate(documents):
                     try:
-                        # Validate MIME type (only image/jpeg, image/png, and application/pdf)
                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
-                            mime_type = validate_image_type(document_base64)  # Validate the MIME type
+                            mime_type = validate_image_type(document_base64)
                             if mime_type:
-                                # Extract the base64 data and decode it
                                 document_data = document_base64.split(';base64,')[1]
                                 document_bytes = base64.b64decode(document_data)
 
-                                # Check file size (10MB max)
-                                max_file_size = 10 * 1024 * 1024  # 10MB
-                                if len(document_bytes) > max_file_size:
-                                    return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+                                if len(document_bytes) > 10 * 1024 * 1024:
+                                    return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                # Create a document name and ContentFile
-                                document_name = f"tool_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"tool_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
-                                # Create ToolDocument instance and save it
-                                tool_document_instance = MyToolsDocuments.objects.create(
+                                tool_doc = MyToolsDocuments.objects.create(
                                     farmer=farmer,
-                                    tools=tool_instance,  # Link to the tool instance
+                                    tools=tool_instance,
                                     file_type=file_type,
                                     document=document_file,
                                     created_at=timezone.now(),
                                     created_by=farmer.farmer_user
                                 )
 
-                                # Append the document info to the grouped_documents list
-                                document_data = {
-                                    'document_id': tool_document_instance.id,
-                                    'document_category': {
-                                        'id': file_type.id,
-                                        'name': file_type.name
-                                    },
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
-                                    'language': {
-                                        'default': 'en'
-                                    }
-                                }
-
-                                grouped_documents[file_type_id].append(document_data)
+                                grouped_documents[file_type_id].append({
+                                    'document_id': tool_doc.id,
+                                    'document_category': {'id': file_type.id, 'name': file_type.name},
+                                    'upload_document': request.build_absolute_uri(tool_doc.document.url),
+                                    'language': {"default": "en"}
+                                })
                             else:
-                                return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
                         else:
-                            return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
-
+                            return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
                     except Exception as e:
-                        return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Prepare formatted document data for response
-            formatted_documents = []
-            for file_type_id, documents in grouped_documents.items():
+            for file_type_id_key, docs in grouped_documents.items():
                 formatted_documents.append({
-                    'category_id': file_type_id,
-                    'documents': documents
+                    'category_id': file_type_id_key,
+                    'documents': docs
                 })
-        else:
-            formatted_documents = []  # If no documents are provided, return an empty list
 
-        # Handle Outstanding record creation (like in the pesticide example)
-        purchase_amount = float(mutable_data.get('purchase_amount', 0))
-        paid_amount = float(mutable_data.get('paid_amount', 0))
-
-        balance = 0
-        paid = 0
-        to_pay = 0
-        paid_date = None
-        total_paid = 0
-        received = 0
-        to_receive = 0
-        received_date = None
-        total_received = 0
-
-        if paid_amount < purchase_amount:
-            balance = purchase_amount - paid_amount
-            to_receive = balance
-            total_received = paid_amount
-            received_date = timezone.now() if paid_amount > 0 else None
-        elif paid_amount > purchase_amount:
-            balance = paid_amount - purchase_amount
-            to_pay = balance
-            received = paid_amount
-            total_received = paid_amount
-            received_date = timezone.now()
-        else:
-            total_received = paid_amount
-            received_date = timezone.now()
-
-        Outstanding.objects.create(
+        # Create Farmer notification
+        FarmerNotification.objects.create(
             farmer=farmer,
-            vendor=tool_instance.vendor,
-            tool_purchase=tool_instance,
-            balance=balance,
-            paid=paid,
-            to_pay=to_pay,
-            paid_date=paid_date,
-            total_paid=total_paid,
-            received=received,
-            to_receive=to_receive,
-            received_date=received_date,
-            total_received=total_received,
-            payment_amount=paid_amount,
-            created_by=farmer.farmer_user,
-            created_at=timezone.now(),
-            status=0
+            name='New Tool Purchase Created',
+            message=f'{tool_instance.inventory_items.name}',
+            type='Tool'
         )
 
-        return Response(
-            {
-                "success": True,
-                "message": "Tool added successfully!",
-                "data": serializer.data,
-                "documents": formatted_documents,  # Include the grouped and formatted documents if provided
-                "language": {
-                    "default": "en"
-                }
-            },
-            status=status.HTTP_201_CREATED
-        )
+        return Response({
+            "success": True,
+            "message": "Tool added successfully!",
+            "data": serializer.data,
+            "documents": formatted_documents,
+            "language": {"default": "en"}
+        }, status=status.HTTP_201_CREATED)
 
-    # If serializer is invalid, return errors
-    return Response(
-        {
-            "success": False,
-            "message": "Failed to add tool. Please check the provided data.",
-            "errors": serializer.errors
-        },
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    return Response({
+        "success": False,
+        "message": "Validation failed.",
+        "errors": serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)
 
 
+# old 15-09-2025 
+# @api_view(['POST'])
+# def add_pesticides(request, farmer_id):
+#     # Fetch the farmer instance based on the farmer_id
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+
+#     # Create a mutable copy of the data to ensure we can modify it
+#     mutable_data = request.data.copy()
+
+#     # Ensure required fields are present
+#     required_fields = ['date_of_consumption', 'inventory_type', 'inventory_category', 'inventory_items', 'vendor', 'quantity', 'quantity_unit', 'purchase_amount', 'paid_amount']
+#     missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+#     if missing_fields:
+#         return Response(
+#             {"success": False, "message": f"Missing required fields: {', '.join(missing_fields)}."},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     # Handle multiple pesticides data or a single pesticide entry
+#     if isinstance(mutable_data, list):
+#         for pesticide_data in mutable_data:
+#             for field in pesticide_data:
+#                 if pesticide_data[field] is None:
+#                     pesticide_data[field] = ""  # Replace None with empty string
+#             pesticide_data['farmer'] = farmer.id
+#             pesticide_data['created_at'] = timezone.now()
+#             pesticide_data['created_by'] = farmer.farmer_user.id
+#     else:
+#         for field in mutable_data:
+#             if mutable_data[field] is None:
+#                 mutable_data[field] = ""  # Replace None with empty string
+#         mutable_data['farmer'] = farmer.id
+#         mutable_data['created_at'] = timezone.now()
+#         mutable_data['created_by'] = farmer.farmer_user.id
+
+#     # Initialize the serializer with the mutable data
+#     serializer = MyPesticidesAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+
+#     # Validate the serializer
+#     if serializer.is_valid():
+#         # Save the pesticide record (the pesticide instance is created here)
+#         pesticide_instance = serializer.save(farmer=farmer)
+
+#         # Handle the inventory_type and related inventory_item
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = request.data.get("inventory_items")
+
+#         if inventory_type_id and new_inventory_item_id:
+#             # Retrieve the new inventory item, which should have status=0 (active)
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             # Retrieve the last created MyPesticides entry with the same inventory_type and set previous inventory items to inactive
+#             last_inventory_item = MyPesticides.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=pesticide_instance.inventory_type,
+#                 inventory_items__status=0
+#             ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
+
+#             if last_inventory_item:
+#                 # Update the status of the previous inventory item to 1 (inactive)
+#                 MyPesticides.objects.filter(
+#                     farmer =farmer,
+#                     inventory_type=pesticide_instance.inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             # Set the new inventory item to the pesticide instance
+#             pesticide_instance.inventory_items = new_inventory_item
+
+#             # Recalculate the available quantity for the inventory type
+#             total_quantity = MyPesticides.objects.filter(
+#                 farmer =farmer ,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+#             # Update the pesticide instance with the recalculated available quantity
+#             pesticide_instance.available_quans = total_quantity
+#             pesticide_instance.save()
+
+#         # Handle the documents uploaded with pesticides (optional)
+#         file_data = request.data.get('documents', None)  # Get the documents if provided
+#         if file_data:
+#             # Initialize grouped documents to handle file_type categorization
+#             grouped_documents = {}
+
+#             # Process each document and its corresponding file_type
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response(
+#                         {"success": False, "message": f"No documents provided for file type {file_type_id}."},
+#                         status=status.HTTP_400_BAD_REQUEST
+#                     )
+
+#                 # Check if file_type_id is None and create a new file type if necessary
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+#                     # Create a new file type if not exists
+#                     file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=1)
+                    
+#                 else:
+#                     # Get the existing file type
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 # Process the documents, creating PesticideDocument entries
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         # Validate MIME type (only image/jpeg, image/png, and application/pdf)
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)  # Validate the MIME type
+#                             if mime_type:
+#                                 # Extract the base64 data and decode it
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+
+#                                 # Check file size (10MB max)
+#                                 max_file_size = 10 * 1024 * 1024  # 10MB
+#                                 if len(document_bytes) > max_file_size:
+#                                     return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 # Create a document name and ContentFile
+#                                 document_name = f"pesticide_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 # Create PesticideDocument instance and save it
+#                                 pesticide_document_instance = MyPesticidesDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     pest=pesticide_instance,  # Link to the pesticide instance
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 # Append the document info to the grouped_documents list
+#                                 document_data = {
+#                                     'document_id': pesticide_document_instance.id,
+#                                     'document_category': {
+#                                         'id': file_type.id,
+#                                         'name': file_type.name
+#                                     },
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {
+#                                         'default': 'en'
+#                                     }
+#                                 }
+
+#                                 grouped_documents[file_type_id].append(document_data)
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Prepare formatted document data for response
+#             formatted_documents = []
+#             for file_type_id, documents in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': documents
+#                 })
+#         else:
+#             formatted_documents = []  # If no documents are provided, return an empty list
+
+#         # Handle the inventory_type and related inventory_item
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = request.data.get("inventory_items")
+
+#         if inventory_type_id and new_inventory_item_id:
+#             # Retrieve the new inventory item, which should have status=0 (active)
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             # Retrieve the last created MyPesticides entry with the same inventory_type and set previous inventory items to inactive
+#             last_inventory_item = MyPesticides.objects.filter(
+#                 inventory_type=pesticide_instance.inventory_type,
+#                 inventory_items__status=0
+#             ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
+
+#             if last_inventory_item:
+#                 # Update the status of the previous inventory item to 1 (inactive)
+#                 MyPesticides.objects.filter(
+#                     farmer=farmer,
+#                     inventory_type=pesticide_instance.inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             # Set the new inventory item to the pesticide instance
+#             pesticide_instance.inventory_items = new_inventory_item
+
+#             # Recalculate the available quantity for the inventory type
+#             total_quantity = MyPesticides.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+#             # Update the pesticide instance with the recalculated available quantity
+#             pesticide_instance.available_quans = total_quantity
+#             pesticide_instance.save()
+
+#         pesticide_instance.quantity = request.data.get("quantity", pesticide_instance.quantity)
+#         pesticide_instance.purchase_amount = request.data.get("purchase_amount", pesticide_instance.purchase_amount)
+#         pesticide_instance.description = request.data.get("description", pesticide_instance.description)
+
+#         # Save the updated pesticide record
+#         pesticide_instance.save()
+
+#         # Create Outstanding record
+#         purchase_amount = float(mutable_data.get('purchase_amount', 0))
+#         paid_amount = float(mutable_data.get('paid_amount', 0))
+
+#         balance = 0
+#         paid = 0
+#         to_pay = 0
+#         paid_date = None
+#         total_paid = 0
+#         received = 0
+#         to_receive = 0
+#         received_date = None
+#         total_received = 0
+
+#         if paid_amount < purchase_amount:
+#             balance = purchase_amount - paid_amount
+#             to_receive = balance
+#             total_received = paid_amount
+#             received_date = timezone.now() if paid_amount > 0 else None
+#         elif paid_amount > purchase_amount:
+#             balance = paid_amount - purchase_amount
+#             to_pay = balance
+#             received = paid_amount
+#             total_received = paid_amount
+#             received_date = timezone.now()
+#         else:
+#             total_received = paid_amount
+#             received_date = timezone.now()
+
+#         Outstanding.objects.create(
+#             farmer=farmer,
+#             vendor=pesticide_instance.vendor,
+#             fuel_purchase=None,
+#             pesticide_purchase=pesticide_instance,
+#             balance=balance,
+#             paid=paid,
+#             to_pay=to_pay,
+#             paid_date=paid_date,
+#             total_paid=total_paid,
+#             received=received,
+#             to_receive=to_receive,
+#             received_date=received_date,
+#             total_received=total_received,
+#             payment_amount=paid_amount,
+#             created_by=farmer.farmer_user,
+#             created_at=timezone.now(),
+#             status=0
+#         )
+
+#         return Response(
+#             {
+#                 "success": True,
+#                 "message": "Pesticide added successfully!",
+#                 "data": serializer.data,
+#                 "documents": formatted_documents,  # Include the grouped and formatted documents if provided
+#                 "language": {
+#                     "default": "en"
+#                 }
+#             },
+#             status=status.HTTP_201_CREATED
+#         )
+
+#     # If serializer is invalid, return errors
+#     return Response(
+#         {
+#             "success": False,
+#             "message": "Failed to add pesticide. Please check the provided data.",
+#             "errors": serializer.errors
+#         },
+#         status=status.HTTP_400_BAD_REQUEST
+#     )
  
+# @api_view(['POST'])
+# def add_pesticides(request, farmer_id):
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+#     data = request.data.copy()
+#     user = request.user  # logged-in user
+
+#     # --- If pesticide_id provided, reset previous pesticide and update outstanding ---
+#     pesticide_id = data.get('pesticide_id')
+#     if pesticide_id:
+#         pesticide = get_object_or_404(MyPesticides, pk=pesticide_id)
+#         pesticide.status = 0
+#         pesticide.save()
+
+#         inv = get_object_or_404(MyInventory, pesticide_purchase=pesticide)
+#         inv.status = 0
+#         inv.save()
+
+#         if pesticide.purchase_amount != pesticide.paid_amount:
+#             if pesticide.purchase_amount > pesticide.paid_amount:  # Payables
+#                 outstanding = Outstanding.objects.create(
+#                     farmer=pesticide.farmer,
+#                     vendor=pesticide.vendor,
+#                     pesticide_purchase=pesticide,
+#                     balance=pesticide.purchase_amount,
+#                     paid=pesticide.paid_amount,
+#                     to_pay=float(pesticide.purchase_amount) - float(pesticide.paid_amount),
+#                     paid_date=pesticide.date_of_purchase,
+#                     total_paid=pesticide.paid_amount,
+#                     identify=1,
+#                     created_by=user,
+#                     created_at=timezone.now()
+#                 )
+#                 if float(outstanding.to_pay) > 0:
+#                     vendor = get_object_or_404(MyVendor, pk=outstanding.vendor.id)
+#                     vendor.payables = (float(vendor.payables or 0)) + float(outstanding.to_pay)
+#                     if vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit:
+#                         if float(vendor.opening_balance) > float(outstanding.to_pay):
+#                             vendor.credit = True
+#                             vendor.debit = False
+#                             vendor.opening_balance = float(vendor.opening_balance) - float(outstanding.to_pay)
+#                         else:
+#                             vendor.credit = False
+#                             vendor.debit = True
+#                             vendor.opening_balance = float(outstanding.to_pay) - float(vendor.opening_balance)
+#                     elif vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit == False and vendor.debit:
+#                         vendor.opening_balance = float(vendor.opening_balance) + float(outstanding.to_pay)
+#                         vendor.credit = False
+#                         vendor.debit = True
+#                     else:
+#                         vendor.opening_balance = float(outstanding.to_pay)
+#                         vendor.credit = False
+#                         vendor.debit = True
+#                     vendor.save()
+
+#                     if vendor.is_customer_is_vendor:
+#                         customer = vendor.customer
+#                         customer.opening_balance = vendor.opening_balance
+#                         customer.payables = vendor.payables
+#                         customer.is_credit = vendor.credit
+#                         customer.save()
+
+#             elif pesticide.purchase_amount < pesticide.paid_amount:  # Receivables
+#                 outstanding = Outstanding.objects.create(
+#                     farmer=pesticide.farmer,
+#                     vendor=pesticide.vendor,
+#                     pesticide_purchase=pesticide,
+#                     balance=float(pesticide.paid_amount) - float(pesticide.purchase_amount),
+#                     paid=pesticide.paid_amount,
+#                     to_receive=float(pesticide.paid_amount) - float(pesticide.purchase_amount),
+#                     paid_date=pesticide.date_of_purchase,
+#                     received_date=pesticide.date_of_purchase,
+#                     total_received=pesticide.paid_amount,
+#                     identify=1,
+#                     created_by=user,
+#                     created_at=timezone.now()
+#                 )
+#                 if float(outstanding.to_receive) > 0:
+#                     vendor = get_object_or_404(MyVendor, pk=outstanding.vendor.id)
+#                     vendor.receivables = (float(vendor.receivables or 0)) + float(outstanding.to_receive)
+#                     if vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit:
+#                         vendor.opening_balance = float(vendor.opening_balance) + float(outstanding.to_receive)
+#                         vendor.credit = True
+#                         vendor.debit = False
+#                     elif vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit == False and vendor.debit:
+#                         if float(vendor.opening_balance) > float(outstanding.to_receive):
+#                             vendor.credit = False
+#                             vendor.debit = True
+#                             vendor.opening_balance = float(vendor.opening_balance) - float(outstanding.to_receive)
+#                         else:
+#                             vendor.credit = True
+#                             vendor.debit = False
+#                             vendor.opening_balance = float(outstanding.to_receive) - float(vendor.opening_balance)
+#                     else:
+#                         vendor.opening_balance = float(outstanding.to_receive)
+#                         vendor.credit = True
+#                         vendor.debit = False
+#                     vendor.save()
+
+#                     if vendor.is_customer_is_vendor:
+#                         customer = vendor.customer
+#                         customer.opening_balance = vendor.opening_balance
+#                         customer.receivables = vendor.receivables
+#                         customer.is_credit = vendor.credit
+#                         customer.save()
+
+#         FarmerNotification.objects.create(
+#             farmer=farmer,
+#             name='New Purchase Created',
+#             message=f'{pesticide.inventory_items.name}',
+#             type='Pesticide'
+#         )
+
+#     # --- Validate required fields ---
+#     required_fields = [
+#         'date_of_purchase', 'inventory_type', 'inventory_category',
+#         'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+#     ]
+#     missing_fields = [field for field in required_fields if not data.get(field)]
+#     if missing_fields:
+#         return Response({
+#             "success": False,
+#             "message": f"Missing required fields: {', '.join(missing_fields)}"
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # --- Validate vendor and inventory_type relationship ---
+#     vendor_id = data.get('vendor')
+#     inventory_type_id = data.get('inventory_type')
+#     vendor = get_object_or_404(MyVendor, id=vendor_id)
+
+#     if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+#         return Response({
+#             "success": False,
+#             "message": "This vendor is not associated with the selected inventory type."
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # --- Prepare metadata for serializer ---
+#     data['farmer'] = farmer.id
+#     data['created_at'] = timezone.now()
+#     data['created_by'] = farmer.farmer_user.id  # Assuming farmer_user is the User instance
+
+#     serializer = MyPesticidesAddSerializer(data=data)
+#     if serializer.is_valid():
+#         pesticide_instance = serializer.save()
+
+#         # --- Optional Documents Handling ---
+#         file_data = request.data.get('documents', None)
+#         formatted_documents = []
+#         if file_data:
+#             grouped_documents = {}
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+#                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=1)
+#                     file_type_id = file_type.id
+#                 else:
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)
+#                             if mime_type:
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+#                                 if len(document_bytes) > 10 * 1024 * 1024:
+#                                     return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 ext = mime_type.split('/')[1]
+#                                 document_name = f"pesticide_{farmer_id}_{file_type_id}_{i}.{ext}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 pesticide_doc = MyPesticidesDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     pesticide=pesticide_instance,
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 grouped_documents[file_type_id].append({
+#                                     'document_id': pesticide_doc.id,
+#                                     'document_category': {'id': file_type.id, 'name': file_type.name},
+#                                     'upload_document': request.build_absolute_uri(pesticide_doc.document.url),
+#                                     'language': {"default": "en"}
+#                                 })
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
+#                     except Exception as e:
+#                         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#             for file_type_id_key, docs in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id_key,
+#                     'documents': docs
+#                 })
+
+#         # --- Inventory logic ---
+#         new_inventory_item_id = data.get("inventory_items")
+#         if inventory_type_id and new_inventory_item_id:
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             try:
+#                 last_item = MyPesticides.objects.filter(
+#                     farmer=farmer,
+#                     inventory_type=pesticide_instance.inventory_type,
+#                     inventory_items__status=0
+#                 ).latest('created_at')
+#                 # Mark last pesticide's inventory_items status to 1 (inactive)
+#                 MyPesticidesSerializer.objects.filter(
+#                     farmer=farmer,
+#                     inventory_type=pesticide_instance.inventory_type,
+#                     inventory_items=last_item.inventory_items
+#                 ).update(status=1)
+#             except MyPesticides.DoesNotExist:
+#                 # No previous pesticide found, skip update
+#                 pass
+
+#             pesticide_instance.inventory_items = new_inventory_item
+
+#             # Calculate total quantity for this inventory item & type for this farmer
+#             total_quantity = MyPesticides.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total=Sum('quantity'))['total'] or 0
+
+#             pesticide_instance.available_quans = total_quantity
+#             pesticide_instance.save()
+
+#         # --- Vendor Outstanding & Balance Update Logic ---
+#         purchase_amount = float(data.get('purchase_amount', 0))
+#         paid_amount = float(data.get('paid_amount', 0))
+
+#         net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
+#         current_balance = vendor.opening_balance or 0
+#         updated_balance = current_balance + net_change
+
+#         # Set credit/debit flags and opening_balance accordingly
+#         if updated_balance > 0:
+#             # Vendor owes you money (receivables)
+#             vendor.credit = True
+#             vendor.debit = False
+#             vendor.opening_balance = updated_balance
+#         elif updated_balance < 0:
+#             # You owe vendor money (payables)
+#             vendor.credit = False
+#             vendor.debit = True
+#             vendor.opening_balance = abs(updated_balance)
+#         else:
+#             # No outstanding balance
+#             vendor.credit = False
+#             vendor.debit = False
+#             vendor.opening_balance = 0
+
+#         # Update payables or receivables amounts on vendor accordingly
+#         if net_change < 0:
+#             # You owe vendor money → payables increase
+#             vendor.payables = (vendor.payables or 0) + abs(net_change)
+#         elif net_change > 0:
+#             # Vendor owes you money → receivables increase
+#             vendor.receivables = (vendor.receivables or 0) + net_change
+
+#         vendor.save()
+
+#         # Sync balances to customer if vendor is also a customer
+#         if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
+#             customer = vendor.customer
+#             customer.opening_balance = vendor.opening_balance
+#             customer.payables = vendor.payables
+#             customer.receivables = vendor.receivables
+#             customer.is_credit = vendor.credit
+#             customer.save()
+
+#         # Prepare Outstanding record fields
+#         balance = abs(net_change)
+#         now = timezone.now()
+
+#         # Depending on net_change, set appropriate Outstanding fields
+#         if net_change < 0:
+#             # Payables case (you owe vendor)
+#             to_pay = abs(net_change)
+#             Outstanding.objects.create(
+#                 farmer=farmer,
+#                 vendor=vendor,
+#                 pesticide_purchase=pesticide_instance,
+#                 balance=purchase_amount,
+#                 paid=paid_amount,
+#                 to_pay=to_pay,
+#                 paid_date=now,
+#                 total_paid=paid_amount,
+#                 identify=1,
+#                 created_by=farmer.farmer_user,
+#                 created_at=now
+#             )
+#         elif net_change > 0:
+#             # Receivables case (vendor owes you)
+#             to_receive = net_change
+#             Outstanding.objects.create(
+#                 farmer=farmer,
+#                 vendor=vendor,
+#                 pesticide_purchase=pesticide_instance,
+#                 balance=balance,
+#                 paid=paid_amount,
+#                 to_receive=to_receive,
+#                 received_date=now,
+#                 total_received=paid_amount,
+#                 identify=1,
+#                 created_by=farmer.farmer_user,
+#                 created_at=now
+#             )
+#         else:
+#             # Exact payment, no outstanding balance
+#             Outstanding.objects.create(
+#                 farmer=farmer,
+#                 vendor=vendor,
+#                 pesticide_purchase=pesticide_instance,
+#                 balance=0,
+#                 paid=paid_amount,
+#                 to_pay=0,
+#                 paid_date=now,
+#                 total_paid=paid_amount,
+#                 received=paid_amount,
+#                 to_receive=0,
+#                 received_date=now,
+#                 total_received=paid_amount,
+#                 identify=1,
+#                 created_by=farmer.farmer_user,
+#                 created_at=now
+#             )
+
+#         # Optional: Create Farmer Notification
+#         FarmerNotification.objects.create(
+#             farmer=farmer,
+#             name='New Purchase Created',
+#             message=f'{pesticide_instance.inventory_items.name}',
+#             type='Pesticide'
+#         )
+
+#         return Response({
+#             "success": True,
+#             "message": "Pesticide added successfully!",
+#             "data": serializer.data,
+#             "documents": formatted_documents,
+#             "language": {"default": "en"}
+#         }, status=status.HTTP_201_CREATED)
+
+#     return Response({
+#         "success": False,
+#         "message": "Validation failed.",
+#         "errors": serializer.errors
+#     }, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def add_pesticides(request, farmer_id):
-    # Fetch the farmer instance based on the farmer_id
     farmer = get_object_or_404(Farmer, id=farmer_id)
+    data = request.data.copy()
+    user = request.user  # logged-in user
 
-    # Create a mutable copy of the data to ensure we can modify it
-    mutable_data = request.data.copy()
+    # --- If pesticide_id provided, reset previous pesticide and update outstanding ---
+    pesticide_id = data.get('pesticide_id')
+    if pesticide_id:
+        pesticide = get_object_or_404(MyPesticides, pk=pesticide_id)
+        pesticide.status = 0
+        pesticide.save()
 
-    # Ensure required fields are present
-    required_fields = ['date_of_consumption', 'inventory_type', 'inventory_category', 'inventory_items', 'vendor', 'quantity', 'quantity_unit', 'purchase_amount', 'paid_amount']
-    missing_fields = [field for field in required_fields if not mutable_data.get(field)]
-    if missing_fields:
-        return Response(
-            {"success": False, "message": f"Missing required fields: {', '.join(missing_fields)}."},
-            status=status.HTTP_400_BAD_REQUEST
+        inv = get_object_or_404(MyInventory, pesticide_purchase=pesticide)
+        inv.status = 0
+        inv.save()
+
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='Previous Purchase Reset',
+            message=f'{pesticide.inventory_items.name}',
+            type='Pesticide'
         )
 
-    # Handle multiple pesticides data or a single pesticide entry
-    if isinstance(mutable_data, list):
-        for pesticide_data in mutable_data:
-            for field in pesticide_data:
-                if pesticide_data[field] is None:
-                    pesticide_data[field] = ""  # Replace None with empty string
-            pesticide_data['farmer'] = farmer.id
-            pesticide_data['created_at'] = timezone.now()
-            pesticide_data['created_by'] = farmer.farmer_user.id
-    else:
-        for field in mutable_data:
-            if mutable_data[field] is None:
-                mutable_data[field] = ""  # Replace None with empty string
-        mutable_data['farmer'] = farmer.id
-        mutable_data['created_at'] = timezone.now()
-        mutable_data['created_by'] = farmer.farmer_user.id
+    # --- Validate required fields ---
+    required_fields = [
+        'date_of_purchase', 'inventory_type', 'inventory_category',
+        'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+    ]
+    missing_fields = [field for field in required_fields if not data.get(field)]
+    if missing_fields:
+        return Response({
+            "success": False,
+            "message": f"Missing required fields: {', '.join(missing_fields)}"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Initialize the serializer with the mutable data
-    serializer = MyPesticidesAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+    # --- Validate vendor and inventory_type relationship ---
+    vendor_id = data.get('vendor')
+    inventory_type_id = data.get('inventory_type')
+    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    # Validate the serializer
+    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+        return Response({
+            "success": False,
+            "message": "This vendor is not associated with the selected inventory type."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # --- Prepare metadata for serializer ---
+    data['farmer'] = farmer.id
+    data['created_at'] = timezone.now()
+    data['created_by'] = user.id  # Use logged-in user id, not farmer_user for consistency
+
+    serializer = MyPesticidesAddSerializer(data=data)
     if serializer.is_valid():
-        # Save the pesticide record (the pesticide instance is created here)
-        pesticide_instance = serializer.save(farmer=farmer)
+        pesticide_instance = serializer.save()
 
-        # Handle the inventory_type and related inventory_item
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = request.data.get("inventory_items")
-
-        if inventory_type_id and new_inventory_item_id:
-            # Retrieve the new inventory item, which should have status=0 (active)
-            new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
-
-            # Retrieve the last created MyPesticides entry with the same inventory_type and set previous inventory items to inactive
-            last_inventory_item = MyPesticides.objects.filter(
-                farmer=farmer,
-                inventory_type=pesticide_instance.inventory_type,
-                inventory_items__status=0
-            ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
-
-            if last_inventory_item:
-                # Update the status of the previous inventory item to 1 (inactive)
-                MyPesticides.objects.filter(
-                    farmer =farmer,
-                    inventory_type=pesticide_instance.inventory_type,
-                    inventory_items=last_inventory_item.inventory_items
-                ).update(status=1)
-
-            # Set the new inventory item to the pesticide instance
-            pesticide_instance.inventory_items = new_inventory_item
-
-            # Recalculate the available quantity for the inventory type
-            total_quantity = MyPesticides.objects.filter(
-                farmer =farmer ,
-                inventory_type=inventory_type_id,
-                inventory_items=new_inventory_item
-            ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-
-            # Update the pesticide instance with the recalculated available quantity
-            pesticide_instance.available_quans = total_quantity
-            pesticide_instance.save()
-
-        # Handle the documents uploaded with pesticides (optional)
-        file_data = request.data.get('documents', None)  # Get the documents if provided
+        # --- Optional Documents Handling ---
+        file_data = request.data.get('documents', None)
+        formatted_documents = []
         if file_data:
-            # Initialize grouped documents to handle file_type categorization
             grouped_documents = {}
-
-            # Process each document and its corresponding file_type
             for doc_data in file_data:
                 file_type_id = doc_data.get('file_type')
                 documents = doc_data.get('documents', [])
 
                 if not documents:
-                    return Response(
-                        {"success": False, "message": f"No documents provided for file type {file_type_id}."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+                    return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
 
-                # Check if file_type_id is None and create a new file type if necessary
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
-                    
-                    # Create a new file type if not exists
-                    file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=1)
-                    
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+                    file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=1)
+                    file_type_id = file_type.id
                 else:
-                    # Get the existing file type
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
                 if file_type_id not in grouped_documents:
                     grouped_documents[file_type_id] = []
 
-                # Process the documents, creating PesticideDocument entries
                 for i, document_base64 in enumerate(documents):
                     try:
-                        # Validate MIME type (only image/jpeg, image/png, and application/pdf)
                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
-                            mime_type = validate_image_type(document_base64)  # Validate the MIME type
+                            mime_type = validate_image_type(document_base64)
                             if mime_type:
-                                # Extract the base64 data and decode it
                                 document_data = document_base64.split(';base64,')[1]
                                 document_bytes = base64.b64decode(document_data)
+                                if len(document_bytes) > 10 * 1024 * 1024:
+                                    return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                # Check file size (10MB max)
-                                max_file_size = 10 * 1024 * 1024  # 10MB
-                                if len(document_bytes) > max_file_size:
-                                    return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
-
-                                # Create a document name and ContentFile
-                                document_name = f"pesticide_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"pesticide_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
-                                # Create PesticideDocument instance and save it
-                                pesticide_document_instance = MyPesticidesDocuments.objects.create(
+                                pesticide_doc = MyPesticidesDocuments.objects.create(
                                     farmer=farmer,
-                                    pest=pesticide_instance,  # Link to the pesticide instance
+                                    pesticide=pesticide_instance,
                                     file_type=file_type,
                                     document=document_file,
                                     created_at=timezone.now(),
-                                    created_by=farmer.farmer_user
+                                    created_by=user
                                 )
 
-                                # Append the document info to the grouped_documents list
-                                document_data = {
-                                    'document_id': pesticide_document_instance.id,
-                                    'document_category': {
-                                        'id': file_type.id,
-                                        'name': file_type.name
-                                    },
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
-                                    'language': {
-                                        'default': 'en'
-                                    }
-                                }
-
-                                grouped_documents[file_type_id].append(document_data)
+                                grouped_documents[file_type_id].append({
+                                    'document_id': pesticide_doc.id,
+                                    'document_category': {'id': file_type.id, 'name': file_type.name},
+                                    'upload_document': request.build_absolute_uri(pesticide_doc.document.url),
+                                    'language': {"default": "en"}
+                                })
                             else:
-                                return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
                         else:
-                            return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
-
+                            return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
                     except Exception as e:
-                        return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Prepare formatted document data for response
-            formatted_documents = []
-            for file_type_id, documents in grouped_documents.items():
+            for file_type_id_key, docs in grouped_documents.items():
                 formatted_documents.append({
-                    'category_id': file_type_id,
-                    'documents': documents
+                    'category_id': file_type_id_key,
+                    'documents': docs
                 })
-        else:
-            formatted_documents = []  # If no documents are provided, return an empty list
 
-        # Handle the inventory_type and related inventory_item
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = request.data.get("inventory_items")
-
+        # --- Inventory logic ---
+        new_inventory_item_id = data.get("inventory_items")
         if inventory_type_id and new_inventory_item_id:
-            # Retrieve the new inventory item, which should have status=0 (active)
             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
 
-            # Retrieve the last created MyPesticides entry with the same inventory_type and set previous inventory items to inactive
-            last_inventory_item = MyPesticides.objects.filter(
-                inventory_type=pesticide_instance.inventory_type,
-                inventory_items__status=0
-            ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
-
-            if last_inventory_item:
-                # Update the status of the previous inventory item to 1 (inactive)
+            try:
+                last_item = MyPesticides.objects.filter(
+                    farmer=farmer,
+                    inventory_type=pesticide_instance.inventory_type,
+                    inventory_items__status=0
+                ).exclude(id=pesticide_instance.id).latest('created_at')
+                # Mark last pesticide's inventory_items status to 1 (inactive)
                 MyPesticides.objects.filter(
                     farmer=farmer,
                     inventory_type=pesticide_instance.inventory_type,
-                    inventory_items=last_inventory_item.inventory_items
+                    inventory_items=last_item.inventory_items
                 ).update(status=1)
+            except MyPesticides.DoesNotExist:
+                # No previous pesticide found, skip update
+                pass
 
-            # Set the new inventory item to the pesticide instance
             pesticide_instance.inventory_items = new_inventory_item
 
-            # Recalculate the available quantity for the inventory type
+            # Calculate total quantity for this inventory item & type for this farmer
             total_quantity = MyPesticides.objects.filter(
                 farmer=farmer,
                 inventory_type=inventory_type_id,
                 inventory_items=new_inventory_item
-            ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+            ).aggregate(total=Sum('quantity'))['total'] or 0
 
-            # Update the pesticide instance with the recalculated available quantity
             pesticide_instance.available_quans = total_quantity
             pesticide_instance.save()
 
-        pesticide_instance.quantity = request.data.get("quantity", pesticide_instance.quantity)
-        pesticide_instance.purchase_amount = request.data.get("purchase_amount", pesticide_instance.purchase_amount)
-        pesticide_instance.description = request.data.get("description", pesticide_instance.description)
+        # --- Vendor Outstanding & Balance Update Logic ---
+        purchase_amount = float(data.get('purchase_amount', 0))
+        paid_amount = float(data.get('paid_amount', 0))
 
-        # Save the updated pesticide record
-        pesticide_instance.save()
+        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
+        current_balance = vendor.opening_balance or 0
+        updated_balance = current_balance + net_change
 
-        # Create Outstanding record
-        purchase_amount = float(mutable_data.get('purchase_amount', 0))
-        paid_amount = float(mutable_data.get('paid_amount', 0))
-
-        balance = 0
-        paid = 0
-        to_pay = 0
-        paid_date = None
-        total_paid = 0
-        received = 0
-        to_receive = 0
-        received_date = None
-        total_received = 0
-
-        if paid_amount < purchase_amount:
-            balance = purchase_amount - paid_amount
-            to_receive = balance
-            total_received = paid_amount
-            received_date = timezone.now() if paid_amount > 0 else None
-        elif paid_amount > purchase_amount:
-            balance = paid_amount - purchase_amount
-            to_pay = balance
-            received = paid_amount
-            total_received = paid_amount
-            received_date = timezone.now()
+        # Set credit/debit flags and opening_balance accordingly
+        if updated_balance > 0:
+            # Vendor owes you money (receivables)
+            vendor.credit = True
+            vendor.debit = False
+            vendor.opening_balance = updated_balance
+        elif updated_balance < 0:
+            # You owe vendor money (payables)
+            vendor.credit = False
+            vendor.debit = True
+            vendor.opening_balance = abs(updated_balance)
         else:
-            total_received = paid_amount
-            received_date = timezone.now()
+            # No outstanding balance
+            vendor.credit = False
+            vendor.debit = False
+            vendor.opening_balance = 0
 
-        Outstanding.objects.create(
+        # Update payables or receivables amounts on vendor accordingly
+        if net_change < 0:
+            # You owe vendor money → payables increase
+            vendor.payables = (vendor.payables or 0) + abs(net_change)
+        elif net_change > 0:
+            # Vendor owes you money → receivables increase
+            vendor.receivables = (vendor.receivables or 0) + net_change
+
+        vendor.save()
+
+        # Sync balances to customer if vendor is also a customer
+        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
+            customer = vendor.customer
+            customer.opening_balance = vendor.opening_balance
+            customer.payables = vendor.payables
+            customer.receivables = vendor.receivables
+            customer.is_credit = vendor.credit
+            customer.save()
+
+        # Prepare Outstanding record fields
+        balance = abs(net_change)
+        now = timezone.now()
+
+        # Depending on net_change, set appropriate Outstanding fields
+        if net_change < 0:
+            # Payables case (you owe vendor)
+            to_pay = abs(net_change)
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                pesticide_purchase=pesticide_instance,
+                balance=purchase_amount,
+                paid=paid_amount,
+                to_pay=to_pay,
+                paid_date=now,
+                total_paid=paid_amount,
+                identify=1,
+                created_by=user,
+                created_at=now
+            )
+        elif net_change > 0:
+            # Receivables case (vendor owes you)
+            to_receive = net_change
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                pesticide_purchase=pesticide_instance,
+                balance=balance,
+                paid=paid_amount,
+                to_receive=to_receive,
+                received_date=now,
+                total_received=paid_amount,
+                identify=1,
+                created_by=user,
+                created_at=now
+            )
+        else:
+            # Exact payment, no outstanding balance
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                pesticide_purchase=pesticide_instance,
+                balance=0,
+                paid=paid_amount,
+                to_pay=0,
+                paid_date=now,
+                total_paid=paid_amount,
+                received=paid_amount,
+                to_receive=0,
+                received_date=now,
+                total_received=paid_amount,
+                identify=1,
+                created_by=user,
+                created_at=now
+            )
+
+        # Create Farmer Notification for new pesticide purchase
+        FarmerNotification.objects.create(
             farmer=farmer,
-            vendor=pesticide_instance.vendor,
-            fuel_purchase=None,
-            pesticide_purchase=pesticide_instance,
-            balance=balance,
-            paid=paid,
-            to_pay=to_pay,
-            paid_date=paid_date,
-            total_paid=total_paid,
-            received=received,
-            to_receive=to_receive,
-            received_date=received_date,
-            total_received=total_received,
-            payment_amount=paid_amount,
-            created_by=farmer.farmer_user,
-            created_at=timezone.now(),
-            status=0
+            name='New Purchase Created',
+            message=f'{pesticide_instance.inventory_items.name}',
+            type='Pesticide'
         )
 
-        return Response(
-            {
-                "success": True,
-                "message": "Pesticide added successfully!",
-                "data": serializer.data,
-                "documents": formatted_documents,  # Include the grouped and formatted documents if provided
-                "language": {
-                    "default": "en"
-                }
-            },
-            status=status.HTTP_201_CREATED
-        )
+        return Response({
+            "success": True,
+            "message": "Pesticide added successfully!",
+            "data": serializer.data,
+            "documents": formatted_documents,
+            "language": {"default": "en"}
+        }, status=status.HTTP_201_CREATED)
 
-    # If serializer is invalid, return errors
-    return Response(
-        {
-            "success": False,
-            "message": "Failed to add pesticide. Please check the provided data.",
-            "errors": serializer.errors
-        },
-        status=status.HTTP_400_BAD_REQUEST
-    )
- 
+    # If serializer not valid
+    return Response({
+        "success": False,
+        "message": "Validation failed.",
+        "errors": serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)
+
 # @api_view(['POST'])
 # def add_fertilizer(request, farmer_id):
 #     # Fetch the farmer instance based on the farmer_id
@@ -20770,106 +22110,409 @@ def add_pesticides(request, farmer_id):
 #     )
 
  
+# old 15-09-2025
+# @api_view(['POST'])
+# def add_fertilizer(request, farmer_id):
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+#     mutable_data = request.data.copy()
+
+#     required_fields = [
+#         'date_of_consumption', 'inventory_type', 'inventory_category',
+#         'inventory_items', 'vendor', 'quantity', 'quantity_unit',
+#         'purchase_amount', 'paid_amount'
+#     ]
+
+#     missing_fields = [field for field in required_fields if field not in mutable_data or not mutable_data[field]]
+#     if missing_fields:
+#         return Response(
+#             {"success": False, "message": f"Missing required fields: {', '.join(missing_fields)}"},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     description = mutable_data.get("description", "")
+#     documents = mutable_data.get("documents", [])
+
+#     mutable_data['farmer'] = farmer.id
+#     mutable_data['created_at'] = timezone.now()
+#     mutable_data['created_by'] = farmer.farmer_user.id
+
+#     serializer = MyFertilizersAddSerializer(data=mutable_data)
+
+#     if serializer.is_valid():
+#         fertilizer_instance = serializer.save(farmer=farmer)
+
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = mutable_data.get('inventory_items')
+
+#         if inventory_type_id and new_inventory_item_id:
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             last_inventory_item = MyFertilizers.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=fertilizer_instance.inventory_type,
+#                 inventory_items__status=0
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item:
+#                 MyFertilizers.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=fertilizer_instance.inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             fertilizer_instance.inventory_items = new_inventory_item
+
+#             total_quantity = MyFertilizers.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+#             fertilizer_instance.available_quans = total_quantity
+#             fertilizer_instance.save()
+
+#         formatted_documents = []
+#         if documents:
+#             grouped_documents = {}
+
+#             for doc_data in documents:
+#                 file_type_id = doc_data.get('file_type')
+#                 document_files = doc_data.get('documents', [])
+
+#                 if not document_files:
+#                     return Response(
+#                         {"success": False, "message": f"No documents provided for file type {file_type_id}."},
+#                         status=status.HTTP_400_BAD_REQUEST
+#                     )
+
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+#                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)
+#                 else:
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type.id not in grouped_documents:
+#                     grouped_documents[file_type.id] = []
+
+#                 for i, document_base64 in enumerate(document_files):
+#                     try:
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)
+#                             if mime_type:
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+
+#                                 max_file_size = 10 * 1024 * 1024
+#                                 if len(document_bytes) > max_file_size:
+#                                     return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 document_name = f"fertilizer_{farmer_id}_{file_type.id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 fert_doc = MyFertilizersDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     fertilizers=fertilizer_instance,
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 document_info = {
+#                                     'document_id': fert_doc.id,
+#                                     'document_category': {
+#                                         'id': file_type.id,
+#                                         'name': file_type.name
+#                                     },
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {
+#                                         'default': 'en'
+#                                     }
+#                                 }
+
+#                                 grouped_documents[file_type.id].append(document_info)
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             for file_type_id, documents in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': documents
+#                 })
+
+#         # ✅ Safely cast amounts and quantities to float
+#         try:
+#             quantity = float(mutable_data.get("quantity", 0))
+#             purchase_amount = float(mutable_data.get("purchase_amount", 0))
+#             paid_amount = float(mutable_data.get("paid_amount", 0))
+#         except ValueError:
+#             return Response({'error': 'Quantity, purchase_amount, and paid_amount must be numbers.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         fertilizer_instance.quantity = quantity
+#         fertilizer_instance.purchase_amount = purchase_amount
+#         fertilizer_instance.paid_amount = paid_amount
+#         fertilizer_instance.outstanding = purchase_amount - paid_amount
+#         fertilizer_instance.description = description
+#         fertilizer_instance.save()
+
+#         # ✅ Handle outstanding calculations
+#         balance = 0
+#         paid = 0
+#         to_pay = 0
+#         paid_date = None
+#         total_paid = 0
+#         received = 0
+#         to_receive = 0
+#         received_date = None
+#         total_received = 0
+
+#         if paid_amount < purchase_amount:
+#             balance = purchase_amount - paid_amount
+#             to_receive = balance
+#             total_received = paid_amount
+#             received_date = timezone.now() if paid_amount > 0 else None
+#         elif paid_amount > purchase_amount:
+#             balance = paid_amount - purchase_amount
+#             to_pay = balance
+#             received = paid_amount
+#             total_received = paid_amount
+#             received_date = timezone.now()
+#         else:
+#             total_received = paid_amount
+#             received_date = timezone.now()
+
+#         Outstanding.objects.create(
+#             farmer=farmer,
+#             vendor=fertilizer_instance.vendor,
+#             fuel_purchase=None,
+#             fertilizer_purchase=fertilizer_instance,
+#             balance=balance,
+#             paid=paid,
+#             to_pay=to_pay,
+#             paid_date=paid_date,
+#             total_paid=total_paid,
+#             received=received,
+#             to_receive=to_receive,
+#             received_date=received_date,
+#             total_received=total_received,
+#             payment_amount=paid_amount,
+#             created_by=farmer.farmer_user,
+#             created_at=timezone.now(),
+#             status=0
+#         )
+
+#         return Response(
+#             {
+#                 "success": True,
+#                 "message": "Fertilizer added successfully!",
+#                 "data": serializer.data,
+#                 "documents": formatted_documents,
+#                 "language": {
+#                     "default": "en"
+#                 }
+#             },
+#             status=status.HTTP_201_CREATED
+#         )
+
+#     return Response(
+#         {
+#             "success": False,
+#             "message": "Failed to add fertilizer. Please check the input data.",
+#             "errors": serializer.errors
+#         },
+#         status=status.HTTP_400_BAD_REQUEST
+#     )
 
 @api_view(['POST'])
 def add_fertilizer(request, farmer_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
-    mutable_data = request.data.copy()
+    data = request.data.copy()
+    user = request.user  # logged-in user
 
+    # --- If fertilizer_id provided, reset previous fertilizer and update outstanding ---
+    fertilizer_id = data.get('fertilizer_id')
+    if fertilizer_id:
+        fertilizer = get_object_or_404(MyFertilizers, pk=fertilizer_id)
+        fertilizer.status = 0
+        fertilizer.save()
+
+        # Assuming similar inventory model for fertilizers
+        inv = get_object_or_404(MyInventory, fertilizer_purchase=fertilizer)
+        inv.status = 0
+        inv.save()
+
+        if fertilizer.purchase_amount != fertilizer.paid_amount:
+            if fertilizer.purchase_amount > fertilizer.paid_amount:  # Payables
+                outstanding = Outstanding.objects.create(
+                    farmer=fertilizer.farmer,
+                    vendor=fertilizer.vendor,
+                    fertilizer_purchase=fertilizer,
+                    balance=fertilizer.purchase_amount,
+                    paid=fertilizer.paid_amount,
+                    to_pay=float(fertilizer.purchase_amount) - float(fertilizer.paid_amount),
+                    paid_date=fertilizer.date_of_consumption,
+                    total_paid=fertilizer.paid_amount,
+                    identify=2,  # Assuming 2 = fertilizer type
+                    created_by=user,
+                    created_at=timezone.now()
+                )
+                if float(outstanding.to_pay) > 0:
+                    vendor = get_object_or_404(MyVendor, pk=outstanding.vendor.id)
+                    vendor.payables = (float(vendor.payables or 0)) + float(outstanding.to_pay)
+                    if vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit:
+                        if float(vendor.opening_balance) > float(outstanding.to_pay):
+                            vendor.credit = True
+                            vendor.debit = False
+                            vendor.opening_balance = float(vendor.opening_balance) - float(outstanding.to_pay)
+                        else:
+                            vendor.credit = False
+                            vendor.debit = True
+                            vendor.opening_balance = float(outstanding.to_pay) - float(vendor.opening_balance)
+                    elif vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit == False and vendor.debit:
+                        vendor.opening_balance = float(vendor.opening_balance) + float(outstanding.to_pay)
+                        vendor.credit = False
+                        vendor.debit = True
+                    else:
+                        vendor.opening_balance = float(outstanding.to_pay)
+                        vendor.credit = False
+                        vendor.debit = True
+                    vendor.save()
+
+                    if vendor.is_customer_is_vendor:
+                        customer = vendor.customer
+                        customer.opening_balance = vendor.opening_balance
+                        customer.payables = vendor.payables
+                        customer.is_credit = vendor.credit
+                        customer.save()
+
+            elif fertilizer.purchase_amount < fertilizer.paid_amount:  # Receivables
+                outstanding = Outstanding.objects.create(
+                    farmer=fertilizer.farmer,
+                    vendor=fertilizer.vendor,
+                    fertilizer_purchase=fertilizer,
+                    balance=float(fertilizer.paid_amount) - float(fertilizer.purchase_amount),
+                    paid=fertilizer.paid_amount,
+                    to_receive=float(fertilizer.paid_amount) - float(fertilizer.purchase_amount),
+                    paid_date=fertilizer.date_of_consumption,
+                    received_date=fertilizer.date_of_consumption,
+                    total_received=fertilizer.paid_amount,
+                    identify=2,
+                    created_by=user,
+                    created_at=timezone.now()
+                )
+                if float(outstanding.to_receive) > 0:
+                    vendor = get_object_or_404(MyVendor, pk=outstanding.vendor.id)
+                    vendor.receivables = (float(vendor.receivables or 0)) + float(outstanding.to_receive)
+                    if vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit:
+                        vendor.opening_balance = float(vendor.opening_balance) + float(outstanding.to_receive)
+                        vendor.credit = True
+                        vendor.debit = False
+                    elif vendor.opening_balance and vendor.opening_balance != 0 and vendor.credit == False and vendor.debit:
+                        if float(vendor.opening_balance) > float(outstanding.to_receive):
+                            vendor.credit = False
+                            vendor.debit = True
+                            vendor.opening_balance = float(vendor.opening_balance) - float(outstanding.to_receive)
+                        else:
+                            vendor.credit = True
+                            vendor.debit = False
+                            vendor.opening_balance = float(outstanding.to_receive) - float(vendor.opening_balance)
+                    else:
+                        vendor.opening_balance = float(outstanding.to_receive)
+                        vendor.credit = True
+                        vendor.debit = False
+                    vendor.save()
+
+                    if vendor.is_customer_is_vendor:
+                        customer = vendor.customer
+                        customer.opening_balance = vendor.opening_balance
+                        customer.receivables = vendor.receivables
+                        customer.is_credit = vendor.credit
+                        customer.save()
+
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='New Purchase Created',
+            message=f'{fertilizer_instance.inventory_items.name}',
+            type='Fertilizer'
+        )
+
+    # --- Validate required fields ---
     required_fields = [
         'date_of_consumption', 'inventory_type', 'inventory_category',
         'inventory_items', 'vendor', 'quantity', 'quantity_unit',
         'purchase_amount', 'paid_amount'
     ]
-
-    missing_fields = [field for field in required_fields if field not in mutable_data or not mutable_data[field]]
+    missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
-        return Response(
-            {"success": False, "message": f"Missing required fields: {', '.join(missing_fields)}"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({
+            "success": False,
+            "message": f"Missing required fields: {', '.join(missing_fields)}"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-    description = mutable_data.get("description", "")
-    documents = mutable_data.get("documents", [])
+    # --- Validate vendor and inventory_type relationship ---
+    vendor_id = data.get('vendor')
+    inventory_type_id = data.get('inventory_type')
+    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    mutable_data['farmer'] = farmer.id
-    mutable_data['created_at'] = timezone.now()
-    mutable_data['created_by'] = farmer.farmer_user.id
+    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+        return Response({
+            "success": False,
+            "message": "This vendor is not associated with the selected inventory type."
+        }, status=status.HTTP_400_BAD_REQUEST)
 
-    serializer = MyFertilizersAddSerializer(data=mutable_data)
+    # --- Prepare metadata for serializer ---
+    data['farmer'] = farmer.id
+    data['created_at'] = timezone.now()
+    data['created_by'] = farmer.farmer_user.id
 
+    serializer = MyFertilizersAddSerializer(data=data)
     if serializer.is_valid():
-        fertilizer_instance = serializer.save(farmer=farmer)
+        fertilizer_instance = serializer.save()
 
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = mutable_data.get('inventory_items')
-
-        if inventory_type_id and new_inventory_item_id:
-            new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
-
-            last_inventory_item = MyFertilizers.objects.filter(
-                farmer = farmer,
-                inventory_type=fertilizer_instance.inventory_type,
-                inventory_items__status=0
-            ).order_by('-created_at').first()
-
-            if last_inventory_item:
-                MyFertilizers.objects.filter(
-                    farmer = farmer,
-                    inventory_type=fertilizer_instance.inventory_type,
-                    inventory_items=last_inventory_item.inventory_items
-                ).update(status=1)
-
-            fertilizer_instance.inventory_items = new_inventory_item
-
-            total_quantity = MyFertilizers.objects.filter(
-                farmer = farmer,
-                inventory_type=inventory_type_id,
-                inventory_items=new_inventory_item
-            ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-
-            fertilizer_instance.available_quans = total_quantity
-            fertilizer_instance.save()
-
+        # --- Optional Documents Handling ---
+        file_data = data.get('documents', None)
         formatted_documents = []
-        if documents:
+        if file_data:
             grouped_documents = {}
-
-            for doc_data in documents:
+            for doc_data in file_data:
                 file_type_id = doc_data.get('file_type')
-                document_files = doc_data.get('documents', [])
+                documents = doc_data.get('documents', [])
 
-                if not document_files:
-                    return Response(
-                        {"success": False, "message": f"No documents provided for file type {file_type_id}."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+                if not documents:
+                    return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
 
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
-                    
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=2)
+                    file_type_id = file_type.id
                 else:
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
-                if file_type.id not in grouped_documents:
-                    grouped_documents[file_type.id] = []
+                if file_type_id not in grouped_documents:
+                    grouped_documents[file_type_id] = []
 
-                for i, document_base64 in enumerate(document_files):
+                for i, document_base64 in enumerate(documents):
                     try:
                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
                             mime_type = validate_image_type(document_base64)
                             if mime_type:
                                 document_data = document_base64.split(';base64,')[1]
                                 document_bytes = base64.b64decode(document_data)
+                                if len(document_bytes) > 10 * 1024 * 1024:
+                                    return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                max_file_size = 10 * 1024 * 1024
-                                if len(document_bytes) > max_file_size:
-                                    return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
-
-                                document_name = f"fertilizer_{farmer_id}_{file_type.id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"fertilizer_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
                                 fert_doc = MyFertilizersDocuments.objects.create(
@@ -20881,115 +22524,163 @@ def add_fertilizer(request, farmer_id):
                                     created_by=farmer.farmer_user
                                 )
 
-                                document_info = {
+                                grouped_documents[file_type_id].append({
                                     'document_id': fert_doc.id,
-                                    'document_category': {
-                                        'id': file_type.id,
-                                        'name': file_type.name
-                                    },
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
-                                    'language': {
-                                        'default': 'en'
-                                    }
-                                }
-
-                                grouped_documents[file_type.id].append(document_info)
+                                    'document_category': {'id': file_type.id, 'name': file_type.name},
+                                    'upload_document': request.build_absolute_uri(fert_doc.document.url),
+                                    'language': {"default": "en"}
+                                })
                             else:
-                                return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+                                return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
                         else:
-                            return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
-
+                            return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
                     except Exception as e:
-                        return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            for file_type_id, documents in grouped_documents.items():
+            for file_type_id_key, docs in grouped_documents.items():
                 formatted_documents.append({
-                    'category_id': file_type_id,
-                    'documents': documents
+                    'category_id': file_type_id_key,
+                    'documents': docs
                 })
 
-        # ✅ Safely cast amounts and quantities to float
-        try:
-            quantity = float(mutable_data.get("quantity", 0))
-            purchase_amount = float(mutable_data.get("purchase_amount", 0))
-            paid_amount = float(mutable_data.get("paid_amount", 0))
-        except ValueError:
-            return Response({'error': 'Quantity, purchase_amount, and paid_amount must be numbers.'}, status=status.HTTP_400_BAD_REQUEST)
+        # --- Inventory logic ---
+        new_inventory_item_id = data.get("inventory_items")
+        if inventory_type_id and new_inventory_item_id:
+            new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
 
-        fertilizer_instance.quantity = quantity
-        fertilizer_instance.purchase_amount = purchase_amount
-        fertilizer_instance.paid_amount = paid_amount
-        fertilizer_instance.outstanding = purchase_amount - paid_amount
-        fertilizer_instance.description = description
-        fertilizer_instance.save()
+            try:
+                last_item = MyFertilizers.objects.filter(
+                    farmer=farmer,
+                    inventory_type=fertilizer_instance.inventory_type,
+                    inventory_items__status=0
+                ).latest('created_at')
 
-        # ✅ Handle outstanding calculations
-        balance = 0
-        paid = 0
-        to_pay = 0
-        paid_date = None
-        total_paid = 0
-        received = 0
-        to_receive = 0
-        received_date = None
-        total_received = 0
+                MyFertilizers.objects.filter(
+                    farmer=farmer,
+                    inventory_type=fertilizer_instance.inventory_type,
+                    inventory_items=last_item.inventory_items
+                ).update(status=1)
+            except MyFertilizers.DoesNotExist:
+                pass
 
-        if paid_amount < purchase_amount:
-            balance = purchase_amount - paid_amount
-            to_receive = balance
-            total_received = paid_amount
-            received_date = timezone.now() if paid_amount > 0 else None
-        elif paid_amount > purchase_amount:
-            balance = paid_amount - purchase_amount
-            to_pay = balance
-            received = paid_amount
-            total_received = paid_amount
-            received_date = timezone.now()
+            fertilizer_instance.inventory_items = new_inventory_item
+
+            total_quantity = MyFertilizers.objects.filter(
+                farmer=farmer,
+                inventory_type=inventory_type_id,
+                inventory_items=new_inventory_item
+            ).aggregate(total=Sum('quantity'))['total'] or 0
+
+            fertilizer_instance.available_quans = total_quantity
+            fertilizer_instance.save()
+
+        # --- Vendor Outstanding & Balance Update Logic ---
+        purchase_amount = float(data.get('purchase_amount', 0))
+        paid_amount = float(data.get('paid_amount', 0))
+
+        net_change = paid_amount - purchase_amount
+        current_balance = vendor.opening_balance or 0
+        updated_balance = current_balance + net_change
+
+        if updated_balance > 0:
+            vendor.credit = True
+            vendor.debit = False
+            vendor.opening_balance = updated_balance
+        elif updated_balance < 0:
+            vendor.credit = False
+            vendor.debit = True
+            vendor.opening_balance = abs(updated_balance)
         else:
-            total_received = paid_amount
-            received_date = timezone.now()
+            vendor.credit = False
+            vendor.debit = False
+            vendor.opening_balance = 0
 
-        Outstanding.objects.create(
+        if net_change < 0:
+            vendor.payables = (vendor.payables or 0) + abs(net_change)
+        elif net_change > 0:
+            vendor.receivables = (vendor.receivables or 0) + net_change
+
+        vendor.save()
+
+        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
+            customer = vendor.customer
+            customer.opening_balance = vendor.opening_balance
+            customer.payables = vendor.payables
+            customer.receivables = vendor.receivables
+            customer.is_credit = vendor.credit
+            customer.save()
+
+        balance = abs(net_change)
+        now = timezone.now()
+
+        if net_change < 0:
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                fertilizer_purchase=fertilizer_instance,
+                balance=purchase_amount,
+                paid=paid_amount,
+                to_pay=abs(net_change),
+                paid_date=now,
+                total_paid=paid_amount,
+                identify=2,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+        elif net_change > 0:
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                fertilizer_purchase=fertilizer_instance,
+                balance=balance,
+                paid=paid_amount,
+                to_receive=net_change,
+                received_date=now,
+                total_received=paid_amount,
+                identify=2,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+        else:
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                fertilizer_purchase=fertilizer_instance,
+                balance=0,
+                paid=paid_amount,
+                to_pay=0,
+                paid_date=now,
+                total_paid=paid_amount,
+                received=paid_amount,
+                to_receive=0,
+                received_date=now,
+                total_received=paid_amount,
+                identify=2,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+
+        # Create Farmer Notification
+        FarmerNotification.objects.create(
             farmer=farmer,
-            vendor=fertilizer_instance.vendor,
-            fuel_purchase=None,
-            fertilizer_purchase=fertilizer_instance,
-            balance=balance,
-            paid=paid,
-            to_pay=to_pay,
-            paid_date=paid_date,
-            total_paid=total_paid,
-            received=received,
-            to_receive=to_receive,
-            received_date=received_date,
-            total_received=total_received,
-            payment_amount=paid_amount,
-            created_by=farmer.farmer_user,
-            created_at=timezone.now(),
-            status=0
+            name='New Purchase Created',
+            message=f'{fertilizer_instance.inventory_items.name}',
+            type='Fertilizer'
         )
 
-        return Response(
-            {
-                "success": True,
-                "message": "Fertilizer added successfully!",
-                "data": serializer.data,
-                "documents": formatted_documents,
-                "language": {
-                    "default": "en"
-                }
-            },
-            status=status.HTTP_201_CREATED
-        )
+        return Response({
+            "success": True,
+            "message": "Fertilizer added successfully!",
+            "data": serializer.data,
+            "documents": formatted_documents,
+            "language": {"default": "en"}
+        }, status=status.HTTP_201_CREATED)
 
-    return Response(
-        {
-            "success": False,
-            "message": "Failed to add fertilizer. Please check the input data.",
-            "errors": serializer.errors
-        },
-        status=status.HTTP_400_BAD_REQUEST
-    )
+    return Response({
+        "success": False,
+        "message": "Failed to add fertilizer. Please check the input data.",
+        "errors": serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -25612,13 +27303,226 @@ def manage_consumption(request, id):
 #     }, status=status.HTTP_400_BAD_REQUEST)
 
  
+# old 15-09-2025
+# @api_view(['POST'])
+# def add_fuel(request, farmer_id):
+#     farmer = get_object_or_404(Farmer, id=farmer_id)
+#     data = request.data.copy()
 
+#     # Required fields validation
+#     required_fields = [
+#         'date_of_consumption', 'inventory_type', 'inventory_category',
+#         'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+#     ]
+#     missing_fields = [field for field in required_fields if not data.get(field)]
+#     if missing_fields:
+#         return Response({
+#             "success": False,
+#             "message": f"Missing required fields: {', '.join(missing_fields)}"
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Vendor & inventory type validation
+#     vendor_id = data.get('vendor')
+#     inventory_type_id = data.get('inventory_type')
+#     vendor = get_object_or_404(MyVendor, id=vendor_id)
+
+#     if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+#         return Response({
+#             "success": False,
+#             "message": "This vendor is not associated with the selected inventory type."
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Metadata
+#     data['farmer'] = farmer.id
+#     data['created_at'] = timezone.now()
+#     data['created_by'] = farmer.farmer_user.id
+
+#     serializer = MyFuelAddSerializer(data=data)
+#     if serializer.is_valid():
+#         fuel_instance = serializer.save()
+
+#         # --- Optional Documents ---
+#         file_data = request.data.get('documents', None)
+#         formatted_documents = []
+#         if file_data:
+#             grouped_documents = {}
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response({"success": False, "message": f"No documents for file type {file_type_id}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+#                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=1)
+#                 else:
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)
+#                             if mime_type:
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+#                                 if len(document_bytes) > 10 * 1024 * 1024:
+#                                     return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 document_name = f"fuel_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 fuel_doc = MyFuelDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     fuel=fuel_instance,
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 grouped_documents[file_type_id].append({
+#                                     'document_id': fuel_doc.id,
+#                                     'document_category': {'id': file_type.id, 'name': file_type.name},
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {"default": "en"}
+#                                 })
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
+#                     except Exception as e:
+#                         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#             for file_type_id, docs in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': docs
+#                 })
+
+#         # --- Inventory Logic ---
+#         new_inventory_item_id = data.get("inventory_items")
+#         if inventory_type_id and new_inventory_item_id:
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             try:
+#                 last_item = MyFuel.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=fuel_instance.inventory_type,
+#                     inventory_items__status=0
+#                 ).latest('created_at')
+#                 MyFuel.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=fuel_instance.inventory_type,
+#                     inventory_items=last_item.inventory_items
+#                 ).update(status=1)
+#             except MyFuel.DoesNotExist:
+#                 pass
+
+#             fuel_instance.inventory_items = new_inventory_item
+#             total_quantity = MyFuel.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total=Sum('quantity'))['total'] or 0
+
+#             fuel_instance.available_quans = total_quantity
+#             fuel_instance.save()
+
+#         # --- Create Outstanding ---
+#         purchase_amount = float(data.get('purchase_amount', 0))
+#         paid_amount = float(data.get('paid_amount', 0))
+
+#         balance = 0
+#         paid = 0
+#         to_pay = 0
+#         paid_date = None
+#         total_paid = 0
+#         received = 0
+#         to_receive = 0
+#         received_date = None
+#         total_received = 0
+
+#         if paid_amount < purchase_amount:
+#             balance = purchase_amount - paid_amount
+#             to_receive = balance
+#             total_received = paid_amount
+#             received_date = timezone.now() if paid_amount > 0 else None
+#         elif paid_amount > purchase_amount:
+#             balance = paid_amount - purchase_amount
+#             to_pay = balance
+#             received = paid_amount
+#             total_received = paid_amount
+#             received_date = timezone.now()
+#         else:
+#             total_received = paid_amount
+#             received_date = timezone.now()
+
+#         Outstanding.objects.create(
+#             farmer=farmer,
+#             vendor=vendor,
+#             fuel_purchase=fuel_instance,
+#             balance=balance,
+#             paid=paid,
+#             to_pay=to_pay,
+#             paid_date=paid_date,
+#             total_paid=total_paid,
+#             received=received,
+#             to_receive=to_receive,
+#             received_date=received_date,
+#             total_received=total_received,
+#             payment_amount=paid_amount,
+#             created_by=farmer.farmer_user,
+#             created_at=timezone.now()
+#         )
+
+#         return Response({
+#             "success": True,
+#             "message": "Fuel added successfully!",
+#             "data": serializer.data,
+#             "documents": formatted_documents,
+#             "language": {"default": "en"}
+#         }, status=status.HTTP_201_CREATED)
+
+#     return Response({
+#         "success": False,
+#         "message": "Validation failed.",
+#         "errors": serializer.errors
+#     }, status=status.HTTP_400_BAD_REQUEST)
+ 
+
+# new 15-09-2025
+ 
 @api_view(['POST'])
 def add_fuel(request, farmer_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
     data = request.data.copy()
+    user = request.user  # logged-in user
 
-    # Required fields validation
+    # --- If fuel_id provided, reset previous fuel and update outstanding ---
+    fuel_id = data.get('fuel_id')
+    if fuel_id:
+        fuel = get_object_or_404(MyFuel, pk=fuel_id)
+        fuel.status = 0
+        fuel.save()
+
+        inv = get_object_or_404(MyInventory, fuel_purchase=fuel)
+        inv.status = 0
+        inv.save()
+
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='New Purchase Created',
+            message=f'{fuel.inventory_items.name}',
+            type='Fuel'
+        )
+
+    # --- Validate required fields ---
     required_fields = [
         'date_of_consumption', 'inventory_type', 'inventory_category',
         'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
@@ -25630,7 +27534,7 @@ def add_fuel(request, farmer_id):
             "message": f"Missing required fields: {', '.join(missing_fields)}"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Vendor & inventory type validation
+    # --- Validate vendor and inventory_type relationship ---
     vendor_id = data.get('vendor')
     inventory_type_id = data.get('inventory_type')
     vendor = get_object_or_404(MyVendor, id=vendor_id)
@@ -25641,16 +27545,16 @@ def add_fuel(request, farmer_id):
             "message": "This vendor is not associated with the selected inventory type."
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Metadata
+    # --- Prepare metadata for serializer ---
     data['farmer'] = farmer.id
     data['created_at'] = timezone.now()
-    data['created_by'] = farmer.farmer_user.id
+    data['created_by'] = farmer.farmer_user.id  # Assuming farmer_user is the User instance
 
     serializer = MyFuelAddSerializer(data=data)
     if serializer.is_valid():
         fuel_instance = serializer.save()
 
-        # --- Optional Documents ---
+        # --- Optional Documents Handling ---
         file_data = request.data.get('documents', None)
         formatted_documents = []
         if file_data:
@@ -25665,8 +27569,9 @@ def add_fuel(request, farmer_id):
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": f"New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
                     file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=1)
+                    file_type_id = file_type.id
                 else:
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
@@ -25683,7 +27588,8 @@ def add_fuel(request, farmer_id):
                                 if len(document_bytes) > 10 * 1024 * 1024:
                                     return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                document_name = f"fuel_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"fuel_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
                                 fuel_doc = MyFuelDocuments.objects.create(
@@ -25698,7 +27604,7 @@ def add_fuel(request, farmer_id):
                                 grouped_documents[file_type_id].append({
                                     'document_id': fuel_doc.id,
                                     'document_category': {'id': file_type.id, 'name': file_type.name},
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+                                    'upload_document': request.build_absolute_uri(fuel_doc.document.url),
                                     'language': {"default": "en"}
                                 })
                             else:
@@ -25708,32 +27614,36 @@ def add_fuel(request, farmer_id):
                     except Exception as e:
                         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            for file_type_id, docs in grouped_documents.items():
+            for file_type_id_key, docs in grouped_documents.items():
                 formatted_documents.append({
-                    'category_id': file_type_id,
+                    'category_id': file_type_id_key,
                     'documents': docs
                 })
 
-        # --- Inventory Logic ---
+        # --- Inventory logic ---
         new_inventory_item_id = data.get("inventory_items")
         if inventory_type_id and new_inventory_item_id:
             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
 
             try:
                 last_item = MyFuel.objects.filter(
-                    farmer = farmer,
+                    farmer=farmer,
                     inventory_type=fuel_instance.inventory_type,
                     inventory_items__status=0
                 ).latest('created_at')
+                # Mark last fuel's inventory_items status to 1 (inactive)
                 MyFuel.objects.filter(
-                    farmer = farmer,
+                    farmer=farmer,
                     inventory_type=fuel_instance.inventory_type,
                     inventory_items=last_item.inventory_items
                 ).update(status=1)
             except MyFuel.DoesNotExist:
+                # No previous fuel found, skip update
                 pass
 
             fuel_instance.inventory_items = new_inventory_item
+
+            # Calculate total quantity for this inventory item & type for this farmer
             total_quantity = MyFuel.objects.filter(
                 farmer=farmer,
                 inventory_type=inventory_type_id,
@@ -25743,51 +27653,113 @@ def add_fuel(request, farmer_id):
             fuel_instance.available_quans = total_quantity
             fuel_instance.save()
 
-        # --- Create Outstanding ---
+        # --- Vendor Outstanding & Balance Update Logic ---
         purchase_amount = float(data.get('purchase_amount', 0))
         paid_amount = float(data.get('paid_amount', 0))
 
-        balance = 0
-        paid = 0
-        to_pay = 0
-        paid_date = None
-        total_paid = 0
-        received = 0
-        to_receive = 0
-        received_date = None
-        total_received = 0
+        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
+        current_balance = vendor.opening_balance or 0
+        updated_balance = current_balance + net_change
 
-        if paid_amount < purchase_amount:
-            balance = purchase_amount - paid_amount
-            to_receive = balance
-            total_received = paid_amount
-            received_date = timezone.now() if paid_amount > 0 else None
-        elif paid_amount > purchase_amount:
-            balance = paid_amount - purchase_amount
-            to_pay = balance
-            received = paid_amount
-            total_received = paid_amount
-            received_date = timezone.now()
+        # Set credit/debit flags and opening_balance accordingly
+        if updated_balance > 0:
+            # Vendor owes you money (receivables)
+            vendor.credit = True
+            vendor.debit = False
+            vendor.opening_balance = updated_balance
+        elif updated_balance < 0:
+            # You owe vendor money (payables)
+            vendor.credit = False
+            vendor.debit = True
+            vendor.opening_balance = abs(updated_balance)
         else:
-            total_received = paid_amount
-            received_date = timezone.now()
+            # No outstanding balance
+            vendor.credit = False
+            vendor.debit = False
+            vendor.opening_balance = 0
 
-        Outstanding.objects.create(
+        # Update payables or receivables amounts on vendor accordingly
+        if net_change < 0:
+            # You owe vendor money → payables increase
+            vendor.payables = (vendor.payables or 0) + abs(net_change)
+        elif net_change > 0:
+            # Vendor owes you money → receivables increase
+            vendor.receivables = (vendor.receivables or 0) + net_change
+
+        vendor.save()
+
+        # Sync balances to customer if vendor is also a customer
+        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
+            customer = vendor.customer
+            customer.opening_balance = vendor.opening_balance
+            customer.payables = vendor.payables
+            customer.receivables = vendor.receivables
+            customer.is_credit = vendor.credit
+            customer.save()
+
+        # Prepare Outstanding record fields
+        balance = abs(net_change)
+        now = timezone.now()
+
+        # Depending on net_change, set appropriate Outstanding fields
+        if net_change < 0:
+            # Payables case (you owe vendor)
+            to_pay = abs(net_change)
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                fuel_purchase=fuel_instance,
+                balance=purchase_amount,
+                paid=paid_amount,
+                to_pay=to_pay,
+                paid_date=now,
+                total_paid=paid_amount,
+                identify=1,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+        elif net_change > 0:
+            # Receivables case (vendor owes you)
+            to_receive = net_change
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                fuel_purchase=fuel_instance,
+                balance=balance,
+                paid=paid_amount,
+                to_receive=to_receive,
+                received_date=now,
+                total_received=paid_amount,
+                identify=1,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+        else:
+            # Exact payment, no outstanding balance
+            Outstanding.objects.create(
+                farmer=farmer,
+                vendor=vendor,
+                fuel_purchase=fuel_instance,
+                balance=0,
+                paid=paid_amount,
+                to_pay=0,
+                paid_date=now,
+                total_paid=paid_amount,
+                received=paid_amount,
+                to_receive=0,
+                received_date=now,
+                total_received=paid_amount,
+                identify=1,
+                created_by=farmer.farmer_user,
+                created_at=now
+            )
+
+        # Optional: Create Farmer Notification
+        FarmerNotification.objects.create(
             farmer=farmer,
-            vendor=vendor,
-            fuel_purchase=fuel_instance,
-            balance=balance,
-            paid=paid,
-            to_pay=to_pay,
-            paid_date=paid_date,
-            total_paid=total_paid,
-            received=received,
-            to_receive=to_receive,
-            received_date=received_date,
-            total_received=total_received,
-            payment_amount=paid_amount,
-            created_by=farmer.farmer_user,
-            created_at=timezone.now()
+            name='New Purchase Created',
+            message=f'{fuel_instance.inventory_items.name}',
+            type='Fuel'
         )
 
         return Response({
@@ -25803,7 +27775,6 @@ def add_fuel(request, farmer_id):
         "message": "Validation failed.",
         "errors": serializer.errors
     }, status=status.HTTP_400_BAD_REQUEST)
- 
 
 
 
@@ -26229,116 +28200,324 @@ def add_fuel(request, farmer_id):
 #         "errors": serializer.errors
 #     }, status=status.HTTP_400_BAD_REQUEST)
 
+#old 15-09-2025
+# @api_view(['POST'])
+# def add_seeds(request, farmer_id):
+#     # Retrieve the farmer object, ensure the farmer is active (status=0)
+#     farmer = get_object_or_404(Farmer, id=farmer_id, status=0)
+
+#     # Create a mutable copy of the request data
+#     mutable_data = request.data.copy()
+
+#     # Required fields validation
+#     required_fields = [
+#         'date_of_consumption', 'inventory_type', 'inventory_category',
+#         'inventory_items', 'vendor', 'quantity', 'quantity_unit', 
+#         'purchase_amount', 'paid_amount'
+#     ]
+    
+#     missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+#     if missing_fields:
+#         return Response({
+#             "success": False,
+#             "message": f"Missing required fields: {', '.join(missing_fields)}"
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+#     # Handle the seed data structure (list or single item)
+#     if isinstance(mutable_data, list):
+#         for seed_data in mutable_data:
+#             for field in seed_data:
+#                 if seed_data[field] is None:
+#                     seed_data[field] = ""  # Replace None with empty string
+#             seed_data['farmer'] = farmer.id
+#             seed_data['created_at'] = timezone.now()
+#             seed_data['created_by'] = farmer.farmer_user.id
+#     else:
+#         for field in mutable_data:
+#             if mutable_data[field] is None:
+#                 mutable_data[field] = ""  # Replace None with empty string
+#         mutable_data['farmer'] = farmer.id
+#         mutable_data['created_at'] = timezone.now()
+#         mutable_data['created_by'] = farmer.farmer_user.id
+
+#     # Initialize the serializer with the mutable data
+#     serializer = MySeedsAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+
+#     # Validate the serializer
+#     if serializer.is_valid():
+#         # Save the seed record (the seed instance is created here)
+#         seed_instance = serializer.save(farmer=farmer)
+
+#         # Handle the inventory_type and related inventory_item
+#         inventory_type_id = mutable_data.get('inventory_type')
+#         new_inventory_item_id = mutable_data.get("inventory_items")
+
+#         if inventory_type_id and new_inventory_item_id:
+#             # Retrieve the new inventory item, which should have status=0 (active)
+#             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
+
+#             # Update previous inventory items to inactive
+#             try:
+#                 last_inventory_item = MySeeds.objects.filter(
+#                     farmer = farmer,
+#                     inventory_type=seed_instance.inventory_type,
+#                     inventory_items__status=0
+#                 ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
+
+#                 if last_inventory_item:
+#                     MySeeds.objects.filter(
+#                         farmer = farmer,
+#                         inventory_type=seed_instance.inventory_type,
+#                         inventory_items=last_inventory_item.inventory_items
+#                     ).update(status=1)
+
+#             except MySeeds.DoesNotExist:
+#                 pass
+
+#             # Set the new inventory item to the seed instance
+#             seed_instance.inventory_items = new_inventory_item
+
+#             # Recalculate the available quantity for the inventory type
+#             total_quantity = MySeeds.objects.filter(
+#                 farmer = farmer,
+#                 inventory_type=inventory_type_id,
+#                 inventory_items=new_inventory_item
+#             ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+#             seed_instance.available_quans = total_quantity
+#             seed_instance.save()
+
+#         # Handle the documents uploaded with seeds (optional)
+#         file_data = request.data.get('documents', None)
+#         if file_data:
+#             grouped_documents = {}
+
+#             # Process each document and its corresponding file_type
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response(
+#                         {"success": False, "message": f"No documents provided for file type {file_type_id}."},
+#                         status=status.HTTP_400_BAD_REQUEST
+#                     )
+
+#                 # Check if file_type_id is None and create a new file type if necessary
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+#                     file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=3)
+                    
+#                 else:
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)
+#                             if mime_type:
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+#                                 if len(document_bytes) > 10 * 1024 * 1024:
+#                                     return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 document_name = f"seed_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 seed_doc = MyseedsDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     seeds=seed_instance,
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 grouped_documents[file_type_id].append({
+#                                     'document_id': seed_doc.id,
+#                                     'document_category': {'id': file_type.id, 'name': file_type.name},
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {"default": "en"}
+#                                 })
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Unsupported file format.'}, status=status.HTTP_400_BAD_REQUEST)
+#                     except Exception as e:
+#                         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#             formatted_documents = []
+#             for file_type_id, docs in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': docs
+#                 })
+#         else:
+#             formatted_documents = []  # If no documents are provided, return an empty list
+
+#         # Save any additional fields from the request (e.g., quantity, purchase_amount, description)
+#         seed_instance.quantity = mutable_data.get("quantity", seed_instance.quantity)
+#         seed_instance.purchase_amount = mutable_data.get("purchase_amount", seed_instance.purchase_amount)
+#         seed_instance.description = mutable_data.get("description", seed_instance.description)
+
+#         # Save the updated seed record
+#         seed_instance.save()
+
+#         # Create Outstanding record
+#         purchase_amount = float(mutable_data.get('purchase_amount', 0))
+#         paid_amount = float(mutable_data.get('paid_amount', 0))
+
+#         balance = 0
+#         paid = 0
+#         to_pay = 0
+#         paid_date = None
+#         total_paid = 0
+#         received = 0
+#         to_receive = 0
+#         received_date = None
+#         total_received = 0
+
+#         if paid_amount < purchase_amount:
+#             balance = purchase_amount - paid_amount
+#             to_receive = balance
+#             total_received = paid_amount
+#             received_date = timezone.now() if paid_amount > 0 else None
+#         elif paid_amount > purchase_amount:
+#             balance = paid_amount - purchase_amount
+#             to_pay = balance
+#             received = paid_amount
+#             total_received = paid_amount
+#             received_date = timezone.now()
+#         else:
+#             total_received = paid_amount
+#             received_date = timezone.now()
+
+#         # Ensure all necessary fields are populated
+#         Outstanding.objects.create(
+#             farmer=farmer,
+#             vendor=seed_instance.vendor,  # Ensure that seed_instance has a valid vendor
+#             seeds_purchase=seed_instance,  # Corrected: seeds_purchase is linked to the seed instance
+#             balance=balance,
+#             paid=paid,
+#             to_pay=to_pay,
+#             paid_date=paid_date,
+#             total_paid=total_paid,
+#             received=received,
+#             to_receive=to_receive,
+#             received_date=received_date,
+#             total_received=total_received,
+#             payment_amount=paid_amount,
+#             created_by=farmer.farmer_user,
+#             created_at=timezone.now(),
+#             status=0
+#         )
+
+#         return Response({
+#             "success": True,
+#             "message": "Seed added successfully!",
+#             "data": serializer.data,
+#             "documents": formatted_documents,
+#             "language": {"default": "en"}
+#         }, status=status.HTTP_201_CREATED)
+
+#     return Response({
+#         "success": False,
+#         "message": "Validation failed.",
+#         "errors": serializer.errors
+#     }, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def add_seeds(request, farmer_id):
-    # Retrieve the farmer object, ensure the farmer is active (status=0)
     farmer = get_object_or_404(Farmer, id=farmer_id, status=0)
-
-    # Create a mutable copy of the request data
-    mutable_data = request.data.copy()
+    data = request.data.copy()
+    user = request.user
 
     # Required fields validation
     required_fields = [
-        'date_of_consumption', 'inventory_type', 'inventory_category',
+        'date_of_consumption', 'inventory_type'
         'inventory_items', 'vendor', 'quantity', 'quantity_unit', 
         'purchase_amount', 'paid_amount'
     ]
-    
-    missing_fields = [field for field in required_fields if not mutable_data.get(field)]
+    missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
         return Response({
             "success": False,
             "message": f"Missing required fields: {', '.join(missing_fields)}"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Handle the seed data structure (list or single item)
-    if isinstance(mutable_data, list):
-        for seed_data in mutable_data:
-            for field in seed_data:
-                if seed_data[field] is None:
-                    seed_data[field] = ""  # Replace None with empty string
-            seed_data['farmer'] = farmer.id
-            seed_data['created_at'] = timezone.now()
-            seed_data['created_by'] = farmer.farmer_user.id
-    else:
-        for field in mutable_data:
-            if mutable_data[field] is None:
-                mutable_data[field] = ""  # Replace None with empty string
-        mutable_data['farmer'] = farmer.id
-        mutable_data['created_at'] = timezone.now()
-        mutable_data['created_by'] = farmer.farmer_user.id
+    # Replace None with empty strings where applicable
+    for key in data:
+        if data[key] is None:
+            data[key] = ""
 
-    # Initialize the serializer with the mutable data
-    serializer = MySeedsAddSerializer(data=mutable_data, many=isinstance(mutable_data, list))
+    data['farmer'] = farmer.id
+    data['created_at'] = timezone.now()
+    data['created_by'] = farmer.farmer_user.id
 
-    # Validate the serializer
+    serializer = MySeedsAddSerializer(data=data)
     if serializer.is_valid():
-        # Save the seed record (the seed instance is created here)
-        seed_instance = serializer.save(farmer=farmer)
+        seed_instance = serializer.save()
 
-        # Handle the inventory_type and related inventory_item
-        inventory_type_id = mutable_data.get('inventory_type')
-        new_inventory_item_id = mutable_data.get("inventory_items")
+        # Handle resetting previous inventory (status to 1)
+        inventory_type_id = data.get('inventory_type')
+        new_inventory_item_id = data.get("inventory_items")
 
         if inventory_type_id and new_inventory_item_id:
-            # Retrieve the new inventory item, which should have status=0 (active)
             new_inventory_item = get_object_or_404(InventoryItems, id=new_inventory_item_id, status=0)
 
-            # Update previous inventory items to inactive
             try:
                 last_inventory_item = MySeeds.objects.filter(
-                    farmer = farmer,
+                    farmer=farmer,
                     inventory_type=seed_instance.inventory_type,
                     inventory_items__status=0
-                ).latest('created_at')  # Assuming 'created_at' is the field indicating the creation time
+                ).latest('created_at')
 
                 if last_inventory_item:
                     MySeeds.objects.filter(
-                        farmer = farmer,
+                        farmer=farmer,
                         inventory_type=seed_instance.inventory_type,
                         inventory_items=last_inventory_item.inventory_items
                     ).update(status=1)
-
             except MySeeds.DoesNotExist:
                 pass
 
-            # Set the new inventory item to the seed instance
             seed_instance.inventory_items = new_inventory_item
-
-            # Recalculate the available quantity for the inventory type
             total_quantity = MySeeds.objects.filter(
-                farmer = farmer,
+                farmer=farmer,
                 inventory_type=inventory_type_id,
                 inventory_items=new_inventory_item
-            ).aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-
+            ).aggregate(total=Sum('quantity'))['total'] or 0
             seed_instance.available_quans = total_quantity
             seed_instance.save()
 
-        # Handle the documents uploaded with seeds (optional)
+        # Document handling
         file_data = request.data.get('documents', None)
+        formatted_documents = []
         if file_data:
             grouped_documents = {}
 
-            # Process each document and its corresponding file_type
             for doc_data in file_data:
                 file_type_id = doc_data.get('file_type')
                 documents = doc_data.get('documents', [])
 
                 if not documents:
-                    return Response(
-                        {"success": False, "message": f"No documents provided for file type {file_type_id}."},
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+                    return Response({
+                        "success": False,
+                        "message": f"No documents provided for file type {file_type_id}."
+                    }, status=status.HTTP_400_BAD_REQUEST)
 
-                # Check if file_type_id is None and create a new file type if necessary
                 if file_type_id is None:
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
-                        return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
-                    
-                    file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=3)
-                    
+                        return Response({"error": "New file type required."}, status=status.HTTP_400_BAD_REQUEST)
+                    file_type, _ = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=3)
+                    file_type_id = file_type.id
                 else:
                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
@@ -26355,7 +28534,8 @@ def add_seeds(request, farmer_id):
                                 if len(document_bytes) > 10 * 1024 * 1024:
                                     return Response({'error': 'File too large. Max 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
-                                document_name = f"seed_{farmer_id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+                                ext = mime_type.split('/')[1]
+                                document_name = f"seed_{farmer_id}_{file_type_id}_{i}.{ext}"
                                 document_file = ContentFile(document_bytes, name=document_name)
 
                                 seed_doc = MyseedsDocuments.objects.create(
@@ -26370,7 +28550,7 @@ def add_seeds(request, farmer_id):
                                 grouped_documents[file_type_id].append({
                                     'document_id': seed_doc.id,
                                     'document_category': {'id': file_type.id, 'name': file_type.name},
-                                    'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+                                    'upload_document': request.build_absolute_uri(seed_doc.document.url),
                                     'language': {"default": "en"}
                                 })
                             else:
@@ -26380,71 +28560,25 @@ def add_seeds(request, farmer_id):
                     except Exception as e:
                         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-            formatted_documents = []
-            for file_type_id, docs in grouped_documents.items():
+            for file_type_key, docs in grouped_documents.items():
                 formatted_documents.append({
-                    'category_id': file_type_id,
+                    'category_id': file_type_key,
                     'documents': docs
                 })
-        else:
-            formatted_documents = []  # If no documents are provided, return an empty list
 
-        # Save any additional fields from the request (e.g., quantity, purchase_amount, description)
-        seed_instance.quantity = mutable_data.get("quantity", seed_instance.quantity)
-        seed_instance.purchase_amount = mutable_data.get("purchase_amount", seed_instance.purchase_amount)
-        seed_instance.description = mutable_data.get("description", seed_instance.description)
-
-        # Save the updated seed record
+        # Update fields if present
+        seed_instance.quantity = data.get("quantity", seed_instance.quantity)
+        seed_instance.purchase_amount = data.get("purchase_amount", seed_instance.purchase_amount)
+        seed_instance.description = data.get("description", seed_instance.description)
         seed_instance.save()
 
-        # Create Outstanding record
-        purchase_amount = float(mutable_data.get('purchase_amount', 0))
-        paid_amount = float(mutable_data.get('paid_amount', 0))
-
-        balance = 0
-        paid = 0
-        to_pay = 0
-        paid_date = None
-        total_paid = 0
-        received = 0
-        to_receive = 0
-        received_date = None
-        total_received = 0
-
-        if paid_amount < purchase_amount:
-            balance = purchase_amount - paid_amount
-            to_receive = balance
-            total_received = paid_amount
-            received_date = timezone.now() if paid_amount > 0 else None
-        elif paid_amount > purchase_amount:
-            balance = paid_amount - purchase_amount
-            to_pay = balance
-            received = paid_amount
-            total_received = paid_amount
-            received_date = timezone.now()
-        else:
-            total_received = paid_amount
-            received_date = timezone.now()
-
-        # Ensure all necessary fields are populated
-        Outstanding.objects.create(
-            farmer=farmer,
-            vendor=seed_instance.vendor,  # Ensure that seed_instance has a valid vendor
-            seeds_purchase=seed_instance,  # Corrected: seeds_purchase is linked to the seed instance
-            balance=balance,
-            paid=paid,
-            to_pay=to_pay,
-            paid_date=paid_date,
-            total_paid=total_paid,
-            received=received,
-            to_receive=to_receive,
-            received_date=received_date,
-            total_received=total_received,
-            payment_amount=paid_amount,
-            created_by=farmer.farmer_user,
-            created_at=timezone.now(),
-            status=0
-        )
+        # Optional: Create FarmerNotification if you want
+        # FarmerNotification.objects.create(
+        #     farmer=farmer,
+        #     name='New Seed Purchase Created',
+        #     message=f'{seed_instance.inventory_items.name}',
+        #     type='Seeds'
+        # )
 
         return Response({
             "success": True,
@@ -26460,6 +28594,1475 @@ def add_seeds(request, farmer_id):
         "errors": serializer.errors
     }, status=status.HTTP_400_BAD_REQUEST)
 
+
+# @api_view(['POST'])
+# def create_inventory_with_documents(request):
+#     if request.method == 'POST':
+#         data = request.data
+
+#         inventory_type_id = data.get('inventory_type')
+#         try:
+#             inventory_type = InventoryType.objects.get(id=inventory_type_id)
+#         except InventoryType.DoesNotExist:
+#             return Response({'error': 'Invalid inventory type'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # Process different inventory types
+#         # if inventory_type.id == 6:
+#         #     # Fuel specific logic (simplified here)
+#         #     try:
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last fuel instance for the selected inventory items and inventory type
+#         #     fuel_instance = MyFuel.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not fuel_instance:
+#         #         return Response({'error': 'No fuel records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     total_available_quans = fuel_instance.available_quans
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough fuel available for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     fuel_instance.available_quans -= quantity_utilized
+#         #     fuel_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyFuel inventory item to inactive (status=1)
+#         #     last_inventory_item = MyFuel.objects.filter(
+#         #         farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items__status=0
+#         #     ).latest('created_at')
+
+#         #     if last_inventory_item:
+#         #         MyFuel.objects.filter(
+#         #             farmer = farmer,
+#         #             inventory_type=inventory_type,
+#         #             inventory_items=last_inventory_item.inventory_items
+#         #         ).update(status=1)
+
+#         #     # Update the previous MyInventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         if inventory_type.id == 6:
+#             # Fuel specific logic (simplified here)
+#             try:
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 crop = MyCrop.objects.get(id=data.get('crop'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist) as e:
+#                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Fetch the last fuel instance for the selected inventory items and inventory type
+#             fuel_instance = MyFuel.objects.filter(
+#                 inventory_items=inventory_items,
+#                 inventory_type=inventory_type,
+#                 farmer=farmer
+#             ).order_by('-updated_at').first()
+
+#             if not fuel_instance:
+#                 return Response({'error': 'No fuel records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Convert available_quans and quantity_utilized to Decimal
+#             total_available_quans = Decimal(str(fuel_instance.available_quans))  # Ensure it's a Decimal
+#             quantity_utilized = Decimal(str(data.get('quantity_utilized', 0)))  # Ensure quantity_utilized is Decimal
+
+#             # Check if quantity_utilized is greater than total_available_quans
+#             if quantity_utilized > total_available_quans:
+#                 return Response({'error': 'Not enough fuel available for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Update the fuel instance by reducing the available quantity
+#             fuel_instance.available_quans = total_available_quans - quantity_utilized
+#             fuel_instance.save()
+
+#             available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#             # Update the previous MyFuel inventory item to inactive (status=1)
+#             last_inventory_item = MyFuel.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items__status=0  # Only active items
+#             ).latest('created_at')  # Order by created_at to find the latest active inventory item
+
+#             if last_inventory_item:
+#                 # Set the last inventory item to inactive
+#                 last_inventory_item.status = 1  # Mark as inactive (status=1)
+#                 last_inventory_item.save()
+
+#             # Update the previous MyInventory item to inactive (status=1)
+#             last_inventory_item_inventory = MyInventory.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items=inventory_items,
+#                 status=0  # Only active items
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item_inventory:
+#                 # Set the last inventory item to inactive (status=1)
+#                 last_inventory_item_inventory.status = 1
+#                 last_inventory_item_inventory.save()
+
+#             # Create new inventory object
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=data.get('date_of_consumption'),
+#                 crop=crop,
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 quantity_utilized=quantity_utilized,
+#                 available_quans=available_quans_in_inventory,
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#             )
+
+#         elif inventory_type.id == 2:
+#             # For inventory type 2, these fields are required
+#             try:
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#                 crop = MyCrop.objects.get(id=data.get('crop'))
+#                 date_of_consumption = data.get('date_of_consumption')
+#                 usage_hours = data.get('usage_hours')
+
+#                 # Ensure usage_hours is a valid number and convert to Decimal
+#                 if usage_hours:
+#                     usage_hours = Decimal(str(usage_hours))  # Ensure it's a Decimal for comparison or calculations
+#                 else:
+#                     usage_hours = Decimal('0')  # If not provided, assume 0 hours
+
+#                 if not date_of_consumption:
+#                     return Response({'error': 'Date of consumption is required for inventory type 2'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                 if not usage_hours or usage_hours <= 0:
+#                     return Response({'error': 'Usage hours must be greater than zero for inventory type 2'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist) as e:
+#                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Create new inventory object for type 2
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=date_of_consumption,
+#                 crop=crop,
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 usage_hours=usage_hours,  # usage_hours is now a Decimal
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#             )
+
+#         # elif inventory_type.id == 2:
+#         #     # For inventory type 2, these fields are required
+#         #     try:
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         date_of_consumption = data.get('date_of_consumption')
+#         #         usage_hours = data.get('usage_hours')
+
+#         #         if not date_of_consumption:
+#         #             return Response({'error': 'Date of consumption is required for inventory type 2'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #         if not usage_hours:
+#         #             return Response({'error': 'Usage hours are required for inventory type 2'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, inventory category, inventory items, or crop'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Create new inventory object for type 2
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=date_of_consumption,
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         usage_hours=usage_hours,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+ 
+#         # elif inventory_type.id == 4:
+#         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
+#         #     try:
+#         #         # Fetch necessary objects
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last inventory instance for the selected inventory items and inventory type
+#         #     inventory_instance = MyInventory.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not inventory_instance:
+#         #         return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     total_available_quans = inventory_instance.available_quans
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Deduct quantity from the inventory item
+#         #     inventory_instance.available_quans -= quantity_utilized
+#         #     inventory_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyInventory inventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for inventory type 4
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         #     # Update the corresponding MyPesticides instance
+#         #     if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
+#         #         try:
+#         #             # Fetch the MyPesticides instance linked to the inventory items
+#         #             pesticide_instance = MyPesticides.objects.get(farmer = farmer,inventory_items=inventory_items)
+                    
+#         #             # Deduct quantity from the available stock in MyPesticides
+#         #             if pesticide_instance.available_quans >= quantity_utilized:
+#         #                 pesticide_instance.available_quans -= quantity_utilized
+#         #                 pesticide_instance.save()
+#         #             else:
+#         #                 return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#         #         except MyPesticides.DoesNotExist:
+#         #             return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # elif inventory_type.id == 4:
+#         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
+#         #     try:
+#         #         # Fetch necessary objects
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last inventory instance for the selected inventory items and inventory type
+#         #     inventory_instance = MyInventory.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not inventory_instance:
+#         #         return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Ensure total_available_quans is a Decimal
+#         #     total_available_quans = Decimal(str(inventory_instance.available_quans))  # Convert to Decimal if it's a string
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))  # Ensure quantity_utilized is Decimal
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Deduct quantity from the inventory item
+
+#         #     inventory_instance.available_quans = inventory_instance.available_quans - quantity_utilized
+#         #     inventory_instance.save()
+
+#         #     # inventory_instance.available_quans -= quantity_utilized
+#         #     # inventory_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyInventory inventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer=farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for inventory type 4
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         #     # Update the corresponding MyPesticides instance
+#         #     if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
+#         #         try:
+#         #             # Fetch the MyPesticides instance linked to the inventory items
+#         #             pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
+                    
+#         #             # Deduct quantity from the available stock in MyPesticides
+#         #             if pesticide_instance.available_quans >= quantity_utilized:
+#         #                 pesticide_instance.available_quans -= quantity_utilized
+#         #                 pesticide_instance.save()
+#         #             else:
+#         #                 return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#         #         except MyPesticides.DoesNotExist:
+#         #             return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #new
+#         elif inventory_type.id == 4:
+#             # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
+#             try:
+#                 # Fetch necessary objects
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 crop = MyCrop.objects.get(id=data.get('crop'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Fetch the last inventory instance for the selected inventory items and inventory type
+#             inventory_instance = MyInventory.objects.filter(
+#                 inventory_items=inventory_items,
+#                 inventory_type=inventory_type,
+#                 farmer=farmer
+#             ).order_by('-updated_at').first()
+
+#             if not inventory_instance:
+#                 return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Ensure total_available_quans is a Decimal
+#             total_available_quans = Decimal(str(inventory_instance.available_quans))  # Convert to Decimal if it's a string
+#             quantity_utilized = Decimal(data.get('quantity_utilized', 0))  # Ensure quantity_utilized is Decimal
+
+#             if quantity_utilized > total_available_quans:
+#                 return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Deduct quantity from the inventory item
+#             inventory_instance.available_quans = total_available_quans - quantity_utilized  # Fixed line
+#             inventory_instance.save()
+
+#             available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#             # Update the previous MyInventory inventory item to inactive (status=1)
+#             last_inventory_item_inventory = MyInventory.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items=inventory_items,
+#                 status=0  # Only active items
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item_inventory:
+#                 # Set the previous MyInventory item as inactive (status=1)
+#                 last_inventory_item_inventory.status = 1
+#                 last_inventory_item_inventory.save()
+
+#             # Create new inventory object for inventory type 4
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=data.get('date_of_consumption'),
+#                 crop=crop,
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 quantity_utilized=quantity_utilized,
+#                 available_quans=available_quans_in_inventory,
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#             )
+
+#             # Update the corresponding MyPesticides instance
+#             if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
+#                 try:
+#                     # Fetch the MyPesticides instance linked to the inventory items
+#                     pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
+
+#                     # Deduct quantity from the available stock in MyPesticides
+#                     if pesticide_instance.available_quans >= quantity_utilized:
+#                         pesticide_instance.available_quans -= quantity_utilized
+#                         pesticide_instance.save()
+#                     else:
+#                         return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#                 except MyPesticides.DoesNotExist:
+#                     return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+#         # elif inventory_type.id == 7:
+#         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
+#         #     try:
+#         #         # Fetch necessary objects
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last inventory instance for the selected inventory items and inventory type
+#         #     inventory_instance = MyInventory.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not inventory_instance:
+#         #         return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     total_available_quans = inventory_instance.available_quans
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Deduct quantity from the inventory item
+#         #     inventory_instance.available_quans -= quantity_utilized
+#         #     inventory_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyInventory inventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for inventory type 4
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         #     # Update the corresponding MyPesticides instance
+#         #     if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
+#         #         try:
+#         #             # Fetch the MyPesticides instance linked to the inventory items
+#         #             pesticide_instance = MySeeds.objects.get(farmer = farmer,inventory_items=inventory_items)
+                    
+#         #             # Deduct quantity from the available stock in MyPesticides
+#         #             if pesticide_instance.available_quans >= quantity_utilized:
+#         #                 pesticide_instance.available_quans -= quantity_utilized
+#         #                 pesticide_instance.save()
+#         #             else:
+#         #                 return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#         #         except MySeeds.DoesNotExist:
+#         #             return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # elif inventory_type.id == 7:
+#         #     # Inventory type 7 specific logic (similar to inventory type 6 but without usage_hours)
+#         #     try:
+#         #         # Fetch necessary objects
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last inventory instance for the selected inventory items and inventory type
+#         #     inventory_instance = MyInventory.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not inventory_instance:
+#         #         return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Ensure total_available_quans is a Decimal
+#         #     total_available_quans = Decimal(str(inventory_instance.available_quans))  # Convert to Decimal if it's a string
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))  # Ensure quantity_utilized is Decimal
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Deduct quantity from the inventory item
+#         #     inventory_instance.available_quans -= quantity_utilized
+#         #     inventory_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyInventory inventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer=farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for inventory type 7
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         #     # Update the corresponding MySeeds instance
+#         #     if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
+#         #         try:
+#         #             # Fetch the MySeeds instance linked to the inventory items
+#         #             seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
+                    
+#         #             # Deduct quantity from the available stock in MySeeds
+#         #             if seeds_instance.available_quans >= quantity_utilized:
+#         #                 seeds_instance.available_quans -= quantity_utilized
+#         #                 seeds_instance.save()
+#         #             else:
+#         #                 return Response({'error': 'Not enough seeds available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#         #         except MySeeds.DoesNotExist:
+#         #             return Response({'error': 'Seeds record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #new
+#         elif inventory_type.id == 7:
+#             # Inventory type 7 specific logic (similar to inventory type 6 but without usage_hours)
+#             try:
+#                 # Fetch necessary objects
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 crop = MyCrop.objects.get(id=data.get('crop'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Fetch the last inventory instance for the selected inventory items and inventory type
+#             inventory_instance = MyInventory.objects.filter(
+#                 inventory_items=inventory_items,
+#                 inventory_type=inventory_type,
+#                 farmer=farmer
+#             ).order_by('-updated_at').first()
+
+#             if not inventory_instance:
+#                 return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Ensure total_available_quans is a Decimal
+#             total_available_quans = Decimal(str(inventory_instance.available_quans))  # Convert to Decimal if it's a string
+#             quantity_utilized = Decimal(data.get('quantity_utilized', 0))  # Ensure quantity_utilized is Decimal
+
+#             if quantity_utilized > total_available_quans:
+#                 return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Deduct quantity from the inventory item
+#             inventory_instance.available_quans = total_available_quans - quantity_utilized  # Fixed line
+#             inventory_instance.save()
+
+#             available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#             # Update the previous MyInventory inventory item to inactive (status=1)
+#             last_inventory_item_inventory = MyInventory.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items=inventory_items,
+#                 status=0  # Only active items
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item_inventory:
+#                 # Set the previous MyInventory item as inactive (status=1)
+#                 last_inventory_item_inventory.status = 1
+#                 last_inventory_item_inventory.save()
+
+#             # Create new inventory object for inventory type 7
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=data.get('date_of_consumption'),
+#                 crop=crop,
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 quantity_utilized=quantity_utilized,
+#                 available_quans=available_quans_in_inventory,
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#             )
+
+#             # Update the corresponding MySeeds instance
+#             if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
+#                 try:
+#                     # Fetch the MySeeds instance linked to the inventory items
+#                     seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
+
+#                     # Deduct quantity from the available stock in MySeeds
+#                     if seeds_instance.available_quans >= quantity_utilized:
+#                         seeds_instance.available_quans -= quantity_utilized
+#                         seeds_instance.save()
+#                     else:
+#                         return Response({'error': 'Not enough seeds available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#                 except MySeeds.DoesNotExist:
+#                     return Response({'error': 'Seeds record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         # elif inventory_type.id == 5:
+#         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
+#         #     try:
+#         #         # Fetch necessary objects
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last inventory instance for the selected inventory items and inventory type
+#         #     inventory_instance = MyInventory.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not inventory_instance:
+#         #         return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     total_available_quans = inventory_instance.available_quans
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Deduct quantity from the inventory item
+#         #     inventory_instance.available_quans -= quantity_utilized
+#         #     inventory_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyInventory inventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for inventory type 4
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         #     # Update the corresponding MyPesticides instance
+#         #     if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
+#         #         try:
+#         #             # Fetch the MyPesticides instance linked to the inventory items
+#         #             pesticide_instance = MyFertilizers.objects.get(farmer = farmer,inventory_items=inventory_items)
+                    
+#         #             # Deduct quantity from the available stock in MyPesticides
+#         #             if pesticide_instance.available_quans >= quantity_utilized:
+#         #                 pesticide_instance.available_quans -= quantity_utilized
+#         #                 pesticide_instance.save()
+#         #             else:
+#         #                 return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+#         #         except MyFertilizers.DoesNotExist:
+#         #             return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+  
+#         # elif inventory_type.id == 5:
+#         #     # Inventory type 5 specific logic (similar to inventory type 6 but without usage_hours)
+#         #     try:
+#         #         # Fetch necessary objects
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #     except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last inventory instance for the selected inventory items and inventory type
+#         #     inventory_instance = MyInventory.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not inventory_instance:
+#         #         return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # 🔧 FIX: Convert to Decimal safely
+#         #     total_available_quans = Decimal(str(inventory_instance.available_quans))
+#         #     quantity_utilized = Decimal(str(data.get('quantity_utilized', '0')))
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Deduct quantity from the inventory item
+#         #     inventory_instance.available_quans -= quantity_utilized
+#         #     inventory_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyInventory inventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer=farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for inventory type 5
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #     )
+
+#         #     # Update the corresponding MyFertilizers instance
+#         #     if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
+#         #         try:
+#         #             fertilizer_instance = MyFertilizers.objects.get(
+#         #                 farmer=farmer,
+#         #                 inventory_items=inventory_items
+#         #             )
+
+#         #             if fertilizer_instance.available_quans >= quantity_utilized:
+#         #                 fertilizer_instance.available_quans -= quantity_utilized
+#         #                 fertilizer_instance.save()
+#         #             else:
+#         #                 return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #         except MyFertilizers.DoesNotExist:
+#         #             return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #new
+#         elif inventory_type.id == 5:
+#             # Inventory type 5 specific logic (similar to inventory type 6 but without usage_hours)
+#             try:
+#                 # Fetch necessary objects
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 crop = MyCrop.objects.get(id=data.get('crop'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Fetch the last inventory instance for the selected inventory items and inventory type
+#             inventory_instance = MyInventory.objects.filter(
+#                 inventory_items=inventory_items,
+#                 inventory_type=inventory_type,
+#                 farmer=farmer
+#             ).order_by('-updated_at').first()
+
+#             if not inventory_instance:
+#                 return Response({'error': 'No inventory records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # 🔧 FIX: Convert to Decimal safely
+#             total_available_quans = Decimal(str(inventory_instance.available_quans))
+#             quantity_utilized = Decimal(str(data.get('quantity_utilized', '0')))
+
+#             if quantity_utilized > total_available_quans:
+#                 return Response({'error': 'Not enough available quantity for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Deduct quantity from the inventory item
+#             inventory_instance.available_quans = total_available_quans - quantity_utilized  # ✅ Fixed here
+#             inventory_instance.save()
+
+#             available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#             # Update the previous MyInventory inventory item to inactive (status=1)
+#             last_inventory_item_inventory = MyInventory.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items=inventory_items,
+#                 status=0  # Only active items
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item_inventory:
+#                 # Set the previous MyInventory item as inactive (status=1)
+#                 last_inventory_item_inventory.status = 1
+#                 last_inventory_item_inventory.save()
+
+#             # Create new inventory object for inventory type 5
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=data.get('date_of_consumption'),
+#                 crop=crop,
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 quantity_utilized=quantity_utilized,
+#                 available_quans=available_quans_in_inventory,
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#             )
+
+#             # Update the corresponding MyFertilizers instance
+#             if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
+#                 try:
+#                     fertilizer_instance = MyFertilizers.objects.get(
+#                         farmer=farmer,
+#                         inventory_items=inventory_items
+#                     )
+
+#                     if fertilizer_instance.available_quans >= quantity_utilized:
+#                         fertilizer_instance.available_quans -= quantity_utilized
+#                         fertilizer_instance.save()
+#                     else:
+#                         return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                 except MyFertilizers.DoesNotExist:
+#                     return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+#         # elif inventory_type.id == 3:  # MyTools specific logic (new part)
+#         #     try:
+#         #         # Get the necessary fields for MyTools
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #         # Ensure the necessary fields for tools
+#         #         items = data.get('items', None)
+#         #         usage_hours = Decimal(data.get('usage_hours', 0))
+#         #         # Validate tools-related fields
+#         #         if not items or not usage_hours:
+#         #             return Response({'error': 'Items and usage_hours are required for tools inventory.'}, status=status.HTTP_400_BAD_REQUEST)
+#         #     except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last tools instance for the selected inventory items and inventory type
+#         #     tool_instance = MyTools.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not tool_instance:
+#         #         return Response({'error': 'No tools records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     total_available_quans = tool_instance.available_quans
+#         #     quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough tools available for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     tool_instance.available_quans -= quantity_utilized
+#         #     tool_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyTools inventory item to inactive (status=1)
+#         #     last_inventory_item = MyTools.objects.filter(
+#         #         farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items__status=0
+#         #     ).latest('created_at')
+
+#         #     if last_inventory_item:
+#         #         MyTools.objects.filter(
+#         #             farmer = farmer,
+#         #             inventory_type=inventory_type,
+#         #             inventory_items=last_inventory_item.inventory_items
+#         #         ).update(status=1)
+
+#         #     # Update the previous MyInventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for MyTools
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #         start_kilometer=data.get('start_kilometer', None),
+#         #         end_kilometer=data.get('end_kilometer', None),
+#         #         usage_hours=usage_hours,
+#         #         tool_items=items  # Store the tool items here
+#         #     )
+
+
+#         # elif inventory_type.id == 3:  # MyTools specific logic (new part)
+#         #     try:
+#         #         # Get the necessary fields for MyTools
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+                
+#         #         # Ensure the necessary fields for tools
+#         #         items = data.get('items', None)
+#         #         usage_hours = Decimal(data.get('usage_hours', 0))  # Make sure usage_hours is a Decimal
+                
+#         #         # Validate tools-related fields
+#         #         if not items or usage_hours <= 0:
+#         #             return Response({'error': 'Items and valid usage_hours are required for tools inventory.'}, status=status.HTTP_400_BAD_REQUEST)
+#         #     except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last tools instance for the selected inventory items and inventory type
+#         #     tool_instance = MyTools.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not tool_instance:
+#         #         return Response({'error': 'No tools records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Ensure all values are Decimal before doing arithmetic/comparisons
+#         #     total_available_quans = Decimal(str(tool_instance.available_quans))  # Ensure it's Decimal
+#         #     quantity_utilized = Decimal(str(data.get('quantity_utilized', '0')))  # Ensure it's Decimal
+
+#         #     if quantity_utilized > total_available_quans:
+#         #         return Response({'error': 'Not enough tools available for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     tool_instance.available_quans -= quantity_utilized
+#         #     tool_instance.save()
+
+#         #     available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyTools inventory item to inactive (status=1)
+#         #     last_inventory_item = MyTools.objects.filter(
+#         #         farmer=farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items__status=0
+#         #     ).latest('created_at')
+
+#         #     if last_inventory_item:
+#         #         MyTools.objects.filter(
+#         #             farmer=farmer,
+#         #             inventory_type=inventory_type,
+#         #             inventory_items=last_inventory_item.inventory_items
+#         #         ).update(status=1)
+
+#         #     # Update the previous MyInventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(
+#         #         farmer=farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         # Set the previous MyInventory item as inactive (status=1)
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for MyTools
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         quantity_utilized=quantity_utilized,
+#         #         available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #         start_kilometer=data.get('start_kilometer', None),
+#         #         end_kilometer=data.get('end_kilometer', None),
+#         #         usage_hours=usage_hours,
+#         #         tool_items=items  # Store the tool items here
+#         #     )
+
+#         #new
+#         elif inventory_type.id == 3:  # MyTools specific logic (new part)
+#             try:
+#                 # Get the necessary fields for MyTools
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+                
+#                 # Ensure the necessary fields for tools
+#                 items = data.get('items', None)
+#                 usage_hours = Decimal(data.get('usage_hours', 0))  # Make sure usage_hours is a Decimal
+                
+#                 # Validate tools-related fields
+#                 if not items or usage_hours <= 0:
+#                     return Response({'error': 'Items and valid usage_hours are required for tools inventory.'}, status=status.HTTP_400_BAD_REQUEST)
+#             except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+#                 return Response({'error': 'Invalid references to farmer, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Fetch the last tools instance for the selected inventory items and inventory type
+#             tool_instance = MyTools.objects.filter(
+#                 inventory_items=inventory_items,
+#                 inventory_type=inventory_type,
+#                 farmer=farmer
+#             ).order_by('-updated_at').first()
+
+#             if not tool_instance:
+#                 return Response({'error': 'No tools records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Ensure all values are Decimal before doing arithmetic/comparisons
+#             total_available_quans = Decimal(str(tool_instance.available_quans))  # Ensure it's Decimal
+#             quantity_utilized = Decimal(str(data.get('quantity_utilized', '0')))  # Ensure it's Decimal
+
+#             if quantity_utilized > total_available_quans:
+#                 return Response({'error': 'Not enough tools available for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # 🔧 Fixed: safer subtraction
+#             tool_instance.available_quans = total_available_quans - quantity_utilized
+#             tool_instance.save()
+
+#             available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#             # Update the previous MyTools inventory item to inactive (status=1)
+#             last_inventory_item = MyTools.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items__status=0
+#             ).latest('created_at')
+
+#             if last_inventory_item:
+#                 MyTools.objects.filter(
+#                     farmer=farmer,
+#                     inventory_type=inventory_type,
+#                     inventory_items=last_inventory_item.inventory_items
+#                 ).update(status=1)
+
+#             # Update the previous MyInventory item to inactive (status=1)
+#             last_inventory_item_inventory = MyInventory.objects.filter(
+#                 farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items=inventory_items,
+#                 status=0  # Only active items
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item_inventory:
+#                 # Set the previous MyInventory item as inactive (status=1)
+#                 last_inventory_item_inventory.status = 1
+#                 last_inventory_item_inventory.save()
+
+#             # Create new inventory object for MyTools
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=data.get('date_of_consumption'),
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 quantity_utilized=quantity_utilized,
+#                 available_quans=available_quans_in_inventory,
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#                 start_kilometer=data.get('start_kilometer', None),
+#                 end_kilometer=data.get('end_kilometer', None),
+#                 usage_hours=usage_hours,
+#                 tool_items=items  # Store the tool items here
+#             )
+
+
+#         # elif inventory_type.id == 1:  # MyVehicle specific logic (new part)
+#         #     try:
+#         #         # Get the necessary fields for MyVehicle
+#         #         farmer = Farmer.objects.get(id=data.get('farmer'))
+#         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#         #         crop = MyCrop.objects.get(id=data.get('crop'))  # Crop field is required for MyVehicle
+#         #         start_kilometer = Decimal(data.get('start_kilometer', 0))  # Required
+#         #         end_kilometer = Decimal(data.get('end_kilometer', 0))  # Required
+#         #     except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
+#         #         return Response({'error': 'Invalid references to farmer, category, inventory items or crop'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Check for required fields
+#         #     if start_kilometer <= 0 or end_kilometer <= 0:
+#         #         return Response({'error': 'Start and End kilometer must be greater than zero.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     if start_kilometer >= end_kilometer:
+#         #         return Response({'error': 'Start kilometer cannot be greater than or equal to End kilometer.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # Fetch the last MyVehicle instance for the selected inventory items and inventory type
+#         #     vehicle_instance = MyVehicle.objects.filter(
+#         #         inventory_items=inventory_items,
+#         #         inventory_type=inventory_type,
+#         #         farmer=farmer
+#         #     ).order_by('-updated_at').first()
+
+#         #     if not vehicle_instance:
+#         #         return Response({'error': 'No vehicle records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # total_available_quans = vehicle_instance.available_quans
+#         #     # quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#         #     # if quantity_utilized > total_available_quans:
+#         #     #     return Response({'error': 'Not enough vehicles available for the requested quantity'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         #     # vehicle_instance.available_quans -= quantity_utilized
+#         #     vehicle_instance.save()
+
+#         #     # available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#         #     # Update the previous MyVehicle inventory item to inactive (status=1)
+#         #     last_inventory_item = MyVehicle.objects.filter(
+#         #         inventory_type=inventory_type,
+#         #         inventory_items__status=0,
+#         #         farmer = farmer,
+#         #     ).latest('created_at')
+
+#         #     if last_inventory_item:
+#         #         MyVehicle.objects.filter(farmer = farmer,
+#         #             inventory_type=inventory_type,
+#         #             inventory_items=last_inventory_item.inventory_items
+#         #         ).update(status=1)
+
+#         #     # Update the previous MyInventory item to inactive (status=1)
+#         #     last_inventory_item_inventory = MyInventory.objects.filter(farmer = farmer,
+#         #         inventory_type=inventory_type,
+#         #         inventory_items=inventory_items,
+#         #         status=0  # Only active items
+#         #     ).order_by('-created_at').first()
+
+#         #     if last_inventory_item_inventory:
+#         #         last_inventory_item_inventory.status = 1
+#         #         last_inventory_item_inventory.save()
+
+#         #     # Create new inventory object for MyVehicle
+#         #     my_inventory = MyInventory.objects.create(
+#         #         farmer=farmer,
+#         #         date_of_consumption=data.get('date_of_consumption'),
+#         #         crop=crop,
+#         #         inventory_type=inventory_type,
+#         #         inventory_category=inventory_category,
+#         #         inventory_items=inventory_items,
+#         #         # quantity_utilized=quantity_utilized,
+#         #         # available_quans=available_quans_in_inventory,
+#         #         description=data.get('description'),
+#         #         status=0,  # New item is active (status=0)
+#         #         created_at=timezone.now(),
+#         #         updated_at=timezone.now(),
+#         #         start_kilometer=start_kilometer,
+#         #         end_kilometer=end_kilometer,
+#         #     )
+ 
+#         elif inventory_type.id == 1:  # MyVehicle specific logic (new part)
+#             try:
+#                 # Get the necessary fields for MyVehicle
+#                 farmer = Farmer.objects.get(id=data.get('farmer'))
+#                 inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+#                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
+#                 crop = MyCrop.objects.get(id=data.get('crop'))  # Crop field is required for MyVehicle
+                
+#                 # Convert start_kilometer and end_kilometer to Decimal
+#                 start_kilometer = Decimal(data.get('start_kilometer', '0'))  # Make sure it is Decimal
+#                 end_kilometer = Decimal(data.get('end_kilometer', '0'))  # Make sure it is Decimal
+                
+#             except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
+#                 return Response({'error': 'Invalid references to farmer, category, inventory items or crop'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Check for required fields
+#             if start_kilometer <= 0 or end_kilometer <= 0:
+#                 return Response({'error': 'Start and End kilometer must be greater than zero.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             if start_kilometer >= end_kilometer:
+#                 return Response({'error': 'Start kilometer cannot be greater than or equal to End kilometer.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Fetch the last MyVehicle instance for the selected inventory items and inventory type
+#             vehicle_instance = MyVehicle.objects.filter(
+#                 inventory_items=inventory_items,
+#                 inventory_type=inventory_type,
+#                 farmer=farmer
+#             ).order_by('-updated_at').first()
+
+#             if not vehicle_instance:
+#                 return Response({'error': 'No vehicle records found for the selected items'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # No quantity utilized in MyVehicle logic, so we don't need to perform this check
+#             # total_available_quans = vehicle_instance.available_quans
+#             # quantity_utilized = Decimal(data.get('quantity_utilized', 0))
+
+#             # vehicle_instance.available_quans -= quantity_utilized
+#             vehicle_instance.save()
+
+#             # available_quans_in_inventory = total_available_quans - quantity_utilized
+
+#             # Update the previous MyVehicle inventory item to inactive (status=1)
+#             last_inventory_item = MyVehicle.objects.filter(
+#                 inventory_type=inventory_type,
+#                 inventory_items__status=0,
+#                 farmer=farmer,
+#             ).latest('created_at')
+
+#             if last_inventory_item:
+#                 MyVehicle.objects.filter(farmer=farmer,
+#                                         inventory_type=inventory_type,
+#                                         inventory_items=last_inventory_item.inventory_items
+#                                         ).update(status=1)
+
+#             # Update the previous MyInventory item to inactive (status=1)
+#             last_inventory_item_inventory = MyInventory.objects.filter(farmer=farmer,
+#                 inventory_type=inventory_type,
+#                 inventory_items=inventory_items,
+#                 status=0  # Only active items
+#             ).order_by('-created_at').first()
+
+#             if last_inventory_item_inventory:
+#                 last_inventory_item_inventory.status = 1
+#                 last_inventory_item_inventory.save()
+
+#             # Create new inventory object for MyVehicle
+#             my_inventory = MyInventory.objects.create(
+#                 farmer=farmer,
+#                 date_of_consumption=data.get('date_of_consumption'),
+#                 crop=crop,
+#                 inventory_type=inventory_type,
+#                 inventory_category=inventory_category,
+#                 inventory_items=inventory_items,
+#                 # quantity_utilized=quantity_utilized,
+#                 # available_quans=available_quans_in_inventory,
+#                 description=data.get('description'),
+#                 status=0,  # New item is active (status=0)
+#                 created_at=timezone.now(),
+#                 updated_at=timezone.now(),
+#                 start_kilometer=start_kilometer,
+#                 end_kilometer=end_kilometer,
+#             )
+
+
+#         # Process documents if provided
+#         file_data = request.data.get('documents', None)  # Get the documents if provided
+#         if file_data:
+#             # Initialize grouped documents to handle file_type categorization
+#             grouped_documents = {}
+
+#             # Process each document and its corresponding file_type
+#             for doc_data in file_data:
+#                 file_type_id = doc_data.get('file_type')
+#                 documents = doc_data.get('documents', [])
+
+#                 if not documents:
+#                     return Response(
+#                         {"success": False, "message": f"No documents provided for file type {file_type_id}."},
+#                         status=status.HTTP_400_BAD_REQUEST
+#                     )
+
+#                 # Handle file type creation if necessary
+#                 if file_type_id is None:
+#                     new_file_type = doc_data.get('new_file_type')
+#                     if not new_file_type:
+#                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
+                        
+#                     # Create a new file type if not exists
+#                     file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=3)
+#                 else:
+#                     # Get the existing file type
+#                     file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                 if file_type_id not in grouped_documents:
+#                     grouped_documents[file_type_id] = []
+
+#                 # Process the documents, creating document entries
+#                 for i, document_base64 in enumerate(documents):
+#                     try:
+#                         # Validate MIME type (only image/jpeg, image/png, and application/pdf)
+#                         if document_base64.startswith("data:image/") or document_base64.startswith("data:application/pdf"):
+#                             mime_type = validate_image_type(document_base64)  # Validate the MIME type
+#                             if mime_type:
+#                                 # Extract the base64 data and decode it
+#                                 document_data = document_base64.split(';base64,')[1]
+#                                 document_bytes = base64.b64decode(document_data)
+
+#                                 # Check file size (10MB max)
+#                                 max_file_size = 10 * 1024 * 1024  # 10MB
+#                                 if len(document_bytes) > max_file_size:
+#                                     return Response({'error': f'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                                 # Create a document name and ContentFile
+#                                 document_name = f"inventory_{my_inventory.id}_{file_type_id}_{i}.{mime_type.split('/')[1]}"
+#                                 document_file = ContentFile(document_bytes, name=document_name)
+
+#                                 # Create document instance and save it
+#                                 document_instance = MyInventoryDocuments.objects.create(
+#                                     farmer=farmer,
+#                                     my_inventory=my_inventory,
+#                                     file_type=file_type,
+#                                     document=document_file,
+#                                     created_at=timezone.now(),
+#                                     created_by=farmer.farmer_user
+#                                 )
+
+#                                 # Append the document info to the grouped_documents list
+#                                 document_data = {
+#                                     'document_id': document_instance.id,
+#                                     'document_category': {
+#                                         'id': file_type.id,
+#                                         'name': file_type.name
+#                                     },
+#                                     'upload_document': request.build_absolute_uri(f'/SuperAdmin{document_file.name}'),
+#                                     'language': {
+#                                         'default': 'en'
+#                                     }
+#                                 }
+
+#                                 grouped_documents[file_type_id].append(document_data)
+#                             else:
+#                                 return Response({'error': 'Invalid MIME type for the document.'}, status=status.HTTP_400_BAD_REQUEST)
+#                         else:
+#                             return Response({'error': 'Invalid file format. Only image/jpeg, image/png, and application/pdf are allowed.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Return the grouped documents in the response
+#             formatted_documents = []
+#             for file_type_id, documents in grouped_documents.items():
+#                 formatted_documents.append({
+#                     'category_id': file_type_id,
+#                     'documents': documents
+#                 })
+
+#             return Response({'success': True, 'formatted_documents': formatted_documents}, status=status.HTTP_200_OK)
+
+#         return Response({'success': True, 'message': 'Inventory created successfully.'}, status=status.HTTP_200_OK)
+
+
+#bala
 
 @api_view(['POST'])
 def create_inventory_with_documents(request):
@@ -26552,9 +30155,9 @@ def create_inventory_with_documents(request):
             try:
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-            except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist) as e:
+            except (Farmer.DoesNotExist, MyCrop.DoesNotExist,  InventoryItems.DoesNotExist) as e:
                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last fuel instance for the selected inventory items and inventory type
@@ -26612,7 +30215,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -26626,7 +30229,7 @@ def create_inventory_with_documents(request):
             # For inventory type 2, these fields are required
             try:
                 farmer = Farmer.objects.get(id=data.get('farmer'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
                 date_of_consumption = data.get('date_of_consumption')
@@ -26644,7 +30247,7 @@ def create_inventory_with_documents(request):
                 if not usage_hours or usage_hours <= 0:
                     return Response({'error': 'Usage hours must be greater than zero for inventory type 2'}, status=status.HTTP_400_BAD_REQUEST)
 
-            except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist) as e:
+            except (Farmer.DoesNotExist,  InventoryItems.DoesNotExist, MyCrop.DoesNotExist) as e:
                 return Response({'error': f'Invalid reference to: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Create new inventory object for type 2
@@ -26653,7 +30256,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=date_of_consumption,
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 usage_hours=usage_hours,  # usage_hours is now a Decimal
                 description=data.get('description'),
@@ -26695,7 +30298,7 @@ def create_inventory_with_documents(request):
         #         created_at=timezone.now(),
         #         updated_at=timezone.now(),
         #     )
- 
+
         # elif inventory_type.id == 4:
         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
         #     try:
@@ -26764,7 +30367,7 @@ def create_inventory_with_documents(request):
         #         try:
         #             # Fetch the MyPesticides instance linked to the inventory items
         #             pesticide_instance = MyPesticides.objects.get(farmer = farmer,inventory_items=inventory_items)
-                    
+
         #             # Deduct quantity from the available stock in MyPesticides
         #             if pesticide_instance.available_quans >= quantity_utilized:
         #                 pesticide_instance.available_quans -= quantity_utilized
@@ -26846,7 +30449,7 @@ def create_inventory_with_documents(request):
         #         try:
         #             # Fetch the MyPesticides instance linked to the inventory items
         #             pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
-                    
+
         #             # Deduct quantity from the available stock in MyPesticides
         #             if pesticide_instance.available_quans >= quantity_utilized:
         #                 pesticide_instance.available_quans -= quantity_utilized
@@ -26863,9 +30466,9 @@ def create_inventory_with_documents(request):
                 # Fetch necessary objects
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-            except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+            except (Farmer.DoesNotExist, MyCrop.DoesNotExist,  InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last inventory instance for the selected inventory items and inventory type
@@ -26910,7 +30513,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -26921,19 +30524,19 @@ def create_inventory_with_documents(request):
             )
 
             # Update the corresponding MyPesticides instance
-            if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
-                try:
-                    # Fetch the MyPesticides instance linked to the inventory items
-                    pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
+            # if inventory_items.inventory_category.name == 'Pesticides':  # Ensure it is the correct category
+            try:
+                # Fetch the MyPesticides instance linked to the inventory items
+                pesticide_instance = MyPesticides.objects.get(farmer=farmer, inventory_items=inventory_items)
 
-                    # Deduct quantity from the available stock in MyPesticides
-                    if pesticide_instance.available_quans >= quantity_utilized:
-                        pesticide_instance.available_quans -= quantity_utilized
-                        pesticide_instance.save()
-                    else:
-                        return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
-                except MyPesticides.DoesNotExist:
-                    return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+                # Deduct quantity from the available stock in MyPesticides
+                if pesticide_instance.available_quans >= quantity_utilized:
+                    pesticide_instance.available_quans -= quantity_utilized
+                    pesticide_instance.save()
+                else:
+                    return Response({'error': 'Not enough pesticides available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+            except MyPesticides.DoesNotExist:
+                return Response({'error': 'Pesticides record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -27004,7 +30607,7 @@ def create_inventory_with_documents(request):
         #         try:
         #             # Fetch the MyPesticides instance linked to the inventory items
         #             pesticide_instance = MySeeds.objects.get(farmer = farmer,inventory_items=inventory_items)
-                    
+
         #             # Deduct quantity from the available stock in MyPesticides
         #             if pesticide_instance.available_quans >= quantity_utilized:
         #                 pesticide_instance.available_quans -= quantity_utilized
@@ -27082,7 +30685,7 @@ def create_inventory_with_documents(request):
         #         try:
         #             # Fetch the MySeeds instance linked to the inventory items
         #             seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
-                    
+
         #             # Deduct quantity from the available stock in MySeeds
         #             if seeds_instance.available_quans >= quantity_utilized:
         #                 seeds_instance.available_quans -= quantity_utilized
@@ -27099,9 +30702,9 @@ def create_inventory_with_documents(request):
                 # Fetch necessary objects
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-            except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+            except (Farmer.DoesNotExist, MyCrop.DoesNotExist,  InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last inventory instance for the selected inventory items and inventory type
@@ -27146,7 +30749,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -27157,19 +30760,19 @@ def create_inventory_with_documents(request):
             )
 
             # Update the corresponding MySeeds instance
-            if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
-                try:
-                    # Fetch the MySeeds instance linked to the inventory items
-                    seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
+            # if inventory_items.inventory_category.name == 'Seeds':  # Ensure it is the correct category
+            try:
+                # Fetch the MySeeds instance linked to the inventory items
+                seeds_instance = MySeeds.objects.get(farmer=farmer, inventory_items=inventory_items)
 
-                    # Deduct quantity from the available stock in MySeeds
-                    if seeds_instance.available_quans >= quantity_utilized:
-                        seeds_instance.available_quans -= quantity_utilized
-                        seeds_instance.save()
-                    else:
-                        return Response({'error': 'Not enough seeds available in stock'}, status=status.HTTP_400_BAD_REQUEST)
-                except MySeeds.DoesNotExist:
-                    return Response({'error': 'Seeds record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+                # Deduct quantity from the available stock in MySeeds
+                if seeds_instance.available_quans >= quantity_utilized:
+                    seeds_instance.available_quans -= quantity_utilized
+                    seeds_instance.save()
+                else:
+                    return Response({'error': 'Not enough seeds available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+            except MySeeds.DoesNotExist:
+                return Response({'error': 'Seeds record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
 
         # elif inventory_type.id == 5:
         #     # Inventory type 4 specific logic (similar to inventory type 6 but without usage_hours)
@@ -27237,7 +30840,7 @@ def create_inventory_with_documents(request):
         #         try:
         #             # Fetch the MyPesticides instance linked to the inventory items
         #             pesticide_instance = MyFertilizers.objects.get(farmer = farmer,inventory_items=inventory_items)
-                    
+
         #             # Deduct quantity from the available stock in MyPesticides
         #             if pesticide_instance.available_quans >= quantity_utilized:
         #                 pesticide_instance.available_quans -= quantity_utilized
@@ -27246,7 +30849,7 @@ def create_inventory_with_documents(request):
         #                 return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
         #         except MyFertilizers.DoesNotExist:
         #             return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
-  
+
         # elif inventory_type.id == 5:
         #     # Inventory type 5 specific logic (similar to inventory type 6 but without usage_hours)
         #     try:
@@ -27334,7 +30937,7 @@ def create_inventory_with_documents(request):
                 # Fetch necessary objects
                 farmer = Farmer.objects.get(id=data.get('farmer'))
                 crop = MyCrop.objects.get(id=data.get('crop'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
             except (Farmer.DoesNotExist, MyCrop.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, crop, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
@@ -27381,7 +30984,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -27392,21 +30995,21 @@ def create_inventory_with_documents(request):
             )
 
             # Update the corresponding MyFertilizers instance
-            if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
-                try:
-                    fertilizer_instance = MyFertilizers.objects.get(
-                        farmer=farmer,
-                        inventory_items=inventory_items
-                    )
+            # if inventory_items.inventory_category.name == 'Fertilizers':  # Ensure it is the correct category
+            try:
+                fertilizer_instance = MyFertilizers.objects.get(
+                    farmer=farmer,
+                    inventory_items=inventory_items
+                )
 
-                    if fertilizer_instance.available_quans >= quantity_utilized:
-                        fertilizer_instance.available_quans -= quantity_utilized
-                        fertilizer_instance.save()
-                    else:
-                        return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
+                if fertilizer_instance.available_quans >= quantity_utilized:
+                    fertilizer_instance.available_quans -= quantity_utilized
+                    fertilizer_instance.save()
+                else:
+                    return Response({'error': 'Not enough fertilizers available in stock'}, status=status.HTTP_400_BAD_REQUEST)
 
-                except MyFertilizers.DoesNotExist:
-                    return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
+            except MyFertilizers.DoesNotExist:
+                return Response({'error': 'Fertilizers record not found for the selected inventory item'}, status=status.HTTP_400_BAD_REQUEST)
 
 
         # elif inventory_type.id == 3:  # MyTools specific logic (new part)
@@ -27498,11 +31101,11 @@ def create_inventory_with_documents(request):
         #         farmer = Farmer.objects.get(id=data.get('farmer'))
         #         inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
         #         inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-                
+
         #         # Ensure the necessary fields for tools
         #         items = data.get('items', None)
         #         usage_hours = Decimal(data.get('usage_hours', 0))  # Make sure usage_hours is a Decimal
-                
+
         #         # Validate tools-related fields
         #         if not items or usage_hours <= 0:
         #             return Response({'error': 'Items and valid usage_hours are required for tools inventory.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -27582,17 +31185,17 @@ def create_inventory_with_documents(request):
             try:
                 # Get the necessary fields for MyTools
                 farmer = Farmer.objects.get(id=data.get('farmer'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
-                
+
                 # Ensure the necessary fields for tools
                 items = data.get('items', None)
                 usage_hours = Decimal(data.get('usage_hours', 0))  # Make sure usage_hours is a Decimal
-                
+
                 # Validate tools-related fields
                 if not items or usage_hours <= 0:
                     return Response({'error': 'Items and valid usage_hours are required for tools inventory.'}, status=status.HTTP_400_BAD_REQUEST)
-            except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist):
+            except (Farmer.DoesNotExist, InventoryItems.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, category, or inventory items'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Fetch the last tools instance for the selected inventory items and inventory type
@@ -27650,7 +31253,7 @@ def create_inventory_with_documents(request):
                 farmer=farmer,
                 date_of_consumption=data.get('date_of_consumption'),
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 quantity_utilized=quantity_utilized,
                 available_quans=available_quans_in_inventory,
@@ -27746,20 +31349,20 @@ def create_inventory_with_documents(request):
         #         start_kilometer=start_kilometer,
         #         end_kilometer=end_kilometer,
         #     )
- 
+
         elif inventory_type.id == 1:  # MyVehicle specific logic (new part)
             try:
                 # Get the necessary fields for MyVehicle
                 farmer = Farmer.objects.get(id=data.get('farmer'))
-                inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
+                # inventory_category = InventoryCategory.objects.get(id=data.get('inventory_category'))
                 inventory_items = InventoryItems.objects.get(id=data.get('inventory_items'))
                 crop = MyCrop.objects.get(id=data.get('crop'))  # Crop field is required for MyVehicle
-                
+
                 # Convert start_kilometer and end_kilometer to Decimal
                 start_kilometer = Decimal(data.get('start_kilometer', '0'))  # Make sure it is Decimal
                 end_kilometer = Decimal(data.get('end_kilometer', '0'))  # Make sure it is Decimal
-                
-            except (Farmer.DoesNotExist, InventoryCategory.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
+
+            except (Farmer.DoesNotExist, InventoryItems.DoesNotExist, MyCrop.DoesNotExist):
                 return Response({'error': 'Invalid references to farmer, category, inventory items or crop'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Check for required fields
@@ -27818,7 +31421,7 @@ def create_inventory_with_documents(request):
                 date_of_consumption=data.get('date_of_consumption'),
                 crop=crop,
                 inventory_type=inventory_type,
-                inventory_category=inventory_category,
+                # inventory_category=inventory_category,
                 inventory_items=inventory_items,
                 # quantity_utilized=quantity_utilized,
                 # available_quans=available_quans_in_inventory,
@@ -27853,7 +31456,7 @@ def create_inventory_with_documents(request):
                     new_file_type = doc_data.get('new_file_type')
                     if not new_file_type:
                         return Response({"error": f"New file type for document is required."}, status=status.HTTP_400_BAD_REQUEST)
-                        
+
                     # Create a new file type if not exists
                     file_type, created = DocumentCategory.objects.get_or_create(name=new_file_type, doctype=3)
                 else:
@@ -27926,10 +31529,7 @@ def create_inventory_with_documents(request):
             return Response({'success': True, 'formatted_documents': formatted_documents}, status=status.HTTP_200_OK)
 
         return Response({'success': True, 'message': 'Inventory created successfully.'}, status=status.HTTP_200_OK)
-
-
-
-
+    
 @api_view(['POST'])
 def create_soil_test(request, farmer_id):
     try:
@@ -34714,158 +38314,349 @@ def validate_image_type(document_base64):
         return "application/pdf"
     return None
  
+# @api_view(['POST'])
+# def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
+#     try:
+#         farmer = get_object_or_404(Farmer, id=farmer_id)
+#         action = request.data.get('action')
+
+#         if action == "create_pay":
+#             payment_date_str = request.data.get('date')
+#             payment = request.data.get('payment_amount')
+#             description = request.data.get('description')
+#             purchase_type = request.data.get('purchase_type')  # e.g., 'fuel', 'seeds', etc.
+#             documents_data = request.data.get('documents', [])  # List of documents (optional)
+
+#             # Mapping of purchase types
+#             purchase_mapping = {
+#                 "fuel":        {"model": MyFuel,        "field": "fuel_purchase",        "id_key": "fuel_purchase_id",        "amount_field": "paid_amount"},
+#                 "seeds":       {"model": MySeeds,       "field": "seeds_purchase",       "id_key": "seeds_purchase_id",       "amount_field": "paid_amount"},
+#                 "tools":       {"model": MyTools,       "field": "tool_purchase",        "id_key": "tool_purchase_id",        "amount_field": "paid_amount"},
+#                 "vehicle":     {"model": MyVehicle,     "field": "vehicle_purchase",     "id_key": "vehicle_purchase_id",     "amount_field": "paid_amount"},
+#                 "machinery":   {"model": MyMachinery,   "field": "machinery_purchase",   "id_key": "machinery_purchase_id",   "amount_field": "paid_amount"},
+#                 "fertilizer":  {"model": MyFertilizers, "field": "fertilizer_purchase",  "id_key": "fertilizer_purchase_id",  "amount_field": "paid_amount"},
+#                 "pesticides":  {"model": MyPesticides,  "field": "pesticide_purchase",   "id_key": "pesticide_purchase_id",   "amount_field": "paid_amount"},
+#             }
+
+#             if purchase_type not in purchase_mapping:
+#                 return Response({"detail": "Invalid purchase type."}, status=status.HTTP_400_BAD_REQUEST)
+
+#             mapping = purchase_mapping[purchase_type]
+#             purchase_model = mapping["model"]
+#             purchase_field = mapping["field"]
+#             purchase_id = request.data.get(mapping["id_key"])
+#             amount_field = mapping["amount_field"]
+
+#             if not purchase_id:
+#                 return Response({"detail": f"{mapping['id_key']} is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#             payment = Decimal(payment)
+#             purchase = get_object_or_404(purchase_model, pk=int(purchase_id))
+#             vendor = get_object_or_404(MyVendor, pk=vendor_id)
+
+#             # Convert date
+#             if payment_date_str:
+#                 try:
+#                     payment_date = datetime.strptime(payment_date_str, "%d-%m-%Y").date()
+#                 except ValueError:
+#                     return Response({"detail": "Invalid date format. Use 'dd-mm-yyyy'."}, status=status.HTTP_400_BAD_REQUEST)
+
+#             last_outstanding = Outstanding.objects.filter(
+#                 farmer=farmer,
+#                 vendor=vendor,
+#                 **{purchase_field: purchase}
+#             ).last()
+
+#             if last_outstanding and last_outstanding.to_pay <= 0:
+#                 return Response({
+#                     "detail": "Account is already closed. No outstanding balance left to pay."
+#                 }, status=status.HTTP_400_BAD_REQUEST)
+
+#             original_balance = Decimal(getattr(purchase, amount_field))
+
+#             if last_outstanding:
+#                 previous_to_pay = last_outstanding.to_pay
+#                 if payment > previous_to_pay:
+#                     return Response({
+#                         "detail": f"Payment cannot exceed the outstanding amount of {previous_to_pay}."
+#                     }, status=status.HTTP_400_BAD_REQUEST)
+
+#                 paid = last_outstanding.paid + payment  # this transaction only
+#                 total_paid = last_outstanding.total_paid + payment
+#                 to_pay = previous_to_pay - payment
+#             else:
+#                 paid = payment
+#                 total_paid = payment
+#                 to_pay = original_balance - payment
+
+#             if to_pay < 0:
+#                 to_pay = Decimal(0)
+
+#             # Create Outstanding entry (payables)
+#             outstanding = Outstanding.objects.create(
+#                 farmer=farmer,
+#                 vendor=vendor,
+#                 **{purchase_field: purchase},
+#                 balance=to_pay,
+#                 paid=paid,
+#                 to_pay=to_pay,
+#                 paid_date=payment_date,
+#                 total_paid=total_paid,
+#                 payment_amount=payment,
+#                 created_by=None,
+#                 created_at=timezone.now(),
+#                 description=description if description else None
+#             )
+#             documents_data = request.data.get('documents', [])
+#             # Process documents (if any)
+#             if documents_data:
+#                 for doc_data in documents_data:
+#                     file_type_id = doc_data.get('file_type')
+#                     document_base64 = doc_data.get('document')
+
+#                     if file_type_id is None or not document_base64:
+#                         return Response({"detail": "File type and document are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#                     # Validate and process the document
+#                     try:
+#                         # Validate MIME type for images or PDF
+#                         mime_type = validate_image_type(document_base64)
+#                         if mime_type:
+#                             # Extract the base64 data (remove the prefix)
+#                             document_data = document_base64.split(';base64,')[1]
+#                             document_bytes = base64.b64decode(document_data)
+
+#                             # Check file size (after decoding)
+#                             if len(document_bytes) > (10 * 1024 * 1024):  # 10MB limit
+#                                 return Response({'error': 'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#                             # Create the document file (ContentFile)
+#                             document_name = f"purchase_outstanding_{farmer_id}_{vendor_id}_{purchase_id}.pdf"  # Or other extensions as needed
+#                             document_file = ContentFile(document_bytes, name=document_name)
+
+#                             # Fetch the file type
+#                             file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+#                             # Create and save the document
+#                             outstanding_document = OutstandingDocuments.objects.create(
+#                                 outstanding=outstanding,
+#                                 document_type=file_type,
+#                                 document=document_file,
+#                                 uploaded_at=timezone.now(),
+#                                 created_by=None,
+#                                 created_at=timezone.now()
+#                             )
+
+#                     except Exception as e:
+#                         return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Close outstanding if balance is fully paid
+#             if to_pay <= 0:
+#                 outstanding.status = 1  # Closed
+#                 outstanding.save()
+
+#                 return Response({
+#                     "detail": "Payment Created and Outstanding Closed",
+#                     "data": {
+#                         "total_paid": float(total_paid),
+#                         "to_pay": float(to_pay),
+#                         "payment_amount": float(payment)
+#                     }
+#                 }, status=status.HTTP_201_CREATED)
+
+#             return Response({
+#                 "detail": "Payment Created Successfully",
+#                 "data": {
+#                     "total_paid": float(total_paid),
+#                     "to_pay": float(to_pay),
+#                     "payment_amount": float(payment)
+#                 }
+#             }, status=status.HTTP_201_CREATED)
+
+#         return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+#     # except Exception as e:
+#     #     print(f"Error occurred: {e}")
+#     #     return Response({"detail": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         traceback_str = traceback.format_exc()
+#         print(f"Full traceback: {traceback_str}")
+#         return Response({"detail": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from decimal import Decimal
+from datetime import datetime
+import base64
+from django.core.files.base import ContentFile
+from django.utils import timezone
+import traceback
+
 @api_view(['POST'])
 def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
     try:
         farmer = get_object_or_404(Farmer, id=farmer_id)
         action = request.data.get('action')
 
-        if action == "create_pay":
-            payment_date_str = request.data.get('date')
-            payment = request.data.get('payment_amount')
-            description = request.data.get('description')
-            purchase_type = request.data.get('purchase_type')  # e.g., 'fuel', 'seeds', etc.
-            documents_data = request.data.get('documents', [])  # List of documents (optional)
+        if action != "create_pay":
+            return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Mapping of purchase types
-            purchase_mapping = {
-                "fuel":        {"model": MyFuel,        "field": "fuel_purchase",        "id_key": "fuel_purchase_id",        "amount_field": "paid_amount"},
-                "seeds":       {"model": MySeeds,       "field": "seeds_purchase",       "id_key": "seeds_purchase_id",       "amount_field": "paid_amount"},
-                "tools":       {"model": MyTools,       "field": "tool_purchase",        "id_key": "tool_purchase_id",        "amount_field": "paid_amount"},
-                "vehicle":     {"model": MyVehicle,     "field": "vehicle_purchase",     "id_key": "vehicle_purchase_id",     "amount_field": "paid_amount"},
-                "machinery":   {"model": MyMachinery,   "field": "machinery_purchase",   "id_key": "machinery_purchase_id",   "amount_field": "paid_amount"},
-                "fertilizer":  {"model": MyFertilizers, "field": "fertilizer_purchase",  "id_key": "fertilizer_purchase_id",  "amount_field": "paid_amount"},
-                "pesticides":  {"model": MyPesticides,  "field": "pesticide_purchase",   "id_key": "pesticide_purchase_id",   "amount_field": "paid_amount"},
-            }
+        payment_date_str = request.data.get('date')
+        payment = request.data.get('payment_amount')
+        description = request.data.get('description')
+        purchase_type = request.data.get('purchase_type')
+        documents_data = request.data.get('documents', [])
 
-            if purchase_type not in purchase_mapping:
-                return Response({"detail": "Invalid purchase type."}, status=status.HTTP_400_BAD_REQUEST)
+        # Validate documents_data to be a list
+        if documents_data and not isinstance(documents_data, list):
+            return Response({"detail": "'documents' must be a list of objects."}, status=status.HTTP_400_BAD_REQUEST)
 
-            mapping = purchase_mapping[purchase_type]
-            purchase_model = mapping["model"]
-            purchase_field = mapping["field"]
-            purchase_id = request.data.get(mapping["id_key"])
-            amount_field = mapping["amount_field"]
+        # Mapping of purchase types
+        purchase_mapping = {
+            "fuel":        {"model": MyFuel,        "field": "fuel_purchase",        "id_key": "fuel_purchase_id",        "amount_field": "paid_amount"},
+            "seeds":       {"model": MySeeds,       "field": "seeds_purchase",       "id_key": "seeds_purchase_id",       "amount_field": "paid_amount"},
+            "tools":       {"model": MyTools,       "field": "tool_purchase",        "id_key": "tool_purchase_id",        "amount_field": "paid_amount"},
+            "vehicle":     {"model": MyVehicle,     "field": "vehicle_purchase",     "id_key": "vehicle_purchase_id",     "amount_field": "paid_amount"},
+            "machinery":   {"model": MyMachinery,   "field": "machinery_purchase",   "id_key": "machinery_purchase_id",   "amount_field": "paid_amount"},
+            "fertilizer":  {"model": MyFertilizers, "field": "fertilizer_purchase",  "id_key": "fertilizer_purchase_id",  "amount_field": "paid_amount"},
+            "pesticides":  {"model": MyPesticides,  "field": "pesticide_purchase",   "id_key": "pesticide_purchase_id",   "amount_field": "paid_amount"},
+        }
 
-            if not purchase_id:
-                return Response({"detail": f"{mapping['id_key']} is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if purchase_type not in purchase_mapping:
+            return Response({"detail": "Invalid purchase type."}, status=status.HTTP_400_BAD_REQUEST)
 
+        mapping = purchase_mapping[purchase_type]
+        purchase_model = mapping["model"]
+        purchase_field = mapping["field"]
+        purchase_id = request.data.get(mapping["id_key"])
+        amount_field = mapping["amount_field"]
+
+        if not purchase_id:
+            return Response({"detail": f"{mapping['id_key']} is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Convert payment to Decimal safely
+        try:
             payment = Decimal(payment)
-            purchase = get_object_or_404(purchase_model, pk=int(purchase_id))
-            vendor = get_object_or_404(MyVendor, pk=vendor_id)
+        except Exception:
+            return Response({"detail": "Invalid payment amount."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Convert date
-            if payment_date_str:
-                try:
-                    payment_date = datetime.strptime(payment_date_str, "%d-%m-%Y").date()
-                except ValueError:
-                    return Response({"detail": "Invalid date format. Use 'dd-mm-yyyy'."}, status=status.HTTP_400_BAD_REQUEST)
+        purchase = get_object_or_404(purchase_model, pk=int(purchase_id))
+        vendor = get_object_or_404(MyVendor, pk=vendor_id)
 
-            last_outstanding = Outstanding.objects.filter(
-                farmer=farmer,
-                vendor=vendor,
-                **{purchase_field: purchase}
-            ).last()
+        # Parse date if provided
+        payment_date = None
+        if payment_date_str:
+            try:
+                payment_date = datetime.strptime(payment_date_str, "%d-%m-%Y").date()
+            except ValueError:
+                return Response({"detail": "Invalid date format. Use 'dd-mm-yyyy'."}, status=status.HTTP_400_BAD_REQUEST)
 
-            if last_outstanding and last_outstanding.to_pay <= 0:
+        last_outstanding = Outstanding.objects.filter(
+            farmer=farmer,
+            vendor=vendor,
+            **{purchase_field: purchase}
+        ).last()
+
+        if last_outstanding and last_outstanding.to_pay <= 0:
+            return Response({
+                "detail": "Account is already closed. No outstanding balance left to pay."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        original_balance = Decimal(getattr(purchase, amount_field))
+
+        if last_outstanding:
+            previous_to_pay = last_outstanding.to_pay
+            if payment > previous_to_pay:
                 return Response({
-                    "detail": "Account is already closed. No outstanding balance left to pay."
+                    "detail": f"Payment cannot exceed the outstanding amount of {previous_to_pay}."
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            original_balance = Decimal(getattr(purchase, amount_field))
+            paid = last_outstanding.paid + payment
+            total_paid = last_outstanding.total_paid + payment
+            to_pay = previous_to_pay - payment
+        else:
+            paid = payment
+            total_paid = payment
+            to_pay = original_balance - payment
 
-            if last_outstanding:
-                previous_to_pay = last_outstanding.to_pay
-                if payment > previous_to_pay:
-                    return Response({
-                        "detail": f"Payment cannot exceed the outstanding amount of {previous_to_pay}."
-                    }, status=status.HTTP_400_BAD_REQUEST)
+        if to_pay < 0:
+            to_pay = Decimal(0)
 
-                paid = last_outstanding.paid + payment  # this transaction only
-                total_paid = last_outstanding.total_paid + payment
-                to_pay = previous_to_pay - payment
-            else:
-                paid = payment
-                total_paid = payment
-                to_pay = original_balance - payment
+        # Create Outstanding entry
+        outstanding = Outstanding.objects.create(
+            farmer=farmer,
+            vendor=vendor,
+            **{purchase_field: purchase},
+            balance=to_pay,
+            paid=paid,
+            to_pay=to_pay,
+            paid_date=payment_date,
+            total_paid=total_paid,
+            payment_amount=payment,
+            created_by=None,
+            created_at=timezone.now(),
+            description=description if description else None
+        )
 
-            if to_pay < 0:
-                to_pay = Decimal(0)
+        # Process documents (if any)
+        if documents_data:
+            for idx, doc_data in enumerate(documents_data):
+                # Defensive: doc_data must be dict
+                if not isinstance(doc_data, dict):
+                    return Response({"detail": f"Each document entry must be an object. Error at index {idx}."},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
-            # Create Outstanding entry (payables)
-            outstanding = Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                **{purchase_field: purchase},
-                balance=to_pay,
-                paid=paid,
-                to_pay=to_pay,
-                paid_date=payment_date,
-                total_paid=total_paid,
-                payment_amount=payment,
-                created_by=None,
-                created_at=timezone.now(),
-                description=description if description else None
-            )
+                file_type_id = doc_data.get('file_type')
+                document_base64 = doc_data.get('document')
 
-            # Process documents (if any)
-            if documents_data:
-                for doc_data in documents_data:
-                    file_type_id = doc_data.get('file_type')
-                    document_base64 = doc_data.get('document')
+                if file_type_id is None or not document_base64:
+                    return Response({"detail": "File type and document are required for each document."},
+                                    status=status.HTTP_400_BAD_REQUEST)
 
-                    if file_type_id is None or not document_base64:
-                        return Response({"detail": "File type and document are required."}, status=status.HTTP_400_BAD_REQUEST)
+                try:
+                    # Validate MIME type - you need to have validate_image_type function defined elsewhere
+                    mime_type = validate_image_type(document_base64)
+                    if not mime_type:
+                        return Response({'detail': 'Invalid document format. Only images and PDFs allowed.'},
+                                        status=status.HTTP_400_BAD_REQUEST)
 
-                    # Validate and process the document
-                    try:
-                        # Validate MIME type for images or PDF
-                        mime_type = validate_image_type(document_base64)
-                        if mime_type:
-                            # Extract the base64 data (remove the prefix)
-                            document_data = document_base64.split(';base64,')[1]
-                            document_bytes = base64.b64decode(document_data)
+                    # Extract base64 content after comma
+                    if ';base64,' in document_base64:
+                        document_data = document_base64.split(';base64,')[1]
+                    else:
+                        document_data = document_base64  # Assume pure base64
 
-                            # Check file size (after decoding)
-                            if len(document_bytes) > (10 * 1024 * 1024):  # 10MB limit
-                                return Response({'error': 'File is too large. Max size is 10MB.'}, status=status.HTTP_400_BAD_REQUEST)
+                    document_bytes = base64.b64decode(document_data)
 
-                            # Create the document file (ContentFile)
-                            document_name = f"purchase_outstanding_{farmer_id}_{vendor_id}_{purchase_id}.pdf"  # Or other extensions as needed
-                            document_file = ContentFile(document_bytes, name=document_name)
+                    if len(document_bytes) > (10 * 1024 * 1024):  # 10MB limit
+                        return Response({'detail': 'File is too large. Max size is 10MB.'},
+                                        status=status.HTTP_400_BAD_REQUEST)
 
-                            # Fetch the file type
-                            file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+                    ext = 'pdf' if 'pdf' in mime_type else 'jpg'  # Basic extension guess
+                    document_name = f"purchase_outstanding_{farmer_id}_{vendor_id}_{purchase_id}_{idx}.{ext}"
+                    document_file = ContentFile(document_bytes, name=document_name)
 
-                            # Create and save the document
-                            outstanding_document = OutstandingDocuments.objects.create(
-                                outstanding=outstanding,
-                                document_type=file_type,
-                                document=document_file,
-                                uploaded_at=timezone.now(),
-                                created_by=None,
-                                created_at=timezone.now()
-                            )
+                    file_type = get_object_or_404(DocumentCategory, id=file_type_id)
 
-                    except Exception as e:
-                        return Response({'error': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+                    OutstandingDocuments.objects.create(
+                        outstanding=outstanding,
+                        document_type=file_type,
+                        document=document_file,
+                        uploaded_at=timezone.now(),
+                        created_by=None,
+                        created_at=timezone.now()
+                    )
 
-            # Close outstanding if balance is fully paid
-            if to_pay <= 0:
-                outstanding.status = 1  # Closed
-                outstanding.save()
+                except Exception as e:
+                    return Response({'detail': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-                return Response({
-                    "detail": "Payment Created and Outstanding Closed",
-                    "data": {
-                        "total_paid": float(total_paid),
-                        "to_pay": float(to_pay),
-                        "payment_amount": float(payment)
-                    }
-                }, status=status.HTTP_201_CREATED)
-
+        # Close outstanding if fully paid
+        if to_pay <= 0:
+            outstanding.status = 1  # Closed
+            outstanding.save()
             return Response({
-                "detail": "Payment Created Successfully",
+                "detail": "Payment Created and Outstanding Closed",
                 "data": {
                     "total_paid": float(total_paid),
                     "to_pay": float(to_pay),
@@ -34873,11 +38664,19 @@ def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
                 }
             }, status=status.HTTP_201_CREATED)
 
-        return Response({"detail": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            "detail": "Payment Created Successfully",
+            "data": {
+                "total_paid": float(total_paid),
+                "to_pay": float(to_pay),
+                "payment_amount": float(payment)
+            }
+        }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
-        print(f"Error occurred: {e}")
-        return Response({"detail": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        traceback_str = traceback.format_exc()
+        print(f"Full traceback: {traceback_str}")
+        return Response({"detail": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER)
 
 # @api_view(['POST'])
 # def pay_sales_payables_outstanding(request, farmer_id, customer_id):
@@ -35128,7 +38927,13 @@ def pay_sales_payables_outstanding(request, farmer_id, customer_id):
         print(f"Error occurred: {e}")
         return Response({"detail": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+def validate_image_type(base64_string):
+    try:
+        header, base64_data = base64_string.split(';base64,')
+        file_type = header.split(':')[1]  # e.g., "image/png"
+        return file_type
+    except Exception:
+        return None
 
 @api_view(['GET'])
 def get_sales_outstanding_history(request, farmer_id):
@@ -36804,106 +40609,1345 @@ def get_crop_summary(request, farmer_id, land_id, crop_id):
 
 
 # region Add new api function by Bala
+@extend_schema(operation_id="01_get_inventory_types_quantity",tags=["Inventory"],)
+@api_view(['GET'])
+def get_inventory_types_quantity(request, farmer_id):
+    try:
+        my_fuels = MyFuel.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_vehicles = MyVehicle.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_machinery = MyMachinery.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_tools = MyTools.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_seeds = MySeeds.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_fertilizers = MyFertilizers.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+        my_pesticides = MyPesticides.objects.filter(farmer_id=farmer_id, status__in=[0, 1])
+
+        total_fuel_liters = sum([float(fuel.quantity) if fuel.quantity is not None else 0 for fuel in my_fuels])
+        total_vehicle_count = my_vehicles.count()
+        total_machinery_count = my_machinery.count()
+        total_tool_quantity = sum([float(tool.quantity) if tool.quantity is not None else 0 for tool in my_tools])
+        total_seeds_quantity = sum([float(seeds.quantity) if seeds.quantity is not None else 0 for seeds in my_seeds])
+        total_fertilizers_quantity = sum([float(fertilizers.quantity) if fertilizers.quantity is not None else 0 for fertilizers in my_fertilizers])
+        total_pesticides_quantity = sum([float(pesticides.quantity) if pesticides.quantity is not None else 0 for pesticides in my_pesticides])
+
+        response_data = [
+            {
+                'id': 1,
+                'name': 'Vehicle',
+                'unit_type': "No's",
+                'quantity': total_vehicle_count
+            },
+            {
+                'id': 2,
+                'name': 'Machinery',
+                'unit_type': "No's", 
+                'quantity': total_machinery_count
+            },
+            {
+                'id': 3,
+                'name': 'Tools',
+                'unit_type': "No's",
+                'quantity': int(total_tool_quantity)
+            },
+            {
+                'id': 4,
+                'name': 'Pesticides / Fertilizers',
+                'unit_type': "kg",
+                'quantity': int(total_pesticides_quantity)
+            },
+            # {
+            #     'id': 5,
+            #     'name': 'Fertilizers',
+            #     'unit_type': "kg",
+            #     'quantity': int(total_fertilizers_quantity)
+            # },
+            {
+                'id': 6,
+                'name': 'Fuel',
+                'unit_type': "liter",
+                'quantity': int(total_fuel_liters)
+            },
+            {
+                'id': 7,
+                'name': 'Seeds',
+                'unit_type': "kg",
+                'quantity': int(total_seeds_quantity)
+            }
+        ]
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response(
+            {"error": f"An error occurred: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+    except Exception as e:
+        return Response(
+            {"error": "Item not found.", "message": str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+@extend_schema(operation_id="02_get_inventory_items",tags=["Inventory"],)
+@api_view(['GET'])
+def get_inventory_items(request, inventory_type_id):
+    language_code = request.GET.get('lang', 'en')  # Default to English
+
+    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+    
+    inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
+
+    if not inventory_items.exists():
+        return Response(
+            {"error": "Category not found.", "message": f"No inventory items found for the given category - id {id}."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    serializer = InventoryItemsSerializer(inventory_items, many=True, context={'language_code': language_code})
+    
+    return Response({        
+        "data": serializer.data
+    }, status=200)
+ 
+@extend_schema(operation_id="03_get_inventory_item_quantity",tags=["Inventory"],)
+@api_view(['GET'])
+def get_inventory_item_quantity(request, farmer_id, inventory_type_id, inventory_items_id):
+    language_code = request.GET.get('lang', 'en') 
+
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+    inventory_item = get_object_or_404(InventoryItems, id=inventory_items_id)
+
+    qs = MyInventory.objects.filter(
+        farmer=farmer,
+        inventory_type=inventory_type,
+        inventory_items=inventory_item
+    )
+    inventory_map = {
+        1: ("Vehicle",False, ""),  
+        2: ("Machinery",False, ""),   
+        3: ("Tools",False, ""),   
+        4: ("Pesticides",True, "kg"),   
+        5: ("Fertilizers",True, "kg"),  
+        6: ("Fuel",True, "liter"),
+        7: ("Seeds",True, "kg"),   
+    }
+    inventory_type, has_quantity, unit_type = inventory_map[inventory_type.id]
+    if not qs.exists():
+        return Response(
+            {"detail": "No inventory items found for the given category."},
+            status=404
+        )
+
+    # Example: only return id & quantity
+    data = list(qs.values("id", "available_quans"))[-1]
+    data['name'] = inventory_type
+
+    if has_quantity:
+        data['unit_type'] = unit_type
+
+    return Response(data, status=200)
+
+@extend_schema(operation_id="01_get_inventory_purchase_list", parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Inventory Purchase"],)
 @api_view(['GET'])
 def get_inventory_purchase_list(request, farmer_id, inventory_type_id, inventory_items_id):
-
     farmer = get_object_or_404(Farmer, id=farmer_id)
     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
     inventory_items = get_object_or_404(InventoryItems, id=inventory_items_id)
 
-    inventories_qs = MyInventory.objects.filter(
+    # Map inventory_type_id to actual purchase model and extra info
+    inventory_map = {
+        1: (MyVehicle, False, ""),  
+        2: (MyMachinery, False, ""),   
+        3: (MyTools, False, ""),   
+        4: (MyPesticides, True, "kg"),   
+        5: (MyFertilizers, True, "kg"),  
+        6: (MyFuel, True, "liter"),
+        7: (MySeeds, True, "kg"),   
+    }
+
+    if inventory_type.id not in inventory_map:
+        return Response([], status=status.HTTP_200_OK)
+
+    PurchaseModel, has_quantity, unit_type = inventory_map[inventory_type.id]
+
+    # Filter the specific purchase records directly
+    purchase_qs = PurchaseModel.objects.filter(
         farmer=farmer,
         inventory_type=inventory_type,
-        inventory_items=inventory_items,
-        fuel_purchase__isnull=False,
-    )
-
-    fuel_data = inventories_qs.values(
-        'fuel_purchase__id',
-        'fuel_purchase__date_of_consumption',
-        'fuel_purchase__quantity',
-        'fuel_purchase__purchase_amount',
-        'fuel_purchase__vendor__id',
-        'fuel_purchase__vendor__name',
-    )
-    fuel_data = inventories_qs.values(
-        'machinery_purchase__id',
-        'machinery_purchase__date_of_consumption',
-        'fuel_purchase__quantity',
-        'fuel_purchase__purchase_amount',
-        'fuel_purchase__vendor__id',
-        'fuel_purchase__vendor__name',
-    )
+        inventory_items=inventory_items
+    ).select_related('vendor') 
 
     paginator = PageNumberPagination()
     paginator.page_size = 10
 
     try:
-        paginated_data = paginator.paginate_queryset(list(fuel_data), request)
-    except NotFound:
+        paginated_purchases = paginator.paginate_queryset(purchase_qs, request)
+    except Exception:
         return Response({
-                "error": "No more items.",
-                "message": "You have reached the end of the list."
-            },status=status.HTTP_400_BAD_REQUEST)
-        
-    def items(item):
-        return {
-            'id': item['fuel_purchase__id'],
-            'date_of_consumption': str(item['fuel_purchase__date_of_consumption']) if item['fuel_purchase__date_of_consumption'] else "N/A",
-            'quantity': str(item['fuel_purchase__quantity']) if item['fuel_purchase__quantity'] is not None else "0.00",
-            'unit_type': "liter",
-            'purchase_amount': str(item['fuel_purchase__purchase_amount']) if item['fuel_purchase__purchase_amount'] is not None else "0.00",
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def format_purchase(purchase):
+        result = {
+            'id': purchase.id,
+            'date_of_consumption': str(purchase.date_of_consumption or "N/A"),
+            'purchase_amount': int(purchase.purchase_amount or 0),
             'vendor': {
-                'id': item['fuel_purchase__vendor__id'],
-                'name': item['fuel_purchase__vendor__name'] or "Unknown",
+                'id': purchase.vendor.id if purchase.vendor else None,
+                'name': purchase.vendor.name if purchase.vendor else "Unknown",
             }
         }
+        if has_quantity:
+            result['quantity'] = int(purchase.quantity or 0)
+            result['unit_type'] = unit_type
+        return result
 
-    response_data = list(map(items, paginated_data))
-    
+    response_data = [format_purchase(p) for p in paginated_purchases]
     return Response(response_data, status=status.HTTP_200_OK)
 
-
+@extend_schema(operation_id="01_get_inventory_consumption_list", parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Inventory Cusumption"],)
 @api_view(['GET'])
-def get_inventory_cusumption_list(request, farmer_id, inventory_type_id, inventory_items_id): 
+def get_inventory_consumption_list(request, farmer_id, inventory_type_id, inventory_items_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
     inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
     inventory_items = get_object_or_404(InventoryItems, id=inventory_items_id)
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
 
     inventories = MyInventory.objects.filter(
-        farmer=farmer, 
-        inventory_type=inventory_type, 
-        inventory_items=inventory_items
-    ).select_related('crop', 'crop__crop')  
-
+        farmer=farmer,
+        inventory_type=inventory_type,
+        inventory_items=inventory_items,
+    ).exclude(
+        Q(quantity_utilized=0) | Q(usage_hours=0) | Q(start_kilometer=0) | Q(end_kilometer=0)
+    ).select_related('crop', 'crop__crop')
+    
     paginator = PageNumberPagination()
-    paginator.page_size = 2
+    paginator.page_size = 10
 
     try:
-        paginated_inventories = paginator.paginate_queryset(list(inventories), request)
-    except NotFound:
-        return Response(
-            {
-                "error": "No more items.",
-                "message": "You have reached the end of the list."
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    response_data = list(
-        map(lambda inventory: {
-        'id': inventory.id,
-        'quantity': str(inventory.quantity_utilized) if inventory.quantity_utilized else "0.00",
-        'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else "N/A",
-        'start_kilometer': str(inventory.start_kilometer) if inventory.start_kilometer else "0.00",
-        'end_kilometer': str(inventory.end_kilometer) if inventory.end_kilometer else "0.00",
-        'usage_hours': str(inventory.usage_hours) if inventory.usage_hours else "0.00",
-        'rental': str(inventory.rental) if inventory.rental else "1",
-        'crop_id': inventory.crop.id if inventory.crop else None,
-        'crop_name': inventory.crop.crop.get_translated_value("name", language_code) if inventory.crop else "Unknown Crop",
-        'created_at': str(inventory.created_at) if inventory.created_at else "N/A",
-        'updated_at': str(inventory.updated_at) if inventory.updated_at else "N/A",
-    }, paginated_inventories))
+        paginated = paginator.paginate_queryset(inventories, request)
+    except Exception:
+        return Response({
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+    inventory_map = {
+        1: (False, ""),  
+        2: (False, "hrs"),   
+        3: (False, "hrs"),   
+        4: (True, "kg"),   
+        5: (True, "kg"),  
+        6: (True, "liter"),
+        7: (True, "kg"),   
+    }
+    
+    has_quantity, unit_type = inventory_map[inventory_type.id]    
+
+    response_data = [
+        {
+            'id': int(inv.id),
+            'quantity': int(inv.quantity_utilized) if inv.quantity_utilized is not None else None,
+            'date_of_consumption': str(inv.date_of_consumption or "N/A"),
+            'unit_type': unit_type,
+            'start_kilometer': float(inv.start_kilometer) if inv.start_kilometer is not None else None,
+            'end_kilometer': float(inv.end_kilometer) if inv.end_kilometer is not None else None,
+            'usage_hours': float(inv.usage_hours) if inv.usage_hours is not None else None,
+            'rental': int(inv.rental or 0),
+            'crop_id': int(inv.crop.id) if inv.crop else None,
+            'crop_name': inv.crop.crop.get_translated_value("name", language_code) if inv.crop else "Unknown Crop",
+        }
+        for inv in paginated
+    ]
+
 
     return Response(response_data, status=status.HTTP_200_OK)
 
+@extend_schema(operation_id="02_get_inventory_purchase_details",tags=["Inventory Purchase"],)
+@api_view(['GET'])
+def get_inventory_purchase_details(request, farmer_id, inventory_type_id, id):
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
+    # Map inventory_type_id to (Model, has_quantity, unit,docModel)
+    inventory_map = {
+        1: (MyVehicle, False, "", MyVehicleDocuments, 'vehicle_id'),  
+        2: (MyMachinery, False, "", MyMachineryDocuments, 'machinary_id'),   
+        3: (MyTools, False, "", MyToolsDocuments, 'tools_id'),   
+        4: (MyPesticides, True, "kg", MyPesticidesDocuments, 'pest_id'),   
+        5: (MyFertilizers, True, "kg", MyFertilizersDocuments, 'fertilizers_id'),  
+        6: (MyFuel, True, "liter", MyFuelDocuments, 'fuel_id'),
+        7: (MySeeds, True, "kg", MyseedsDocuments, 'seeds_id'),   
+    }
+
+    Model, has_quantity, unit, documentModel, documentModelGet = inventory_map[inventory_type_id]
+
+    if inventory_type_id not in inventory_map:
+        return Response({"detail": "Invalid inventory type."}, status=400)
+
+
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    try:
+        item = Model.objects.select_related('vendor').get(id=id, farmer=farmer)
+    except Model.DoesNotExist:
+        return Response(
+            {"error": "Item not found.", "message": f"No inventory found with id {id}."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    data = {
+        "id": item.id,
+        "date_of_consumption": str(item.date_of_consumption) if hasattr(item, 'date_of_consumption') and item.date_of_consumption else None,
+        "purchase_amount": str(item.purchase_amount or "0.00"),
+        "vendor": {
+            "id": getattr(item.vendor, "id", None),
+            "name": getattr(item.vendor, "name", None),
+        },
+        "inventory_type": {
+            "id": item.inventory_type.id if item.inventory_type else None,
+            "name": item.inventory_type.get_translated_value("name", language_code) if item.inventory_type else "Unknown",
+        },
+        "inventory_items": {
+            "id": item.inventory_items.id if item.inventory_items else None,
+            "name": item.inventory_items.get_translated_value("name", language_code) if item.inventory_items else None,
+        },
+        "quantity_unit": (item.quantity_unit.get_translated_value("name", language_code) if hasattr(item, 'quantity_unit') and item.quantity_unit else None ),
+        "status": item.status if hasattr(item, "status") else None,
+        "register_number": item.register_number if hasattr(item, "register_number") and item.register_number else None,
+        "owner_name": item.get_translated_value("owner_name", language_code) if hasattr(item, "owner_name") and item.owner_name else None,
+        "date_of_registration": str(item.date_of_registration) if hasattr(item, "date_of_registration") and item.date_of_registration else None,
+        "engine_number": item.engine_number if hasattr(item, "engine_number") and item.engine_number else None,
+        "chasis_number": item.chasis_number if hasattr(item, "chasis_number") and item.chasis_number else None,
+        "running_kilometer": int(item.running_kilometer) if hasattr(item, "running_kilometer") and item.running_kilometer else 0,
+        "average_mileage": int(item.average_mileage) if hasattr(item, "average_mileage") and item.average_mileage else 0,
+        "insurance": item.insurance if hasattr(item, "insurance") else None,
+        "company_name": item.get_translated_value("company_name", language_code) if hasattr(item, "company_name") and item.company_name else None,
+        "insurance_no": item.insurance_no if hasattr(item, "insurance_no") and item.insurance_no else None,
+        "insurance_amount": int(item.insurance_amount) if hasattr(item, "insurance_amount") and item.insurance_amount else 0,
+        "insurance_start_date": str(item.insurance_start_date) if hasattr(item, "insurance_start_date") and item.insurance_start_date else None,
+        "insurance_end_date": str(item.insurance_end_date) if hasattr(item, "insurance_end_date") and item.insurance_end_date else None,
+        "insurance_renewal_date": str(item.insurance_renewal_date) if hasattr(item, "insurance_renewal_date") and item.insurance_renewal_date else None,
+        "fuel_capacity": int(item.fuel_capacity) if hasattr(item, "fuel_capacity") and item.fuel_capacity else 0,
+        "warranty_start_date": str(item.warranty_start_date) if hasattr(item, "warranty_start_date") and item.warranty_start_date else None,
+        "warranty_end_date": str(item.warranty_end_date) if hasattr(item, "warranty_end_date") and item.warranty_end_date else None,
+        "description": item.description if item.description else None,
+        "documents": []
+    }
+
+    machinery_documents = documentModel.objects.filter(**{documentModelGet: item})
+    for doc in machinery_documents:
+        file_type = doc.file_type.get_translated_value("name", language_code) if doc.file_type else "Unknown"
+        file_type_id = doc.file_type.id if doc.file_type else None
+        document_data = {
+            'id': doc.id,
+            'document': request.build_absolute_uri(f'/SuperAdmin{doc.document.url}' if doc.document else doc.document.url) if doc.document else "",
+        }
+
+        # Group documents by file_type
+        if file_type not in data['documents']:
+            data['documents'][file_type] = {
+                'id': file_type_id,
+                'name': file_type,
+                'documents': []
+            }
+        data['documents'][file_type]['documents'].append(document_data)
+
+ 
+    if has_quantity:
+        data.update({
+            "quantity": str(getattr(item, "quantity", "0.00")),
+            "unit_type": unit,
+        })
+
+    return Response(data)
+
+@extend_schema(  operation_id="02_get_inventory_cusumption_details",tags=["Inventory Cusumption"],)
+@api_view(['GET'])
+def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
+    # Validate inventory type early
+    inventory_map = {
+        1: (False, "", MyVehicleDocuments),
+        2: (False, "hrs", MyMachineryDocuments),
+        3: (False, "hrs", MyToolsDocuments),
+        4: (True, "kg", MyPesticidesDocuments),
+        5: (True, "kg", MyFertilizersDocuments),
+        6: (True, "liter", MyFuelDocuments),
+        7: (True, "kg", MyseedsDocuments),
+    }
+
+    inventory_type_data = inventory_map.get(inventory_type_id)
+    if not inventory_type_data:
+        return Response(
+            {"error": "Invalid inventory type."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    has_quantity, unit_type, DocumentModel = inventory_type_data
+
+    # Get inventory object with related fields
+    inventory = MyInventory.objects.select_related(
+        'crop__crop', 'inventory_items', 'inventory_type'
+    ).filter(id=id).first()
+
+    if not inventory:
+        return Response(
+            {"error": "Item not found.", "message": f"No inventory found with id {id}."},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    language_code = request.headers.get('Accept-Language', 'en')
+
+    # Helper for safe attribute fetching and translation
+    def safe_translated(obj, attr):
+        return obj.get_translated_value(attr, language_code) if obj else None
+
+    response_data = {
+        'id': inventory.id,
+        'quantity': int(inventory.quantity_utilized) if inventory.quantity_utilized else None,
+        'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else None,
+        'start_kilometer': int(inventory.start_kilometer) if inventory.start_kilometer else None,
+        'end_kilometer': int(inventory.end_kilometer) if inventory.end_kilometer else None,
+        'usage_hours': int(inventory.usage_hours) if inventory.usage_hours else None,
+        'rental': int(inventory.rental) if inventory.rental else None,
+        'crop_id': getattr(inventory.crop, 'id', None),
+        'crop_name': safe_translated(inventory.crop.crop if inventory.crop else None, "name"),
+        'inventory_items': {
+            'id': getattr(inventory.inventory_items, 'id', None),
+            'name': safe_translated(inventory.inventory_items, "name") or "Unknown",
+        },
+        'inventory_type': {
+            'id': getattr(inventory.inventory_type, 'id', None),
+            'name': safe_translated(inventory.inventory_type, "name") or "Unknown",
+        },
+        'description': safe_translated(inventory, "description"),
+        'documents': []
+    }
+
+    # Group documents by file_type
+    documents = DocumentModel.objects.filter(fuel=inventory.fuel_purchase).select_related('file_type')
+    grouped_documents = defaultdict(lambda: {'id': None, 'name': '', 'documents': []})
+
+    for doc in documents:
+        file_type = safe_translated(doc.file_type, "name") or "Unknown"
+        file_type_id = getattr(doc.file_type, 'id', None)
+        document_url = request.build_absolute_uri(f'/SuperAdmin{doc.document.url}') if doc.document else ""
+
+        grouped_documents[file_type]['id'] = file_type_id
+        grouped_documents[file_type]['name'] = file_type
+        grouped_documents[file_type]['documents'].append({
+            'id': doc.id,
+            'document': document_url,
+        })
+
+    response_data['documents'] = list(grouped_documents.values())
+
+    return Response(response_data, status=status.HTTP_200_OK)
+
+@extend_schema( parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Customer Outstanding"])
+@api_view(['GET'])
+def get_customer_payables_list(request, farmer_id):
+    customers = MyCustomer.objects.filter(
+        farmer_id=farmer_id,
+        status=0,
+        is_customer_is_vendor=False,
+        is_credit=False
+    ).only('id', 'customer_name', 'shop_name', 'is_credit', 'opening_balance')
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 5
+
+    
+    try:
+        paginated_customers = paginator.paginate_queryset(customers, request)
+    except Exception:
+        return Response({
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    customer_payables_data = [
+        {
+            "id": c.id,
+            "name": c.customer_name,
+            "business_name": c.shop_name,
+            "is_credit": c.is_credit,
+            "balance": c.opening_balance,
+        }
+        for c in paginated_customers
+    ]
+
+    return Response(customer_payables_data, status=status.HTTP_200_OK)
+
+@extend_schema(parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Customer Outstanding"])
+@api_view(['GET'])
+def get_customer_receivables_list(request, farmer_id):
+    customers = MyCustomer.objects.filter(
+        farmer_id=farmer_id,
+        status=0,
+        is_customer_is_vendor=False,
+        is_credit=True
+    ).only('id', 'customer_name', 'shop_name', 'is_credit', 'opening_balance')
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 5
+
+    try:
+        paginated_customers = paginator.paginate_queryset(customers, request)
+    except Exception:
+        return Response({
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    customer_receivables_data = []
+
+    for customer in paginated_customers:
+        customer_info = {
+            "id": customer.id,
+            "name": customer.customer_name,
+            "business_name": customer.shop_name,
+            "is_credit": customer.is_credit,
+            "balance": customer.opening_balance,
+        }
+        customer_receivables_data.append(customer_info)
+        
+    return Response(customer_receivables_data, status=status.HTTP_200_OK)
+
+@extend_schema(parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Vendors Outstanding"])
+@api_view(['GET'])
+def get_vendors_payables_list(request, farmer_id):
+    vendors = MyVendor.objects.filter(
+        farmer_id=farmer_id,
+        status=0,
+        is_customer_is_vendor=False,
+        credit=False
+    ).only('id', 'name', 'business_name', 'credit', 'opening_balance')
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    
+    try:
+        paginated_vendors = paginator.paginate_queryset(vendors, request)
+    except Exception:
+        return Response({
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    vendors_payables_data = []
+
+    for vendor in paginated_vendors:
+        vendor_info = {
+            "id": vendor.id,
+            "name": vendor.name,
+            "business_name": vendor.business_name,
+            "is_credit": vendor.credit,
+            "balance": vendor.opening_balance,
+        }
+        vendors_payables_data.append(vendor_info)
+
+    return Response(vendors_payables_data, status=status.HTTP_200_OK)
+
+@extend_schema(parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Vendors Outstanding"])
+@api_view(['GET'])
+def get_vendors_receivables_list(request, farmer_id):
+    vendors = MyVendor.objects.filter(
+        farmer_id=farmer_id,
+        status=0,
+        is_customer_is_vendor=False,
+        credit=True
+    ).only('id', 'name', 'business_name', 'credit', 'opening_balance')
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    
+    try:
+        paginated_vendors = paginator.paginate_queryset(vendors, request)
+    except Exception:
+        return Response({
+            "error": "No more items.",
+            "message": "You have reached the end of the list."
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    vendors_receivables_data = []
+
+    for vendor in paginated_vendors:
+        vendor_info = {
+            "id": vendor.id,
+            "name": vendor.name,
+            "business_name": vendor.business_name,
+            "is_credit": vendor.credit,
+            "balance": vendor.opening_balance,
+        }
+        vendors_receivables_data.append(vendor_info)
+
+    return Response(vendors_receivables_data, status=status.HTTP_200_OK)
+
+
+
+# ---------------- CREATE EMPLOYEE ----------------
+@extend_schema(
+    request=None,
+    responses={201: dict},
+    tags=["Employee Management"]
+)
+@api_view(['POST'])
+def create_employee(request):
+    data = request.data
+    try:
+        # Handle both farmer and manager relationships
+        farmer_id = data.get("farmer_id")
+        manager_id = data.get("manager_id")
+        
+        farmer = None
+        manager = None
+        
+        if farmer_id:
+            farmer = get_object_or_404(Farmer, id=farmer_id)
+        if manager_id:
+            manager = get_object_or_404(ManagerUser, id=manager_id)
+        
+        # Create employee
+        employee = Employee.objects.create(
+            farmer=farmer,
+            manager=manager,
+            name=data.get("name"),
+            mobile_no=data.get("mobile_no"),
+            employee_type_id=data.get("employee_type"),
+            work_type_id=data.get("work_type"),
+            locations=data.get("locations"),
+            latitude=data.get("latitude"),
+            longitude=data.get("longitude"),
+            door_no=data.get("door_no"),
+            pincode=data.get("pincode"),
+            description=data.get("description"),
+            status=data.get("status", 0),
+            created_by=farmer.farmer_user
+        )
+        
+        # Handle image upload if provided
+        if 'image' in request.FILES:
+            employee.image = request.FILES['image']
+            employee.save()
+
+        return Response({"message": "Employee created", "id": employee.id}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ---------------- UPDATE EMPLOYEE ----------------
+@extend_schema(
+    request=None,
+    responses={200: dict},
+    tags=["Employee Management"]
+)
+@api_view(['PUT'])
+def update_employee(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    data = request.data
+
+    try:
+        # Update relationships
+        if "farmer_id" in data:
+            employee.farmer = get_object_or_404(Farmer, id=data["farmer_id"]) if data["farmer_id"] else None
+        if "manager_id" in data:
+            employee.manager = get_object_or_404(ManagerUser, id=data["manager_id"]) if data["manager_id"] else None
+        
+        # Update foreign key fields and other fields
+        fields_mapping = {
+            "name": "name",
+            "mobile_no": "mobile_no",
+            "employee_type": "employee_type_id",
+            "work_type": "work_type_id",
+            "salary": "salary",
+            "advance": "advance",
+            "topay": "topay",
+            "locations": "locations",
+            "latitude": "latitude",
+            "longitude": "longitude",
+            "country": "country_id",
+            "state": "state_id",
+            "city": "city_id",
+            "taluk": "taluk_id",
+            "village": "village_id",
+            "door_no": "door_no",
+            "pincode": "pincode",
+            "description": "description",
+            "authority_users": "authority_users",
+            "my_farms": "my_farms",
+            "my_sales": "my_sales",
+            "my_expense": "my_expense",
+            "my_inventory": "my_inventory",
+            "attendance_payouts": "attendance_payouts",
+            "username": "username",
+            "password": "password",
+            "employee_user": "employee_user_id",
+            "status": "status",
+            "translate_json": "translate_json"
+        }
+
+        for field, model_field in fields_mapping.items():
+            if field in data:
+                setattr(employee, model_field, data[field])
+        
+        # Handle image update
+        if 'image' in request.FILES:
+            employee.image = request.FILES['image']
+        
+        employee.updated_by = request.user if request.user.is_authenticated else None
+        employee.save()
+        
+        # Handle document uploads
+        if 'documents' in request.FILES:
+            documents = request.FILES.getlist('documents')
+            for doc_file in documents:
+                EmployeeDocument.objects.create(
+                    employee=employee,
+                    upload_document=doc_file,
+                    created_by=request.user if request.user.is_authenticated else None
+                )
+        
+        return Response({"message": "Employee updated"})
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ---------------- DELETE EMPLOYEE ----------------
+@extend_schema(
+    responses={200: dict},
+    tags=["Employee Management"]
+)
+@api_view(['DELETE'])
+def delete_employee(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    employee.delete()
+    return Response({"message": "Employee deleted"})
+
+
+# ---------------- STATUS UPDATE ----------------
+@extend_schema(
+    request=None,
+    responses={200: dict},
+    tags=["Employee Management"]
+)
+@api_view(['PATCH'])
+def update_employee_status(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    status_val = request.data.get("status")
+    if status_val is None:
+        return Response({"error": "status required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    employee.status = status_val
+    employee.updated_by = request.user if request.user.is_authenticated else None
+    employee.save()
+    return Response({"message": "Status updated"})
+
+
+# ---------------- GET EMPLOYEE DETAILS ----------------
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name="employee_id", type=int, location=OpenApiParameter.PATH),
+    ],
+    responses={200: dict},
+    tags=["Employee Management"]
+)
+@api_view(['GET'])
+def get_employee_details(request, employee_id):
+    employee = get_object_or_404(Employee.objects.select_related(
+        "farmer", "manager", "employee_type", "work_type", "country", 
+        "state", "city", "taluk", "village", "employee_user"
+    ), id=employee_id)
+    
+    # Get employee documents
+    documents = EmployeeDocument.objects.filter(employee=employee).values(
+        'id', 'upload_document', 'status', 'created_at'
+    )
+
+    data = {
+        "id": employee.id,
+        "name": employee.name,
+        "mobile_no": employee.mobile_no,
+        "employee_type": employee.employee_type.name if employee.employee_type else None,
+        "work_type": employee.work_type.name if employee.work_type else None,
+        "salary": str(employee.salary) if employee.salary else "0",
+        "farmer": {
+            "id": employee.farmer.id,
+            "name": employee.farmer.name
+        } if employee.farmer else None,
+        "manager": {
+            "id": employee.manager.id,
+            "name": employee.manager.name
+        } if employee.manager else None,
+        "advance": str(employee.advance),
+        "topay": str(employee.topay),
+        "status": employee.status,
+        "locations": employee.locations,
+        "latitude": employee.latitude,
+        "longitude": employee.longitude,
+        "address": {
+            "door_no": employee.door_no,
+            "pincode": employee.pincode,
+            "country": employee.country.name if employee.country else None,
+            "state": employee.state.name if employee.state else None,
+            "city": employee.city.name if employee.city else None,
+            "taluk": employee.taluk.name if employee.taluk else None,
+            "village": employee.village.name if employee.village else None,
+        },
+        "image": employee.image.url if employee.image else None,
+        "description": employee.description,
+        "permissions": {
+            "authority_users": employee.authority_users,
+            "my_farms": employee.my_farms,
+            "my_sales": employee.my_sales,
+            "my_expense": employee.my_expense,
+            "my_inventory": employee.my_inventory,
+            "attendance_payouts": employee.attendance_payouts,
+        },
+        "username": employee.username,
+        "employee_user": employee.employee_user.username if employee.employee_user else None,
+        "translate_json": employee.translate_json,
+        "documents": list(documents),
+        "created_at": employee.created_at,
+        "updated_at": employee.updated_at
+    }
+
+    return Response({"employee": data}, status=status.HTTP_200_OK)
+
+
+# ---------------- GET EMPLOYEES BY FARMER (SPECIFIC) ----------------
+@extend_schema(
+    parameters=[
+        OpenApiParameter("page", type=int, location=OpenApiParameter.QUERY),
+        OpenApiParameter("page_size", type=int, location=OpenApiParameter.QUERY),
+        OpenApiParameter("search", type=str, location=OpenApiParameter.QUERY),
+    ],
+    tags=["Employee Management"]
+)
+@api_view(['GET'])
+def get_employees_by_farmer(request, farmer_id):
+    """
+    Get employees list for a specific farmer
+    """
+    try:
+        farmer = get_object_or_404(Farmer, id=farmer_id)
+        employees = Employee.objects.filter(farmer=farmer).select_related(
+            "employee_type", "work_type", 
+        )
+        
+        search_word = request.query_params.get("search")
+        if search_word:
+            employees = employees.filter(
+                Q(name__icontains=search_word) | 
+                Q(mobile_no__icontains=search_word)
+            )
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = int(request.query_params.get("page_size", 10))
+        page_obj = paginator.paginate_queryset(employees.order_by("-id"), request)
+        
+        data = []
+        for emp in page_obj:
+            data.append({
+                "id": emp.id,
+                "name": emp.name,
+                "mobile_no": emp.mobile_no,
+                "employee_type": emp.employee_type.name if emp.employee_type else None,
+                "work_type": emp.work_type.name if emp.work_type else None,
+                "salary": str(emp.salary) if emp.salary else "0",
+                "advance": str(emp.advance),
+                "topay": str(emp.topay),
+                "status": emp.status,
+                "locations": emp.locations,
+                "image": emp.image.url if emp.image else None
+            })
+        
+        return paginator.get_paginated_response({
+            "farmer": {
+                "id": farmer.id,
+                "name": farmer.name
+            },
+            "employees": data
+        })
+    
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# ---------------- GET Attendance list BY FARMER (SPECIFIC) ----------------
+@extend_schema(
+    parameters=[  OpenApiParameter("date", type=str, location=OpenApiParameter.QUERY),
+        OpenApiParameter("page", type=int, location=OpenApiParameter.QUERY),
+        OpenApiParameter("page_size", type=int, location=OpenApiParameter.QUERY),
+        OpenApiParameter("search", type=str, location=OpenApiParameter.QUERY),
+        OpenApiParameter("farmer_id", type=str, location=OpenApiParameter.QUERY),
+        OpenApiParameter("manager_id", type=str, location=OpenApiParameter.QUERY),
+      
+    ],
+    tags=["Employee Management"]
+)
+@api_view(['GET'])
+def get_employees_attendance_list(request,):
+    try:
+        date =request.query_params.get("date")
+        farmer_id =request.query_params.get("farmer_id")
+        manager_id =request.query_params.get("manager_id")
+        employees =None 
+        if farmer_id:
+            employees = Employee.objects.filter(farmer=farmer_id).select_related("employee_type", "work_type",)
+        elif farmer_id:
+            employees = Employee.objects.filter(manager=manager_id).select_related("employee_type", "work_type",)
+        else:
+            Response({"error": 'NO Details'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        search_word = request.query_params.get("search")
+        if search_word:
+            employees = employees.filter(
+                Q(name__icontains=search_word) | 
+                Q(mobile_no__icontains=search_word)
+            )
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = int(request.query_params.get("page_size", 10))
+        page_obj = paginator.paginate_queryset(employees, request)
+        
+        data = []
+        for emp in page_obj:
+            attendance = None
+            try:
+                attendance = AttendanceReport.objects.filter(employee=emp, created_at__date=date).first()
+            except Exception as e:
+                print(f"Error fetching attendance for employee {emp.id}: {e}")
+            finally:
+                print(f"Processed employee {emp.id}")
+
+            data.append({
+                "id": emp.id,
+                "name": emp.name,
+                "role": "Employee",
+                "salaryType": emp.employee_type.name if emp.employee_type else None,
+                "work_type": emp.work_type.name if emp.work_type else None,
+                "image": emp.image.url if emp.image else None,
+                "login": attendance.login_time if attendance and attendance.login_time else None,
+                "logout": attendance.logout_time if attendance and attendance.logout_time else None,
+                "hours": attendance.total_hour if attendance and attendance.total_hour else None,
+                "salary": attendance.salary if attendance and attendance.salary else None,
+                "paid_status": attendance.salary_status if attendance and attendance.salary_status else None,
+            })
+
+        
+        return Response(data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+# ---------------- CREATE ----------------
+@extend_schema(tags=["ManagerUser Management"])
+@api_view(['POST'])
+def create_manager_user(request):
+
+    data = request.data
+    required_fields = ['name']
+    errors = {}
+    for field in required_fields:
+        if not data.get(field):
+            errors[field] = f"{field} is required"
+
+    if errors:
+        return Response({"status_code": 400, "error": "validation_error", "message": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        manager_user = ManagerUser.objects.create(
+            name=data.get('name'),
+            farmer=Farmer.objects.get(id=data['farmer']) if data.get('farmer') else None,
+            mobile_no=data.get('mobile_no'),
+            alter_no=data.get('alter_no'),
+            date_of_birth=data.get('date_of_birth'),
+            gender_id=data.get('gender'),
+            email=data.get('email'),
+            date_of_join=data.get('date_of_join'),
+            employee_type_id=data.get('employee_type'),
+            image=data.get('image'),
+            address=data.get('address'),
+            pincode=data.get('pincode'),
+            locations=data.get('locations'),
+            latitude=data.get('latitude'),
+            longitude=data.get('longitude'),
+            role_id=data.get('role'),
+            description=data.get('description'),
+            username=data.get('username'),
+            password=data.get('password'),
+            manager_user=CustomUser.objects.get(id=data['manager_user']) if data.get('manager_user') else None,
+            status=data.get('status', 0),
+            created_by=CustomUser.objects.get(id=data['created_by']) if data.get('created_by') else None,
+            translate_json=data.get('translate_json'),
+            permissions=data.get('permissions'),
+        )
+        return Response({"status_code": 201, "message": "ManagerUser created successfully", "manager_user_id": manager_user.id}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"status_code": 500, "error": "server_error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# ---------------- UPDATE ----------------
+@extend_schema(tags=["ManagerUser Management"])
+@api_view(['PUT'])
+def update_manager_user(request, manager_id):
+    manager_user = get_object_or_404(ManagerUser, id=manager_id)
+    data = request.data
+    # Dynamic update only provided fields
+    for field in data:
+        if hasattr(manager_user, field):
+            setattr(manager_user, field, data[field])
+    try:
+        manager_user.save()
+        return Response({"status_code": 200, "message": "ManagerUser updated successfully"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"status_code": 500, "error": "server_error", "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# ---------------- DELETE ----------------
+@extend_schema(tags=["ManagerUser Management"])
+@api_view(['DELETE'])
+def delete_manager_user(request, manager_id):
+    manager_user = get_object_or_404(ManagerUser, id=manager_id)
+    manager_user.delete()
+    return Response({"status_code": 200, "message": "ManagerUser deleted successfully"}, status=status.HTTP_200_OK)
+
+# ---------------- STATUS UPDATE ----------------
+@extend_schema(tags=["ManagerUser Management"])
+@api_view(['PATCH'])
+def update_manager_user_status(request, manager_id):
+    manager_user = get_object_or_404(ManagerUser, id=manager_id)
+    status_value = request.data.get('status')
+    if status_value is None:
+        return Response({"status_code": 400, "error": "validation_error", "message": "status is required"}, status=status.HTTP_400_BAD_REQUEST)
+    manager_user.status = status_value
+    manager_user.save(update_fields=['status'])
+    return Response({"status_code": 200, "message": "ManagerUser status updated successfully"}, status=status.HTTP_200_OK)
+
+# ---------------- GET LIST ----------------
+@extend_schema(parameters=[
+    OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),
+    OpenApiParameter(name="search", type=str, location=OpenApiParameter.QUERY)
+], tags=["ManagerUser Management"])
+@api_view(['GET'])
+def get_manager_user_list(request, farmer_id):
+    search = request.GET.get('search', '')
+    managers = ManagerUser.objects.filter(
+        farmer_id=farmer_id
+    ).select_related('farmer', 'role').only('id', 'name', 'status', 'role__name')
+
+    if search:
+        managers = managers.filter(name__icontains=search)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    paginated = paginator.paginate_queryset(managers, request)
+    data = [{"id": m.id, "name": m.name, "status": m.status, "role": m.role.name if m.role else None} for m in paginated]
+    return paginator.get_paginated_response(data)
+
+# ---------------- GET DETAIL ----------------
+@extend_schema(tags=["ManagerUser Management"])
+@api_view(['GET'])
+def get_manager_user_detail(request, manager_id):
+    manager = get_object_or_404(ManagerUser.objects.select_related('farmer', 'role'), id=manager_id)
+    data = {
+        "id": manager.id,
+        "name": manager.name,
+        "mobile_no": manager.mobile_no,
+        "alter_no": manager.alter_no,
+        "email": manager.email,
+        "date_of_birth": manager.date_of_birth,
+        "role": manager.role.name if manager.role else None,
+        "status": manager.status,
+        "farmer": {"id": manager.farmer.id, "name": manager.farmer.name} if manager.farmer else None
+    }
+    return Response({"status_code": 200, "manager_user": data}, status=status.HTTP_200_OK)
+
+
+@extend_schema(
+    operation_id="02_employee_types",
+    tags=["Employee"],
+)
+@api_view(['GET'])
+def get_employee_types(request):
+    lang = request.GET.get('lang', 'en')  # Default to English
+
+    employee_types = EmployeeType.objects.filter(status=0).only("id", "name")
+
+    if not employee_types.exists():
+        return Response(
+            {"error": "EmployeeType not found", "message": "No Employee Type found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    data = [
+        {"id": e.id, "name": e.get_translated_value("name", lang)}
+        for e in employee_types
+    ]
+
+    return Response(data, status=status.HTTP_200_OK)
+
+@extend_schema(
+    operation_id="02_manageUser_role",
+    tags=["Employee"],
+)
+@api_view(['GET'])
+def get_manager_roals(request):
+    lang = request.GET.get('lang', 'en')  
+
+    manager_types = ManageUserRole.objects.filter(status=0).only("id", "name")
+    if not manager_types.exists():
+        return Response(
+            {"error": "EmployeeType not found", "message": "No Employee Type found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    data = [
+        {"id": e.id, "name": e.name}
+        for e in manager_types
+    ]
+    return Response(data, status=status.HTTP_200_OK)
+
+@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@api_view(['GET'])
+def get_genders(request):
+    lang = request.GET.get('lang', 'en')  
+
+    gender_types = Gender.objects.filter(status=0).only("id", "gender")
+    if not gender_types.exists():
+        return Response(
+            {"error": "EmployeeType not found", "message": "No Employee Type found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    data = [
+        {"id": e.id, "name": e.gender}
+        for e in gender_types
+    ]
+    return Response(data, status=status.HTTP_200_OK)
+
+@extend_schema(operation_id="vendor_payables",tags=["Vendors Outstanding"],)
+@api_view(['GET'])
+def get_vendor_payables(request, vendor_id):   
+    # vendor_id = request.query_params.get('vendor_id', None)
+ 
+    # Fetching vendors based on the farmer ID and the status.
+    vendor = MyVendor.objects.get(id=vendor_id, status=0)
+
+    vendor_inventory_data = None
+
+   
+    if vendor.credit is False: 
+        fuel_purchases = MyExpense.objects.filter(vendor=vendor, status__in=[0, 1]) 
+        payables_fuel = []
+
+        for fuel in fuel_purchases:
+            fuel_data = {
+                "id": fuel.id,
+                "date": fuel.created_day,
+                "total_amount": fuel.paid_amount,
+                "amount_paid":fuel.paid_amount,   
+                "received_amount": 0.0,   
+                "to_amount": fuel.amount
+            }
+            payables_fuel.append(fuel_data)
+
+        # If any items exist for the vendor, append to the final structure
+        if any([payables_fuel]):
+            vendor_inventory_data = {
+                "id": vendor.id,
+                "name": vendor.name,
+                "business_name": vendor.business_name,
+                "vendor_image": request.build_absolute_uri(f'/assets{vendor.vendor_image.url}' if vendor.vendor_image else vendor.vendor_image.url) if vendor.vendor_image else "",
+                "expenses": payables_fuel
+            }
+
+    return Response( vendor_inventory_data, status=status.HTTP_200_OK)
+
+
+@extend_schema(operation_id="vendors_receivables",tags=["Vendors Outstanding"],)
+@api_view(['GET'])
+def get_vendors_receivables(request, vendor_id):   
+    # vendor_id = request.query_params.get('vendor_id', None)
+ 
+    # Fetching vendors based on the farmer ID and the status.
+    vendor = MyVendor.objects.get(id=vendor_id, status=0)
+
+    vendor_inventory_data = None
+
+   
+    if vendor.credit : 
+        fuel_purchases = MyExpense.objects.filter(vendor=vendor, status__in=[0, 1]) 
+        payables_fuel = []
+
+        for fuel in fuel_purchases:
+            fuel_data = {
+                "id": fuel.id,
+                "date": fuel.created_day,
+                "total_amount": fuel.paid_amount,
+                "amount_paid":fuel.paid_amount,   
+                "received_amount": 0.0,   
+                "to_amount": fuel.amount
+            }
+            payables_fuel.append(fuel_data)
+
+        # If any items exist for the vendor, append to the final structure
+        if any([payables_fuel]):
+            vendor_inventory_data = {
+                "id": vendor.id,
+                "name": vendor.name,
+                "business_name": vendor.business_name,
+                "vendor_image": request.build_absolute_uri(f'/assets{vendor.vendor_image.url}' if vendor.vendor_image else vendor.vendor_image.url) if vendor.vendor_image else "",
+                "expenses": payables_fuel
+            }
+
+    return Response( vendor_inventory_data, status=status.HTTP_200_OK)
+
+
+@extend_schema(operation_id="vendors_outstaing_history",tags=["Vendors Outstanding"],)
+@api_view(['GET'])
+def get_vendors_outstaing_history(request, expense_id):      
+
+    records = Outstanding.objects.filter(expense=expense_id, status__in=[0, 1]) 
+    history = []
+
+    for record in records:
+        fuel_data = {
+          
+            "id": record.id,
+            "balance":  float(record.balance),
+            "paid": float(record.paid),
+            "payment_amount":  float(record.payment_amount),
+            "to_pay": float(record.to_pay),
+            "total_paid":  float(record.total_paid),
+            "paid_date":record.paid_date.strftime('%d-%m-%Y') if record.paid_date else None,
+            "description":record.description,
+            "status": record.status,
+  
+        }
+        history.append(fuel_data)
+
+    return Response( history, status=status.HTTP_200_OK)
+
+
+
+# ---------------- UPDATE ATTENDANCE REPORT ----------------
+@extend_schema(
+    request=None,
+    responses={200: dict},
+    tags=["Attendance Management"]
+)
+@api_view(['POST'])
+def add_attendance(request,):
+    """
+    Update an existing attendance report
+    """
+    for data in request.data:
+        employee = get_object_or_404(Employee.objects.select_related('farmer',), id=data['employee_id'])
+        try:
+            attendance = AttendanceReport.objects.filter(employee=employee, created_at__date=data['created_day']).first()
+            if attendance is None:
+                attendance = AttendanceReport.objects.create(farmer=employee.farmer, employee=employee, created_at=timezone.now(),)
+            # Update fields if provided
+            update_fields = []
+            
+            if 'employee_id' in data:
+                employee = get_object_or_404(Employee, id=data['employee_id'])
+                attendance.employee = employee
+                attendance.farmer = employee.farmer
+                update_fields.extend(['employee', 'farmer'])
+            
+            if 'present' in data:
+                attendance.present = data['present']
+                update_fields.append('present')
+            
+            if 'created_day' in data:
+                # Check for duplicate attendance if date is being changed
+                if data['created_day'] != str(attendance.created_day):
+                    existing = AttendanceReport.objects.filter(
+                        employee=attendance.employee,
+                        created_day=data['created_day']
+                    ).exclude(id=attendance.id).first()
+                    if existing:
+                        return Response({
+                            "error": "Attendance already exists for this employee on the specified day",
+                            "attendance_id": existing.id
+                        }, status=status.HTTP_400_BAD_REQUEST)
+                attendance.created_day = data['created_day']
+                update_fields.append('created_day')
+            
+            # Handle time calculations
+            login_time = data.get('login_time', attendance.login_time)
+            logout_time = data.get('logout_time', attendance.logout_time)
+            
+            total_hour = attendance.total_hour
+            if 'login_time' in data or 'logout_time' in data:
+                if login_time and logout_time:
+                    try:
+                        time_formats = ['%H:%M:%S', '%H:%M', '%I:%M %p', '%I:%M:%S %p']
+                        login_dt = None
+                        logout_dt = None
+                        
+                        for time_format in time_formats:
+                            try:
+                                login_dt = datetime.strptime(login_time, time_format).time()
+                                logout_dt = datetime.strptime(logout_time, time_format).time()
+                                break
+                            except ValueError:
+                                continue
+                        
+                        if login_dt and logout_dt:
+                            login_datetime = datetime.combine(datetime.today(), login_dt)
+                            logout_datetime = datetime.combine(datetime.today(), logout_dt)
+                            
+                            if logout_datetime < login_datetime:
+                                logout_datetime += timedelta(days=1)
+                            
+                            time_diff = logout_datetime - login_datetime
+                            total_hour = round(time_diff.total_seconds() / 3600, 2)
+                            attendance.total_hour = total_hour
+                            update_fields.append('total_hour')
+                            
+                    except Exception as e:
+                        return Response({"error": f"Invalid time format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            attendance.login_time = login_time
+            attendance.logout_time = logout_time
+            update_fields.extend(['login_time', 'logout_time'])
+            
+            # Update salary
+            if 'salary' in data:
+                attendance.salary = data['salary']
+                update_fields.append('salary')
+
+            
+            if 'salary_status' in data:
+                attendance.salary_status = data['salary_status']
+                update_fields.append('salary_status')
+            
+            # Save if any fields were updated
+            if update_fields:
+                attendance.save()
+           
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"message": "Attendance report updated successfully",}, status=status.HTTP_200_OK)
+
 # endregion
+
+
+
+
+
+
+
+

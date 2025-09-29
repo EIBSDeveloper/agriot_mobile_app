@@ -1,5 +1,10 @@
-from django.urls import path
+from django.urls import path,include
 from api.views import *
+from drf_spectacular.views import (
+ SpectacularAPIView,
+ SpectacularRedocView,
+ SpectacularSwaggerView,
+)
 
 urlpatterns = [
  
@@ -111,7 +116,10 @@ urlpatterns = [
     path('get_purchase_list/<int:farmer_id>', get_purchase_list, name="get_purchase_list"), 
     path('view_vehicle', view_vehicle, name='view_vehicle'), 
     path('get_purchase/<int:farmer_id>', get_purchase, name="get_purchase"), 
-    path('get_inventory_items/<int:inventory_category_id>/', get_inventory_items, name='get_inventory_items_by_category'), 
+    # path('get_inventory_items/<int:inventory_category_id>/', get_inventory_items, name='get_inventory_items_by_category'), 
+    path('get_inventory_items/<int:inventory_type_id>/', get_inventory_items,
+name='get_inventory_items_by_category'),
+
     path('get_inventory_category/<int:inventory_type_id>', get_inventory_category , name='get_inventory_category'),
     path('get_Expenses',get_Expenses,name="get_Expenses"), 
     path('get_vendor/<int:farmer_id>', get_vendor, name="get_vendor"),
@@ -121,7 +129,7 @@ urlpatterns = [
     path('get_maket_name_list',get_maket_name_list,name="get_maket_name_list"),
     path('get_sales_list/<int:farmer_id>',get_sales_list,name="get_sales_list"), 
     path('add_expense/<int:farmer_id>',add_expense,name="add_expense"), 
-    path('edit_purchase/<int:farmer_id>/', edit_purchase, name='edit_purchase'),
+    path('edit_purchase/<int:farmer_id>/', edit_purchase, name='edit_purchase'),   
     path('add_fuel/<int:farmer_id>', add_fuel, name="add_fuel"), 
     path('add_vehicle/<int:farmer_id>/',  add_vehicle, name='add_vehicle'), 
     path('add_machinery/<int:farmer_id>',  add_machinery, name='add_machinery'),
@@ -338,12 +346,62 @@ urlpatterns = [
     path('best_practice_schedule/<int:farmer_id>/<int:land_id>/<int:my_crop_id>/<int:schedule_id>/',get_schedule_detail, name='get_schedule_detail'),
 
     path('crop_summary/<int:farmer_id>/<int:land_id>/<int:crop_id>/', get_crop_summary, name='crop-summary'),
-    # region Add paths Changed by Bala
-    path('inventory_purchase_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_purchase_list, name='get_inventory_purchase_list'),
-    path('inventory_cunsumption_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_cusumption_list, name='get_inventory_cusumption_list'),
-   
-    # endregion
+    # path('inventory_purchase_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_purchase_list, name='get_inventory_purchase_list'),
+    # path('inventory_cunsumption_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_cusumption_list, name='get_inventory_cusumption_list'),
 
+#bala 
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("docs/", SpectacularSwaggerView.as_view(url_name="schema"),name="swagger-ui"),
+    path("redoc/", SpectacularRedocView.as_view(url_name="schema"),name="redoc"),
+
+    path('inventory_types_quantity/<int:farmer_id>/',
+    get_inventory_types_quantity, name='get_inventory_types_quantity'),
+
+    path('inventory_item_quantity/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_item_quantity,name='get_inventory_item_quantity'),
+
+
+    path('inventory_purchase_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_purchase_list,name='get_inventory_purchase_list'),
+
+    path('inventory_purchase_details/<int:farmer_id>/<int:inventory_type_id>/<int:id>', get_inventory_purchase_details,name='get_inventory_purchase_details'),
+
+
+    path('inventory_cunsumption_list/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_consumption_list,name='get_inventory_consumption_list'),
+
+    path('inventory_cunsumption_details/<int:farmer_id>/<int:inventory_type_id>/<int:id>', get_inventory_cusumption_details,name='get_inventory_cusumption_details'),
+
+    #customer Outstanding
+    path('customer_payables_list/<int:farmer_id>',get_customer_payables_list, name='get_customer_payables_list'),
+    path('customer_receivables_list/<int:farmer_id>/',get_customer_receivables_list, name='get_customer_receivables_list'),
+
+    #vendors Outstanding
+    path('vendors_payables_list/<int:farmer_id>',get_vendors_payables_list, name='get_vendors_payables_list'),
+    path('vendors_receivables_list/<int:farmer_id>/',get_vendors_receivables_list, name='get_vendors_receivables_list'),
+    path('vendor_payables/<int:vendor_id>/',get_vendor_payables, name='get_vendor_payables'),
+    path('vendors_receivables/<int:vendor_id>/',get_vendors_receivables, name='get_vendors_receivables'),
+    path('vendors_outstaing_history/<int:expense_id>',get_vendors_outstaing_history, name='vendors_outstaing_history'),
+   
+    # Employee Management URLs
+    path('employees/create/', create_employee, name='create_employee'),
+    path('employees/update/<int:employee_id>/', update_employee, name='update_employee'),
+    path('employees/delete/<int:employee_id>/', delete_employee, name='delete_employee'),
+    path('employees/status/<int:employee_id>/', update_employee_status, name='update_employee_status'),
+
+    path('employees/farmer/<int:farmer_id>/list/', get_employees_by_farmer, name='get_employees_by_farmer'),
+    path('attendance_list', get_employees_attendance_list, name='get_employees_by_farmer'),
+    path('employees/details/<int:employee_id>/', get_employee_details, name='get_employee_details'),
+    # GET EMPLOYEE DETAILS
+    path("managers_with_employees/<int:farmer_id>", get_manager_user_list, name="get_employee_details"),
+    # GET mangerEMPLOYEE DETAILS
+    path("create_manager_user/<int:farmer_id>", create_manager_user, name="get_employee_details"),
+    
+    
+    path('employee_types', get_employee_types, name='get_employee_types'),
+    path('manager_roals', get_manager_roals, name='get_manager_roals'),
+    path('genders', get_genders, name='get_genders'),
+    # Attendance Management URLs
+    path('attendance/create/', create_attendance_report, name='create_attendance'),
+     path('attendance/update/<int:attendance_id>/',update_attendance_report, name='update_attendance'),
+     path('attendance/',add_attendance, name='update_attendance'),
 ]
 
 

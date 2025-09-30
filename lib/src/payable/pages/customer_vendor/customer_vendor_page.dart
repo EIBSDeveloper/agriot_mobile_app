@@ -1,3 +1,4 @@
+/*
 
 import 'package:argiot/src/payable/pages/customer_vendor/vendorreceivableshistory.dart';
 import 'package:argiot/src/payable/repository/customer_add_repository/customer_add_repository.dart';
@@ -1011,6 +1012,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
   }
 }
 
+*/
 /*void showAddVendorPaymentBottomSheet({
   required BuildContext context,
   required int vendorId,
@@ -1469,7 +1471,8 @@ void showAddcustomerBottomSheet({
       );
     },
   );
-}*/
+}*/ /*
+
 void showAddVendorPaymentBottomSheet({
   required BuildContext context,
   required int vendorId,
@@ -2025,3 +2028,4 @@ Widget _buildDocumentsSectionCustomer(
     }),
   ],
 );
+*/

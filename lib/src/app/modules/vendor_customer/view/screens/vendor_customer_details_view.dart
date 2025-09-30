@@ -1,8 +1,8 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
-import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:argiot/src/app/service/utils/utils.dart';
+import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -32,7 +32,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         actions: [
           IconButton(
             onPressed: () {
-              controller.deleteDetails(item.id, item.type);
+              //controller.deleteDetails(item.id, item.type);
+              _showDeleteConfirmation(controller, item.id, item.type);
             },
             color: Get.theme.primaryColor,
             icon: const Icon(Icons.delete),
@@ -56,6 +57,32 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         backgroundColor: Get.theme.primaryColor,
         onPressed: () => makePhoneCall(item.mobileNo),
         child: const Icon(Icons.call),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(
+    VendorCustomerController controller,
+    int id,
+    String type,
+  ) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this item?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(), // close dialog
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(); // close dialog
+              controller.deleteDetails(id, type);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

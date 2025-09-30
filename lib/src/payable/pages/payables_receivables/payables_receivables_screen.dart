@@ -1,9 +1,10 @@
-
+import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/payable/controller/controllerpay_receive/pay_receivecontroller.dart';
 import 'package:argiot/src/payable/repository/repo_pay_receive/pay_receiverepo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/toggle_bar.dart';
 import '../../widgets/payable_receivableswidget/payables_list_widget.dart';
 import '../../widgets/payable_receivableswidget/receivables_list_widget.dart';
 
@@ -62,85 +63,83 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(title: Text('payables_receivables'.tr)),
-      body: Obx(() {
-        final isLoading =
-            controller.isLoadingCustomerPayables.value ||
-            controller.isLoadingCustomerReceivables.value ||
-            controller.isLoadingVendorPayables.value ||
-            controller.isLoadingVendorReceivables.value;
+    appBar: CustomAppBar(title: 'payables_receivables'.tr),
+    body: Obx(() {
+      final isLoading =
+          controller.isLoadingCustomerPayables.value ||
+          controller.isLoadingCustomerReceivables.value ||
+          controller.isLoadingVendorPayables.value ||
+          controller.isLoadingVendorReceivables.value;
 
-        if (isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
+      if (isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-        return Column(
-          children: [
-            const SizedBox(height: 16),
+      return Column(
+        children: [
+          const SizedBox(height: 16),
 
-            /// TOP TOGGLE: Customer / Vendor
-            ToggleButtons(
-              isSelected: List.generate(
-                2,
-                (index) => index == selectedTopToggle.value,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Obx(
+              () => ToggleBar(
+                onTap: (index) {
+                  selectedTopToggle.value = index;
+                  tabController.index = 0;
+                },
+                activePageIndex: selectedTopToggle.value,
+                buttonsList: ["customer".tr, "vendor".tr],
               ),
-              onPressed: (index) {
-                selectedTopToggle.value = index;
-                tabController.index = 0; // reset to first tab
-              },
-              borderRadius: BorderRadius.circular(8),
-              selectedColor: Colors.white,
-              fillColor: Theme.of(context).primaryColor,
-              color: Colors.black,
-              constraints: const BoxConstraints(minHeight: 40, minWidth: 120),
-              children: [Text('customer'.tr), Text('vendor'.tr)],
             ),
+          ),
 
-            /// TAB BAR: Payables / Receivables
-            TabBar(
+        
+          /// TAB BAR: Payables / Receivables
+          TabBar(
+            controller: tabController,
+            tabs: [
+              Tab(text: 'payables'.tr),
+              Tab(text: 'receivables'.tr),
+            ],
+            labelColor: Theme.of(context).primaryColor,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Theme.of(context).primaryColor,
+          ),
+
+          Expanded(
+            child: TabBarView(
               controller: tabController,
-              tabs: [
-                Tab(text: 'payables'.tr),
-                Tab(text: 'receivables'.tr),
+              children: [
+                /// PAYABLES TAB
+                RefreshIndicator(
+                  onRefresh: _refreshData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    child: Obx(() => buildPayablesTab()),
+                  ),
+                ),
+
+                /// RECEIVABLES TAB
+                RefreshIndicator(
+                  onRefresh: _refreshData,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(16),
+                    child: Obx(() => buildReceivablesTab()),
+                  ),
+                ),
               ],
-              labelColor: Theme.of(context).primaryColor,
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: Theme.of(context).primaryColor,
             ),
+          ),
+        ],
+      );
+    }),
+  );
 
-            Expanded(
-              child: TabBarView(
-                controller: tabController,
-                children: [
-                  /// PAYABLES TAB
-                  RefreshIndicator(
-                    onRefresh: _refreshData,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(16),
-                      child: Obx(() => buildPayablesTab()),
-                    ),
-                  ),
+  Widget buildPayablesTab() =>
+      PayablesList(selectedTopToggle: selectedTopToggle.value);
 
-                  /// RECEIVABLES TAB
-                  RefreshIndicator(
-                    onRefresh: _refreshData,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(16),
-                      child: Obx(() => buildReceivablesTab()),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      }),
-    );
-
-  
-  Widget buildPayablesTab() => PayablesList(selectedTopToggle: selectedTopToggle.value);
-
-  Widget buildReceivablesTab() => ReceivablesList(selectedTopToggle: selectedTopToggle.value);
+  Widget buildReceivablesTab() =>
+      ReceivablesList(selectedTopToggle: selectedTopToggle.value);
 }

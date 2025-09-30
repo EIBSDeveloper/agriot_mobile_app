@@ -105,7 +105,7 @@ class CustomerlistController extends GetxController {
   Future<void> fetchVendorPayables() async {
     try {
       isLoadingVendorPayables.value = true;
-      final data = await repository.fetchVendorReceivableslist();
+      final data = await repository.fetchVendorPayableslist();
       vendorPayables.value = data;
     } catch (e) {
       print("Error fetching vendor payables: $e");

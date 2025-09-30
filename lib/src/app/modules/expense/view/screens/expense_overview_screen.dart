@@ -39,7 +39,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               ToggleBar(
                 onTap: (index) => controller.changeTab(index),
                 activePageIndex: controller.selectedTab.value,
-                buttonsList: ["all".tr, "general".tr, "inventory".tr, "sales".tr],
+                buttonsList: ["all".tr, "expenses".tr,  "sales".tr],
               ),
               const SizedBox(height: 10),
               _buildTransactionList(),

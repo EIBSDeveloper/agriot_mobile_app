@@ -1,5 +1,6 @@
 import 'package:argiot/src/payable/controller/controllerpay_receive/pay_receivecontroller.dart';
 import 'package:argiot/src/payable/pages/customer/customer_sales_page.dart';
+import 'package:argiot/src/payable/pages/vendor/vendor_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,7 +52,7 @@ class ReceivablesList extends StatelessWidget {
           }
 
           final item = displayedItems[index];
-          return InkWell(
+          /*return InkWell(
             onTap: () {
               Get.to(
                 () => CustomerSalesPage(
@@ -68,6 +69,32 @@ class ReceivablesList extends StatelessWidget {
               item.balance,
               item.isCredit,
             ),
+          );*/
+          return InkWell(
+            onTap: () {
+              if (selectedTopToggle == 0) {
+                // Customer receivable
+                Get.to(
+                  () => CustomerSalesPage(
+                    customerId: item.id,
+                    customerName: item.name,
+                    amount: item.balance,
+                    isPayable: false,
+                  ),
+                );
+              } else {
+                // Vendor receivable
+                Get.to(
+                  () => VendorPurchasePage(vendorId: item.id, isPayable: false),
+                );
+              }
+            },
+            child: _tile(
+              item.name,
+              '${selectedTopToggle == 0 ? 'shop'.tr : 'business'.tr}: ${item.businessName}',
+              item.balance,
+              item.isCredit,
+            ),
           );
         },
       );
@@ -75,31 +102,28 @@ class ReceivablesList extends StatelessWidget {
   }
 
   Widget _tile(String title, String subtitle, double amount, bool isCredit) =>
-      Container(
+      Card(
         margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withAlpha(150),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(title),
-          subtitle: Text(subtitle),
-          trailing: Text(
-            '+ ₹${amount.toStringAsFixed(2)}',
-            style: TextStyle(
-              color: Get.theme.primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+        elevation: 1,
+        // padding: const EdgeInsets.symmetric(horizontal: 12),
+        // decoration: BoxDecoration(
+        //   color: Colors.white,
+        
+        //   borderRadius: BorderRadius.circular(8),
+        // ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10 ),
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(title),
+            subtitle: Text(subtitle),
+            trailing: Text(
+              '+ ₹${amount.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Get.theme.primaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ),

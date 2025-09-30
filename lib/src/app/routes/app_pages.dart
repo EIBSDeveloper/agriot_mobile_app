@@ -357,13 +357,13 @@ class AppPages {
     
     GetPage(
       name: Routes.addAttendence,
-      page: () => AddAttendenceScreen(),
+      page: () => const AddAttendenceScreen(),
       binding: AttendenceBinding(),
     ),
 
     GetPage(
       name: Routes.attendencelistscreen,
-      page: () => Attendancelistscreen(),
+      page: () => const Attendancelistscreen(),
       binding: AttendenceBinding(),
     ),
     // GetPage(

@@ -4,6 +4,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:argiot/src/app/modules/task/model/schedule_crop.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
@@ -36,9 +37,11 @@ class LandMapView extends GetView<LandMapViewController> {
                 controller.pendingBounds = null;
               }
             },
-
             markers: controller.markers,
             polygons: controller.polygons,
+            onTap: (LatLng position) {
+              // Handle map tap if needed
+            },
           ),
 
           Positioned(
@@ -54,6 +57,19 @@ class LandMapView extends GetView<LandMapViewController> {
                   Expanded(child: _buildCropDropdown()),
                 ],
               ),
+            ),
+          ),
+
+          // Refresh Button
+          Positioned(
+            bottom: 100,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                controller.refreshData();
+              },
+              backgroundColor: Colors.white,
+              child: const Icon(Icons.refresh, color: Colors.green),
             ),
           ),
         ],

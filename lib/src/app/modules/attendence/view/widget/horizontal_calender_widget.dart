@@ -82,7 +82,7 @@ import 'package:intl/intl.dart';
 class HorizontalDatePicker extends GetView<AttendenceController> {
   final Function(DateTime) onDateSelected;
 
-  HorizontalDatePicker({super.key, required this.onDateSelected});
+  const HorizontalDatePicker({super.key, required this.onDateSelected});
 
   List<DateTime> generateDates({int monthsAhead = 12}) {
     final now = DateTime.now();
@@ -90,7 +90,7 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
     for (int monthOffset = 0; monthOffset <= monthsAhead; monthOffset++) {
       final year = now.year + ((now.month + monthOffset - 1) ~/ 12);
       final month = (now.month + monthOffset - 1) % 12 + 1;
-      final firstDay = DateTime(year, month, 1);
+      final _ = DateTime(year, month, 1);
       final lastDay = DateTime(year, month + 1, 0);
       for (int day = 1; day <= lastDay.day; day++) {
         allDates.add(DateTime(year, month, day));
@@ -159,7 +159,7 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
                 final date = allDates[index];
 
                 return Obx(() {
-                  final isSelected =
+                  final _ =
                       date.day == controller.selectedDate.value.day &&
                       date.month == controller.selectedDate.value.month &&
                       date.year == controller.selectedDate.value.year;

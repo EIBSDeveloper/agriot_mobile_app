@@ -1,4 +1,4 @@
-// lib/model/vendor_purchase_model.dart
+/*// lib/model/vendor_purchase_model.dart
 class VendorPurchaseResponse {
   final String detail;
   final VendorInventoryData vendorInventoryData;
@@ -178,4 +178,113 @@ class Purchase {
       topayAmount:
           ((json['topay_amount'] ?? json['toreceive_amount']) ?? 0).toDouble(),
     );
+}*/
+
+class Vendormodel {
+  final int id;
+  final String name;
+  final String businessName;
+  final String vendorImage;
+  final List<Expense> expenses;
+
+  Vendormodel({
+    required this.id,
+    required this.name,
+    required this.businessName,
+    required this.vendorImage,
+    required this.expenses,
+  });
+
+  factory Vendormodel.fromJson(Map<String, dynamic> json) => Vendormodel(
+      id: json['id'],
+      name: json['name'],
+      businessName: json['business_name'],
+      vendorImage: json['vendor_image'] ?? '',
+      expenses: (json['expenses'] as List<dynamic>)
+          .map((e) => Expense.fromJson(e))
+          .toList(),
+    );
+
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'name': name,
+      'business_name': businessName,
+      'vendor_image': vendorImage,
+      'expenses': expenses.map((e) => e.toJson()).toList(),
+    };
+}
+
+/*class Expense {
+  final int id;
+  final String date;
+  final int totalAmount;
+  final int amountPaid;
+  final int receivedAmount;
+  final int toAmount;
+
+  Expense({
+    required this.id,
+    required this.date,
+    required this.totalAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toAmount,
+  });
+
+  factory Expense.fromJson(Map<String, dynamic> json) {
+    return Expense(
+      id: json['id'],
+      date: json['date'],
+      totalAmount: json['total_amount'],
+      amountPaid: json['amount_paid'],
+      receivedAmount: json['received_amount'],
+      toAmount: json['to_amount'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date': date,
+      'total_amount': totalAmount,
+      'amount_paid': amountPaid,
+      'received_amount': receivedAmount,
+      'to_amount': toAmount,
+    };
+  }
+}*/
+class Expense {
+  final int id;
+  final String date;
+  final double totalAmount;
+  final double amountPaid;
+  final double receivedAmount;
+  final double toAmount;
+
+  Expense({
+    required this.id,
+    required this.date,
+    required this.totalAmount,
+    required this.amountPaid,
+    required this.receivedAmount,
+    required this.toAmount,
+  });
+
+  factory Expense.fromJson(Map<String, dynamic> json) => Expense(
+      id: json['id'],
+      date: json['date'],
+      totalAmount: (json['total_amount'] as num).toDouble(),
+      amountPaid: (json['amount_paid'] as num).toDouble(),
+      receivedAmount: (json['received_amount'] as num).toDouble(),
+      toAmount: (json['to_amount'] as num).toDouble(),
+    );
+
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'date': date,
+      'total_amount': totalAmount,
+      'amount_paid': amountPaid,
+      'received_amount': receivedAmount,
+      'to_amount': toAmount,
+    };
 }

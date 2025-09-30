@@ -16,7 +16,7 @@ class AppDataController extends GetxController {
   RxString baseUrlWithoutAPi = 'http://192.168.43.104:8000'.obs;
   String weatherBaseUrl = 'https://api.openweathermap.org/data/2.5/weather';
   String weatherApiKey = 'f0dd3d4a11a1446a7e29124d1911268b';
-  
 }
+
 //339
 //369

@@ -1,6 +1,6 @@
-
 import 'package:argiot/src/payable/controller/controllerpay_receive/pay_receivecontroller.dart';
 import 'package:argiot/src/payable/pages/customer/customer_sales_page.dart';
+import 'package:argiot/src/payable/pages/vendor/vendor_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,7 +51,7 @@ class PayablesList extends StatelessWidget {
           }
 
           final item = displayedItems[index];
-          return InkWell(
+          /* return InkWell(
             onTap: () {
               Get.to(
                 () => CustomerSalesPage(
@@ -61,6 +61,32 @@ class PayablesList extends StatelessWidget {
                   isPayable: true,
                 ),
               );
+            },
+            child: _tile(
+              item.name,
+              '${selectedTopToggle == 0 ? 'shop'.tr : 'business'.tr}: ${item.businessName}',
+              item.balance,
+              item.isCredit,
+            ),
+          );*/
+          return InkWell(
+            onTap: () {
+              if (selectedTopToggle == 0) {
+                // Customer payable
+                Get.to(
+                  () => CustomerSalesPage(
+                    customerId: item.id,
+                    customerName: item.name,
+                    amount: item.balance,
+                    isPayable: true,
+                  ),
+                );
+              } else {
+                // Vendor payable
+                Get.to(
+                  () => VendorPurchasePage(vendorId: item.id, isPayable: true),
+                );
+              }
             },
             child: _tile(
               item.name,

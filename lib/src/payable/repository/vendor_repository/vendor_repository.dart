@@ -13,79 +13,72 @@ final AppDataController appDeta = Get.put(AppDataController());
 class VendorPurchaseRepository {
   final farmerId = appDeta.userId;
   final baseURl = appDeta.baseUrl;
-  Future<VendorPurchaseResponse> fetchVendorPayables(int vendorId) async {
-    final url =
-        '$baseURl/vendor_purchase_payables_list/$farmerId?vendor_id=$vendorId';
+
+  Future<Vendormodel> fetchVendorPayables(int vendorId) async {
+    final url = '$baseURl/vendor_payables/$vendorId';
 
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      return VendorPurchaseResponse.fromJson(json.decode(response.body));
+      return Vendormodel.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to load vendor payables');
     }
   }
 
-  Future<VendorPurchaseResponse> fetchVendorReceivables(int vendorId) async {
-    final url =
-        '$baseURl/vendor_purchase_receivables_list/$farmerId?vendor_id=$vendorId';
+  Future<Vendormodel> fetchVendorReceivables(int vendorId) async {
+    final url = '$baseURl/vendors_receivables/$vendorId';
 
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      return VendorPurchaseResponse.fromJson(json.decode(response.body));
+      return Vendormodel.fromJson(json.decode(response.body));
     } else {
       throw Exception('Failed to load vendor receivables');
     }
   }
 
   // Payables History
-  Future<List<VendorPayableHistoryModel>?> fetchVendorPayablesHistory({
-    required int vendorId,
-    required int fuelId,
-    required String type,
-  }) async {
-    final url = Uri.parse(
-      '$baseURl/vendor_purchase_payables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
-    );
+  Future<List<VendorHistoryModel>> fetchVendorPayablesHistory(
+    int expenseId,
+  ) async {
+    final url = Uri.parse('$baseURl/vendors_outstaing_history/$expenseId');
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final jsonBody = json.decode(response.body);
-        final data = jsonBody['data'] as List;
-        return data.map((e) => VendorPayableHistoryModel.fromJson(e)).toList();
+        final data =
+            json.decode(response.body) as List<dynamic>; // <-- cast to List
+        return data
+            .map((e) => VendorHistoryModel.fromJson(e as Map<String, dynamic>))
+            .toList(); // <-- convert Iterable to List
       } else {
-        return null;
+        return [];
       }
     } catch (e) {
-      return null;
+      return [];
     }
   }
 
   //Receivables History
-  Future<List<VendorReceivableHistoryModel>?> fetchVendorReceivablesHistory({
-    required int vendorId,
-    required int fuelId,
-    required String type,
-  }) async {
-    final url = Uri.parse(
-      '$baseURl/vendor_purchase_receivables_outstanding_history/$farmerId/?vendor_id=$vendorId&id=$fuelId&type=$type',
-    );
+  Future<List<VendorHistoryModel>> fetchVendorReceivablesHistory(
+    int expenseId,
+  ) async {
+    final url = Uri.parse('$baseURl/vendors_outstaing_history/$expenseId');
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final jsonBody = json.decode(response.body);
-        final data = jsonBody['data'] as List;
+        final data =
+            json.decode(response.body) as List<dynamic>; // <-- cast to List
         return data
-            .map((e) => VendorReceivableHistoryModel.fromJson(e))
-            .toList();
+            .map((e) => VendorHistoryModel.fromJson(e as Map<String, dynamic>))
+            .toList(); // <-- convert Iterable to List
       } else {
-        return null;
+        return [];
       }
     } catch (e) {
-      return null;
+      return [];
     }
   }
 }

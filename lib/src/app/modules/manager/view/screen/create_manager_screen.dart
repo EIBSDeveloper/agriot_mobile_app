@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:argiot/src/app/modules/manager/controller/manager_controller.dart';
+import 'package:argiot/src/app/modules/manager/model/dropdown_model.dart';
 import 'package:argiot/src/app/modules/manager/model/permission_model.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
@@ -9,14 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../../service/utils/enums.dart';
-
 class CreateManagerScreen extends GetView<ManagerController> {
   const CreateManagerScreen({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Create Manager'),
+    appBar: const CustomAppBar(title: 'Employee'),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(10),
       child: Form(
@@ -29,16 +28,14 @@ class CreateManagerScreen extends GetView<ManagerController> {
             _buildImagePicker(),
             const SizedBox(height: 16),
 
+            /// Role Dropdown
             Obx(
               () => InputCardStyle(
-                child: DropdownButtonFormField<RoleType>(
+                child: DropdownButtonFormField<RoleModel>(
                   initialValue: controller.selectedRoleType.value,
                   items: controller.roleTypes
                       .map(
-                        (role) => DropdownMenuItem(
-                          value: role,
-                          child: Text(role.name), // use extension getter
-                        ),
+                        (r) => DropdownMenuItem(value: r, child: Text(r.name)),
                       )
                       .toList(),
                   onChanged: (value) =>
@@ -99,16 +96,14 @@ class CreateManagerScreen extends GetView<ManagerController> {
             ),
             const SizedBox(height: 16),
 
+            /// Gender Dropdown
             Obx(
               () => InputCardStyle(
-                child: DropdownButtonFormField<GenderType>(
+                child: DropdownButtonFormField<GenderModel>(
                   initialValue: controller.selectedGenderType.value,
                   items: controller.genderTypes
                       .map(
-                        (gender) => DropdownMenuItem(
-                          value: gender,
-                          child: Text(gender.name), // using extension
-                        ),
+                        (g) => DropdownMenuItem(value: g, child: Text(g.name)),
                       )
                       .toList(),
                   onChanged: (value) =>
@@ -151,13 +146,15 @@ class CreateManagerScreen extends GetView<ManagerController> {
             ),
             const SizedBox(height: 16),
 
-            // Employee Type
+            /// Employee Type Dropdown
             Obx(
               () => InputCardStyle(
-                child: DropdownButtonFormField<String>(
+                child: DropdownButtonFormField<EmployeeTypeModel>(
                   initialValue: controller.selectedEmployeeType.value,
                   items: controller.employeeTypes
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .map(
+                        (e) => DropdownMenuItem(value: e, child: Text(e.name)),
+                      )
                       .toList(),
                   onChanged: (value) =>
                       controller.selectedEmployeeType.value = value,
@@ -180,10 +177,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   labelText: 'Date of Birth ',
                   hintText: 'Select Date of Birth',
                   border: InputBorder.none,
-                  suffixIcon: Icon(
-                    Icons.calendar_today,
-                    color: Colors.grey,
-                  ), 
+                  suffixIcon: Icon(Icons.calendar_today, color: Colors.grey),
                 ),
                 onTap: () async {
                   DateTime? picked = await showDatePicker(
@@ -200,7 +194,6 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             ),
             const SizedBox(height: 16),
-
 
             // Location URL
             InputCardStyle(

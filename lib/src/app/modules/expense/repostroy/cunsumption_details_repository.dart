@@ -15,7 +15,7 @@ class CunsumptionDetailsRepository {
     int cunsumptionId,
     int inventoryType,
   ) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
     
       final response = await httpService.get("/inventory_cunsumption_details/$farmerId/$inventoryType/$cunsumptionId", );

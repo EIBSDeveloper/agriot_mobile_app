@@ -13,7 +13,7 @@ class NotificationRepository {
   final AppDataController _appDataController = Get.find();
 
   Future<List<NotificationModel>> getNotifications() async {
-    final userId = _appDataController.userId;
+    final userId = _appDataController.farmerId;
     try {
       final response = await _httpService.get(
         '/farmer_notifications_all/$userId',
@@ -56,7 +56,7 @@ class NotificationRepository {
   }
 
   Future<NotificationItem?> getNotificationById(int notificationId) async {
-    final userId = _appDataController.userId;
+    final userId = _appDataController.farmerId;
 
     try {
       final response = await _httpService.get(
@@ -80,7 +80,7 @@ class NotificationRepository {
   }
 
   Future<NotificationCount> getNotificationCount() async {
-    final userId = _appDataController.userId;
+    final userId = _appDataController.farmerId;
     try {
       final response = await _httpService.get(
         '/farmer_notifications_count/$userId',
@@ -97,7 +97,7 @@ class NotificationRepository {
 
   // Mark notification as read
   Future<bool> markAsRead(int notificationId) async {
-    final userId = _appDataController.userId;
+    final userId = _appDataController.farmerId;
 
     try {
       final response = await _httpService.post(

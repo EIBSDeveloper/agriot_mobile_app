@@ -12,7 +12,7 @@ final AppDataController appDeta = Get.put(AppDataController());
 
 class CustomerSalesRepository {
   final String baseUrl = appDeta.baseUrl.value;
-  final farmerId = appDeta.userId.value;
+  final farmerId = appDeta.farmerId.value;
   Future<List<CustomerPayable>> fetchCustomerPayables(int customerId) async {
     final url = Uri.parse(
       "$baseUrl/customer_sales_payables_list/$farmerId?customer_id=$customerId",

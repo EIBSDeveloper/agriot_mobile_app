@@ -132,7 +132,7 @@ class TaskController extends GetxController {
   Future<void> addTask() async {
     if (!formKey.currentState!.validate()) return;
 
-    final farmerId = _appDataController.userId.value;
+    final farmerId = _appDataController.farmerId.value;
     try {
       isLoading(true);
       final taskRequest = TaskRequest(

@@ -31,7 +31,7 @@ class StorageService extends GetxService {
 
   Future<void> updateUser({String? userid}) async {
     AppDataController appData = Get.put(AppDataController());
-    appData.userId.value = userid ?? _box.read('userId').toString();
+    appData.farmerId.value = userid ?? _box.read('userId').toString();
     return;
   }
 

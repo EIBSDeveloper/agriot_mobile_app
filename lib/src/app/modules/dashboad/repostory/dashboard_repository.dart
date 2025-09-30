@@ -35,7 +35,7 @@ class DashboardRepository {
   }
 
   Future<List<Task>> getTasks(int landId) async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get(
       '/dashboard_task_list/$userId/?land_id=$landId',
     );
@@ -46,7 +46,7 @@ class DashboardRepository {
   }
 
   Future<FinanceData> getMonthlyFinanceData(int landId) async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get(
       '/monthly_sales_expenses/$userId/?land_id=$landId',
     );
@@ -54,13 +54,13 @@ class DashboardRepository {
   }
 
   Future<LandVSCropModel> getLandVSCropData() async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get('/land-vs-crop-chart/$userId');
     return LandVSCropModel.fromJson(json.decode(response.body));
   }
 
   Future<List<MarketPrice>> getMarketPrices(int landId) async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get(
       '/get_product_market_report/$userId/?land_id=$landId',
     );
@@ -72,7 +72,7 @@ class DashboardRepository {
   }
 
   Future<PaymentSummary> getPaymentSummary() async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get(
       '/payables_receivables_count/$userId',
     );
@@ -80,26 +80,26 @@ class DashboardRepository {
   }
 
   Future<LandList> getLands() async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get('/lands/$userId');
     return LandList.fromJson(json.decode(response.body));
   }
 
   Future<void> deleteTask(int taskId) async {
-    final farmerId = appData.userId;
+    final farmerId = appData.farmerId;
     await _httpService.post('/deactivate-my-schedule/$farmerId/', {
       'id': taskId,
     });
   }
 
   Future<WidgetConfig> getWidgetConfig() async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.get('/widget_config/$userId');
     return WidgetConfig.fromJson(json.decode(response.body));
   }
 
   Future<bool> updateWidgetConfig(WidgetConfig config) async {
-    final userId = appData.userId;
+    final userId = appData.farmerId;
     final response = await _httpService.put(
       '/update_widget_config/$userId',
       config.toJson(),

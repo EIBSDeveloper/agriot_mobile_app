@@ -14,7 +14,7 @@ class LandService extends GetxService {
 
   final AppDataController appDeta = Get.put(AppDataController());
   Future<LandList> getLands() async {
-    final userId = appDeta.userId;
+    final userId = appDeta.farmerId;
     final response = await _httpService.get('/lands/$userId');
     return LandList.fromJson(json.decode(response.body));
   }
@@ -28,7 +28,7 @@ class LandService extends GetxService {
   }
 
   Future<LandDetail> fetchLandDetail(int landId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get('/land_view/$farmerId/$landId');
 
@@ -44,7 +44,7 @@ class LandService extends GetxService {
   }
 
   Future<List<LandWithSurvey>> getLandsWithSurvey() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/lands/with-survey-details/$farmerId',
@@ -100,7 +100,7 @@ class LandService extends GetxService {
   Future<Map<String, dynamic>> editLand({
     required Map<dynamic, dynamic> request,
   }) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     // Convert all request values to strings
     final requestFields = request.map<String, dynamic>(
       (key, value) => MapEntry(key, value),

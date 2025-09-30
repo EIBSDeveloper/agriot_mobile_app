@@ -414,7 +414,6 @@ class DashboardView extends GetView<DashboardController> {
                         ),
                 ),
 
-                // if (controller.financeData.value?.totalExpenses == 0 &&    controller.financeData.value?.totalSales == 0)
               ],
             ),
           ],

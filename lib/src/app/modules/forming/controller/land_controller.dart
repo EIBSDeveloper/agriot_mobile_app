@@ -270,7 +270,7 @@ class LandController extends GetxController {
       // Create request based on whether we're creating or editing
       final request = {
         if (landId.value != 0) "id": landId.value,
-        "farmer": appDeta.userId.value,
+        "farmer": appDeta.farmerId.value,
         "name": landIdController.text.trim(),
         "measurement_value": double.parse(measurementController.text.trim()),
         "measurement_unit": selectedLandUnit.value?.id,

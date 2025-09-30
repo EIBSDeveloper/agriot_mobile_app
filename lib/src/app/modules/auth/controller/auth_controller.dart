@@ -156,7 +156,7 @@ class AuthController extends GetxController {
   Future<void> authWrapper(farmerID) async {
     AppDataController appData = Get.put(AppDataController());
 
-    appData.userId.value = (farmerID ?? "").toString();
+    appData.farmerId.value = (farmerID ?? "").toString();
 
     await _storageService.saveUserData(farmerID!.toString());
     Future.delayed(const Duration(milliseconds: 500), () async {

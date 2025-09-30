@@ -18,7 +18,7 @@ class TaskRepository {
   final HttpService _httpService = Get.put(HttpService());
   final AppDataController _appDataController = Get.find();
   Future<LandList> getLands() async {
-    final userId = _appDataController.userId;
+    final userId = _appDataController.farmerId;
     final response = await _httpService.get('/lands/$userId');
     return LandList.fromJson(json.decode(response.body));
   }
@@ -27,7 +27,7 @@ class TaskRepository {
     required String landId,
     required int month,
   }) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final response = await _httpService.get(
         '/task_year_list/$farmerId?land_id=$landId&month=$month',
@@ -45,7 +45,7 @@ class TaskRepository {
     required String description,
     required int scheduleStatus,
   }) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = _appDataController.farmerId.value;
     try {
       final response = await _httpService.put('/edit_task/$farmerId', {
         'id': id,
@@ -71,7 +71,7 @@ class TaskRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',
@@ -116,7 +116,7 @@ class TaskRepository {
 
     // If no cache or force refresh, fetch from network
     final response = await _httpService.get(
-      '/get_task_list/${_appDataController.userId}?land_id=$landId&month=$monthName',
+      '/get_task_list/${_appDataController.farmerId}?land_id=$landId&month=$monthName',
     );
 
     final List<dynamic> jsonData = json.decode(response.body);
@@ -128,19 +128,19 @@ class TaskRepository {
   }
 
   Future<void> editTask(Map<String, dynamic> taskRequest) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     await _httpService.put('/edit_task/$farmerId', jsonEncode(taskRequest));
   }
 
   Future<void> deleteTask(int taskId) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     await _httpService.post('/deactivate-my-schedule/$farmerId/', {
       'id': taskId,
     });
   }
 
   Future<TaskDetails> getTaskDetails(int taskId) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final response = await _httpService.get(
         '/get_schedule_details/$farmerId/?id=$taskId',
@@ -152,7 +152,7 @@ class TaskRepository {
   }
 
   Future<void> addComment(int taskId, String comment) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       await _httpService.put('/add_comments/$farmerId', {
         'id': taskId,
@@ -170,7 +170,7 @@ class TaskRepository {
     String description,
     TaskTypes scheduleStatus,
   ) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final inputFormat = DateFormat('dd-MM-yyyy');
       final dateTime = inputFormat.parse(startDate);

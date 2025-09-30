@@ -15,7 +15,7 @@ class CustomerSalesHistoryRepository {
     required int customerId,
     required int saleId,
   }) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${baseUrl}get_sales_payables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId",
     );
@@ -37,7 +37,7 @@ class CustomerSalesHistoryRepository {
     required int saleId,
     required int outstandingId,
   }) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${baseUrl}get_sales_payables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
@@ -56,7 +56,7 @@ class CustomerSalesHistoryRepository {
     required int customerId,
     required int saleId,
   }) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${baseUrl}customer_sales_receivables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId",
     );
@@ -78,7 +78,7 @@ class CustomerSalesHistoryRepository {
     required int saleId,
     required int outstandingId,
   }) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${baseUrl}customer_sales_receivables_outstanding_history/$farmerId/?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );

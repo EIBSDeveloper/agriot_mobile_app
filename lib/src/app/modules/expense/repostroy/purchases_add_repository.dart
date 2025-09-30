@@ -20,7 +20,7 @@ class PurchasesAddRepository {
   final HttpService _httpService = Get.find<HttpService>();
   final AppDataController appDeta = Get.find();
   Future<Map<String, dynamic>> addFuelEntry(FuelEntryModel fuelEntry) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.post(
         '/add_fuel/$farmerId',
@@ -49,7 +49,7 @@ class PurchasesAddRepository {
   }
 
   Future<Map<String, dynamic>> addMachinery(Machinery machinery) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.post(
         '/add_machinery/$farmerId',
@@ -63,7 +63,7 @@ class PurchasesAddRepository {
 
   Future<List<InventoryType>> getInventory() async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get(
         '/inventory_types_quantity/$farmerId',
       );
@@ -76,7 +76,7 @@ class PurchasesAddRepository {
 
   Future<List<Customer>> getVendorList() async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get('/get_vendor/$farmerId');
       var decode = json.decode(response.body);
       var map = decode
@@ -135,7 +135,7 @@ class PurchasesAddRepository {
     int inventoryItemId,
   ) async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get(
         '/inventory_item_quantity/$farmerId/$inventoryTypeId/$inventoryItemId',
       );
@@ -154,7 +154,7 @@ class PurchasesAddRepository {
   }
 
   Future addVehicle(VehicleModel vehicle) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.post(
         '/add_vehicle/$farmerId/',
@@ -170,7 +170,7 @@ class PurchasesAddRepository {
   }
 
   Future<FertilizerResponse> addFertilizer(FertilizerModel fertilizer) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
 
     try {
       var endpoint = '/add_fertilizer/$farmerId/';

@@ -11,7 +11,7 @@ import '../../model/vendor/vendor_purchase_model.dart';
 final AppDataController appDeta = Get.put(AppDataController());
 
 class VendorPurchaseRepository {
-  final farmerId = appDeta.userId;
+  final farmerId = appDeta.farmerId;
   final baseURl = appDeta.baseUrl;
 
   Future<Vendormodel> fetchVendorPayables(int vendorId) async {

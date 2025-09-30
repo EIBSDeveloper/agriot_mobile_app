@@ -11,7 +11,7 @@ class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
   final AppDataController appDeta = Get.find();
   Future<List> getVendorCustomerList(int type) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       String endpoint;
       switch (type) {
@@ -38,7 +38,7 @@ class VendorCustomerRepository {
 
   Future<List<InventoryType>> getInventory() async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get(
         '/inventory_types_quantity/$farmerId',
       );
@@ -61,7 +61,7 @@ class VendorCustomerRepository {
   }
 
   Future<Map<String, dynamic>> daleteDetails(int id, String type) async {
-    final userId = appDeta.userId;
+    final userId = appDeta.farmerId;
     var endPoint = '';
     if (type == 'customer') {
       endPoint = '/deactivate_my_customer/$userId/';
@@ -78,7 +78,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> addCustomer(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       var json2 = formData.toJson();
       final response = await _httpService.post(
@@ -97,7 +97,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> editCustomer(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       var json2 = formData.toJson();
       final response = await _httpService.put(
@@ -116,7 +116,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> addVendor(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       var json2 = formData.toJson();
       json2['farmer'] = farmerId;
@@ -132,7 +132,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> editVendor(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       var json2 = formData.toJson();
       json2['farmer'] = farmerId;
@@ -151,7 +151,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> addBoth(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       var json2 = formData.toJson();
       json2["is_customer_is_vendor"] = "yes";
@@ -172,7 +172,7 @@ class VendorCustomerRepository {
   }
 
   Future<int> editBoth(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       var json2 = formData.toJson();
       json2["is_customer_is_vendor"] = "yes";

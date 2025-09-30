@@ -134,7 +134,7 @@ class PaymentScreen extends StatelessWidget {
     try {
       // Create order
       final order = await controller.repository.createOrder(
-        (package.subAmount ?? package.amount).toInt() * 100,
+        20 * 100,
       );
 
       // Initialize Razorpay

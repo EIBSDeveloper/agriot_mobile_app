@@ -19,7 +19,7 @@ class SalesRepository {
     required int cropId,
     required String type,
   }) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final response = await _httpService.post(
         '/get_sales_by_crop/$farmerId/',
@@ -32,7 +32,7 @@ class SalesRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',
@@ -55,7 +55,7 @@ class SalesRepository {
   static SalesListResponse _parseSalesList(String response) => SalesListResponse.fromJson(jsonDecode(response));
 
   Future<SalesDetailResponse> getSalesDetails({required int salesId}) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       final response = await _httpService.post('/get_sales_details/$farmerId', {
         'sales_id': salesId,
@@ -101,7 +101,7 @@ class SalesRepository {
   }
 
   Future<bool> deleteSales({required int salesId}) async {
-    final farmerId = _appDataController.userId;
+    final farmerId = _appDataController.farmerId;
     try {
       await _httpService.post('/deactivate_my_sale/$farmerId', {'id': salesId});
       return true;

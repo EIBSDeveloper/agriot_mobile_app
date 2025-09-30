@@ -13,14 +13,14 @@ class FormingRepository {
 
   final AppDataController appDeta = Get.put(AppDataController());
   Future<List<Land>> getLandsWithCrops() async {
-    final userId = appDeta.userId;
+    final userId = appDeta.farmerId;
     final response = await _httpService.get('/land-and-crop-details/$userId');
     final jsonData = json.decode(response.body);
     return List<Land>.from(jsonData['lands'].map((x) => Land.fromJson(x)));
   }
 
   Future<Map<String, dynamic>> getLandDetails(int landId) async {
-    final userId = appDeta.userId;
+    final userId = appDeta.farmerId;
     final response = await _httpService.get(
       '/land_details_with_crop/$userId?land_id=$landId',
     );
@@ -28,7 +28,7 @@ class FormingRepository {
   }
 
   Future<Map<String, dynamic>> daleteLandDetails(int landId) async {
-    final userId = appDeta.userId;
+    final userId = appDeta.farmerId;
     final response = await _httpService.post('/deactivate_my_land/$userId/', {
       "id": landId,
     });
@@ -36,21 +36,21 @@ class FormingRepository {
   }
 
   Future<void> deleteTask(int taskId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     await _httpService.post('/deactivate-my-schedule/$farmerId/', {
       'id': taskId,
     });
   }
 
   Future<void> deleteCrop(int taskId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     await _httpService.post('/delete_crop/$farmerId/', {
       'id': taskId,
     });
   }
 
   Future<CropOverview> getCropOverview(int landId, int cropId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.post('/crop_details_land/$farmerId', {
         'land_id': landId,
@@ -64,7 +64,7 @@ class FormingRepository {
   }
 
   Future<MyCropDetails> getCropDetails(int landId, int cropId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/crop_view/$farmerId/$landId/$cropId',
@@ -77,7 +77,7 @@ class FormingRepository {
   }
 
   Future<void> updateCropDetails(Map<String, dynamic> data) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       var data2 = data['farmer'] = farmerId;
       await _httpService.post('/edit_my_land/$farmerId', data2);
@@ -93,7 +93,7 @@ class FormingRepository {
   }) async {
     // If no cache or force refresh, fetch from network
     final response = await _httpService.get(
-      '/tasks_list/for-month-and-crop/${appDeta.userId.value}?land_id=$landId&crop_id=$cropId&month=${month.month}&year=${month.year}',
+      '/tasks_list/for-month-and-crop/${appDeta.farmerId.value}?land_id=$landId&crop_id=$cropId&month=${month.month}&year=${month.year}',
     );
 
     final List<dynamic> jsonData = json.decode(response.body);
@@ -107,7 +107,7 @@ class FormingRepository {
   }) async {
     try {
       final response = await _httpService.get(
-        '/tasks/for-month-and-crop/${appDeta.userId.value}?land_id=$landId&crop_id=$cropId&month=${month.month}&year=${month.year}',
+        '/tasks/for-month-and-crop/${appDeta.farmerId.value}?land_id=$landId&crop_id=$cropId&month=${month.month}&year=${month.year}',
       );
       return TaskResponse.fromJson(json.decode(response.body));
     } catch (e) {

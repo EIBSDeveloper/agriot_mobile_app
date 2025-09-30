@@ -34,7 +34,7 @@ class ProfileController extends GetxController {
 
       signOutFromGoogle();
       await GetStorage().erase();
-      appData.userId.value = '';
+      appData.farmerId.value = '';
       appData.username.value = '';
       appData.emailId.value = '';
       Get.offAllNamed(Routes.login);

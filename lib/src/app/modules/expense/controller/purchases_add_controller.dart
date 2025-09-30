@@ -324,7 +324,7 @@ class PurchasesAddController extends GetxController {
       AppDataController appData = Get.find();
 
       final vehicle = VehicleModel(
-        farmerId: appData.userId.value,
+        farmerId: appData.farmerId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
         vendor: selectedVendor.value ?? 0,
         inventoryType: selectedInventoryType.value!, // Assuming default value

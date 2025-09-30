@@ -12,7 +12,7 @@ class CustomerVendorRepository {
 
   /// Fetch payables list for a given user ID
   Future<VendorCustomerResponse> fetchPayables() async {
-    final url = Uri.parse('${appDeta.baseUrl.value}/customer_vendor_payables_list/${appDeta.userId.value}');
+    final url = Uri.parse('${appDeta.baseUrl.value}/customer_vendor_payables_list/${appDeta.farmerId.value}');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -27,7 +27,7 @@ class CustomerVendorRepository {
 
   /// Fetch receivables list for a given user ID
   Future<VendorCustomerResponse> fetchReceivables() async {
-    final url = Uri.parse('${appDeta.baseUrl.value}/customer_vendor_receivables_list/${appDeta.userId.value}');
+    final url = Uri.parse('${appDeta.baseUrl.value}/customer_vendor_receivables_list/${appDeta.farmerId.value}');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -47,7 +47,7 @@ class CustomerVendorRepository {
     int saleId,
   ) async {
     final url = Uri.parse(
-      "${appDeta.baseUrl.value}/get_farmer_both_receivables_outstanding_history/${appDeta.userId.value}/"
+      "${appDeta.baseUrl.value}/get_farmer_both_receivables_outstanding_history/${appDeta.farmerId.value}/"
       "?customer_id=$customerId&sale_id=$saleId",
     );
     print("📡 Fetching history: $url");
@@ -79,7 +79,7 @@ class CustomerVendorRepository {
     int outstandingId,
   ) async {
     final url = Uri.parse(
-      "${appDeta.baseUrl.value}/get_farmer_both_receivables_outstanding_history/${appDeta.userId.value}/"
+      "${appDeta.baseUrl.value}/get_farmer_both_receivables_outstanding_history/${appDeta.farmerId.value}/"
       "?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
 
@@ -107,7 +107,7 @@ class CustomerVendorRepository {
     int saleId,
   ) async {
     final url = Uri.parse(
-      "${appDeta.baseUrl.value}/get_farmer_both_payables_outstanding_history/${appDeta.userId.value}/"
+      "${appDeta.baseUrl.value}/get_farmer_both_payables_outstanding_history/${appDeta.farmerId.value}/"
       "?customer_id=$customerId&sale_id=$saleId",
     );
     print("📡 Fetching history: $url");
@@ -139,7 +139,7 @@ class CustomerVendorRepository {
     int outstandingId,
   ) async {
     final url = Uri.parse(
-      "${appDeta.baseUrl.value}/get_farmer_both_payables_outstanding_history/${appDeta.userId.value}/"
+      "${appDeta.baseUrl.value}/get_farmer_both_payables_outstanding_history/${appDeta.farmerId.value}/"
       "?customer_id=$customerId&sale_id=$saleId&outstanding_id=$outstandingId",
     );
 

@@ -45,7 +45,7 @@ class ConsumptionPurchaseRepository {
 
       // Get farmer ID from storage
 
-      final farmerId = _appDataController.userId.value;
+      final farmerId = _appDataController.farmerId.value;
       final response = await _httpService.get(
         '$endpoint/$farmerId/$type/$itemId',
       );
@@ -138,7 +138,7 @@ class ConsumptionPurchaseRepository {
     try {
       // Get farmer ID from storage
 
-      final farmerId = _appDataController.userId.value;
+      final farmerId = _appDataController.farmerId.value;
       final response = await _httpService.get(
         '/inventory_purchase_list/$farmerId/$type/$itemId?page=$page',
       );
@@ -166,7 +166,7 @@ class ConsumptionPurchaseRepository {
     try {
       // Get farmer ID from storage
 
-      final farmerId = _appDataController.userId.value;
+      final farmerId = _appDataController.farmerId.value;
       final response = await _httpService.get(
         '/inventory_cunsumption_list/$farmerId/$type/$itemId?page=$page',
       );

@@ -12,7 +12,7 @@ class LandMapViewRepository {
   final AppDataController appDeta = Get.put(AppDataController());
 
   Future<List<ScheduleLand>> fetchLandsAndCrops() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',
@@ -30,7 +30,7 @@ class LandMapViewRepository {
   }
 
   Future<CropDetails> fetcCropDetails(int land, int crop) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/crop_summary/$farmerId/$land/$crop',
@@ -56,7 +56,7 @@ class LandMapViewRepository {
   }
 
   Future<LandMapData> fetchLandsAndCropMap(int landId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/lands/geo-marks/$farmerId/$landId',

@@ -9,7 +9,7 @@ import '../../model/payables_receivables_model/payables_receivables_model.dart';
   final AppDataController appDeta = Get.put(AppDataController());
 class PayablesReceivablesRepository {
   Future<PayablesReceivablesList> fetchPayablesReceivablesList() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       '${appDeta.baseUrl.value}/payables_receivables_list/$farmerId',
     );

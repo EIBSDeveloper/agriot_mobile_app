@@ -12,7 +12,7 @@ class SubscriptionRepository {
   final HttpService _httpService = Get.find();
   final AppDataController appData = Get.find();
   Future<PackageListResponse> getPackages() async {
-    final farmerId = appData.userId.value;
+    final farmerId = appData.farmerId.value;
     try {
       final response = await _httpService.get(
         '/get_package_management/$farmerId',
@@ -24,7 +24,7 @@ class SubscriptionRepository {
   }
 
   Future<FarmerUsageResponse> getFarmerUsage() async {
-    final farmerId = appData.userId.value;
+    final farmerId = appData.farmerId.value;
     try {
       final response = await _httpService.get('/get_farmer_usage/$farmerId/');
       return FarmerUsageResponse.fromJson(json.decode(response.body));
@@ -48,7 +48,7 @@ class SubscriptionRepository {
     required String razorpaySignature,
     required int packageId,
   }) async {
-    final farmerId = appData.userId.value;
+    final farmerId = appData.farmerId.value;
     try {
       final response = await _httpService.post('/verify_payment_mobile/', {
         'razorpay_payment_id': razorpayPaymentId,

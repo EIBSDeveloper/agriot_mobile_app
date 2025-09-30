@@ -22,7 +22,7 @@ class CropService extends GetxService {
   }
 
   Future<List> getSurveyDetails({required int landId}) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/lands/with-survey-details/$farmerId/$landId',
@@ -69,7 +69,7 @@ class CropService extends GetxService {
   }
 
   Future<http.Response> addCrop(Map<String, dynamic> request) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final response = await _httpService.post('/add_crop/$farmerId/', request);
     return response;
   }
@@ -82,7 +82,7 @@ class CropService extends GetxService {
 
   /// 🔹 Correct crop details API
   Future<Map<String, dynamic>> getCropDetails(int landId, int cropId) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/crop_view/$farmerId/$landId/$cropId',
@@ -95,7 +95,7 @@ class CropService extends GetxService {
 
   /// 🔹 Correct crop edit API
   Future<http.Response> updateCropDetails(Map<String, dynamic> data) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.put('/edit_crop/$farmerId', data);
 

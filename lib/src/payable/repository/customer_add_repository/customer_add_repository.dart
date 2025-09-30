@@ -15,7 +15,7 @@ class CustomerAddRepository {
     int customerId,
     Map<String, dynamic> body,
   ) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "$baseUrl/pay_sales_payables_outstanding/$farmerId/$customerId/",
     );
@@ -46,7 +46,7 @@ class CustomerAddRepository {
   
     int customerId,
     Map<String, dynamic> body,
-  ) async {final farmerId = appDeta.userId;
+  ) async {final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "$baseUrl/pay_sales_outstanding/$farmerId/$customerId/",
     );

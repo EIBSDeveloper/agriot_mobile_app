@@ -80,7 +80,7 @@ class ScheduleController extends GetxController {
       return;
     }
 
-    final farmerId = _appDataController.userId.value;
+    final farmerId = _appDataController.farmerId.value;
     try {
       isLoading(true);
       final taskRequest = TaskRequest(

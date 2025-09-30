@@ -10,7 +10,7 @@ final AppDataController appDeta = Get.put(AppDataController());
 
 class VendorAddRepository {
   final String baseUrl = appDeta.baseUrl.value;
-  final farmerId = appDeta.userId;
+  final farmerId = appDeta.farmerId;
  
   // Create Payable
   Future<VendorPaymentResponse?> createVendorPayable({

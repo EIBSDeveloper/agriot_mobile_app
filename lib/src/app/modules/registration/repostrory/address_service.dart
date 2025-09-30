@@ -29,7 +29,7 @@ class FarmerRepository {
     required String companyName,
     required String taxNo,
   }) async {
-    final userId = appDeta.userId;
+    final userId = appDeta.farmerId;
     try {
       // Prepare the request body
       final body = {

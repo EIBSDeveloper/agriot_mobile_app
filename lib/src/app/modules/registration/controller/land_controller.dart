@@ -184,7 +184,7 @@ class RegLandController extends GetxController {
 
       final AppDataController appDeta = Get.put(AppDataController());
       final request = {
-        "farmer": appDeta.userId.value,
+        "farmer": appDeta.farmerId.value,
         "name": landIdController.text.trim(),
         "measurement_value": measurementController.text.trim(),
         "measurement_unit": selectedLandUnit.value?.id,

@@ -199,7 +199,7 @@ class RegCropController extends GetxController {
         'yyyy-MM-dd',
       ).format(plantationDate.value!);
       final request = {
-        "farmer": appData.userId.value,
+        "farmer": appData.farmerId.value,
         "crop_type": selectedCropType.value!.id,
         "crop": selectedCrop.value!.id,
         "harvesting_type": selectedHarvestFrequency.value!.id,

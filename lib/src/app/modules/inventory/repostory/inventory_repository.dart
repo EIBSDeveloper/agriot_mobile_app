@@ -11,7 +11,7 @@ class InventoryRepository {
   final AppDataController appDeta = Get.put(AppDataController());
   Future<List<InventoryType>> getInventory() async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get('/inventory_types_quantity/$farmerId');
       final response2 = jsonDecode(response.body) as List;
 return response2.map((data) => InventoryType.fromJson(data)).toList();

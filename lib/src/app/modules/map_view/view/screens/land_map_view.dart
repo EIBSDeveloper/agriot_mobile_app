@@ -61,17 +61,17 @@ class LandMapView extends GetView<LandMapViewController> {
           ),
 
           // Refresh Button
-          Positioned(
-            bottom: 100,
-            right: 20,
-            child: FloatingActionButton(
-              onPressed: () {
-                controller.refreshData();
-              },
-              backgroundColor: Colors.white,
-              child: const Icon(Icons.refresh, color: Colors.green),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 100,
+          //   right: 20,
+          //   child: FloatingActionButton(
+          //     onPressed: () {
+          //       controller.refreshData();
+          //     },
+          //     backgroundColor: Colors.white,
+          //     child: const Icon(Icons.refresh, color: Colors.green),
+          //   ),
+          // ),
         ],
       );
     }),

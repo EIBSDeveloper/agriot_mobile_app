@@ -68,7 +68,7 @@ class Package {
   factory Package.fromJson(Map<String, dynamic> json) => Package(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
-      code: json['code'],
+      code: json['code'].toString(),
       packageValidity: json['package_validity'] ?? 0,
       packageDuration: json['package_duration'] ?? '',
       amount: (json['amount'] ?? 0).toDouble(),

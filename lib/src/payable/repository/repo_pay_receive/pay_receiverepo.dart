@@ -8,7 +8,7 @@ import '../customer_add_repository/customer_add_repository.dart';
 class CustomerlistRepository {
   //customer payables
   Future<List<Customerlistmodel>> fetchCustomerPayableslist() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       '${appDeta.baseUrl.value}/customer_payables_list/$farmerId',
     );
@@ -25,7 +25,7 @@ class CustomerlistRepository {
 
   //customer receivables
   Future<List<Customerlistmodel>> fetchCustomerReceivableslist() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${appDeta.baseUrl.value}/customer_receivables_list/$farmerId",
     );
@@ -42,7 +42,7 @@ class CustomerlistRepository {
 
   //Vendor payables
   Future<List<Customerlistmodel>> fetchVendorPayableslist() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${appDeta.baseUrl.value}/vendors_payables_list/$farmerId",
     );
@@ -59,7 +59,7 @@ class CustomerlistRepository {
 
   //Vendor Receivables
   Future<List<Customerlistmodel>> fetchVendorReceivableslist() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     final url = Uri.parse(
       "${appDeta.baseUrl.value}/vendors_receivables_list/$farmerId",
     );

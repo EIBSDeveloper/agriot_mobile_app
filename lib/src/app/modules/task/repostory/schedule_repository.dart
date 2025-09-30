@@ -12,7 +12,7 @@ class ScheduleRepository {
   final AppDataController appDeta = Get.put(AppDataController());
   Future<List<Schedule>> fetchSchedules(int landId, int cropId) async {
     try {
-      final String farmerId = appDeta.userId.value;
+      final String farmerId = appDeta.farmerId.value;
       final response = await _httpService.get(
         '/best_practice_schedule/$farmerId/$landId/$cropId/',
       );
@@ -36,7 +36,7 @@ class ScheduleRepository {
     int scheduleId,
   ) async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get(
         '/best_practice_schedule/$farmerId/$landId/$cropId/$scheduleId',
       );
@@ -71,7 +71,7 @@ class ScheduleRepository {
   }
 
   Future<List<ScheduleLand>> fetchLandsAndCrops() async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',

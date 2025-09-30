@@ -169,7 +169,7 @@ class ConsumptionController extends GetxController {
   }
 
   Future<void> getCropList() async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = _appDataController.farmerId.value;
     try {
       final response = await Get.find<HttpService>().get(
         '/land-and-crop-details/$farmerId',
@@ -214,7 +214,7 @@ class ConsumptionController extends GetxController {
   Future<bool> submitConsumption() async {
     if (!formKey.currentState!.validate()) return false;
 
-    final String farmerId = _appDataController.userId.value;
+    final String farmerId = _appDataController.farmerId.value;
     try {
       isLoading(true);
 

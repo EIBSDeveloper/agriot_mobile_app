@@ -14,7 +14,7 @@ class InventoryDetailsRepository {
     int fuelId,
     int inventoryType,
   ) async {
-    final farmerId = _appDataController.userId.value;
+    final farmerId = _appDataController.farmerId.value;
     try {
     
       final response = await httpService.get("/inventory_purchase_details/$farmerId/$inventoryType/$fuelId", );

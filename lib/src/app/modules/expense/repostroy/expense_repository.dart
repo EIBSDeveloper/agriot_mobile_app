@@ -18,7 +18,7 @@ class ExpenseRepository {
 
   final AppDataController appDeta = Get.find();
   Future<TotalExpense> getTotalExpense(String timePeriod) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.post(
         '/total_expense_and_purchase/$farmerId/',
@@ -31,7 +31,7 @@ class ExpenseRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/land-and-crop-details/$farmerId',
@@ -51,7 +51,7 @@ class ExpenseRepository {
   }
 
   Future<ExpenseResponse> getExpenses(String timePeriod) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.post(
         '/both_farmer_expense_purchase_list/$farmerId/',
@@ -64,7 +64,7 @@ class ExpenseRepository {
   }
     Future<List<Customer>> getVendorList() async {
     try {
-      final farmerId = appDeta.userId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get('/get_vendor/$farmerId');
       var decode = json.decode(response.body);
       var map = decode
@@ -78,7 +78,7 @@ class ExpenseRepository {
 
 
   Future<List<Chart>> getExpenseSummary(String timePeriod) async {
-    final farmerId = appDeta.userId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.post('/expense-totals/', {
         'farmer_id': farmerId,
@@ -122,7 +122,7 @@ class ExpenseRepository {
     String? description, 
     List<Map<String, dynamic>>? documents,
   }) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.post('/add_expense/$farmerId', {
         'my_crop': myCrop,

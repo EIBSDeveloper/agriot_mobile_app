@@ -12,7 +12,7 @@ final AppDataController appDeta = Get.put(AppDataController());
 class AttendanceRepository {
   /// 🔥 Fetch Employees from API
   Future<List<EmployeeModel>> fetchEmployees({required String date}) async {
-    final farmerId = appDeta.userId;
+    final farmerId = appDeta.farmerId;
 
     try {
       final url = Uri.parse(

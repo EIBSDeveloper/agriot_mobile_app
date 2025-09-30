@@ -21,8 +21,7 @@ class VendorHistoryModel {
     required this.status,
   });
 
-  factory VendorHistoryModel.fromJson(Map<String, dynamic> json) {
-    return VendorHistoryModel(
+  factory VendorHistoryModel.fromJson(Map<String, dynamic> json) => VendorHistoryModel(
       id: json['id'] ?? 0,
       balance: (json['balance'] ?? 0).toDouble(),
       paid: (json['paid'] ?? 0).toDouble(),
@@ -33,5 +32,4 @@ class VendorHistoryModel {
       description: json['description'] ?? '-',
       status: json['status'] ?? 0,
     );
-  }
 }

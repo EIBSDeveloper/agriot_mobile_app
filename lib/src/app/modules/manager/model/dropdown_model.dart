@@ -5,9 +5,7 @@ class GenderModel {
 
   GenderModel({required this.id, required this.name});
 
-  factory GenderModel.fromJson(Map<String, dynamic> json) {
-    return GenderModel(id: json['id'], name: json['name']);
-  }
+  factory GenderModel.fromJson(Map<String, dynamic> json) => GenderModel(id: json['id'], name: json['name']);
 }
 
 // employee_type_model.dart
@@ -17,9 +15,7 @@ class EmployeeTypeModel {
 
   EmployeeTypeModel({required this.id, required this.name});
 
-  factory EmployeeTypeModel.fromJson(Map<String, dynamic> json) {
-    return EmployeeTypeModel(id: json['id'], name: json['name']);
-  }
+  factory EmployeeTypeModel.fromJson(Map<String, dynamic> json) => EmployeeTypeModel(id: json['id'], name: json['name']);
 }
 
 // role_model.dart
@@ -29,7 +25,5 @@ class RoleModel {
 
   RoleModel({required this.id, required this.name});
 
-  factory RoleModel.fromJson(Map<String, dynamic> json) {
-    return RoleModel(id: json['id'], name: json['name']);
-  }
+  factory RoleModel.fromJson(Map<String, dynamic> json) => RoleModel(id: json['id'], name: json['name']);
 }

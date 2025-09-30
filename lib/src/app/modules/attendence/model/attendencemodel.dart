@@ -68,7 +68,7 @@ class EmployeeModel {
   final String? login;
   final String? logout;
   final String? hours;
-  final double? salary;
+  final int? salary;
   final bool? paidStatus;
 
   EmployeeModel({
@@ -85,8 +85,7 @@ class EmployeeModel {
     this.paidStatus,
   });
 
-  factory EmployeeModel.fromJson(Map<String, dynamic> json) {
-    return EmployeeModel(
+  factory EmployeeModel.fromJson(Map<String, dynamic> json) => EmployeeModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       role: json['role'] ?? '',
@@ -97,14 +96,12 @@ class EmployeeModel {
       logout: json['logout'],
       hours: json['hours'],
       salary: (json['salary'] != null)
-          ? double.tryParse(json['salary'].toString())
+          ? int.tryParse(json['salary'].toString())
           : null,
       paidStatus: json['paid_status'] == 1 || json['paid_status'] == true,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       "id": id,
       "name": name,
       "role": role,
@@ -117,7 +114,6 @@ class EmployeeModel {
       "salary": salary,
       "paid_status": paidStatus,
     };
-  }
 
   EmployeeModel copyWith({
     int? id,
@@ -129,10 +125,9 @@ class EmployeeModel {
     String? login,
     String? logout,
     String? hours,
-    double? salary,
+    int? salary,
     bool? paidStatus,
-  }) {
-    return EmployeeModel(
+  }) => EmployeeModel(
       id: id ?? this.id,
       name: name ?? this.name,
       role: role ?? this.role,
@@ -145,5 +140,4 @@ class EmployeeModel {
       salary: salary ?? this.salary,
       paidStatus: paidStatus ?? this.paidStatus,
     );
-  }
 }

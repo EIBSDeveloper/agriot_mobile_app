@@ -136,7 +136,7 @@ Widget employeeCard(EmployeeModel emp) => Card(
               Align(
                 alignment: Alignment.bottomRight,
                 child: Text(
-                  "${emp.paidStatus == true ? "Paid" : "Unpaid"}",
+                  emp.paidStatus == true ? "Paid" : "Unpaid",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: emp.paidStatus == true ? Colors.green : Colors.red,

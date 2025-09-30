@@ -140,7 +140,7 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
           const SizedBox(height: 5),
           const Divider(height: 1),
           Obx(
-            () => Row(
+            () => controller.weatherData.value != null? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FittedBox(
@@ -171,7 +171,7 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                   ),
                 ),
               ],
-            ),
+            ):const SizedBox.square(),
           ),
           const Divider(height: 1),
           const SizedBox(height: 8),

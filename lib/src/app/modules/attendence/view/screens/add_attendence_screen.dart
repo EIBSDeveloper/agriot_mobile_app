@@ -267,7 +267,7 @@ class AttendanceCard extends GetView<AttendenceController> {
                       onChanged: (val) {
                         final salary = int.tryParse(val);
                         controller.employees[index] = emp.copyWith(
-                          // salary: salary,
+                          salary: salary,
                         );
                         controller.employees.refresh();
                       },
@@ -283,29 +283,27 @@ class AttendanceCard extends GetView<AttendenceController> {
             const SizedBox(height: 8),
 
             /// Paid/Unpaid Status
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<bool>(
-                    dense: true,
-                    title: const Text("Paid"),
-                    value: true,
-                    groupValue: emp.paidStatus,
-                    onChanged: (val) =>
-                        controller.setStatus(index, val ?? true),
+            RadioGroup<bool>(
+              groupValue: emp.paidStatus,
+              onChanged: (val) => controller.setStatus(index, val ?? true),
+              child: const Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<bool>(
+                      dense: true,
+                      title: Text("Paid"),
+                      value: true,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: RadioListTile<bool>(
-                    dense: true,
-                    title: const Text("Unpaid"),
-                    value: false,
-                    groupValue: emp.paidStatus,
-                    onChanged: (val) =>
-                        controller.setStatus(index, val ?? false),
+                  Expanded(
+                    child: RadioListTile<bool>(
+                      dense: true,
+                      title: Text("Unpaid"),
+                      value: false,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

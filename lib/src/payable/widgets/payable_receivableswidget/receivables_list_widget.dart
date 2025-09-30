@@ -102,31 +102,28 @@ class ReceivablesList extends StatelessWidget {
   }
 
   Widget _tile(String title, String subtitle, double amount, bool isCredit) =>
-      Container(
+      Card(
         margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withAlpha(150),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(title),
-          subtitle: Text(subtitle),
-          trailing: Text(
-            '+ ₹${amount.toStringAsFixed(2)}',
-            style: TextStyle(
-              color: Get.theme.primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+        elevation: 1,
+        // padding: const EdgeInsets.symmetric(horizontal: 12),
+        // decoration: BoxDecoration(
+        //   color: Colors.white,
+        
+        //   borderRadius: BorderRadius.circular(8),
+        // ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10 ),
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(title),
+            subtitle: Text(subtitle),
+            trailing: Text(
+              '+ ₹${amount.toStringAsFixed(2)}',
+              style: TextStyle(
+                color: Get.theme.primaryColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ),

@@ -32,7 +32,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             Obx(
               () => InputCardStyle(
                 child: DropdownButtonFormField<RoleModel>(
-                  value: controller.selectedRoleType.value,
+                  initialValue: controller.selectedRoleType.value,
                   items: controller.roleTypes
                       .map(
                         (r) => DropdownMenuItem(value: r, child: Text(r.name)),
@@ -100,7 +100,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             Obx(
               () => InputCardStyle(
                 child: DropdownButtonFormField<GenderModel>(
-                  value: controller.selectedGenderType.value,
+                  initialValue: controller.selectedGenderType.value,
                   items: controller.genderTypes
                       .map(
                         (g) => DropdownMenuItem(value: g, child: Text(g.name)),
@@ -150,7 +150,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             Obx(
               () => InputCardStyle(
                 child: DropdownButtonFormField<EmployeeTypeModel>(
-                  value: controller.selectedEmployeeType.value,
+                  initialValue: controller.selectedEmployeeType.value,
                   items: controller.employeeTypes
                       .map(
                         (e) => DropdownMenuItem(value: e, child: Text(e.name)),

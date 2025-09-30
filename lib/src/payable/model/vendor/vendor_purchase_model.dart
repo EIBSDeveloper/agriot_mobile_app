@@ -195,8 +195,7 @@ class Vendormodel {
     required this.expenses,
   });
 
-  factory Vendormodel.fromJson(Map<String, dynamic> json) {
-    return Vendormodel(
+  factory Vendormodel.fromJson(Map<String, dynamic> json) => Vendormodel(
       id: json['id'],
       name: json['name'],
       businessName: json['business_name'],
@@ -205,17 +204,14 @@ class Vendormodel {
           .map((e) => Expense.fromJson(e))
           .toList(),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
       'business_name': businessName,
       'vendor_image': vendorImage,
       'expenses': expenses.map((e) => e.toJson()).toList(),
     };
-  }
 }
 
 /*class Expense {
@@ -274,8 +270,7 @@ class Expense {
     required this.toAmount,
   });
 
-  factory Expense.fromJson(Map<String, dynamic> json) {
-    return Expense(
+  factory Expense.fromJson(Map<String, dynamic> json) => Expense(
       id: json['id'],
       date: json['date'],
       totalAmount: (json['total_amount'] as num).toDouble(),
@@ -283,10 +278,8 @@ class Expense {
       receivedAmount: (json['received_amount'] as num).toDouble(),
       toAmount: (json['to_amount'] as num).toDouble(),
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'date': date,
       'total_amount': totalAmount,
@@ -294,5 +287,4 @@ class Expense {
       'received_amount': receivedAmount,
       'to_amount': toAmount,
     };
-  }
 }

@@ -1,3 +1,4 @@
+
 import 'package:argiot/src/app/modules/map_view/model/crop_details.dart';
 import 'package:argiot/src/app/modules/map_view/model/crop_map_data.dart';
 import 'package:argiot/src/app/modules/map_view/model/land_map_data.dart';
@@ -13,6 +14,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../service/utils/utils.dart';
 import '../view/widgets/crop_details_bottom_sheet.dart';
+// ======================= CONTROLLER =======================
 
 class LandMapViewController extends GetxController {
   // Variables
@@ -20,13 +22,14 @@ class LandMapViewController extends GetxController {
   final AppDataController appDataController = Get.find();
   final ScheduleCrop allCrop = ScheduleCrop(id: 0, name: "All");
 
-  var isLoading = true.obs;
-  var lands = <ScheduleLand>[].obs;
-  var landpolyline = <LatLng>[].obs;
-  var selectedLand = Rxn<ScheduleLand>();
-  var selectedCrop = Rxn<ScheduleCrop>();
-  var mapType = MapType.normal.obs;
-  var cameraPosition = const CameraPosition(
+  RxBool isLoading = true.obs;
+  RxBool isRefreshing = false.obs;
+  RxList<ScheduleLand> lands = <ScheduleLand>[].obs;
+  RxList<LatLng> landpolyline = <LatLng>[].obs;
+  Rxn<ScheduleLand> selectedLand = Rxn<ScheduleLand>();
+  Rxn<ScheduleCrop> selectedCrop = Rxn<ScheduleCrop>();
+  Rx<MapType> mapType = MapType.normal.obs;
+  Rx<CameraPosition> cameraPosition = const CameraPosition(
     target: LatLng(12.9716, 77.5946),
     zoom: 14,
   ).obs;
@@ -41,9 +44,25 @@ class LandMapViewController extends GetxController {
   LatLngBounds? pendingBounds;
   final polygons = <Polygon>{}.obs;
   final markers = <Marker>{}.obs;
+
+ 
+  final List<Color> cropColors = [
+    Colors.red,
+    Colors.amber,
+    Colors.indigo,
+    Colors.pink,
+    Colors.cyan,
+    Colors.lime,
+    Colors.deepOrange,
+    Colors.deepPurple,
+  ];
+
+  final Map<int, Color> cropColorMap = {};
+
   // Getters
   List<ScheduleCrop> get cropsForSelectedLand =>
       selectedLand.value?.crops ?? [];
+
   // Lifecycle
   @override
   void onInit() {
@@ -54,15 +73,16 @@ class LandMapViewController extends GetxController {
   }
 
   // Methods
-  void selectLand(ScheduleLand? land) {
+  Future<void> selectLand(ScheduleLand? land) async {
     selectedLand.value = land;
-    selectedCrop.value = allCrop; // reset to All
-    fetchLandsAndCropMap();
+    selectedCrop.value = allCrop;
+    await fetchLandsAndCropMap();
+    selectCrop(allCrop);
   }
 
   void selectCrop(ScheduleCrop? crop) {
     selectedCrop.value = crop ?? allCrop;
-    fetchLandsAndCropMap(); // refresh polygons + zoom
+    zoomCrop();
   }
 
   void changeMapType(MapType type) {
@@ -100,17 +120,20 @@ class LandMapViewController extends GetxController {
       final result = await _repository.fetchLandsAndCrops();
       lands.assignAll(result);
 
+
       if (result.isNotEmpty) {
         if (landId.value != 0) {
           selectedLand.value = result.firstWhere(
             (land) => land.id == landId.value,
           );
-          selectedCrop.value = allCrop;
           await fetchLandsAndCropMap();
+          
+          selectCrop(allCrop);
         } else {
           selectedLand.value = result.first;
-          selectedCrop.value = allCrop;
           await fetchLandsAndCropMap();
+
+          selectCrop(allCrop);
         }
       }
     } finally {
@@ -118,16 +141,30 @@ class LandMapViewController extends GetxController {
     }
   }
 
+
+
+  void _assignCropColors(List<CropMapData> crops) {
+    cropColorMap.clear();
+    for (int i = 0; i < crops.length; i++) {
+      if (crops[i].cropId != null) {
+        cropColorMap[crops[i].cropId!] = cropColors[i % cropColors.length];
+      }
+    }
+  }
+
+  Color getLandColor(int landId) =>  Colors.green;
+
+  Color getCropColor(int cropId) => cropColorMap[cropId] ?? Colors.orange;
+
   Future<void> fetchLandsAndCropsDetails(int cropId) async {
     try {
-      // isLoading(true);
       final result = await _repository.fetcCropDetails(
         selectedLand.value!.id,
         cropId,
       );
       cropDetails.value = result;
     } finally {
-      // isLoading(false);
+      // Handle completion if needed
     }
   }
 
@@ -166,68 +203,193 @@ class LandMapViewController extends GetxController {
           markerId: MarkerId("crop_${crop.cropId}"),
           position: center,
           icon: icon,
-          infoWindow: InfoWindow(title: crop.cropName ?? "Crop"),
+          infoWindow: InfoWindow(
+            title: crop.cropName ?? "Crop",
+            snippet: "Tap for details",
+          ),
+          onTap: () {
+            cropDetailsSheet(crop);
+          },
         ),
       );
     }
     return markers;
   }
 
-  Future<void> fetchLandsAndCropMap() async {
+  Future fetchLandsAndCropMap() async {
     if (selectedLand.value == null) return;
-    final result = await _repository.fetchLandsAndCropMap(
-      selectedLand.value!.id,
-    );
-    landMapDetails.value = result;
-
-    // land polygon
-    landpolyline.value = parseLatLngListFromString(
-      result.geoMarks ?? [],
-    ).toList();
-
-    // update polygons reactively
-    final polySet = <Polygon>{
-      if (landpolyline.isNotEmpty)
-        Polygon(
-          polygonId: const PolygonId("land"),
-          points: landpolyline,
-          fillColor: Colors.green.withAlpha(150),
-          strokeColor: Colors.green,
-          strokeWidth: 3,
-        ),
-      if (result.crops != null)
-        ...result.crops!.map((crop) {
-          final cropPoints = crop.geoMarks!
-              .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))
-              .toList();
-          return Polygon(
-            polygonId: PolygonId("crop_${crop.cropId}"),
-            points: cropPoints,
-            fillColor: Colors.orange.withAlpha(150),
-            strokeColor: Colors.orange,
-            strokeWidth: 2,
-            consumeTapEvents: true,
-            onTap: () => cropDetailsSheet(crop),
-          );
-        }),
-    };
-    polygons.assignAll(polySet);
-    markers.assignAll(await buildCropMarkers(result.crops ?? []));
-
-    // update camera
-    if (selectedCrop.value?.id == 0) {
-      updateCameraToPolygon(landpolyline);
-    } else {
-      final crop = result.crops?.firstWhere(
-        (c) => c.cropId == selectedCrop.value?.id,
-        orElse: () => CropMapData(),
+    
+    try {
+      final result = await _repository.fetchLandsAndCropMap(
+        selectedLand.value!.id,
       );
-      if (crop != null && crop.geoMarks?.isNotEmpty == true) {
-        final poly = crop.geoMarks!
-            .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))
-            .toList();
-        updateCameraToPolygon(poly);
+      landMapDetails.value = result;
+
+      // Assign colors to crops
+      if (result.crops != null) {
+        _assignCropColors(result.crops!);
       }
+
+      // land polygon
+      landpolyline.value = parseLatLngListFromString(
+        result.geoMarks ?? [],
+      ).toList();
+
+      // update polygons reactively
+      final polySet = <Polygon>{
+        if (landpolyline.isNotEmpty)
+          Polygon(
+            polygonId: PolygonId("land_${selectedLand.value!.id}"),
+            points: landpolyline,
+            fillColor: getLandColor(selectedLand.value!.id).withAlpha(50),
+            strokeColor: getLandColor(selectedLand.value!.id),
+            strokeWidth: 3,
+            consumeTapEvents: true,
+            onTap: () {
+              _showLandDetailsSheet();
+            },
+          ),
+        if (result.crops != null)
+          ...result.crops!.map((crop) {
+            if (crop.geoMarks == null || crop.geoMarks!.isEmpty) {
+              return Polygon(
+                polygonId: PolygonId("empty_crop_${crop.cropId}"),
+                points: [],
+                fillColor: Colors.transparent,
+                strokeColor: Colors.transparent,
+                strokeWidth: 0,
+              );
+            }
+            
+            final cropPoints = crop.geoMarks!
+                .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))
+                .toList();
+            
+            return Polygon(
+              polygonId: PolygonId("crop_${crop.cropId}"),
+              points: cropPoints,
+              fillColor: getCropColor(crop.cropId!).withAlpha(120),
+              strokeColor: getCropColor(crop.cropId!),
+              strokeWidth: 2,
+              consumeTapEvents: true,
+              onTap: () => cropDetailsSheet(crop),
+            );
+          }),
+      };
+      polygons.assignAll(polySet);
+      markers.assignAll(await buildCropMarkers(result.crops ?? []));
+    } catch (e) {
+      print("Error fetching land and crop map: $e");
+    }
+    return;
+  }
+
+  void _showLandDetailsSheet() {
+    if (selectedLand.value == null) return;
+
+    Get.bottomSheet(
+      isScrollControlled: true,
+      Container(
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 60,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Land Details',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: getLandColor(selectedLand.value!.id),
+              ),
+            ),
+            const SizedBox(height: 15),
+            _buildDetailRow('Land Name:', selectedLand.value!.name),
+            _buildDetailRow('Land ID:', selectedLand.value!.id.toString()),
+            // if (landMapDetails.value?.totalArea != null)
+            //   _buildDetailRow('Total Area:', '${landMapDetails.value!.totalArea} sqm'),
+            if (landMapDetails.value?.crops != null)
+              _buildDetailRow('Number of Crops:', landMapDetails.value!.crops!.length.toString()),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: getLandColor(selectedLand.value!.id),
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Close'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) => Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.black87,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+  void zoomCrop() {
+    if (landMapDetails.value?.crops == null) {
+      updateCameraToPolygon(landpolyline);
+      return;
+    }
+
+    final crop = landMapDetails.value!.crops!.firstWhere(
+      (c) => c.cropId == selectedCrop.value?.id,
+      orElse: () => CropMapData(),
+    );
+    if (crop.geoMarks?.isNotEmpty == true) {
+      final poly = crop.geoMarks!
+          .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))
+          .toList();
+      updateCameraToPolygon(poly);
+    } else {
+      updateCameraToPolygon(landpolyline);
     }
   }
 
@@ -254,5 +416,31 @@ class LandMapViewController extends GetxController {
 
   Future<void> fetchWeatherData(double lat, double lon) async {
     weatherData.value = await _repository.getWeatherData(lat, lon);
+  }
+
+  // Refresh method
+  Future<void> refreshData() async {
+    isRefreshing(true);
+    try {
+      await fetchLandsAndCrops();
+      if (selectedLand.value != null) {
+        await fetchLandsAndCropMap();
+      }
+      Get.snackbar(
+        'Success',
+        'Data refreshed successfully',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to refresh data',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isRefreshing(false);
+    }
   }
 }

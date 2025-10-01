@@ -45,4 +45,25 @@ class PermissionItem {
       children: childItems,
     );
   }
+
+  // ✅ Convert PermissionItem to JSON (recursive)
+  /*  Map<String, dynamic> toJson() {
+    return {
+      "status": status,
+      if (children.isNotEmpty)
+        "children": children.map((key, value) => MapEntry(key, value.toJson())),
+    };
+  }*/
+  /// Convert PermissionItem to flat JSON for API
+  Map<String, dynamic> toFlatJson() {
+    if (children.isEmpty) {
+      // Leaf node, return {name: status} format
+      return {name: status};
+    }
+    final Map<String, dynamic> result = {};
+    children.forEach((key, value) {
+      result[key] = value.toFlatJson()[key]; // flatten one level
+    });
+    return result;
+  }
 }

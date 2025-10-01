@@ -395,12 +395,37 @@ name='get_inventory_items_by_category'),
     
     
     path('employee_types', get_employee_types, name='get_employee_types'),
-    path('manager_roals', get_manager_roals, name='get_manager_roals'),
+        # Expenses
+    path(
+        "myexpenses_list/<int:farmer_id>/<str:time_period>/",
+      get_expense_list,
+        name="get_expense_list"
+    ),
+
+    # Sales
+    path(
+        "mysales_list/<int:farmer_id>/<str:time_period>/",
+       get_sales_list,
+        name="get_sales_list"
+    ),
+
+    path('both_expense_sales_list/<int:farmer_id>/<str:time_period>', get_both_expense_sales_list, name='both_expense_sales_list'),
+    path('manager_roals', get_manager_roals, name='get_manager_roals'),    
+    path('manager_by_fermer/<int:farmer_id>', get_manager_by_fermer, name='get_manager_by_fermer'),
+    path('employee_by_fermer/<int:farmer_id>', get_employee_by_fermer, name='get_employee_by_fermer'),
     path('genders', get_genders, name='get_genders'),
+    path('work_type', get_employe_wotk_type, name='get_employe_wotk_type'),
     path('permissions_list', get_permissions_list, name='get_permissions_list'),
     # Attendance Management URLs
-     path('attendance',add_attendance, name='update_attendance'),
-     path("employee-manager/", create_or_update_employee_or_manager, name="employee_or_manager"),
+    path('attendance',add_attendance, name='update_attendance'),
+    path("employee-manager/", create_or_update_employee_or_manager, name="employee_or_manager"),
+    path("employee/grouped/", get_employee_list_grouped_by_manager, name="employee-list-grouped"),
+    path("employee/<int:employee_id>/", get_employee_detail, name="employee-detail"),
+    path("manager/<int:manager_id>/", get_manager_detail, name="manager-detail"),
+    path("employee_advance", add_edit_employee_advance, name="employee_advance"),
+    path("employee_payout", add_edit_employee_payout, name="employee_payout"),
+
+
 ]
 
 

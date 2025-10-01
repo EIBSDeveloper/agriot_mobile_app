@@ -95,7 +95,8 @@ from rest_framework.exceptions import NotFound
 from drf_spectacular.utils import extend_schema
 from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import OpenApiParameter
-
+from django.core.paginator import Paginator 
+from django.db.models import Prefetch
 
 logger = logging.getLogger('api')
 
@@ -11604,21 +11605,33 @@ def verify_otp(request):
     mobile_number = request.data.get('mobile_number')
     email = request.data.get('email')
     otp = request.data.get('otp')
-    google_login = request.data.get('google_login', False)  # ✅ flag
-
+    google_login = request.data.get('google_login', False) 
+    manager = None
+    farmer_instance= None
     # If Google login, skip OTP verification
     if google_login:
         try:
             if mobile_number:
                 farmer_instance = Farmer.objects.get(phone=mobile_number)
+                if farmer_instance is None:
+                    manager = ManagerUser.objects.filter(Q(mobile_no=mobile_number) ).select_related('farmer').first()
+                    if manager:
+                        farmer =manager.farmer
+                        farmer_instance = farmer
             elif email:
                 farmer_instance = Farmer.objects.get(email=email.lower())
+                if farmer_instance is None:
+                    manager = Farmer.objects.filter(Q(email=email) ).select_related('farmer').first()
+                    if manager:
+                        farmer =manager.farmer
+                        farmer_instance = farmer
             else:
                 return Response({"detail": "Mobile number or email is required."}, status=status.HTTP_400_BAD_REQUEST)
 
             # Update Google login flag
-            farmer_instance.google_login = True
-            farmer_instance.save(update_fields=["google_login"])
+            if manager is None:
+                farmer_instance.google_login = True
+                farmer_instance.save(update_fields=["google_login"])
 
             return Response({
                 "message": "Google login successful",
@@ -11664,13 +11677,24 @@ def verify_otp(request):
     # OTP verified
     try:
         if mobile_number:
-            farmer_instance = Farmer.objects.get(phone=mobile_number)
+            farmer_instance = Farmer.objects.filter(Q(phone=mobile_number) & (Q(status=0) | Q(status=7))).first()
+            if farmer_instance is None:
+                manager = ManagerUser.objects.filter(Q(mobile_no=mobile_number) ).select_related('farmer').first()
+                if manager:
+                    farmer =manager.farmer
+                    farmer_instance = farmer
         else:
-            farmer_instance = Farmer.objects.get(email=email.lower())
-
+            farmer_instance = Farmer.objects.filter(Q(email=email.lower()) & (Q(status=0) | Q(status=7))).first()
+            if farmer_instance is None:
+                manager = ManagerUser.objects.filter(Q(email=email) ).select_related('farmer').first()
+                if manager:
+                    farmer =manager.farmer
+                    farmer_instance = farmer
         return Response({
             "message": "OTP Authenticated successfully",
             "status": "existing",
+             "is_manager": manager!= None,
+            "manager_id": manager.id if manager else None,
             "farmer_details": {"id": farmer_instance.id, "google_login": farmer_instance.google_login}
         }, status=status.HTTP_200_OK)
 
@@ -11681,9 +11705,11 @@ def verify_otp(request):
             google_login=False
         )
         return Response({
-            "message": "OTP Authenticated successfully",
+            "message": "Authenticated successfully",
             "status": "new",
-            "farmer_details": {"id": farmer_instance.id, "google_login": farmer_instance.google_login}
+            "farmer_details": {
+                "id": farmer_instance.id,
+                 "google_login": farmer_instance.google_login}
         }, status=status.HTTP_201_CREATED)
 
 
@@ -12171,6 +12197,7 @@ def get_otp(request):
         return Response({"detail": "Mobile number or email is required."}, status=status.HTTP_400_BAD_REQUEST)
 
     existing_farmer = None
+    manager = None
 
     # Validate mobile number if provided
     if mobile_number:
@@ -12182,183 +12209,188 @@ def get_otp(request):
                 return Response({"detail": "Mobile number exceeds maximum length of 10 characters."}, status=status.HTTP_400_BAD_REQUEST)
         existing_farmer = Farmer.objects.filter(Q(phone=mobile_number) & (Q(status=0) | Q(status=7))).first()
         if existing_farmer is None:
-            existing_farmer = ManagerUser.objects.filter(Q(mobile_no=mobile_number) & (Q(status=0))).first().farmer
+            manager = ManagerUser.objects.filter(Q(mobile_no=mobile_number) & (Q(status=0))).select_related('farmer').first()
+            if manager:
+                farmer =manager.farmer
+                existing_farmer = farmer
 
     # Validate email if provided
     if email and not existing_farmer:
         email = email.strip().lower()
         existing_farmer = Farmer.objects.filter(Q(email=email) & (Q(status=0) | Q(status=7))).first()
         if existing_farmer is None:
-            existing_farmer = ManagerUser.objects.filter(Q(email=email)  & (Q(status=0))).first().farmer
+            manager = ManagerUser.objects.filter(Q(email=email) ).select_related('farmer').first()
+            if manager:
+                farmer =manager.farmer
+                existing_farmer = farmer
 
-    # # -------------------- GOOGLE LOGIN FLOW --------------------
-    # if google_login:
-    #     # Existing farmer
-    #     if existing_farmer:
-    #         existing_farmer.google_login = True
-    #         existing_farmer.save()
+    # -------------------- GOOGLE LOGIN FLOW --------------------
+    if google_login:
+        # Existing farmer
+        if existing_farmer:
+            existing_farmer.google_login = True
+            existing_farmer.save()
 
-    #         has_my_land = MyLand.objects.filter(farmer=existing_farmer, status=0).exists()
-    #         land_details = None
-    #         if has_my_land:
-    #             land = MyLand.objects.filter(farmer=existing_farmer, status=0).first()
-    #             land_details = {"latitude": land.latitude, "longitude": land.longitude}
+            has_my_land = MyLand.objects.filter(farmer=existing_farmer, status=0).exists()
+            land_details = None
+            if has_my_land:
+                land = MyLand.objects.filter(farmer=existing_farmer, status=0).first()
+                land_details = {"latitude": land.latitude, "longitude": land.longitude}
 
-    #         has_my_crop = MyCrop.objects.filter(farmer=existing_farmer, status=0).exists()
-    #         has_details = all([
-    #             existing_farmer.name,
-    #             existing_farmer.phone or True,
-    #             existing_farmer.email or True,
-    #             existing_farmer.pincode,
-    #         ])
-    #         name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
+            has_my_crop = MyCrop.objects.filter(farmer=existing_farmer, status=0).exists()
+            has_details = all([
+                existing_farmer.name,
+                existing_farmer.phone or True,
+                existing_farmer.email or True,
+                existing_farmer.pincode,
+            ])
+            name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
 
-    #         return Response({
-    #             "message": "Existing Farmer",
-    #             "user": False,
-    #             "details": has_details,
-    #             "land": has_my_land,
-    #             "land_details": land_details,
-    #             "crop": has_my_crop,
-    #             "farmer": {
-    #                 "id": existing_farmer.id,
-    #                 "language": {"default": "en"},
-    #                 "otp": ""
-    #             }
-    #         }, status=status.HTTP_200_OK)
+            return Response({
+                "message": "Existing Farmer",
+                "user": False,
+                "details": has_details,
+                "land": has_my_land,
+                "land_details": land_details,
+                "crop": has_my_crop,
+                "farmer": {
+                    "id": existing_farmer.id,
+                    "language": {"default": "en"},
+                    "otp": ""
+                }
+            }, status=status.HTTP_200_OK)
 
-    #     # New farmer via Google login
-    #     with transaction.atomic():
-    #         if not name:
-    #             base_name = "Farmer"
-    #             base_len = len(base_name) + 1
-    #             max_suffix = Farmer.objects.filter(name__startswith=base_name) \
-    #                 .annotate(suffix_str=Substr('name', base_len)) \
-    #                 .filter(suffix_str__regex=r'^\d+$') \
-    #                 .annotate(suffix=Cast('suffix_str', IntegerField())) \
-    #                 .aggregate(max_suffix=Max('suffix'))['max_suffix'] or 0
-    #             name = f"{base_name}{max_suffix + 1}"
+        # New farmer via Google login
+        with transaction.atomic():
+            if not name:
+                base_name = "Farmer"
+                base_len = len(base_name) + 1
+                max_suffix = Farmer.objects.filter(name__startswith=base_name) \
+                    .annotate(suffix_str=Substr('name', base_len)) \
+                    .filter(suffix_str__regex=r'^\d+$') \
+                    .annotate(suffix=Cast('suffix_str', IntegerField())) \
+                    .aggregate(max_suffix=Max('suffix'))['max_suffix'] or 0
+                name = f"{base_name}{max_suffix + 1}"
 
-    #         farmer_data = {"name": name, "status": 7, "created_at": timezone.now(), "google_login": True}
-    #         if mobile_number:
-    #             farmer_data["phone"] = mobile_number
-    #         if email:
-    #             farmer_data["email"] = email
+            farmer_data = {"name": name, "status": 7, "created_at": timezone.now(), "google_login": True}
+            if mobile_number:
+                farmer_data["phone"] = mobile_number
+            if email:
+                farmer_data["email"] = email
 
-    #         farmer = Farmer.objects.create(**farmer_data)
-    #         create_default_subscription(farmer)
+            farmer = Farmer.objects.create(**farmer_data)
+            create_default_subscription(farmer)
 
-    #     name_to_display = "" if farmer.status == 7 else farmer.name
-    #     return Response({
-    #         "message": "New Farmer",
-    #         "user": True,
-    #         "details": False,
-    #         "has_my_land": False,
-    #         "has_my_crop": False,
-    #         "farmer": {
-    #             "id": farmer.id,
-    #             "language": {"default": "en"},
-    #             "otp": ""
-    #         },
-    #         "otp_sent": False
-    #     }, status=status.HTTP_201_CREATED)
+        name_to_display = "" if farmer.status == 7 else farmer.name
+        return Response({
+            "message": "New Farmer",
+            "user": True,
+            "details": False,
+            "has_my_land": False,
+            "has_my_crop": False,
+            "farmer": {
+                "id": farmer.id,
+                "language": {"default": "en"},
+                "otp": ""
+            },
+            "otp_sent": False
+        }, status=status.HTTP_201_CREATED)
 
-    # # -------------------- OTP LOGIN FLOW --------------------
-    # if existing_farmer:
-    #     if existing_farmer.status == 1:
-    #         return Response({"detail": "This Farmer is Inactive."}, status=status.HTTP_400_BAD_REQUEST)
-    #     elif existing_farmer.status == 2:
-    #         return Response({"detail": "No Such Farmer Found."}, status=status.HTTP_400_BAD_REQUEST)
+    # -------------------- OTP LOGIN FLOW --------------------
+    if existing_farmer:
+        if existing_farmer.status == 1:
+            return Response({"detail": "This Farmer is Inactive."}, status=status.HTTP_400_BAD_REQUEST)
+        elif existing_farmer.status == 2:
+            return Response({"detail": "No Such Farmer Found."}, status=status.HTTP_400_BAD_REQUEST)
 
-    #     has_my_land = MyLand.objects.filter(farmer=existing_farmer, status=0).exists()
-    #     land_details = None
-    #     if has_my_land:
-    #         land = MyLand.objects.filter(farmer=existing_farmer, status=0).first()
-    #         land_details = {"latitude": land.latitude, "longitude": land.longitude}
+        has_my_land = MyLand.objects.filter(farmer=existing_farmer, status=0).exists()
+        land_details = None
+        if has_my_land:
+            land = MyLand.objects.filter(farmer=existing_farmer, status=0).first()
+            land_details = {"latitude": land.latitude, "longitude": land.longitude}
 
-    #     has_my_crop = MyCrop.objects.filter(farmer=existing_farmer, status=0).exists()
-    #     has_details = all([
-    #         existing_farmer.name,
-    #         existing_farmer.phone or True,
-    #         existing_farmer.email or True,
-    #         existing_farmer.pincode,
-    #     ])
-    #     name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
+        has_my_crop = MyCrop.objects.filter(farmer=existing_farmer, status=0).exists()
+        has_details = all([
+            existing_farmer.name,
+            existing_farmer.phone or True,
+            existing_farmer.email or True,
+            existing_farmer.pincode,
+        ])
+        name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
+        
+        otp_record = FarmerOTP.objects.filter(mobile_number=mobile_number if mobile_number else None,email=email if email else None).first()
 
-    #     otp_record = FarmerOTP.objects.filter(
-    #         mobile_number=mobile_number if mobile_number else None,
-    #         email=email if email else None
-    #     ).first()
+        if otp_record:
+            otp_value = otp_record.otp
+            otp_sent = False
+        else:
+            otp_value = generate_otp()
+            otp_expiry_time = timezone.now() + timedelta(days=365)
+            FarmerOTP.objects.update_or_create(
+                mobile_number=mobile_number if mobile_number else None,
+                email=email if email else None,
+                defaults={'otp': otp_value, 'created_at': timezone.now(), 'expires_at': otp_expiry_time}
+            )
+            otp_sent = True
 
-    #     if otp_record:
-    #         otp_value = otp_record.otp
-    #         otp_sent = False
-    #     else:
-    #         otp_value = generate_otp()
-    #         otp_expiry_time = timezone.now() + timedelta(days=365)
-    #         FarmerOTP.objects.update_or_create(
-    #             mobile_number=mobile_number if mobile_number else None,
-    #             email=email if email else None,
-    #             defaults={'otp': otp_value, 'created_at': timezone.now(), 'expires_at': otp_expiry_time}
-    #         )
-    #         otp_sent = True
+        OTP_STORAGE[mobile_number or email] = otp_value
+        if mobile_number:
+            send_otp_sms(mobile_number, otp_value)
+        else:
+            send_otp_email(email, otp_value)
 
-    #     OTP_STORAGE[mobile_number or email] = otp_value
-    #     if mobile_number:
-    #         send_otp_sms(mobile_number, otp_value)
-    #     else:
-    #         send_otp_email(email, otp_value)
+        return Response({
+            "message": "Existing Farmer",
+            "user": False,
+            "is_manager": manager!= None,
+            "manager_id": manager.id if manager else None,
+            "details": has_details,
+            "land": has_my_land,
+            "land_details": land_details,
+            "crop": has_my_crop,
+            "farmer": {
+                "id": existing_farmer.id,
+                "otp": otp_value
+            },
+            "otp_sent": otp_sent
+        }, status=status.HTTP_200_OK)
 
-    #     return Response({
-    #         "message": "Existing Farmer",
-    #         "user": False,
-    #         "details": has_details,
-    #         "land": has_my_land,
-    #         "land_details": land_details,
-    #         "crop": has_my_crop,
-    #         "farmer": {
-    #             "id": existing_farmer.id,
-    #             "otp": otp_value
-    #         },
-    #         "otp_sent": otp_sent
-    #     }, status=status.HTTP_200_OK)
+    # -------------------- NEW FARMER OTP FLOW --------------------
+    with transaction.atomic():
+        if not name:
+            base_name = "Farmer"
+            base_len = len(base_name) + 1
+            max_suffix = Farmer.objects.filter(name__startswith=base_name) \
+                .annotate(suffix_str=Substr('name', base_len)) \
+                .filter(suffix_str__regex=r'^\d+$') \
+                .annotate(suffix=Cast('suffix_str', IntegerField())) \
+                .aggregate(max_suffix=Max('suffix'))['max_suffix'] or 0
+            name = f"{base_name}{max_suffix + 1}"
 
-    # # -------------------- NEW FARMER OTP FLOW --------------------
-    # with transaction.atomic():
-    #     if not name:
-    #         base_name = "Farmer"
-    #         base_len = len(base_name) + 1
-    #         max_suffix = Farmer.objects.filter(name__startswith=base_name) \
-    #             .annotate(suffix_str=Substr('name', base_len)) \
-    #             .filter(suffix_str__regex=r'^\d+$') \
-    #             .annotate(suffix=Cast('suffix_str', IntegerField())) \
-    #             .aggregate(max_suffix=Max('suffix'))['max_suffix'] or 0
-    #         name = f"{base_name}{max_suffix + 1}"
+        farmer_data = {"name": name, "status": 7, "created_at": timezone.now()}
+        if mobile_number:
+            farmer_data["phone"] = mobile_number
+        if email:
+            farmer_data["email"] = email
 
-    #     farmer_data = {"name": name, "status": 7, "created_at": timezone.now()}
-    #     if mobile_number:
-    #         farmer_data["phone"] = mobile_number
-    #     if email:
-    #         farmer_data["email"] = email
+        farmer = Farmer.objects.create(**farmer_data)
+        create_default_subscription(farmer)
 
-    #     farmer = Farmer.objects.create(**farmer_data)
-    #     create_default_subscription(farmer)
+        otp_value = generate_otp()
+        otp_expiry_time = timezone.now() + timedelta(days=365)
+        FarmerOTP.objects.create(
+            mobile_number=mobile_number if mobile_number else None,
+            email=email if email else None,
+            otp=otp_value,
+            created_at=timezone.now(),
+            expires_at=otp_expiry_time
+        )
+        OTP_STORAGE[mobile_number or email] = otp_value
 
-    #     otp_value = generate_otp()
-    #     otp_expiry_time = timezone.now() + timedelta(days=365)
-    #     FarmerOTP.objects.create(
-    #         mobile_number=mobile_number if mobile_number else None,
-    #         email=email if email else None,
-    #         otp=otp_value,
-    #         created_at=timezone.now(),
-    #         expires_at=otp_expiry_time
-    #     )
-    #     OTP_STORAGE[mobile_number or email] = otp_value
-
-    #     if mobile_number:
-    #         send_otp_sms(mobile_number, otp_value)
-    #     else:
-    #         send_otp_email(email, otp_value)
+        if mobile_number:
+            send_otp_sms(mobile_number, otp_value)
+        else:
+            send_otp_email(email, otp_value)
 
     return Response({
         "message": "New Farmer",
@@ -13354,29 +13386,21 @@ def get_task_list(request, id):
 
         day_name = task.start_date.strftime('%a')  # Get day name (e.g., 'Mon', 'Tue', etc.)
 
-        # crop_info = {
-        #     "id": task.id if task.id else None,
-        #     "crop_type": (
-        #         f"{task.my_crop.land.name} - {task.my_crop.crop.name} "
-        #         if task.my_crop and task.my_crop.crop and task.my_crop.land
-        #         else "No Crop Available"
-        #     ),
-        #     "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}') if task.my_crop.crop.img else "",
-        #     "description": task.schedule if task.schedule else "No Description Available",
-        # }
+        schedule_activity_type = task.schedule_activity_type
+        schedule_status = task.schedule_status
+        schedule_activity_type_name = schedule_activity_type.name if schedule_activity_type else None
+        schedule_status_id = schedule_status.id if schedule_status else None
 
         crop_info = {
             "id": task.id if task.id else None,
-            "crop_type": (
-                f"{task.my_crop.land.get_translated_value('name', language_code)} - {task.my_crop.crop.get_translated_value('name', language_code)}"
+            "crop_name": (
+                task.my_crop.crop.get_translated_value('name', language_code)
                 if task.my_crop and task.my_crop.crop and task.my_crop.land
                 else "No Crop Available"
             ),
+            "activity_type":schedule_activity_type_name,
+            "schedule_status":schedule_status_id,
             "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}') if task.my_crop.crop.img else "",
-            "description": (
-                task.get_translated_value('schedule', language_code)
-                if hasattr(task, 'get_translated_value') else (task.schedule or "No Description Available")
-            ),
         }
 
 
@@ -26478,26 +26502,15 @@ def both_farmer_expense_purchase_list(request, farmer_id):
     for expense in expenses:
         expense_data = {
             "id": expense.id,
-            "farmer": {
-                "id": expense.farmer.id if expense.farmer else "",
-                # "name": expense.farmer.name if expense.farmer else ""   
-                "name": expense.farmer.get_translated_value("name", language_code) if expense.farmer else "" 
-            },
             "my_crop": {
                 "id": expense.my_crop.id if expense.my_crop else "",
                 # "name": expense.my_crop.crop.name if expense.my_crop else ""  
                 "name": expense.my_crop.crop.get_translated_value("name", language_code) if expense.my_crop else ""  
             },
-            "type_expenses": {
-                "id": expense.type_expenses.id if expense.type_expenses else "",
-                # "name": expense.type_expenses.name if expense.type_expenses else ""  
-                "name": expense.type_expenses.get_translated_value("name", language_code) if expense.type_expenses else ""  
-            },
             "amount": expense.amount,
-            "description": expense.get_translated_value("description", language_code) if expense else "",
-            # "description": expense.description,
+            "description": expense.get_translated_value("description", language_code) if expense else "",        
             "created_day": format_date(expense.created_day),
-            "language": {"default": "en"}
+           
         }
         expenses_data.append(expense_data)
 
@@ -41481,8 +41494,6 @@ def get_employees_attendance_list(request,):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 # ---------------- CREATE ----------------
 @extend_schema(tags=["ManagerUser Management"])
 @api_view(['POST'])
@@ -41667,20 +41678,54 @@ def get_genders(request):
 
 @extend_schema(operation_id="02_genders",tags=["Genders"],)
 @api_view(['GET'])
-def get_mager_by_former(request):
+def get_employe_wotk_type(request):
     lang = request.GET.get('lang', 'en')  
 
-    gender_types = Gender.objects.filter(status=0).only("id", "gender")
+    gender_types = WorkersType.objects.filter(status=0).only("id", "name")
     if not gender_types.exists():
         return Response(
-            {"error": "EmployeeType not found", "message": "No Employee Type found."},
+            {"error": "WorkersType not found", "message": "No Workers Type found."},
             status=status.HTTP_404_NOT_FOUND
         )
     data = [
-        {"id": e.id, "name": e.gender}
+        {"id": e.id, "name": e.name}
         for e in gender_types
     ]
     return Response(data, status=status.HTTP_200_OK)
+
+@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@api_view(['GET'])
+def get_manager_by_fermer(request,farmer_id):
+    manager = ManagerUser.objects.filter(farmer=farmer_id,status=0).only("id", "name")
+    if not manager.exists():
+        return Response(
+            {"error": "Manager not found", "message": "No Manager  found."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    data = [
+        {"id": e.id, "name": e.name}
+        for e in manager
+    ]
+    return Response(data, status=status.HTTP_200_OK)
+
+@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@api_view(['GET'])
+def get_employee_by_fermer(request,farmer_id):
+    manager = Employee.objects.filter(farmer=farmer_id,status=0).only("id", "name","advance")
+    if not manager.exists():
+        return Response(
+            {"error": "Employee not found", "message": "No Employee found."},
+            status=status.HTTP_404_NOT_FOUND )
+    data = [
+        {"id": e.id, "name": e.name,"advance": e.advance}
+        for e in manager
+    ]
+    return Response(data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_permissions_list(request):
+    return Response(get_default_input_permissions(), status=status.HTTP_200_OK)
+
 
 @extend_schema(operation_id="vendor_payables",tags=["Vendors Outstanding"],)
 @api_view(['GET'])
@@ -41905,7 +41950,8 @@ def create_or_update_employee_or_manager(request):
         manager = None
         
         if manager_id:
-            manager = ManagerUser.objects.filter(manager=manager_id)
+            manager = ManagerUser.objects.filter(id=manager_id)
+            farmer = Farmer.objects.get(id=farmer_id)
         elif farmer_id:
             farmer = Farmer.objects.get(id=farmer_id)
         else:
@@ -42023,29 +42069,477 @@ def create_or_update_employee_or_manager(request):
         return JsonResponse({"error": str(e)}, status=500)
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='page', description="Page number", type=int, required=False),
+        OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
+    ]
+)
 @api_view(['GET'])
-def get_permissions_list(request):
-    return Response(get_default_input_permissions(), status=status.HTTP_200_OK)
+def get_both_expense_sales_list(request, farmer_id, time_period):
     
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code or 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
+
+    if time_period not in ['week', 'month', 'year']:
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=status.HTTP_400_BAD_REQUEST)
+
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    current_date = timezone.now()
+
+    if time_period == 'week':
+        date_from = current_date - timedelta(weeks=1)
+    elif time_period == 'month':
+        date_from = current_date - timedelta(days=30)
+    else:
+        date_from = current_date - timedelta(days=365)
+
+    all_records = []
+
+    # ✅ Expenses
+    for expense in MyExpense.objects.filter(farmer=farmer, status=0, created_day__gte=date_from):
+        all_records.append(ExpneseSerializeRecord(expense, language_code, "created_day", {
+            "description": expense.get_translated_value("description", language_code) or ""
+        }))
+
+    models_with_date = [
+        (MyFuel, "date_of_consumption"),
+        (MyVehicle, "date_of_consumption"),
+        (MyMachinery, "date_of_consumption"),
+        (MyTools, "date_of_consumption"),
+        (MyPesticides, "date_of_consumption"),
+        (MyFertilizers, "date_of_consumption"),
+        (MySeeds, "date_of_consumption"),
+    ]
+
+    for model, date_field in models_with_date:
+        for record in model.objects.filter(farmer_id=farmer_id, status=0, **{f"{date_field}__gte": date_from}):
+            all_records.append(ExpneseSerializeRecord(record, language_code, date_field))
+
+    for sale in MySales.objects.filter(farmer_id=farmer_id, status=0, dates_of_sales__gte=date_from):
+        all_records.append(ExpneseSerializeRecord(sale, language_code, "dates_of_sales", {
+            "quantity": str(sale.sales_quantity) if sale.sales_quantity else "",
+            "description": sale.get_translated_value("description", language_code) or "",
+            "vendor": {
+                "id": sale.my_customer.id if sale.my_customer else "",
+                "name": sale.my_customer.get_translated_value("customer_name", language_code) if sale.my_customer else ""
+            }
+        }))
+
+    grouped_data = {}
+    for record in all_records:
+        date = record.get("date", "")
+        if date not in grouped_data:
+            grouped_data[date] = []
+        grouped_data[date].append(record)
+
+    grouped_list = [{"date": date, "records": records} for date, records in grouped_data.items()]
+
+    page = int(request.GET.get("page", 1))
+    page_size = int(request.GET.get("page_size", 10))
+
+    paginator = Paginator(grouped_list, page_size)
+    page_obj = paginator.get_page(page)
+
+    return Response({
+        "count": paginator.count,
+        "total_pages": paginator.num_pages,
+        "current_page": page,
+        "results": list(page_obj.object_list)
+    }, status=status.HTTP_200_OK)
+
+
+# --- EXPENSE LIST ---
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='page', description="Page number", type=int, required=False),
+        OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
+    ]
+)
+@api_view(['GET'])
+def get_expense_list(request, farmer_id, time_period):
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code or 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
+
+    if time_period not in ['week', 'month', 'year']:
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=status.HTTP_400_BAD_REQUEST)
+
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    current_date = timezone.now()
+
+    if time_period == 'week':
+        date_from = current_date - timedelta(weeks=1)
+    elif time_period == 'month':
+        date_from = current_date - timedelta(days=30)
+    else:
+        date_from = current_date - timedelta(days=365)
+
+    all_expenses = []
+
+    # Generic MyExpense
+    for expense in MyExpense.objects.filter(farmer=farmer, status=0, created_day__gte=date_from):
+        all_expenses.append(ExpneseSerializeRecord(expense, language_code, "created_day", {
+            "description": expense.get_translated_value("description", language_code) or ""
+        }))
+
+    # Other expense models
+    models_with_date = [
+        (MyFuel, "date_of_consumption"),
+        (MyVehicle, "date_of_consumption"),
+        (MyMachinery, "date_of_consumption"),
+        (MyTools, "date_of_consumption"),
+        (MyPesticides, "date_of_consumption"),
+        (MyFertilizers, "date_of_consumption"),
+        (MySeeds, "date_of_consumption"),
+    ]
+
+    for model, date_field in models_with_date:
+        for record in model.objects.filter(farmer_id=farmer_id, status=0, **{f"{date_field}__gte": date_from}):
+            all_expenses.append(ExpneseSerializeRecord(record, language_code, date_field))
+
+    # Group by date
+    grouped_data = {}
+    for record in all_expenses:
+        date = record.get("date", "")
+        if date not in grouped_data:
+            grouped_data[date] = []
+        grouped_data[date].append(record)
+
+    grouped_list = [{"date": date, "records": records} for date, records in grouped_data.items()]
+
+    # Pagination
+    page = int(request.GET.get("page", 1))
+    page_size = int(request.GET.get("page_size", 10))
+
+    paginator = Paginator(grouped_list, page_size)
+    page_obj = paginator.get_page(page)
+
+    return Response({
+        "count": paginator.count,
+        "total_pages": paginator.num_pages,
+        "current_page": page,
+        "results": list(page_obj.object_list)
+    }, status=status.HTTP_200_OK)
+
+
+# --- SALES LIST ---
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name='page', description="Page number", type=int, required=False),
+        OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
+    ]
+)
+@api_view(['GET'])
+def get_sales_list(request, farmer_id, time_period):
+    try:
+        user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
+        language_code = user_language_pref.language_code or 'en'
+    except UserLanguagePreference.DoesNotExist:
+        language_code = 'en'
+
+    if time_period not in ['week', 'month', 'year']:
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=status.HTTP_400_BAD_REQUEST)
+
+    farmer = get_object_or_404(Farmer, id=farmer_id)
+    current_date = timezone.now()
+
+    if time_period == 'week':
+        date_from = current_date - timedelta(weeks=1)
+    elif time_period == 'month':
+        date_from = current_date - timedelta(days=30)
+    else:
+        date_from = current_date - timedelta(days=365)
+
+    sales_records = []
+
+    for sale in MySales.objects.filter(farmer_id=farmer_id, status=0, dates_of_sales__gte=date_from):
+        sales_records.append(ExpneseSerializeRecord(sale, language_code, "dates_of_sales", {
+            "quantity": str(sale.sales_quantity) if sale.sales_quantity else "",
+            "description": sale.get_translated_value("description", language_code) or "",
+            "vendor": {
+                "id": sale.my_customer.id if sale.my_customer else "",
+                "name": sale.my_customer.get_translated_value("customer_name", language_code) if sale.my_customer else ""
+            }
+        }))
+
+    # Group by date
+    grouped_data = {}
+    for record in sales_records:
+        date = record.get("date", "")
+        if date not in grouped_data:
+            grouped_data[date] = []
+        grouped_data[date].append(record)
+
+    grouped_list = [{"date": date, "records": records} for date, records in grouped_data.items()]
+
+    # Pagination
+    page = int(request.GET.get("page", 1))
+    page_size = int(request.GET.get("page_size", 10))
+
+    paginator = Paginator(grouped_list, page_size)
+    page_obj = paginator.get_page(page)
+
+    return Response({
+        "count": paginator.count,
+        "total_pages": paginator.num_pages,
+        "current_page": page,
+        "results": list(page_obj.object_list)
+    }, status=status.HTTP_200_OK)
+
+
+@extend_schema(
+     parameters=[
+        OpenApiParameter(name='page', description="Page number", type=int, required=False),
+        OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
+        OpenApiParameter(name='search_param', description="Search Param", type=int, required=False),
+        OpenApiParameter(name='Manager_param', description="Manager ID", type=int, required=False),
+    ]
+)
+@api_view(["GET"])
+def get_employee_list_grouped_by_manager(request):
+    """
+    Get Employee List grouped by Manager with pagination, search, and manager filter.
+    """
+    try:
+        page = int(request.GET.get("page", 1))
+        page_size = int(request.GET.get("page_size", 10))
+        search = request.GET.get("search", "").strip()
+        manager_id = request.GET.get("manager_id")
+
+        # Managers base queryset
+        managers_qs = ManagerUser.objects.all().only("id", "name", "mobile_no", "email")
+
+        # Search filter (manager-level)
+        if search:
+            managers_qs = managers_qs.filter(
+                Q(name__icontains=search) |
+                Q(mobile_no__icontains=search) |
+                Q(employee_set__name__icontains=search) |
+                Q(employee_set__mobile_no__icontains=search)
+            ).distinct()
+
+        # Filter by specific manager
+        if manager_id:
+            managers_qs = managers_qs.filter(id=manager_id)
+
+        # Prefetch only needed employee fields
+        managers_qs = managers_qs.prefetch_related(
+            Prefetch("employee_set", queryset=Employee.objects.only(
+                "id", "name", "mobile_no", "employee_type_id", "work_type_id", "status"
+            ))
+        )
+
+        paginator = Paginator(managers_qs, page_size)
+        page_obj = paginator.get_page(page)
+
+        result = []
+        for manager in page_obj.object_list:
+            employees = EmployeeSerializer(manager.employee_set.all(), many=True).data
+            result.append({
+                "manager": ManagerSerializer(manager).data,
+                "employees": employees
+            })
+
+        return Response({
+            "count": paginator.count,
+            "total_pages": paginator.num_pages,
+            "current_page": page,
+            "page_size": page_size,
+            "results": result
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@extend_schema(operation_id="get_employee_detail",tags=["Vendors Outstanding"],)
+@api_view(["GET"])
+def get_employee_detail(request, employee_id):
+    """
+    Get Employee detail by ID without serializer
+    """
+    try:
+        employee = get_object_or_404(Employee, id=employee_id)
+        data = {
+            "id": employee.id,
+            "name": employee.name,
+            "mobile_no": employee.mobile_no,
+            "employee_type_id": employee.employee_type_id,
+            "work_type_id": employee.work_type_id,
+            "manager_id": employee.manager.id if employee.manager else None,
+            "manager_name": employee.manager.name if employee.manager else None,
+            "locations": employee.locations,
+            "latitude": employee.latitude,
+            "longitude": employee.longitude,
+            "door_no": employee.door_no,
+            "pincode": employee.pincode,
+            "description": employee.description,
+            "status": employee.status,
+            "created_by": employee.created_by.id if employee.created_by else None,
+            "created_at": employee.created_at,
+            "updated_at": employee.updated_at
+        }
+        return Response(data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@extend_schema(operation_id="get_manager_detail",tags=["Vendors Outstanding"],)
+@api_view(["GET"])
+def get_manager_detail(request, manager_id):
+    """
+    Get Manager detail by ID without serializer
+    """
+    try:
+        manager = get_object_or_404(ManagerUser, id=manager_id)
+        # Fetch manager employees
+        employees_qs = Employee.objects.filter(manager=manager).only("id", "name", "mobile_no", "employee_type_id", "work_type_id", "status")
+
+        employees = [
+            {
+                "id": emp.id,
+                "name": emp.name,
+                "mobile_no": emp.mobile_no,
+                "employee_type_id": emp.employee_type_id,
+                "work_type_id": emp.work_type_id,
+                "status": emp.status
+            }
+            for emp in employees_qs
+        ]
+
+        data = {
+            "id": manager.id,
+            "name": manager.name,
+            "email": manager.email,
+            "mobile_no": manager.mobile_no,
+            "role_id": manager.role_id,
+            "employee_type_id": manager.employee_type_id,
+            "gender_id": manager.gender_id,
+            "dob": manager.date_of_birth,
+            "doj": manager.date_of_join,
+            "address": manager.address,
+            "locations": manager.locations,
+            "latitude": manager.latitude,
+            "longitude": manager.longitude,
+            "permissions": manager.permissions,
+            "employees": employees
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def add_edit_employee_advance(request):
+    """
+    Add or Edit Employee Advance
+    - If `id` present -> update
+    - Else -> create new advance record
+    """
+    try:
+        data = request.data
+        advance_id = data.get("id")
+        farmer_id = data.get("farmer_id")
+        employee_id = data.get("employee_id")
+        emp_type_id = data.get("employee_type_id")
+
+        farmer = Farmer.objects.filter(id=farmer_id).first()
+        employee = Employee.objects.filter(id=employee_id).first()
+        employee_type = EmployeeType.objects.filter(id=emp_type_id).first()
+
+        if advance_id:  # --- Update
+            advance = get_object_or_404(EmployeeAdvance, id=advance_id)
+            advance.advance_amount = data.get("advance_amount", advance.advance_amount)
+            advance.previous_advance_amount = data.get("previous_advance_amount", advance.previous_advance_amount)
+            advance.description = data.get("description", advance.description)
+            advance.created_day = data.get("created_day", advance.created_day)
+            advance.status = data.get("status", advance.status)
+            advance.updated_at = timezone.now()
+            advance.updated_by_id = data.get("updated_by")
+            advance.save()
+            return Response({"message": "Employee advance updated", "id": advance.id}, status=status.HTTP_200_OK)
+
+        else:  # --- Create
+            advance = EmployeeAdvance.objects.create(
+                farmer=farmer,
+                employee=employee,
+                employee_type=employee_type,
+                advance_amount=data.get("advance_amount", 0),
+                previous_advance_amount=data.get("previous_advance_amount", 0),
+                description=data.get("description"),
+                created_day=data.get("created_day"),
+                status=data.get("status", 1),
+                created_at=timezone.now(),
+                created_by_id=data.get("created_by")
+            )
+            return Response({"message": "Employee advance created", "id": advance.id}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
+@api_view(["POST"])
+def add_edit_employee_payout(request):
+    """
+    Add or Edit Employee Payouts
+    - If `id` present -> update
+    - Else -> create new payout record
+    """
+    try:
+        data = request.data
+        payout_id = data.get("id")
+        farmer_id = data.get("farmer_id")
+        employee_id = data.get("employee_id")
 
+        farmer = Farmer.objects.filter(id=farmer_id).first()
+        employee = Employee.objects.filter(id=employee_id).first()
 
+        if payout_id:  # --- Update
+            payout = get_object_or_404(EmployeePayouts, id=payout_id)
+            payout.paid_salary = data.get("paid_salary", payout.paid_salary)
+            payout.unpaid_salary = data.get("unpaid_salary", payout.unpaid_salary)
+            payout.advance_amount = data.get("advance_amount", payout.advance_amount)
+            payout.deduction_advance = data.get("deduction_advance", payout.deduction_advance)
+            payout.balance_advance = data.get("balance_advance", payout.balance_advance)
+            payout.payout_amount = data.get("payout_amount", payout.payout_amount)
+            payout.topay = data.get("topay", payout.topay)
+            payout.description = data.get("description", payout.description)
+            payout.created_day = data.get("created_day", payout.created_day)
+            payout.status = data.get("status", payout.status)
+            payout.updated_at = timezone.now()
+            payout.updated_by_id = data.get("updated_by")
+            payout.save()
+            return Response({"message": "Employee payout updated", "id": payout.id}, status=status.HTTP_200_OK)
 
+        else:  # --- Create
+            payout = EmployeePayouts.objects.create(
+                farmer=farmer,
+                employee=employee,
+                paid_salary=data.get("paid_salary", 0),
+                unpaid_salary=data.get("unpaid_salary", 0),
+                advance_amount=data.get("advance_amount", 0),
+                deduction_advance=data.get("deduction_advance", 0),
+                balance_advance=data.get("balance_advance", 0),
+                payout_amount=data.get("payout_amount", 0),
+                topay=data.get("topay", 0),
+                description=data.get("description"),
+                created_day=data.get("created_day"),
+                status=data.get("status", 1),
+                created_at=timezone.now(),
+                created_by_id=data.get("created_by")
+            )
+            return Response({"message": "Employee payout created", "id": payout.id}, status=status.HTTP_201_CREATED)
 
-
-
-
-
-
-
-
-
-
-
-
-
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

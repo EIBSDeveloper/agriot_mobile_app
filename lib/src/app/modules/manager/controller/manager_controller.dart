@@ -15,6 +15,15 @@ import '../repository/manager_repository.dart';
 
 final AppDataController appDeta = Get.put(AppDataController());
 
+/// ----------------- Flatten Permissions Helper -----------------
+Map<String, dynamic> flattenPermissions(Map<String, PermissionItem> perms) {
+  final Map<String, dynamic> result = {};
+  perms.forEach((key, value) {
+    result[key] = value.toFlatJson();
+  });
+  return result;
+}
+
 class ManagerController extends GetxController {
   final ManagerRepository repository = Get.find();
   final usernameController = TextEditingController();
@@ -26,30 +35,21 @@ class ManagerController extends GetxController {
   final locationController = TextEditingController();
   final addressController = TextEditingController();
   final descriptionController = TextEditingController();
+  final pincodeController = TextEditingController();
 
   /// Selected values
   var selectedEmployeeType = Rxn<EmployeeTypeModel>();
   var selectedGenderType = Rxn<GenderModel>();
   var selectedRoleType = Rxn<RoleModel>();
-
-  var selectedWorkType = RxnString();
-  var selectedManager = RxnString();
+  var selectedWorkType = Rxn<WorkTypeModel>();
+  var selectedManager = Rxn<AssignMangerModel>();
 
   /// Lists from API
   var employeeTypes = <EmployeeTypeModel>[].obs;
   var genderTypes = <GenderModel>[].obs;
   var roleTypes = <RoleModel>[].obs;
-
-  final workTypes = [
-    'Planting work',
-    'Cultivating work',
-    'Harvesting work',
-    'Irrigation',
-    'Pest Control Work',
-    'General Work',
-    'Add New',
-  ];
-  final managers = ['John Doe', 'Jane Smith', 'Alice Johnson'];
+  var workTypes = <WorkTypeModel>[].obs;
+  var managers = <AssignMangerModel>[].obs;
 
   final formKey = GlobalKey<FormState>();
 
@@ -59,6 +59,7 @@ class ManagerController extends GetxController {
   // Image handling
   final RxString imagePath = ''.obs;
   final RxString base64Image = ''.obs;
+
   @override
   void onClose() {
     _clearControllers();
@@ -98,19 +99,6 @@ class ManagerController extends GetxController {
     } catch (e) {
       showError('Failed to pick image');
     }
-  }
-
-  void submitForm() {
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
-
-    // Handle submission
-    print('Name: ${usernameController.text}');
-    print('Mobile: ${mobileController.text}');
-    print('Employee Type: ${selectedEmployeeType.value}');
-    print('Location URL: ${locationController.text}');
-    print('Address: ${addressController.text}');
   }
 
   Future<void> pickLocation() async {
@@ -326,12 +314,7 @@ class ManagerController extends GetxController {
     super.onInit();
     loadPermissionsFromApi();
     fetchDropdownData();
-  }
-
-  void _loadPermissions() {
-    permissions.value = rawPermissions.map(
-      (key, value) => MapEntry(key, PermissionItem.fromJson(key, value)),
-    );
+    loadManagers();
   }
 
   void toggleStatus(PermissionItem item, bool value) {
@@ -340,10 +323,6 @@ class ManagerController extends GetxController {
     update();
   }
 
-  /*  String getUpdatedJson() {
-    final updated = permissions.map((k, v) => MapEntry(k, v.toJson()));
-    return updated.toString();
-  }*/
   Future<void> loadPermissionsFromApi() async {
     try {
       isLoading.value = true;
@@ -360,6 +339,7 @@ class ManagerController extends GetxController {
 
   /// Loading flag
   var isLoading = false.obs;
+
   Future<void> fetchDropdownData() async {
     isLoading.value = true;
 
@@ -395,11 +375,188 @@ class ManagerController extends GetxController {
           RoleModel(id: 0, name: "employee"),
           ...data.map((e) => RoleModel.fromJson(e)),
         ];
+        if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
+          selectedRoleType.value =
+              roleTypes.first; // first role will be selected
+        }
+      }
+
+      //fetch worktypes
+      final worktypeRes = await http.get(
+        Uri.parse("${appDeta.baseUrl.value}/work_type"),
+      );
+      if (worktypeRes.statusCode == 200) {
+        final List data = jsonDecode(worktypeRes.body);
+        workTypes.value = data.map((e) => WorkTypeModel.fromJson(e)).toList();
       }
     } catch (e) {
       print("Error fetching dropdown data: $e");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  var isLoadingManager = false.obs;
+
+  Future<void> loadManagers() async {
+    try {
+      isLoadingManager.value = true;
+      final data = await repository.fetchAssignManager();
+      managers.value = data;
+    } catch (e) {
+      print('Error fetching managers: $e');
+    } finally {
+      isLoadingManager.value = false;
+    }
+  }
+
+  /*  /// Submit Form
+  Future<void> submitForm() async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      isLoading.value = true;
+
+      final response = await repository.createEmployeeManager(
+        role: selectedRoleType.value,
+        name: usernameController.text.trim(),
+        phone: mobileController.text.trim(),
+        email: emailController.text.trim(),
+        employeeTypeId: selectedEmployeeType.value?.id,
+        genderId: selectedGenderType.value?.id,
+        address: addressController.text.trim(),
+        // used for both employee & manager
+        latitude: latitude.value,
+        longitude: longitude.value,
+        permissions: permissions.value,
+        managerId: selectedRoleType.value?.id == 0
+            ? selectedManager.value?.id
+            : null,
+        workTypeId: selectedRoleType.value?.id == 0
+            ? selectedWorkType.value?.id
+            : null,
+        pincode: selectedRoleType.value?.id == 0
+            ? pincodeController.text.trim()
+            : null,
+        description: selectedRoleType.value?.id == 0
+            ? descriptionController.text.trim()
+            : null,
+        // Pass actual controller values
+        dob: formatDate(dobcontroller.text),
+        doj: formatDate(dojcontroller.text),
+      );
+
+      // ✅ Determine message based on role
+      final isEmployee = selectedRoleType.value?.id == 0;
+      final successMessage = isEmployee
+          ? "Employee created successfully"
+          : "Manager created successfully";
+      showSuccess(successMessage);
+      _clearFormFields();
+      Get.back();
+      print("✅ API Response: $response");
+    } catch (e) {
+      showError(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }*/
+  /// Submit Form
+  Future<void> submitForm() async {
+    if (!formKey.currentState!.validate()) return;
+
+    try {
+      isLoading.value = true;
+
+      // Determine role-specific fields
+      final isEmployee = selectedRoleType.value?.id == 0;
+
+      final response = await repository.createEmployeeManager(
+        role: selectedRoleType.value,
+        name: usernameController.text.trim(),
+        phone: mobileController.text.trim(),
+        email: isEmployee ? null : emailController.text.trim(),
+        employeeTypeId: selectedEmployeeType.value?.id,
+        genderId: isEmployee ? null : selectedGenderType.value?.id,
+        dob: isEmployee ? null : formatDate(dobcontroller.text),
+        doj: isEmployee ? null : formatDate(dojcontroller.text),
+        address: addressController.text.trim(),
+        latitude: latitude.value,
+        longitude: longitude.value,
+        permissions: isEmployee ? null : permissions,
+        managerId: isEmployee ? selectedManager.value?.id : null,
+        workTypeId: isEmployee ? selectedWorkType.value?.id : null,
+        pincode: isEmployee ? pincodeController.text.trim() : null,
+        description: isEmployee ? descriptionController.text.trim() : null,
+      );
+
+      // Show success message
+      final successMessage = isEmployee
+          ? "Employee created successfully"
+          : "Manager created successfully";
+      showSuccess(successMessage);
+
+      // Clear form fields
+      _clearFormFields();
+
+      // Go back after success
+      Get.back();
+
+      print("✅ API Response: $response");
+    } catch (e) {
+      showError(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// Helper to clear all form fields
+  void _clearFormFields() {
+    usernameController.clear();
+    mobileController.clear();
+    emailController.clear();
+    dobcontroller.clear();
+    dojcontroller.clear();
+    addressController.clear();
+    pincodeController.clear();
+    descriptionController.clear();
+    locationController.clear();
+    selectedEmployeeType.value = null;
+    selectedGenderType.value = null;
+    selectedRoleType.value = roleTypes.isNotEmpty ? roleTypes.first : null;
+    selectedWorkType.value = null;
+    selectedManager.value = null;
+    latitude.value = 0.0;
+    longitude.value = 0.0;
+    imagePath.value = '';
+    base64Image.value = '';
+    permissions.clear();
+  }
+
+  /// Helper to format date to YYYY-MM-DD
+  String? formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return null;
+
+    try {
+      final date = DateTime.parse(
+        dateStr,
+      ); // If your controller already has YYYY-MM-DD, this works
+      return "${date.year.toString().padLeft(4, '0')}-"
+          "${date.month.toString().padLeft(2, '0')}-"
+          "${date.day.toString().padLeft(2, '0')}";
+    } catch (_) {
+      // If the user input is in dd/MM/yyyy, you can parse it like this:
+      final parts = dateStr.split('/');
+      if (parts.length == 3) {
+        final day = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        final year = int.parse(parts[2]);
+        final date = DateTime(year, month, day);
+        return "${date.year.toString().padLeft(4, '0')}-"
+            "${date.month.toString().padLeft(2, '0')}-"
+            "${date.day.toString().padLeft(2, '0')}";
+      }
+      return null; // fallback
     }
   }
 }

@@ -11,54 +11,6 @@ class Attendancelistscreen extends GetView<AttendenceController> {
   const Attendancelistscreen({super.key});
 
   @override
-  /*  Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Attendence List'),
-    */
-  /* body: Obx(() {
-      final employees = controller.employees;
-      return employees.isEmpty
-          ? const Center(child: Text("No employees found"))
-          : ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: employees.length,
-              itemBuilder: (context, index) {
-                final emp = employees[index];
-                return employeeCard(emp);
-              },
-            );
-    }),*/
-  /*
-    body: Obx(() {
-      final employees = controller.employees;
-
-      return RefreshIndicator(
-        onRefresh: () async {
-          // Call your API to reload the list
-          await controller.loadEmployees(reset: true);
-        },
-        child: employees.isEmpty
-            ? const Center(child: Text("No employees found"))
-            : ListView.builder(
-                padding: const EdgeInsets.all(10),
-                itemCount: employees.length,
-                itemBuilder: (context, index) {
-                  final emp = employees[index];
-                  return employeeCard(emp);
-                },
-              ),
-      );
-    }),
-    // ✅ Floating Action Button
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        // Navigate to Add Attendance screen
-        Get.toNamed(Routes.addAttendence);
-      },
-      backgroundColor: Get.theme.colorScheme.primary,
-      child: const Icon(Icons.add), // attendance icon
-    ),
-  );*/
-  @override
   Widget build(BuildContext context) => Scaffold(
     appBar: const CustomAppBar(title: 'Attendence List'),
     body: Column(
@@ -69,7 +21,7 @@ class Attendancelistscreen extends GetView<AttendenceController> {
             onDateSelected: controller.setSelectedDate,
           ),
         ),
-        const SizedBox(height: 16),
+    
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: InputCardStyle(
@@ -121,7 +73,7 @@ class Attendancelistscreen extends GetView<AttendenceController> {
   );
 }
 
-Widget employeeCard(EmployeeModel emp) => Card(
+/*Widget employeeCard(EmployeeModel emp) => Card(
   margin: const EdgeInsets.symmetric(vertical: 6),
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
   child: Padding(
@@ -195,4 +147,177 @@ Widget employeeCard(EmployeeModel emp) => Card(
       ],
     ),
   ),
-);
+);*/
+
+Widget employeeCard(EmployeeModel emp) => Container(
+    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// Profile Image
+        emp.image != null
+            ? CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(emp.image!),
+              )
+            : CircleAvatar(
+                radius: 30,
+                backgroundColor: Get.theme.colorScheme.primary.withAlpha(80),
+                child: Text(
+                  emp.name.isNotEmpty ? emp.name[0].toUpperCase() : "?",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+
+        const SizedBox(width: 16),
+
+        /// Details
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Name + Role
+              Text(
+                emp.name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                emp.role,
+                style: const TextStyle(fontSize: 13, color: Colors.grey),
+              ),
+
+              if (emp.workType != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  "Work: ${emp.workType!}",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 6),
+
+              /// Attendance Row
+              Row(
+                children: [
+                  Icon(
+                    Icons.login,
+                    size: 23,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "In: ${emp.loginTime ?? '-'}",
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                  const SizedBox(width: 12),
+                  Icon(
+                    Icons.logout,
+                    size: 23,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Out: ${emp.logoutTime ?? '-'}",
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 4),
+
+              Row(
+                children: [
+                  Icon(
+                    Icons.access_time,
+                    size: 23,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "Hours: ${emp.totalHour ?? '-'}",
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 8),
+
+              /// Salary & Status
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.currency_rupee,
+                        size: 23,
+                        color: Get.theme.colorScheme.primary,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        emp.salary?.toStringAsFixed(2) ?? '0',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color:
+                          (emp.salaryStatus == true
+                                  ? Get.theme.colorScheme.primary
+                                  : Colors.red)
+                              .withOpacity(0.1),
+                    ),
+                    child: Text(
+                      emp.salaryStatus == true ? "Paid" : "Unpaid",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: emp.salaryStatus == true
+                            ? Get.theme.colorScheme.primary
+                            : Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );

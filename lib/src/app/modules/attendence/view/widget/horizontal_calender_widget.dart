@@ -82,7 +82,7 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
               itemBuilder: (context, index) {
                 final date = allDates[index];
 
-                /*return Obx(() {
+                return Obx(() {
                   final _ =
                       date.day == controller.selectedDate.value.day &&
                       date.month == controller.selectedDate.value.month &&
@@ -151,8 +151,17 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
                       ),
                     ),
                   );
-                });*/
-                return Obx(() {
+                });
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/* return Obx(() {
                   final isSelected =
                       date.day == controller.selectedDate.value.day &&
                       date.month == controller.selectedDate.value.month &&
@@ -226,12 +235,4 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
                       ),
                     ),
                   );
-                });
-              },
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
+                });*/

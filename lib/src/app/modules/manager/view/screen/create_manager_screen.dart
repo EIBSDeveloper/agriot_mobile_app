@@ -50,6 +50,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             ),
 
             const SizedBox(height: 16),
+
             //Usersname
             InputCardStyle(
               child: TextFormField(
@@ -66,15 +67,27 @@ class CreateManagerScreen extends GetView<ManagerController> {
             const SizedBox(height: 16),
 
             //Email
-            InputCardStyle(
-              child: TextFormField(
-                controller: controller.emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email ID',
-                  hintText: 'Enter Email ID',
-                  border: InputBorder.none,
-                ),
-              ),
+            Obx(
+              () => controller.selectedRoleType.value?.id != 0
+                  ? Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        InputCardStyle(
+                          child: TextFormField(
+                            controller: controller.emailController,
+                            decoration: const InputDecoration(
+                              labelText: 'Email ID',
+                              hintText: 'Enter Email ID',
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Required field'
+                                : null,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 
@@ -98,50 +111,71 @@ class CreateManagerScreen extends GetView<ManagerController> {
 
             /// Gender Dropdown
             Obx(
-              () => InputCardStyle(
-                child: DropdownButtonFormField<GenderModel>(
-                  initialValue: controller.selectedGenderType.value,
-                  items: controller.genderTypes
-                      .map(
-                        (g) => DropdownMenuItem(value: g, child: Text(g.name)),
-                      )
-                      .toList(),
-                  onChanged: (value) =>
-                      controller.selectedGenderType.value = value,
-                  decoration: const InputDecoration(
-                    labelText: 'Select Gender *',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null ? 'Required field' : null,
-                ),
-              ),
+              () => controller.selectedRoleType.value?.id != 0
+                  ? Column(
+                      children: [
+                        InputCardStyle(
+                          child: DropdownButtonFormField<GenderModel>(
+                            initialValue: controller.selectedGenderType.value,
+                            items: controller.genderTypes
+                                .map(
+                                  (g) => DropdownMenuItem(
+                                    value: g,
+                                    child: Text(g.name),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                controller.selectedGenderType.value = value,
+                            decoration: const InputDecoration(
+                              labelText: 'Select Gender *',
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) =>
+                                value == null ? 'Required field' : null,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 
             // Date of Joining
-            InputCardStyle(
-              child: TextFormField(
-                controller: controller.dojcontroller,
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Date of Joining ',
-                  hintText: 'Select Date of Joining',
-                  border: InputBorder.none,
-                  suffixIcon: Icon(Icons.calendar_today, color: Colors.grey),
-                ),
-                onTap: () async {
-                  DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1990),
-                    lastDate: DateTime(2100),
-                  );
-                  if (picked != null) {
-                    controller.dojcontroller.text =
-                        "${picked.day}/${picked.month}/${picked.year}";
-                  }
-                },
-              ),
+            Obx(
+              () => controller.selectedRoleType.value?.id != 0
+                  ? Column(
+                      children: [
+                        InputCardStyle(
+                          child: TextFormField(
+                            controller: controller.dojcontroller,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              labelText: 'Date of Joining ',
+                              hintText: 'Select Date of Joining',
+                              border: InputBorder.none,
+                              suffixIcon: Icon(
+                                Icons.calendar_today,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            onTap: () async {
+                              DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1990),
+                                lastDate: DateTime(2100),
+                              );
+                              if (picked != null) {
+                                controller.dojcontroller.text =
+                                    "${picked.day}/${picked.month}/${picked.year}";
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 
@@ -168,29 +202,40 @@ class CreateManagerScreen extends GetView<ManagerController> {
             const SizedBox(height: 16),
 
             // Date of Birth
-            InputCardStyle(
-              child: TextFormField(
-                controller: controller.dobcontroller,
-                readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Date of Birth ',
-                  hintText: 'Select Date of Birth',
-                  border: InputBorder.none,
-                  suffixIcon: Icon(Icons.calendar_today, color: Colors.grey),
-                ),
-                onTap: () async {
-                  DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(1950),
-                    lastDate: DateTime.now(),
-                  );
-                  if (picked != null) {
-                    controller.dobcontroller.text =
-                        "${picked.day}/${picked.month}/${picked.year}";
-                  }
-                },
-              ),
+            Obx(
+              () => controller.selectedRoleType.value?.id != 0
+                  ? Column(
+                      children: [
+                        InputCardStyle(
+                          child: TextFormField(
+                            controller: controller.dobcontroller,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              labelText: 'Date of Birth ',
+                              hintText: 'Select Date of Birth',
+                              border: InputBorder.none,
+                              suffixIcon: Icon(
+                                Icons.calendar_today,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            onTap: () async {
+                              DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1950),
+                                lastDate: DateTime.now(),
+                              );
+                              if (picked != null) {
+                                controller.dobcontroller.text =
+                                    "${picked.day}/${picked.month}/${picked.year}";
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 
@@ -213,18 +258,18 @@ class CreateManagerScreen extends GetView<ManagerController> {
 
             // Work Type
             Obx(
-              () => controller.selectedRoleType.value!.id == 0
+              () => controller.selectedRoleType.value?.id == 0
                   ? Column(
                       children: [
                         const SizedBox(height: 16),
                         InputCardStyle(
-                          child: DropdownButtonFormField<String>(
+                          child: DropdownButtonFormField<WorkTypeModel>(
                             initialValue: controller.selectedWorkType.value,
                             items: controller.workTypes
                                 .map(
-                                  (e) => DropdownMenuItem(
+                                  (e) => DropdownMenuItem<WorkTypeModel>(
                                     value: e,
-                                    child: Text(e),
+                                    child: Text(e.name),
                                   ),
                                 )
                                 .toList(),
@@ -242,38 +287,44 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     )
                   : const SizedBox(),
             ),
+
             const SizedBox(height: 16),
 
             // Assign Manager
-            Obx(
-              () => controller.selectedRoleType.value!.id == 0
-                  ? Column(
-                      children: [
-                        InputCardStyle(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: controller.selectedManager.value,
-                            items: controller.managers
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e),
-                                  ),
-                                )
-                                .toList(),
-                            onChanged: (value) =>
-                                controller.selectedManager.value = value,
-                            decoration: const InputDecoration(
-                              labelText: 'Assign Manager *',
-                              border: InputBorder.none,
-                            ),
-                            validator: (value) =>
-                                value == null ? 'Required field' : null,
-                          ),
+            Obx(() {
+              if (controller.selectedRoleType.value!.id == 0) {
+                if (controller.isLoadingManager.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return Column(
+                  children: [
+                    InputCardStyle(
+                      child: DropdownButtonFormField<AssignMangerModel>(
+                        initialValue: controller.selectedManager.value,
+                        items: controller.managers
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e.name),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) =>
+                            controller.selectedManager.value = value,
+                        decoration: const InputDecoration(
+                          labelText: 'Assign Manager *',
+                          border: InputBorder.none,
                         ),
-                      ],
-                    )
-                  : const SizedBox(),
-            ),
+                        validator: (value) =>
+                            value == null ? 'Required field' : null,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return const SizedBox();
+              }
+            }),
             const SizedBox(height: 16),
 
             // Address
@@ -290,8 +341,29 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     : null,
               ),
             ),
-
             const SizedBox(height: 16),
+
+            //pincode
+            Obx(
+              () => controller.selectedRoleType.value?.id == 0
+                  ? InputCardStyle(
+                      child: TextFormField(
+                        controller: controller.pincodeController,
+                        decoration: const InputDecoration(
+                          labelText: 'Pincode *',
+                          hintText: 'Enter Pincode',
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) =>
+                            value == null || value.trim().isEmpty
+                            ? 'Required field'
+                            : null,
+                      ),
+                    )
+                  : const SizedBox(), // empty widget if role is not 0
+            ),
+            const SizedBox(height: 16),
+
             // Description
             InputCardStyle(
               child: TextFormField(
@@ -307,26 +379,42 @@ class CreateManagerScreen extends GetView<ManagerController> {
             const SizedBox(height: 16),
 
             // ---------------- Permissions Section ----------------
-            const SizedBox(height: 16),
-            InputCardStyle(
-              child: SizedBox(
-                height: 350, // fixed height with scrolling
-                child: Obx(() {
-                  if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+            Obx(
+              () => controller.selectedRoleType.value?.id != 0
+                  ? Column(
+                      children: [
+                        InputCardStyle(
+                          child: SizedBox(
+                            height: 350, // fixed height with scrolling
+                            child: Obx(() {
+                              if (controller.isLoading.value) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
 
-                  if (controller.permissions.isEmpty) {
-                    return const Center(child: Text("No permissions found"));
-                  }
+                              if (controller.permissions.isEmpty) {
+                                return const Center(
+                                  child: Text("No permissions found"),
+                                );
+                              }
 
-                  return ListView(
-                    children: controller.permissions.values
-                        .map((item) => _buildPermissionItem(item, controller))
-                        .toList(),
-                  );
-                }),
-              ),
+                              return ListView(
+                                children: controller.permissions.values
+                                    .map(
+                                      (item) => _buildPermissionItem(
+                                        item,
+                                        controller,
+                                      ),
+                                    )
+                                    .toList(),
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 
@@ -334,7 +422,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: controller.submitForm,
+                onPressed: controller.submitForm, // ✅ no parentheses
                 child: const Text('Submit'),
               ),
             ),
@@ -388,26 +476,25 @@ class CreateManagerScreen extends GetView<ManagerController> {
   Widget _buildPermissionItem(
     PermissionItem item,
     ManagerController controller,
-  ) => ExpansionTile(
-    key: PageStorageKey(item.name),
-    title: Row(
-      children: [
-        Checkbox(
-          value: item.status == 1,
-          onChanged: (bool? value) {
-            controller.toggleStatus(item, value!);
-          },
+  ) => GetBuilder<ManagerController>(
+      builder: (_) => ExpansionTile(
+        title: Row(
+          children: [
+            Checkbox(
+              value: item.status == 1,
+              onChanged: (val) => controller.toggleStatus(item, val ?? false),
+            ),
+            Text(item.name),
+          ],
         ),
-        Text(item.name),
-      ],
-    ),
-    children: item.children.values
-        .map(
-          (child) => Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: _buildPermissionItem(child, controller),
-          ),
-        )
-        .toList(),
-  );
+        children: item.children.values
+            .map(
+              (child) => Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: _buildPermissionItem(child, controller),
+              ),
+            )
+            .toList(),
+      ),
+    );
 }

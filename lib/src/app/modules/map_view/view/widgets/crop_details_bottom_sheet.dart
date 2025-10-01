@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 import 'package:argiot/src/app/modules/map_view/controller/land_map_view_controller.dart';
 import 'package:argiot/src/app/modules/map_view/model/crop_map_data.dart';
-import 'package:argiot/src/app/modules/map_view/view/widgets/task_card.dart';
+import 'package:argiot/src/app/modules/task/view/widget/task_card.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';

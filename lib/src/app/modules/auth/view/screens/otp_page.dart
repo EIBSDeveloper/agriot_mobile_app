@@ -46,9 +46,9 @@ class _OtpPageState extends State<OtpPage> with SingleTickerProviderStateMixin {
 
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      otp.text = controller.tempOtp.value;
-    });
+    // Future.delayed(const Duration(seconds: 2), () {
+    //   otp.text = controller.tempOtp.value;
+    // });
   }
 
   @override

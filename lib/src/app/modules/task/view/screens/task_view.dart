@@ -10,7 +10,7 @@ import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
-import '../../../map_view/view/widgets/task_card.dart';
+import '../widget/task_card.dart';
 import '../../controller/task_controller.dart';
 
 class TaskView extends GetView<TaskController> {

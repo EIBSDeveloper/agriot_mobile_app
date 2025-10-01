@@ -13,7 +13,7 @@ import '../../../../service/utils/utils.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../home/contoller/bottombar_contoller.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
-import '../../../map_view/view/widgets/task_card.dart';
+import '../../../task/view/widget/task_card.dart';
 import '../../controller/dashboard_controller.dart';
 
 class DashboardView extends GetView<DashboardController> {

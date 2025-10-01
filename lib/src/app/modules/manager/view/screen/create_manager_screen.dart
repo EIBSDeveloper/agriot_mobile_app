@@ -240,7 +240,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                         ),
                       ],
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 
@@ -272,7 +272,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                         ),
                       ],
                     )
-                  : SizedBox(),
+                  : const SizedBox(),
             ),
             const SizedBox(height: 16),
 

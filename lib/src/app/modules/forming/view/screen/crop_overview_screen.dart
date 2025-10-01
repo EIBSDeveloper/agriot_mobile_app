@@ -16,7 +16,7 @@ import '../../../../../core/app_icons.dart';
 import '../../../../service/utils/enums.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
-import '../../../map_view/view/widgets/task_card.dart';
+import '../../../task/view/widget/task_card.dart';
 
 class CropOverviewScreen extends StatefulWidget {
   const CropOverviewScreen({super.key});

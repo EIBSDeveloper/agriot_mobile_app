@@ -5,6 +5,8 @@ import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
+
 class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
@@ -29,7 +31,7 @@ class TaskCard extends StatelessWidget {
       });
     },
     child: Container(
-      margin: const EdgeInsets.only(left: 10, bottom: 8,right: 8),
+      margin: const EdgeInsets.only(left: 10, bottom: 8, right: 8),
       constraints: const BoxConstraints(minHeight: 80),
       decoration: AppStyle.decoration.copyWith(
         border: Border(
@@ -53,16 +55,21 @@ class TaskCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    task.cropType ?? task.activityTypeName ?? '',
+                    task.cropType ?? '',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
+                  Text(task.activityTypeName ?? ''),
                   const SizedBox(height: 4),
                   if (task.status != null)
                     Text(
                       getTaskName(task.status!),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: task.status != null
+                            ? getTaskColors(task.status!)
+                            : Colors.black,
+                      ),
                     ),
                   if (task.description.isNotEmpty) ...[
                     const SizedBox(height: 2),
@@ -76,7 +83,33 @@ class TaskCard extends StatelessWidget {
                 ],
               ),
             ),
-
+//  Expanded(
+//           child: InputCardStyle(
+//             padding: const EdgeInsets.symmetric(horizontal: 8),
+//             child: DropdownButtonFormField<TaskTypes>(
+//               initialValue: controller.selectedValue.value,
+//               icon: const Icon(Icons.keyboard_arrow_down),
+//               decoration: const InputDecoration(
+//                 labelText: "Status",
+//                 border: InputBorder.none,
+//               ),
+//               items: controller.statusList
+//                   .map(
+//                     (item) => DropdownMenuItem(
+//                       value: item.task,
+//                       child: Text(
+//                         item.name,
+//                         selectionColor: getTaskColors(item.task),
+//                       ),
+//                     ),
+//                   )
+//                   .toList(),
+//               onChanged: (value) {
+//                 controller.selectedValue.value = value!;
+//               },
+//             ),
+//           ),
+//         ),
             /// Right section: trailing widgets
             if (trailing.isNotEmpty) ...[
               const SizedBox(width: 8),

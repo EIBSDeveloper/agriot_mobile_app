@@ -1,63 +1,7 @@
-/*class EmployeeModel {
-  final int id;
-  final String name;
-  final String role;
-  final String salaryType;
-  String? login;
-  String? logout;
-  String? hours;
-  int? salary;
-  bool? paidStatus;
+import 'dart:convert';
 
-  EmployeeModel({
-    required this.id,
-    required this.name,
-    required this.role,
-    required this.salaryType,
-    this.login,
-    this.logout,
-    this.hours,
-    this.salary,
-    this.paidStatus,
-  });
+import 'package:intl/intl.dart';
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "role": role,
-    "salaryType": salaryType,
-    "login": login,
-    "logout": logout,
-    "hours": hours,
-    "salary": salary,
-    "status": paidStatus,
-  };
-
-  /// CopyWith method to create a new object with updated fields
-  EmployeeModel copyWith({
-    int? id,
-    String? name,
-    String? role,
-    String? salaryType,
-    String? login,
-    String? logout,
-    String? hours,
-    int? salary,
-    bool? paidStatus,
-  }) {
-    return EmployeeModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      role: role ?? this.role,
-      salaryType: salaryType ?? this.salaryType,
-      login: login ?? this.login,
-      logout: logout ?? this.logout,
-      hours: hours ?? this.hours,
-      salary: salary ?? this.salary,
-      paidStatus: paidStatus ?? this.paidStatus,
-    );
-  }
-}*/
 class EmployeeModel {
   final int id;
   final String name;
@@ -65,11 +9,12 @@ class EmployeeModel {
   final String salaryType;
   final String? workType;
   final String? image;
-  final String? login;
-  final String? logout;
-  final String? hours;
+  final bool present;
+  final String? loginTime;
+  final String? logoutTime;
+  final String? totalHour;
   final int? salary;
-  final bool? paidStatus;
+  final bool? salaryStatus;
 
   EmployeeModel({
     required this.id,
@@ -78,42 +23,41 @@ class EmployeeModel {
     required this.salaryType,
     this.workType,
     this.image,
-    this.login,
-    this.logout,
-    this.hours,
+    required this.present,
+    this.loginTime,
+    this.logoutTime,
+    this.totalHour,
     this.salary,
-    this.paidStatus,
+    this.salaryStatus,
   });
 
   factory EmployeeModel.fromJson(Map<String, dynamic> json) => EmployeeModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      role: json['role'] ?? '',
-      salaryType: json['salaryType'] ?? '',
-      workType: json['work_type'],
-      image: json['image'],
-      login: json['login'],
-      logout: json['logout'],
-      hours: json['hours'],
-      salary: (json['salary'] != null)
-          ? int.tryParse(json['salary'].toString())
-          : null,
-      paidStatus: json['paid_status'] == 1 || json['paid_status'] == true,
-    );
+    id: json['id'] ?? 0,
+    name: json['name'] ?? '',
+    role: json['role'] ?? '',
+    salaryType: json['salaryType'] ?? json['salary_type'] ?? '',
+    workType: json['work_type'],
+    image: json['image'],
+    present: json['present'] ?? false,
+    loginTime: json['login_time'],
+    logoutTime: json['logout_time'],
+    totalHour: json['total_hour'],
+    salary: (json['salary'] != null)
+        ? int.tryParse(json['salary'].toString())
+        : null,
+    salaryStatus: (json['salary_status'] is int)
+        ? json['salary_status'] == 1
+        : (json['salary_status'] as bool?),
+  );
 
   Map<String, dynamic> toJson() => {
-      "id": id,
-      "name": name,
-      "role": role,
-      "salaryType": salaryType,
-      "work_type": workType,
-      "image": image,
-      "login": login,
-      "logout": logout,
-      "hours": hours,
-      "salary": salary,
-      "paid_status": paidStatus,
-    };
+    "id": id,
+    "created_day": DateFormat("yyyy-MM-dd").format(DateTime.now()),
+    "login_time": loginTime,
+    "logout_time": logoutTime,
+    "salary": salary ?? 0.0,
+    "salary_status": salaryStatus,
+  };
 
   EmployeeModel copyWith({
     int? id,
@@ -122,22 +66,29 @@ class EmployeeModel {
     String? salaryType,
     String? workType,
     String? image,
-    String? login,
-    String? logout,
-    String? hours,
+    bool? present,
+    String? loginTime,
+    String? logoutTime,
+    String? totalHour,
     int? salary,
-    bool? paidStatus,
+    bool? salaryStatus,
   }) => EmployeeModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      role: role ?? this.role,
-      salaryType: salaryType ?? this.salaryType,
-      workType: workType ?? this.workType,
-      image: image ?? this.image,
-      login: login ?? this.login,
-      logout: logout ?? this.logout,
-      hours: hours ?? this.hours,
-      salary: salary ?? this.salary,
-      paidStatus: paidStatus ?? this.paidStatus,
-    );
+    id: id ?? this.id,
+    name: name ?? this.name,
+    role: role ?? this.role,
+    salaryType: salaryType ?? this.salaryType,
+    workType: workType ?? this.workType,
+    image: image ?? this.image,
+    present: present ?? this.present,
+    loginTime: loginTime ?? this.loginTime,
+    logoutTime: logoutTime ?? this.logoutTime,
+    totalHour: totalHour ?? this.totalHour,
+    salary: salary ?? this.salary,
+    salaryStatus: salaryStatus ?? this.salaryStatus,
+  );
+
+  static List<EmployeeModel> listFromJson(String str) =>
+      List<EmployeeModel>.from(
+        json.decode(str).map((x) => EmployeeModel.fromJson(x)),
+      );
 }

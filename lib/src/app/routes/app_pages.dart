@@ -49,6 +49,7 @@ import '../modules/employee/view/screen/employee_manager_view.dart';
 import '../modules/employee/view/screen/update_employee_payouts_view.dart';
 import '../modules/expense/binding/cunsumption_detail_binding.dart';
 import '../modules/expense/view/screens/consumption_details.dart';
+import '../modules/manager/bindings/manager_binding.dart';
 import '../modules/manager/view/screen/create_manager_screen.dart';
 import '../modules/sales/view/screens/add_deduction_view.dart';
 import '../modules/task/view/screens/schedule_details_page.dart';
@@ -349,15 +350,15 @@ class AppPages {
       transition: Transition.cupertino,
     ),
    
-    GetPage(
+  GetPage(
       name: Routes.employeeAdd,
       page: () => const CreateManagerScreen(),
-      binding: EmployeeAdd(),
+      binding: /*EmployeeAdd(),*/ ManagerBinding(),
     ),
     
     GetPage(
       name: Routes.addAttendence,
-      page: () => const AddAttendenceScreen(),
+      page: () =>  AddAttendenceScreen(),
       binding: AttendenceBinding(),
     ),
 

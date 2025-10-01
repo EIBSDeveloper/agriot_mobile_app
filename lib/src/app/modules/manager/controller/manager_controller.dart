@@ -11,10 +11,12 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 import '../../../service/utils/pop_messages.dart';
+import '../repository/manager_repository.dart';
 
 final AppDataController appDeta = Get.put(AppDataController());
 
 class ManagerController extends GetxController {
+  final ManagerRepository repository = Get.find();
   final usernameController = TextEditingController();
   final dobcontroller = TextEditingController();
   final dojcontroller = TextEditingController();
@@ -322,7 +324,7 @@ class ManagerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadPermissions();
+    loadPermissionsFromApi();
     fetchDropdownData();
   }
 
@@ -338,9 +340,22 @@ class ManagerController extends GetxController {
     update();
   }
 
-  String getUpdatedJson() {
+  /*  String getUpdatedJson() {
     final updated = permissions.map((k, v) => MapEntry(k, v.toJson()));
     return updated.toString();
+  }*/
+  Future<void> loadPermissionsFromApi() async {
+    try {
+      isLoading.value = true;
+      final apiData = await repository.fetchPermissions();
+      permissions.value = apiData.map(
+        (key, value) => MapEntry(key, PermissionItem.fromApi(key, value)),
+      );
+    } catch (e) {
+      print('Error fetching permissions: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   /// Loading flag
@@ -375,7 +390,11 @@ class ManagerController extends GetxController {
       );
       if (roleRes.statusCode == 200) {
         final List data = jsonDecode(roleRes.body);
-        roleTypes.value = data.map((e) => RoleModel.fromJson(e)).toList();
+        //roleTypes.value = data.map((e) => RoleModel.fromJson(e)).toList();
+        roleTypes.value = [
+          RoleModel(id: 0, name: "employee"),
+          ...data.map((e) => RoleModel.fromJson(e)),
+        ];
       }
     } catch (e) {
       print("Error fetching dropdown data: $e");

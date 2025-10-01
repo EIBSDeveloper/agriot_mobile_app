@@ -116,7 +116,6 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
 
             // Date of Joining
@@ -166,8 +165,8 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
+
             // Date of Birth
             InputCardStyle(
               child: TextFormField(
@@ -211,46 +210,72 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 onTap: controller.pickLocation,
               ),
             ),
-            const SizedBox(height: 16),
+
             // Work Type
             Obx(
-              () => InputCardStyle(
-                child: DropdownButtonFormField<String>(
-                  initialValue: controller.selectedWorkType.value,
-                  items: controller.workTypes
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
-                  onChanged: (value) =>
-                      controller.selectedWorkType.value = value,
-                  decoration: const InputDecoration(
-                    labelText: 'Work Type *',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null ? 'Required field' : null,
-                ),
-              ),
+              () => controller.selectedRoleType.value!.id == 0
+                  ? Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        InputCardStyle(
+                          child: DropdownButtonFormField<String>(
+                            initialValue: controller.selectedWorkType.value,
+                            items: controller.workTypes
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                controller.selectedWorkType.value = value,
+                            decoration: const InputDecoration(
+                              labelText: 'Work Type *',
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) =>
+                                value == null ? 'Required field' : null,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
             ),
             const SizedBox(height: 16),
 
             // Assign Manager
             Obx(
-              () => InputCardStyle(
-                child: DropdownButtonFormField<String>(
-                  initialValue: controller.selectedManager.value,
-                  items: controller.managers
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
-                  onChanged: (value) =>
-                      controller.selectedManager.value = value,
-                  decoration: const InputDecoration(
-                    labelText: 'Assign Manager *',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null ? 'Required field' : null,
-                ),
-              ),
+              () => controller.selectedRoleType.value!.id == 0
+                  ? Column(
+                      children: [
+                        InputCardStyle(
+                          child: DropdownButtonFormField<String>(
+                            initialValue: controller.selectedManager.value,
+                            items: controller.managers
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                controller.selectedManager.value = value,
+                            decoration: const InputDecoration(
+                              labelText: 'Assign Manager *',
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) =>
+                                value == null ? 'Required field' : null,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
             ),
             const SizedBox(height: 16),
+
             // Address
             InputCardStyle(
               child: TextFormField(
@@ -286,20 +311,21 @@ class CreateManagerScreen extends GetView<ManagerController> {
             InputCardStyle(
               child: SizedBox(
                 height: 350, // fixed height with scrolling
-                child: GetBuilder<ManagerController>(
-                  init: ManagerController(),
-                  builder: (ctrl) {
-                    if (ctrl.permissions.isEmpty) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                    return ListView(
-                      children: ctrl.permissions.values
-                          .map((item) => _buildPermissionItem(item, ctrl))
-                          .toList(),
-                    );
-                  },
-                ),
+                  if (controller.permissions.isEmpty) {
+                    return const Center(child: Text("No permissions found"));
+                  }
+
+                  return ListView(
+                    children: controller.permissions.values
+                        .map((item) => _buildPermissionItem(item, controller))
+                        .toList(),
+                  );
+                }),
               ),
             ),
             const SizedBox(height: 16),

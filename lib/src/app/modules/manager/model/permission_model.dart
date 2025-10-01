@@ -6,26 +6,43 @@ class PermissionItem {
   PermissionItem({
     required this.name,
     this.status = 0,
-    Map<String, PermissionItem>? children,
-  }) : children = children ?? {};
+    this.children = const {},
+  });
 
+  // From your previous rawPermissions JSON
   factory PermissionItem.fromJson(String name, Map<String, dynamic> json) {
-    // Check for nested structures: actions, modules, categories
-    Map<String, dynamic> nested =
-        json['actions'] ?? json['modules'] ?? json['categories'] ?? {};
-
+    Map<String, PermissionItem> childItems = {};
+    if (json.containsKey('modules')) {
+      json['modules'].forEach((k, v) {
+        childItems[k] = PermissionItem.fromJson(k, v);
+      });
+    }
+    if (json.containsKey('actions')) {
+      json['actions'].forEach((k, v) {
+        childItems[k] = PermissionItem.fromJson(k, v);
+      });
+    }
     return PermissionItem(
       name: name,
       status: json['status'] ?? 0,
-      children: nested.map(
-        (key, value) => MapEntry(key, PermissionItem.fromJson(key, value)),
-      ),
+      children: childItems,
     );
   }
 
-  Map<String, dynamic> toJson() => {
-      "status": status,
-      if (children.isNotEmpty)
-        "children": children.map((k, v) => MapEntry(k, v.toJson())),
-    };
+  // From API response
+  factory PermissionItem.fromApi(String name, dynamic json) {
+    Map<String, PermissionItem> childItems = {};
+
+    if (json is Map<String, dynamic>) {
+      json.forEach((k, v) {
+        childItems[k] = PermissionItem.fromApi(k, v);
+      });
+    }
+
+    return PermissionItem(
+      name: name,
+      status: (json is int) ? json : 0,
+      children: childItems,
+    );
+  }
 }

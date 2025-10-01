@@ -1,36 +1,61 @@
-// attendance_repository.dart
 import 'dart:convert';
 
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/attendence/model/attendencemodel.dart';
-import 'package:flutter/material.dart';
+import 'package:argiot/src/app/service/http/http_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-
-final AppDataController appDeta = Get.put(AppDataController());
 
 class AttendanceRepository {
-  /// 🔥 Fetch Employees from API
-  Future<List<EmployeeModel>> fetchEmployees({required String date}) async {
+  final HttpService _httpService = Get.find<HttpService>();
+  final AppDataController appDeta = Get.put(AppDataController());
+
+  //Fetch Employees from API
+  Future<List<EmployeeModel>> fetchEmployees({
+    required String date,
+    int page = 1,
+    String search = '',
+  }) async {
     final farmerId = appDeta.farmerId;
 
     try {
-      final url = Uri.parse(
-        "${appDeta.baseUrl.value}/attendance_list?date=$date&farmer_id=$farmerId",
+      final response = await _httpService.get(
+        "/attendance_list?date=$date&farmer_id=$farmerId&page=$page&search=$search",
       );
 
-      final res = await http.get(url);
-
-      if (res.statusCode == 200) {
-        final data = jsonDecode(res.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
         return (data as List).map((e) => EmployeeModel.fromJson(e)).toList();
       } else {
-        debugPrint("Error: ${res.body}");
+        debugPrint("❌ Error fetching employees: ${response.body}");
         return [];
       }
     } catch (e) {
-      debugPrint("Exception fetching employees: $e");
+      debugPrint("⚠️ Exception fetching employees: $e");
       return [];
+    }
+  }
+
+  /// Add Attendance for multiple employees at once
+  Future<bool> addAttendance({
+    required List<Map<String, dynamic>> employees,
+  }) async {
+    try {
+      final response = await _httpService.post(
+        "/attendance",
+        employees, // send as JSON list
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint("✅ Attendance added successfully: ${response.body}");
+        return true;
+      } else {
+        debugPrint("❌ Error adding attendance: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      debugPrint("⚠️ Exception adding attendance: $e");
+      return false;
     }
   }
 }

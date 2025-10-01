@@ -1,79 +1,3 @@
-/*import 'package:argiot/src/app/modules/attendence/controller/attendence_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-
-class HorizontalDatePicker extends GetView<AttendenceController> {
-  final Function(DateTime) onDateSelected;
-
-  HorizontalDatePicker({super.key, required this.onDateSelected});
-
-  final List<DateTime> weekDates = List.generate(
-    7,
-    (index) => DateTime.now().add(Duration(days: index)),
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: weekDates.length,
-        itemBuilder: (context, index) {
-          final date = weekDates[index];
-
-          // Wrap only the part that changes reactively
-          return Obx(() {
-            final isSelected =
-                date.day == controller.selectedDate.value.day &&
-                date.month == controller.selectedDate.value.month &&
-                date.year == controller.selectedDate.value.year;
-
-            return GestureDetector(
-              onTap: () {
-                controller.setSelectedDate(date); // update controller
-                onDateSelected(date);
-              },
-              child: Container(
-                width: 45,
-                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? Get.theme.colorScheme.primary
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      DateFormat.E().format(date),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black54,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      date.day.toString(),
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          });
-        },
-      ),
-    );
-  }
-}*/
-
 import 'package:argiot/src/app/modules/attendence/controller/attendence_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -158,7 +82,7 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
               itemBuilder: (context, index) {
                 final date = allDates[index];
 
-                return Obx(() {
+                /*return Obx(() {
                   final _ =
                       date.day == controller.selectedDate.value.day &&
                       date.month == controller.selectedDate.value.month &&
@@ -185,6 +109,81 @@ class HorizontalDatePicker extends GetView<AttendenceController> {
                   if (isToday) {
                     bgColor = Get.theme.colorScheme.primary;
                     textColor = Colors.white;
+                  }
+
+                  return GestureDetector(
+                    onTap: isFuture
+                        ? null
+                        : () {
+                            controller.setSelectedDate(date);
+                            onDateSelected(date);
+                          },
+                    child: Container(
+                      width: 50,
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        color: bgColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            DateFormat.E().format(date),
+                            style: TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            date.day.toString(),
+                            style: TextStyle(
+                              color: textColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                });*/
+                return Obx(() {
+                  final isSelected =
+                      date.day == controller.selectedDate.value.day &&
+                      date.month == controller.selectedDate.value.month &&
+                      date.year == controller.selectedDate.value.year;
+
+                  final isToday =
+                      date.day == today.day &&
+                      date.month == today.month &&
+                      date.year == today.year;
+
+                  final isFuture = date.isAfter(today);
+                  final isPast = date.isBefore(today);
+
+                  Color bgColor = Colors.transparent;
+                  Color textColor = Colors.black87;
+
+                  if (isSelected && isPast) {
+                    // 🚀 Selected past date: orange
+                    bgColor = Colors.orange;
+                    textColor = Colors.white;
+                  } else if (isToday) {
+                    // Today
+                    bgColor = Get.theme.colorScheme.primary;
+                    textColor = Colors.white;
+                  } else if (isPast) {
+                    // Other past dates
+                    bgColor = Colors.grey;
+                    textColor = Colors.white;
+                  } else if (isFuture) {
+                    // Future dates
+                    textColor = Colors.grey.shade400;
                   }
 
                   return GestureDetector(

@@ -39,6 +39,15 @@ class KycView extends GetView<KycController> {
               ),
               gap,
               _buildTextField(
+                controller: controller.numberController,
+                label: 'Mobile Number *',
+             
+                validator: (value) =>
+                    !GetUtils.isEmail(value!) ? 'Enter valid mobile number' : null,
+                keyboardType: TextInputType.number,
+              ),
+              gap,
+              _buildTextField(
                 controller: controller.companyController,
                 label: 'Company Name',
               ),
@@ -70,7 +79,7 @@ class KycView extends GetView<KycController> {
               gap,
                _buildTextField(
                 controller: controller.doorNoController,
-                label: 'Address',
+                label: 'Address',maxLines: 3
               ),
               gap,
               _buildTextField(
@@ -97,7 +106,7 @@ class KycView extends GetView<KycController> {
     List<TextInputFormatter>? inputFormatters,
     String? Function(String?)? validator, 
     TextInputType? keyboardType,
-    bool readOnly = false,
+    bool readOnly = false,int? maxLines = 1,
     VoidCallback? onTap,
   }) => InputCardStyle(
     child: TextFormField(
@@ -111,6 +120,7 @@ class KycView extends GetView<KycController> {
       ),
       validator: validator,
       keyboardType: keyboardType,
+      maxLines: maxLines,
       readOnly: readOnly,
       onTap: onTap,
     ),

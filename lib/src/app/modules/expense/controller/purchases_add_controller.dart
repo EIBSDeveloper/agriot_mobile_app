@@ -33,7 +33,7 @@ class PurchasesAddController extends GetxController {
   final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
   final RxString purchaseAmount = ''.obs;
-  final RxString paidAmount = ''.obs;
+  // final RxString paidAmount = ''.obs;
   final RxString litre = ''.obs;
   final RxString description = ''.obs;
   final RxList<String> documents = <String>[].obs;
@@ -233,7 +233,7 @@ class PurchasesAddController extends GetxController {
         inventoryItems: selectedInventoryItem.value!,
         quantity: litre.value,
         purchaseAmount: purchaseAmount.value,
-        paidAmount: paidAmount.value,
+        paidAmount: purchaseAmount.value,
         description: description.value.isNotEmpty ? description.value : null,
         document: documentItemsList,
       );
@@ -283,7 +283,7 @@ class PurchasesAddController extends GetxController {
         warrantyStartDate: warrantyStartDateController.text,
         warrantyEndDate: warrantyEndDateController.text,
         purchaseAmount: purchaseAmount.value,
-        paidAmount: paidAmount.value,
+        paidAmount: purchaseAmount.value,
         description: descriptionController.text,
         documents: documentItemsList,
       );
@@ -331,7 +331,7 @@ class PurchasesAddController extends GetxController {
         inventoryCategory: selectedInventoryType.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
         registerNumber: regNoController.text,
-        paidAmount: paidAmount.value,
+        paidAmount: purchaseAmount.value,
         ownerName: ownerNameController.text,
         dateOfRegistration: dateOfRegController.text.isNotEmpty
             ? DateTime.parse(dateOfRegController.text)
@@ -425,14 +425,14 @@ class PurchasesAddController extends GetxController {
     try {
       final fertilizer = FertilizerModel(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value!,
+        vendor: selectedVendor.value,
         inventoryType: selectedInventoryType.value!,
         inventoryCategory: selectedInventoryType.value!,
 
         inventoryItems: selectedInventoryItem.value!,
         quantity: litre.value,
         quantityUnit: selectedUnit.value.id,
-        paidAmount: paidAmount.value,
+        paidAmount: purchaseAmount.value,
         purchaseAmount: purchaseAmount.value,
         description: descriptionController.text.isNotEmpty
             ? descriptionController.text
@@ -526,22 +526,22 @@ class PurchasesAddController extends GetxController {
     ),
   );
 
-  Widget buildPaidAmountField() => Obx(
-    () => InputCardStyle(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: TextFormField(
-        decoration: InputDecoration(
-          labelText: "${'paid_amount'.tr} *",
-          border: InputBorder.none,
-          // errorText: ,
-        ),
-        validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-        initialValue: paidAmount.value,
-        keyboardType: TextInputType.number,
-        onChanged: paidAmount.call,
-      ),
-    ),
-  );
+  // Widget buildPaidAmountField() => Obx(
+  //   () => InputCardStyle(
+  //           padding: const EdgeInsets.symmetric(horizontal: 8),
+  //     child: TextFormField(
+  //       decoration: InputDecoration(
+  //         labelText: "${'paid_amount'.tr} *",
+  //         border: InputBorder.none,
+  //         // errorText: ,
+  //       ),
+  //       validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+  //       initialValue: paidAmount.value,
+  //       keyboardType: TextInputType.number,
+  //       onChanged: paidAmount.call,
+  //     ),
+  //   ),
+  // );
 
   Widget buildDocumentsSection() =>
       DocumentsSection(documentItems: documentItems, type: DocTypes.inventory);

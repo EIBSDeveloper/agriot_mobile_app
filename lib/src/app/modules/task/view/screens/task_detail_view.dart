@@ -7,6 +7,7 @@ import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../service/utils/enums.dart';
 import '../../../../widgets/input_card_style.dart';
@@ -100,7 +101,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               _buildDetailItem('Description', task.description),
 
               _buildDetailItem('Comment', task.comment),
-              _buildStatus('Status'),
+              _buildStatus('Status', DateFormat("dd/MM/yyyy").parse(task.startDate)),
 
               const SizedBox(height: 24),
 
@@ -157,8 +158,10 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           ),
         )
       : const SizedBox.shrink();
+Widget _buildStatus(String label, DateTime taskDate) {
+  final isPast = taskDate.isBefore(DateTime.now());
 
-  Widget _buildStatus(String label) => Padding(
+  return Padding(
     padding: const EdgeInsets.symmetric(vertical: 4.0),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -179,20 +182,23 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                       value: item.task,
                       child: Text(
                         item.name,
-                        selectionColor: getTaskColors(item.task),
+                        style: TextStyle(color: getTaskColors(item.task)),
                       ),
                     ),
                   )
                   .toList(),
-              onChanged: (value) {
-                controller.selectedValue.value = value!;
-              },
+              onChanged: isPast
+                  ? null // disable if past date
+                  : (value) {
+                      controller.selectedValue.value = value!;
+                    },
             ),
           ),
         ),
       ],
     ),
   );
+}
 
   Widget _buildActionButtons() => Obx(
     () =>

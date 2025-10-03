@@ -34,13 +34,13 @@ class LandDetailView extends GetView<LandDetailController> {
             },
             icon: const Icon(Icons.edit),
           ),
-          IconButton(
-            onPressed: () {
-              controller.deleteLandDetails(controller.landId.value);
-            },
-            color: Get.theme.primaryColor,
-            icon: const Icon(Icons.delete),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     controller.deleteLandDetails(controller.landId.value);
+          //   },
+          //   color: Get.theme.primaryColor,
+          //   icon: const Icon(Icons.delete),
+          // ),
         ],
       ),
       body: RefreshIndicator(

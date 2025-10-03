@@ -35,7 +35,7 @@ class MachineryEntryScreen extends GetView<PurchasesAddController> {
                   ? _buildFuelCapacityField()
                   : const SizedBox.shrink(),
             ),
-            const SizedBox(height: 16), controller.buildPaidAmountField(),
+            // const SizedBox(height: 16), controller.buildPaidAmountField(),
             const SizedBox(height: 16),
             controller.buildPurchaseAmountField(),
             const SizedBox(height: 16),

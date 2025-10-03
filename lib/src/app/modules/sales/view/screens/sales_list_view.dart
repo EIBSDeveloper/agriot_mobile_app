@@ -47,7 +47,29 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                 const SizedBox(width: 8),
+                  Expanded(
+                    child: InputCardStyle(
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton(
+                          value: controller.selectedCropType.value,
+                          isExpanded: true,
+
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items: controller.crop
+                              .map(
+                                (period) => DropdownMenuItem(
+                                  value: period,
+                                  child: Text(period.name),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (land) => controller.changeCrop(land!),
+                        ),
+                      ),
+                    ),
+                  ),
+              const SizedBox(width: 8),
                   Expanded(
                     child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
@@ -70,29 +92,7 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: InputCardStyle(
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          value: controller.selectedCropType.value,
-                          isExpanded: true,
-
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: controller.crop
-                              .map(
-                                (period) => DropdownMenuItem(
-                                  value: period,
-                                  child: Text(period.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (land) => controller.changeCrop(land!),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                     ],
               ),
             ),
             Expanded(

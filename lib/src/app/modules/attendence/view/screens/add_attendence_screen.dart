@@ -119,94 +119,89 @@ class AddAttendenceScreen extends GetView<AttendenceController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: const CustomAppBar(title: 'Add Attendence'),
-      body: SingleChildScrollView(
-        controller: scrollController,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
+    appBar: const CustomAppBar(title: 'Add Attendence'),
+    body: SingleChildScrollView(
+      controller: scrollController,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // const SizedBox(height: 16),
 
-              /// Date field
-              /* InputCardStyle(
+            /// Date field
+            /* InputCardStyle(
                 child: HorizontalDatePicker(
                   onDateSelected: controller.setSelectedDate,
                 ),
               ),*/
-              const SizedBox(height: 12),
+            const SizedBox(height: 12),
 
-              /// Search field
-              InputCardStyle(
-                child: TextField(
-                  controller: controller.searchController,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 22,
-                      color: Colors.grey,
-                    ),
-                    hintText: "Search employee...",
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  onChanged: controller.onSearchChanged,
+            /// Search field
+            InputCardStyle(
+              child: TextField(
+                controller: controller.searchController,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.search, size: 22, color: Colors.grey),
+                  hintText: "Search employee...",
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
                 ),
+                onChanged: controller.onSearchChanged,
               ),
+            ),
 
-              const SizedBox(height: 12),
+            const SizedBox(height: 12),
 
-              /// Employee list
-              Obx(() {
-                if (controller.isLoading.value &&
-                    controller.employees.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+            /// Employee list
+            Obx(() {
+              if (controller.isLoading.value && controller.employees.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                if (controller.employees.isEmpty) {
-                  return const Center(child: Text("No employees found"));
-                }
+              if (controller.employees.isEmpty) {
+                return const Center(child: Text("No employees found"));
+              }
 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount:
-                      controller.employees.length +
-                      (controller.hasMore.value ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= controller.employees.length) {
-                      return const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Center(child: CircularProgressIndicator()),
-                      );
-                    }
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount:
+                    controller.employees.length +
+                    (controller.hasMore.value ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index >= controller.employees.length) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
 
-                    return AttendanceCard(index: index);
-                  },
-                );
-              }),
-              const SizedBox(height: 20),
-            ],
-          ),
+                  return AttendanceCard(index: index);
+                },
+              );
+            }),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () async {
-              await controller.addAttendance(employees: controller.employees);
-              Get.back();
-              //Get.toNamed(Routes.attendencelistscreen);
-            },
-            child: const Text('Submit'),
-          ),
+    ),
+    bottomNavigationBar: Padding(
+      padding: const EdgeInsets.all(16),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () async {
+            await controller.addAttendance(employees: controller.employees);
+            Get.back();
+            //Get.toNamed(Routes.attendencelistscreen);
+          },
+          child: const Text('Submit'),
         ),
       ),
-    );
+    ),
+  );
 }
 
 /// ---------------- Reusable Widget ----------------
@@ -442,7 +437,7 @@ class AttendanceCard extends GetView<AttendenceController> {
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 1,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -467,10 +462,10 @@ class AttendanceCard extends GetView<AttendenceController> {
                         fontSize: 16,
                       ),
                     ),
-                    Text(
-                      emp.role,
-                      style: const TextStyle(color: Colors.black54),
-                    ),
+                    // Text(
+                    //   emp.role,
+                    //   style: const TextStyle(color: Colors.black54),
+                    // ),
                     Text(
                       emp.salaryType,
                       style: const TextStyle(color: Colors.blue, fontSize: 12),
@@ -491,7 +486,7 @@ class AttendanceCard extends GetView<AttendenceController> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
-                          vertical: 12,
+                          // vertical: 12,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -529,7 +524,7 @@ class AttendanceCard extends GetView<AttendenceController> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
-                          vertical: 12,
+                          // vertical: 12,
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -585,7 +580,7 @@ class AttendanceCard extends GetView<AttendenceController> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
-                        vertical: 17,
+                        vertical: 8,
                       ),
                       child: Text(
                         (emp.totalHour == null || emp.totalHour!.isEmpty)
@@ -604,14 +599,12 @@ class AttendanceCard extends GetView<AttendenceController> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: InputCardStyle(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: TextField(
                       keyboardType: TextInputType.number,
                       controller: controller.salaryControllers[index],
                       onChanged: (val) {
-                        final salary = int.tryParse(val);
-                        controller.employees[index] = emp.copyWith(
-                          salary: salary,
-                        );
+                        controller.employees[index] = emp.copyWith(salary: val);
                         controller.employees.refresh();
                       },
                       decoration: const InputDecoration(

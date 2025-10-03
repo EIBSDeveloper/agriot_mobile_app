@@ -1,18 +1,26 @@
+import 'dart:convert';
+
 import 'package:argiot/src/app/modules/employee/model/model.dart';
 import 'package:argiot/src/app/modules/employee/repository/update_employee_payouts_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../controller/app_controller.dart';
+import '../../manager/model/dropdown_model.dart';
 
 class UpdateEmployeePayoutsController extends GetxController {
   final UpdateEmployeePayoutsRepository _repository = UpdateEmployeePayoutsRepository();
   
+final AppDataController appDeta = Get.put(AppDataController());
+
   final RxBool isLoading = false.obs;
   final Rx<EmployeePayoutsData?> employeeData = Rx<EmployeePayoutsData?>(null);
   final RxString errorMessage = ''.obs;
   
   // Form fields
   final RxString dateOfPayouts = ''.obs;
-  final RxString deductionAdvanceAmount = ''.obs;
+  final RxString deductionAdvanceAmount = '0'.obs;
   final RxString payoutsAmount = ''.obs;
   final RxString toPay = ''.obs;
   final RxString description = ''.obs;
@@ -23,6 +31,20 @@ class UpdateEmployeePayoutsController extends GetxController {
   final RxString payoutsError = ''.obs;
   final RxString toPayError = ''.obs;
   final RxString payoutType = 'Advance'.obs;
+
+  var selectedEmployeeType = Rxn<EmployeeTypeModel>();
+  var selectedWorkType = Rxn<WorkTypeModel>();
+  var selectedManager = Rxn<AssignMangerModel>();
+
+  var employeeTypes = <EmployeeTypeModel>[].obs;
+  var workTypes = <WorkTypeModel>[].obs;
+  var managers = <AssignMangerModel>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+   fetchDropdownData() ;
+  }
 
 
   Future<void> loadEmployeeData() async {
@@ -86,6 +108,8 @@ class UpdateEmployeePayoutsController extends GetxController {
       isValid = false;
     }
     
+ 
+  
     // To Pay validation (optional)
     if (toPay.isNotEmpty && double.tryParse(toPay.value) == null) {
       toPayError.value = 'valid_number_required'.tr;
@@ -93,6 +117,37 @@ class UpdateEmployeePayoutsController extends GetxController {
     }
     
     return isValid;
+  }
+ Future<void> fetchDropdownData() async {
+    isLoading.value = true;
+
+    try {
+      /// Fetch employee types
+      final empRes = await http.get(
+        Uri.parse("${appDeta.baseUrl.value}/employee_types"),
+      );
+      if (empRes.statusCode == 200) {
+        final List data = jsonDecode(empRes.body);
+        employeeTypes.value = data
+            .map((e) => EmployeeTypeModel.fromJson(e))
+            .toList();
+      }
+
+     
+    
+      //fetch worktypes
+      final worktypeRes = await http.get(
+        Uri.parse("${appDeta.baseUrl.value}/work_type"),
+      );
+      if (worktypeRes.statusCode == 200) {
+        final List data = jsonDecode(worktypeRes.body);
+        workTypes.value = data.map((e) => WorkTypeModel.fromJson(e)).toList();
+      }
+    } catch (e) {
+      print("Error fetching dropdown data: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> updatePayouts() async {

@@ -81,6 +81,7 @@ class LandMapView extends GetView<LandMapViewController> {
 
   Widget _buildLandDropdown() => Obx(
     () => InputCardStyle(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonFormField<ScheduleLand>(
         initialValue: controller.selectedLand.value,
         items: controller.lands
@@ -99,6 +100,7 @@ class LandMapView extends GetView<LandMapViewController> {
 
   Widget _buildCropDropdown() => Obx(
     () => InputCardStyle(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonFormField<ScheduleCrop>(
         initialValue: controller.selectedCrop.value,
         items: [

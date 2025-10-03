@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/attendence/model/attendencemodel.dart';
 import 'package:argiot/src/app/modules/attendence/view/widget/horizontal_calender_widget.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
+import 'package:argiot/src/app/service/utils/utils.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +22,7 @@ class Attendancelistscreen extends GetView<AttendenceController> {
             onDateSelected: controller.setSelectedDate,
           ),
         ),
-    
+
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: InputCardStyle(
@@ -63,122 +64,51 @@ class Attendancelistscreen extends GetView<AttendenceController> {
         ),
       ],
     ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Get.toNamed(Routes.addAttendence);
-      },
-      backgroundColor: Get.theme.colorScheme.primary,
-      child: const Icon(Icons.add),
-    ),
+    floatingActionButton: Obx(() {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final selected = DateTime(
+        controller.selectedDate.value.year,
+        controller.selectedDate.value.month,
+        controller.selectedDate.value.day,
+      );
+
+      return selected == today
+          ? FloatingActionButton(
+              onPressed: () {
+                Get.toNamed(Routes.addAttendence)?.then((result) {
+                  controller.loadEmployees(reset: true);
+                });
+              },
+              backgroundColor: Get.theme.colorScheme.primary,
+              child: const Icon(Icons.add),
+            )
+          : const SizedBox();
+    }),
   );
 }
 
-/*Widget employeeCard(EmployeeModel emp) => Card(
-  margin: const EdgeInsets.symmetric(vertical: 6),
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+Widget employeeCard(EmployeeModel emp) => Card(
+  elevation: 1,
+  // margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
   child: Padding(
-    padding: const EdgeInsets.all(12),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// Profile Image or First Letter
-        emp.image != null
-            ? CircleAvatar(
-                radius: 25,
-                backgroundImage: NetworkImage(emp.image!),
-              )
-            : CircleAvatar(
-                radius: 25,
-                child: Text(emp.name.isNotEmpty ? emp.name[0] : "?"),
-              ),
-        const SizedBox(width: 12),
-
-        /// Employee Details
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                emp.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              Text(emp.role, style: const TextStyle(color: Colors.grey)),
-
-              if (emp.workType != null)
-                Text(
-                  "Work Type: ${emp.workType}",
-                  style: const TextStyle(fontSize: 13, color: Colors.black87),
-                ),
-
-              Text(
-                emp.salaryType,
-                style: const TextStyle(color: Colors.blue, fontSize: 12),
-              ),
-
-              const SizedBox(height: 6),
-
-              /// Attendance Details
-              Text("Login: ${emp.loginTime ?? '-'}"),
-              Text("Logout: ${emp.logoutTime ?? '-'}"),
-              Text("Hours: ${emp.totalHour ?? '-'}"),
-
-              const SizedBox(height: 6),
-
-              /// Salary Info
-              Text("Salary: ${emp.salary?.toStringAsFixed(2) ?? '0'}"),
-
-              /// Paid/Unpaid
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  emp.salaryStatus == true ? "Paid" : "Unpaid",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: emp.salaryStatus == true ? Colors.green : Colors.red,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  ),
-);*/
-
-Widget employeeCard(EmployeeModel emp) => Container(
-    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.05),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
+    padding: const EdgeInsets.all(10),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// Profile Image
         emp.image != null
             ? CircleAvatar(
-                radius: 30,
+                radius: 25,
                 backgroundImage: NetworkImage(emp.image!),
               )
             : CircleAvatar(
-                radius: 30,
+                radius: 25,
                 backgroundColor: Get.theme.colorScheme.primary.withAlpha(80),
                 child: Text(
                   emp.name.isNotEmpty ? emp.name[0].toUpperCase() : "?",
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Get.theme.colorScheme.primary,
                   ),
@@ -193,79 +123,87 @@ Widget employeeCard(EmployeeModel emp) => Container(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               /// Name + Role
-              Text(
-                emp.name,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                emp.role,
-                style: const TextStyle(fontSize: 13, color: Colors.grey),
-              ),
-
-              if (emp.workType != null) ...[
+              Row(
+                children: [
+                  Text(
+                    capitalizeFirstLetter(emp.name),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ), const SizedBox(width: 5,) ,if (emp.workType != null) ...[
                 const SizedBox(height: 4),
                 Text(
-                  "Work: ${emp.workType!}",
+                  emp.workType!,
                   style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
                   ),
                 ),
               ],
+                ],
+              ),
+
+              // const SizedBox(height: 2),
+              // Text(
+              //   emp.role,
+              //   style: const TextStyle(fontSize: 13, color: Colors.grey),
+              // ),
+             
 
               const SizedBox(height: 6),
 
               /// Attendance Row
               Row(
                 children: [
-                  Icon(
-                    Icons.login,
-                    size: 23,
-                    color: Get.theme.colorScheme.primary,
-                  ),
+                  // Icon(
+                  //   Icons.login,
+                  //   size: 23,
+                  //   color: Get.theme.colorScheme.primary,
+                  // ),
                   const SizedBox(width: 4),
                   Text(
-                    "In: ${emp.loginTime ?? '-'}",
+                    "${emp.loginTime?.split(":")[0] ?? '-'}:${emp.loginTime?.split(":")[1] ?? '-'}",
                     style: const TextStyle(fontSize: 13),
                   ),
-                  const SizedBox(width: 12),
-                  Icon(
-                    Icons.logout,
-                    size: 23,
-                    color: Get.theme.colorScheme.primary,
-                  ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: 10),
+                  // Icon(
+                  //   Icons.logout,
+                  //   size: 23,
+                  //   color: Get.theme.colorScheme.primary,
+                  // ),
+                  const Text("to"),
+                  const SizedBox(width: 10),
                   Text(
-                    "Out: ${emp.logoutTime ?? '-'}",
+                    "${emp.logoutTime?.split(":")[0] ?? '-'}:${emp.logoutTime?.split(":")[1] ?? '-'}",
                     style: const TextStyle(fontSize: 13),
                   ),
+                  // Text(
+                  //   emp.logoutTime ?? '-',
+                  //   style: const TextStyle(fontSize: 13),
+                  // ),
                 ],
               ),
 
               const SizedBox(height: 4),
+              if (emp.totalHour != null)
+                Row(
+                  children: [
+                    // Icon(
+                    //   Icons.access_time,
+                    //   size: 23,
+                    //   color: Get.theme.colorScheme.primary,
+                    // ),
+                    const Text("Working Hours"),
+                    const SizedBox(width: 4),
+                    Text(
+                      emp.totalHour ?? '-',
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                  ],
+                ),
 
-              Row(
-                children: [
-                  Icon(
-                    Icons.access_time,
-                    size: 23,
-                    color: Get.theme.colorScheme.primary,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "Hours: ${emp.totalHour ?? '-'}",
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 8),
+              const SizedBox(height:4),
 
               /// Salary & Status
               Row(
@@ -273,14 +211,15 @@ Widget employeeCard(EmployeeModel emp) => Container(
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.currency_rupee,
-                        size: 23,
-                        color: Get.theme.colorScheme.primary,
-                      ),
+                      // Icon(
+                      //   Icons.currency_rupee,
+                      //   size: 23,
+                      //   color: Get.theme.colorScheme.primary,
+                      // ),
+                      const Text("Salary "),
                       const SizedBox(width: 4),
                       Text(
-                        emp.salary?.toStringAsFixed(2) ?? '0',
+                        emp.salary ?? '0',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
@@ -300,7 +239,7 @@ Widget employeeCard(EmployeeModel emp) => Container(
                           (emp.salaryStatus == true
                                   ? Get.theme.colorScheme.primary
                                   : Colors.red)
-                              .withOpacity(0.1),
+                              .withAlpha(100),
                     ),
                     child: Text(
                       emp.salaryStatus == true ? "Paid" : "Unpaid",
@@ -320,4 +259,5 @@ Widget employeeCard(EmployeeModel emp) => Container(
         ),
       ],
     ),
-  );
+  ),
+);

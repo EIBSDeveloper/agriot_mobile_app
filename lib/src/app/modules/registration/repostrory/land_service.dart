@@ -66,13 +66,13 @@ class LandService extends GetxService {
         .toList();
   }
 
-  Future<List<AppDropdownItem>> getAreaUnits() async {
-    final response = await _httpService.get('/area_units');
-    final jsonData = json.decode(response.body);
-    return (jsonData['data'] as List)
-        .map((item) => AppDropdownItem.fromJson(item))
-        .toList();
-  }
+  // Future<List<AppDropdownItem>> getAreaUnits() async {
+  //   final response = await _httpService.get('/area_units');
+  //   final jsonData = json.decode(response.body);
+  //   return (jsonData['data'] as List)
+  //       .map((item) => AppDropdownItem.fromJson(item))
+  //       .toList();
+  // }
 
   Future<List<AppDropdownItem>> getDocumentTypes(int docType) async {
     final response = await _httpService.get(

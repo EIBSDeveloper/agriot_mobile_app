@@ -1,9 +1,6 @@
-// lib/modules/expenses/models/expense_model.dart
-
 import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
-import 'package:argiot/src/app/modules/expense/model/expense_response.dart';
 import 'package:argiot/src/app/modules/expense/model/file_type.dart';
 import 'package:argiot/src/app/modules/expense/model/total_expense.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
@@ -11,12 +8,12 @@ import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
 import '../model/customer.dart';
-
+import '../model/expense.dart';
 
 class ExpenseRepository {
   final HttpService _httpService = Get.find<HttpService>();
-
   final AppDataController appDeta = Get.find();
+
   Future<TotalExpense> getTotalExpense(String timePeriod) async {
     final farmerId = appDeta.farmerId.value;
     try {
@@ -50,19 +47,51 @@ class ExpenseRepository {
     }
   }
 
-  Future<ExpenseResponse> getExpenses(String timePeriod) async {
+  // Updated method for all expenses and sales
+  Future<List<GroupedExpenseRecord>> getBothExpensesAndSales(String timePeriod) async {
     final farmerId = appDeta.farmerId.value;
     try {
-      final response = await _httpService.post(
-        '/both_farmer_expense_purchase_list/$farmerId/',
-        {'time_period': timePeriod},
+      final response = await _httpService.get(
+        '/both_expense_sales_list/$farmerId/$timePeriod',
+      
       );
-      return ExpenseResponse.fromJson(json.decode(response.body));
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((json) => GroupedExpenseRecord.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to load expenses and sales: $e');
+    }
+  }
+
+  // Method for expenses only
+  Future<List<GroupedExpenseRecord>> getExpensesOnly(String timePeriod) async {
+    final farmerId = appDeta.farmerId.value;
+    try {
+      final response = await _httpService.get(
+        '/myexpenses_list/$farmerId/$timePeriod',
+       
+      );
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((json) => GroupedExpenseRecord.fromJson(json)).toList();
     } catch (e) {
       throw Exception('Failed to load expenses: $e');
     }
   }
-    Future<List<Customer>> getVendorList() async {
+
+  // Method for sales only
+  Future<List<GroupedExpenseRecord>> getSalesOnly(String timePeriod) async {
+    final farmerId = appDeta.farmerId.value;
+    try {
+      final response = await _httpService.get(
+        '/mysales_list/$farmerId/$timePeriod',
+      );
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((json) => GroupedExpenseRecord.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to load sales: $e');
+    }
+  }
+
+  Future<List<Customer>> getVendorList() async {
     try {
       final farmerId = appDeta.farmerId;
       final response = await _httpService.get('/get_vendor/$farmerId');
@@ -75,7 +104,6 @@ class ExpenseRepository {
       rethrow;
     }
   }
-
 
   Future<List<Chart>> getExpenseSummary(String timePeriod) async {
     final farmerId = appDeta.farmerId.value;
@@ -92,16 +120,6 @@ class ExpenseRepository {
     }
   }
 
-  // Future<List<ExpenseType>> getExpenseTypes() async {
-  //   try {
-  //     final response = await _httpService.get('/expenses');
-  //     var decode = json.decode(response.body);
-  //     return List<ExpenseType>.from(decode.map((x) => ExpenseType.fromJson(x)));
-  //   } catch (e) {
-  //     throw Exception('Failed to load expense types: $e');
-  //   }
-  // }
-
   Future<List<FileType>> getFileTypes() async {
     try {
       final response = await _httpService.get('/document_categories');
@@ -113,10 +131,10 @@ class ExpenseRepository {
     }
   }
 
-  Future addExpense(
-  {  int?  myCrop,
-  required  int amount,
- required   String createdDay,
+  Future addExpense({
+    int? myCrop,
+    required int amount,
+    required String createdDay,
     int? vendor,
     int? paidamonut,
     String? description, 
@@ -128,8 +146,8 @@ class ExpenseRepository {
         'my_crop': myCrop,
         'amount': amount,
         'created_day': createdDay,
-        'vendor':vendor,
-        'paid_amount':paidamonut,
+        'vendor': vendor,
+        'paid_amount': paidamonut,
         'description': description,
         if (documents != null) 'document': documents,
       });

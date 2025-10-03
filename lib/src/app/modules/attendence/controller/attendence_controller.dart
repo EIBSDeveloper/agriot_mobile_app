@@ -135,7 +135,7 @@ class AttendenceController extends GetxController {
     isLoading.value = true;
     try {
       final fetched = await repository.fetchEmployees(
-        date: dateController.text,
+        date: DateFormat('yyyy-MM-dd').format( selectedDate.value ),
         page: page.value,
         search: searchQuery.value,
       );
@@ -178,7 +178,7 @@ class AttendenceController extends GetxController {
 
   void setSelectedDate(DateTime date) {
     selectedDate.value = date; // update observable
-    dateController.text = DateFormat('dd/MM/yyyy').format(date);
+    dateController.text = DateFormat('dd-MM-yyyy').format(date);
     loadEmployees(reset: true);
   }
 

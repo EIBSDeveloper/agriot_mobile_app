@@ -31,8 +31,8 @@ class FuelEntryView extends GetView<PurchasesAddController> {
             const SizedBox(height: 16),
             // Purchase Amount Field
             controller.buildPurchaseAmountField(),
-            const SizedBox(height: 16),
-            controller.buildPaidAmountField(),
+            // const SizedBox(height: 16),
+            // controller.buildPaidAmountField(),
             const SizedBox(height: 8), const Divider(),
             const SizedBox(height: 8),
 

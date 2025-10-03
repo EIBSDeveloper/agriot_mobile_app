@@ -103,7 +103,13 @@ class AuthController extends GetxController {
           appData.loginState.value = response;
           appData.emailId.value = user.email ?? '';
           appData.username.value = user.displayName ?? '';
-          await authWrapper(response.userId);
+          await authWrapper(
+            VerifyOtp(
+              farmerID: response.userId,
+              isManager: response.isManager,
+              managerID: response.managerID,
+            ),
+          );
         } else {
           throw Exception(response.message ?? 'Invalid OTP');
         }
@@ -142,7 +148,7 @@ class AuthController extends GetxController {
         isEmail.value!,
       );
       if (response.status != null && response.farmerID != null) {
-        await authWrapper(response.farmerID);
+        await authWrapper(response);
       } else {
         throw Exception(response.message ?? 'Invalid OTP');
       }
@@ -153,12 +159,13 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> authWrapper(farmerID) async {
+  Future<void> authWrapper(VerifyOtp data) async {
     AppDataController appData = Get.put(AppDataController());
 
-    appData.farmerId.value = (farmerID ?? "").toString();
-
-    await _storageService.saveUserData(farmerID!.toString());
+    appData.farmerId.value = (data.farmerID ?? "").toString();
+    appData.isManager.value = data.isManager;
+    appData.managerID.value = (data.managerID ?? '').toString();
+    await _storageService.saveUserData(data);
     Future.delayed(const Duration(milliseconds: 500), () async {
       await _storageService.updateUser();
       GetOtp? loginState = appData.loginState.value;

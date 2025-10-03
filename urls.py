@@ -106,6 +106,7 @@ urlpatterns = [
     path('get_purchase_expense/<int:farmer_id>', get_purchase_expense, name="get_purchase_expense"),
     path('both_customers_and_vendors/<int:id>',  both_customers_and_vendors, name='both_customers_and_vendors'),
     path('edit_task/<int:id>', update_my_schedule, name='add_task'), 
+    path("update_schedule_status/<int:schedule_id>/", update_schedule_status, name="update_schedule_status"),
     path('task_year_list/<int:id>', get_task_list_for_month, name='get_task_list_for_year'),  
     # path('task_year_lists/<int:id>', get_task_list_for_months, name='get_task_list_for_years'),    
     path('get_task_list/<int:id>', get_task_list, name='get_task_list'),
@@ -419,11 +420,17 @@ name='get_inventory_items_by_category'),
     # Attendance Management URLs
     path('attendance',add_attendance, name='update_attendance'),
     path("employee-manager/", create_or_update_employee_or_manager, name="employee_or_manager"),
-    path("employee/grouped/", get_employee_list_grouped_by_manager, name="employee-list-grouped"),
-    path("employee/<int:employee_id>/", get_employee_detail, name="employee-detail"),
-    path("manager/<int:manager_id>/", get_manager_detail, name="manager-detail"),
+    path("employee_grouped/<int:farmer_id>", get_employee_list_grouped_by_manager, name="employee-list-grouped"),
+    path("employee/<int:employee_id>", get_employee_detail, name="employee-detail"),
+    path("manager/<int:manager_id>", get_manager_detail, name="manager-detail"),
     path("employee_advance", add_edit_employee_advance, name="employee_advance"),
     path("employee_payout", add_edit_employee_payout, name="employee_payout"),
+    path("farmer/<int:farmer_id>/payouts/", get_employee_payouts_by_farmer, name="employee-payouts-by-farmer"),
+    path("farmer/<int:farmer_id>/employee/<int:employee_id>/payouts/", get_employee_payouts_by_farmer, name="employee-payouts-by-farmer-employee"),
+
+    # Advances
+    path("farmer/<int:farmer_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer"),
+    path("farmer/<int:farmer_id>/employee/<int:employee_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer-employee"),
 
 
 ]

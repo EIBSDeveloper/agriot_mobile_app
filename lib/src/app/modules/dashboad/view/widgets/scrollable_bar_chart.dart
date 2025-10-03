@@ -1,9 +1,7 @@
 import 'package:argiot/src/app/modules/dashboad/model/land_v_s_crop_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-class ScrollableBarChart extends StatelessWidget {
+import 'package:get/get.dart';class ScrollableBarChart extends StatelessWidget {
   final LandVSCropModel data;
 
   const ScrollableBarChart({super.key, required this.data});
@@ -14,7 +12,7 @@ class ScrollableBarChart extends StatelessWidget {
     final values = data.data;
 
     return Container(
-      height: 200,
+      height: 250, // increased for labels
       width: double.infinity,
       padding: const EdgeInsets.all(10.0),
       child: BarChart(
@@ -41,7 +39,6 @@ class ScrollableBarChart extends StatelessWidget {
               },
             ),
           ),
-
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
@@ -55,8 +52,12 @@ class ScrollableBarChart extends StatelessWidget {
                 },
                 interval: 1,
               ),
+              axisNameWidget: const Text(
+                'Crops', // Y-axis label
+                // style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              axisNameSize: 20,
             ),
-
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
@@ -69,6 +70,11 @@ class ScrollableBarChart extends StatelessWidget {
                   );
                 },
               ),
+              axisNameWidget: const Text(
+                'Land', // X-axis label
+                // style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              axisNameSize: 20,
             ),
             topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),

@@ -1,6 +1,5 @@
 import 'package:argiot/src/app/modules/expense/controller/expense_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/expense.dart';
-import 'package:argiot/src/app/modules/expense/model/purchase.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,15 +8,12 @@ import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../../widgets/toggle_bar.dart';
-import '../widgets/month_day_format.dart';
-
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) => RefreshIndicator(
     onRefresh: () => controller.loadExpenseData(),
-
     child: Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -29,17 +25,14 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleText("expenses".tr),
+              TitleText("Expenses and sales".tr),
               const SizedBox(height: 10),
               _buildSummarySection(),
               const SizedBox(height: 10),
-
-              // _buildPieChart(),
-              // const SizedBox(height: 10),
               ToggleBar(
                 onTap: (index) => controller.changeTab(index),
                 activePageIndex: controller.selectedTab.value,
-                buttonsList: ["all".tr, "expenses".tr,  "sales".tr],
+                buttonsList: ["all".tr, "expenses".tr, "sales".tr],
               ),
               const SizedBox(height: 10),
               _buildTransactionList(),
@@ -78,7 +71,6 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       const SizedBox(width: 10),
       Expanded(
         child: InputCardStyle(
-          // padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: controller.selectedPeriod.value,
@@ -86,7 +78,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
               alignment: AlignmentDirectional.center,
               icon: const Icon(Icons.keyboard_arrow_down),
               isExpanded: true,
-              items: ['week', '30days', 'year']
+              items: ['week', 'month', 'year']
                   .map(
                     (period) =>
                         DropdownMenuItem(value: period, child: Text(period.tr)),
@@ -101,13 +93,13 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
   );
 
   Widget _buildTransactionList() {
-    final items = controller.selectedTab.value == 0
-        ? [...controller.expenses, ...controller.purchases]
+    final groupedItems = controller.selectedTab.value == 0
+        ? controller.allGroupedRecords
         : controller.selectedTab.value == 1
-        ? controller.expenses
-        : controller.purchases;
+        ? controller.expenseGroupedRecords
+        : controller.salesGroupedRecords;
 
-    if (items.isEmpty) {
+    if (groupedItems.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 200),
@@ -119,110 +111,89 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
+      itemCount: groupedItems.length,
       itemBuilder: (context, index) {
-        final item = items[index];
-
-        if (item is Expense) {
-          return Card(
-            elevation: 1,
-            margin: const EdgeInsets.symmetric(vertical: 4),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  MonthDayFormat(
-                    date: DateFormat("dd/MM/yyyy").parse(item.createdDay),
-                  ),
-                  const SizedBox(width: 8),
-
-                  /// Left section (title + subtitle)
-                  // Expanded(
-                  //   child: Column(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Text(
-                  //         item.typeExpenses.name,
-                  //         style: Get.textTheme.bodyLarge,
-                  //       ),
-                  //       const SizedBox(height: 4),
-                  //       Text(
-                  //         item.myCrop.name,
-                  //         style: Get.textTheme.bodyMedium?.copyWith(
-                  //           color: Colors.grey[600],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  Text(
-                    '₹${item.amount.toStringAsFixed(2)}',
-                    style: Get.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+        final groupedRecord = groupedItems[index];
+        
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Date header
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+              child: Text(
+                _formatDisplayDate(groupedRecord.date),
+                style: Get.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Get.theme.primaryColor,
+                ),
               ),
             ),
-          );
-        } else if (item is Purchase) {
-          return Card(
-            elevation: 1,
-            margin: const EdgeInsets.symmetric(vertical: 4),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  MonthDayFormat(
-                    date: DateFormat(
-                      "dd/MM/yyyy",
-                    ).parse(item.dateOfConsumption),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          item.inventoryItems.name,
-                          style: Get.textTheme.bodyLarge,
-                        ),
-                        if (
-                            item.inventorytype.id != 1 &&
-                            item.inventorytype.id != 2) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            "${'quantity'.tr} ${item.quantity}",
-                            style: Get.textTheme.bodyMedium?.copyWith(
-                             
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-
-                  /// Right section (trailing price)
-                  Text(
-                    '₹${item.purchaseAmount}',
-                    style: Get.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return const SizedBox();
-        }
+            // Records for this date
+            ...groupedRecord.records.map((record) => _buildTransactionItem(record)),
+          ],
+        );
       },
     );
+  }
+
+  Widget _buildTransactionItem(ExpenseRecord record) => Card(
+      elevation: 1,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  record.item.name,
+                  style: Get.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '₹${record.amount.toStringAsFixed(2)}',
+                  style: Get.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Get.theme.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            if (record.vendor?.name !=null)
+              Text(
+                '${record.vendor!.name}',
+                style: Get.textTheme.bodySmall,
+              ),
+            if (record.quantity != null && record.quantity!.isNotEmpty)
+              Text(
+                'Quantity: ${record.quantity}',
+                style: Get.textTheme.bodySmall,
+              ),
+            if (record.description.isNotEmpty)
+              Text(
+                record.description,
+                style: Get.textTheme.bodySmall,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+          ],
+        ),
+      ),
+    );
+
+  String _formatDisplayDate(String dateString) {
+    try {
+      final inputFormat = DateFormat("dd-MM-yyyy");
+      final outputFormat = DateFormat("MMM dd, yyyy");
+      final date = inputFormat.parse(dateString);
+      return outputFormat.format(date);
+    } catch (e) {
+      return dateString; // Return original if parsing fails
+    }
   }
 }

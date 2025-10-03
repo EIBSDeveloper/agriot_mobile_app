@@ -51,24 +51,7 @@ class PayablesList extends StatelessWidget {
           }
 
           final item = displayedItems[index];
-          /* return InkWell(
-            onTap: () {
-              Get.to(
-                () => CustomerSalesPage(
-                  customerId: item.id,
-                  customerName: item.name,
-                  amount: item.balance,
-                  isPayable: true,
-                ),
-              );
-            },
-            child: _tile(
-              item.name,
-              '${selectedTopToggle == 0 ? 'shop'.tr : 'business'.tr}: ${item.businessName}',
-              item.balance,
-              item.isCredit,
-            ),
-          );*/
+        
           return InkWell(
             onTap: () {
               if (selectedTopToggle == 0) {
@@ -101,31 +84,22 @@ class PayablesList extends StatelessWidget {
   }
 
   Widget _tile(String title, String subtitle, double amount, bool isCredit) =>
-      Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withAlpha(150),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(title),
-          subtitle: Text(subtitle),
-          trailing: Text(
-            '- ₹${amount.toStringAsFixed(2)}',
-            style: const TextStyle(
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
+      Card(
+       margin: EdgeInsets.zero,
+       
+        child: Padding(
+          padding:   const EdgeInsets.symmetric(horizontal: 10),
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(title),
+            subtitle: Text(subtitle),
+            trailing: Text(
+              '- ₹${amount.toStringAsFixed(2)}',
+              style: const TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ),

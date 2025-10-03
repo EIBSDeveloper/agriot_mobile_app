@@ -11,7 +11,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'add_purchase'.tr),
+    appBar: CustomAppBar(title: 'Add Expenses And Sales'.tr),
     body: RefreshIndicator(
       onRefresh: () async {
         controller.loadInventory();
@@ -32,6 +32,29 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
 
         return ListView(
           children: [
+            _buildInventoryItem(
+              "sales".tr,
+              '',
+              open: () {},
+              onTap: () {
+                Get.toNamed(Routes.newSales, arguments: {"new": true})?.then((
+                  result,
+                ) {
+                  if (result ?? false) {
+                    // controller.fetchSalesList();
+                  }
+                });
+              },
+            ),
+            _buildInventoryItem(
+              "general_expense".tr,
+              '',
+              open: () {},
+              onTap: () {
+                Get.toNamed(Routes.addExpense)?.then((res) {});
+              },
+            ),
+
             ...inventory.map(
               (item) => _buildInventoryItem(
                 item.name,
@@ -58,14 +81,14 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     });
                   } else if (item.id == 2) {
                     Get.toNamed(
-                    Routes.addMachinery,
+                      Routes.addMachinery,
                       arguments: {"id": item.id},
                     )?.then((res) {
                       if (res ?? false) {
                         controller.loadInventory();
                       }
                     });
-                  } else  {
+                  } else {
                     Get.toNamed(
                       Routes.addInventoryItem,
                       arguments: {"id": item.id},
@@ -74,17 +97,9 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                         controller.loadInventory();
                       }
                     });
-                  } 
+                  }
                 },
               ),
-            ),
-           _buildInventoryItem(
-              "general_expense".tr,
-              '',
-              open: () {},
-              onTap: () {
-                Get.toNamed(Routes.addExpense)?.then((res) {});
-              },
             ),
           ],
         );

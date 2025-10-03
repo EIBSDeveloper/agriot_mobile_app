@@ -98,6 +98,8 @@ from drf_spectacular.utils import OpenApiParameter
 from django.core.paginator import Paginator 
 from django.db.models import Prefetch
 
+from collections import OrderedDict
+
 logger = logging.getLogger('api')
 
 
@@ -12251,6 +12253,8 @@ def get_otp(request):
                 "user": False,
                 "details": has_details,
                 "land": has_my_land,
+                "is_manager": manager!= None,
+                "manager_id": manager.id if manager else None,
                 "land_details": land_details,
                 "crop": has_my_crop,
                 "farmer": {
@@ -12287,6 +12291,8 @@ def get_otp(request):
             "user": True,
             "details": False,
             "has_my_land": False,
+            "is_manager": manager!= None,
+            "manager_id": manager.id if manager else None,
             "has_my_crop": False,
             "farmer": {
                 "id": farmer.id,
@@ -12345,6 +12351,8 @@ def get_otp(request):
             "is_manager": manager!= None,
             "manager_id": manager.id if manager else None,
             "details": has_details,
+            "is_manager": manager!= None,
+            "manager_id": manager.id if manager else None,
             "land": has_my_land,
             "land_details": land_details,
             "crop": has_my_crop,
@@ -12396,6 +12404,8 @@ def get_otp(request):
         "message": "New Farmer",
         "user": True,
         "details": False,
+        "is_manager": manager!= None,
+        "manager_id": manager.id if manager else None,
         "has_my_land": False,
         "has_my_crop": False,
         "farmer": {
@@ -13334,89 +13344,78 @@ def convert_to_strftime_format(format_str):
     return format_str
  
  
-
 @api_view(['GET'])
 def get_task_list(request, id):
-
+    # ✅ Language preference
     try:
         user_language_pref = UserLanguagePreference.objects.get(user=id)
-        language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'  # Fallback to 'en' if no language code
+        language_code = user_language_pref.language_code or 'en'
     except UserLanguagePreference.DoesNotExist:
-        language_code = 'en'  # Fallback to 'en' if no preference is found
+        language_code = 'en'
 
-    user_id = id
-    land_id = request.query_params.get('land_id')   
-    month = request.query_params.get('month')  
+    # ✅ Farmer validation
+    farmer_instance = get_object_or_404(Farmer, id=id, status=0)
 
-    try:
-        farmer_instance = Farmer.objects.get(id=user_id, status=0)
-    except Farmer.DoesNotExist:
-        return Response({"error": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
-
+    # ✅ Settings for date format
     try:
         settings = GeneralSetting.objects.first()
         date_format = convert_to_strftime_format(settings.date_format)
-    except Exception as e:
-        # In case of error (e.g., no GeneralSetting found or invalid format), fallback to a default
-        date_format = '%d-%m-%Y'  # You can choose any fallback format you prefer
+    except Exception:
+        date_format = '%d-%m-%Y'  # fallback
 
-    # Filter tasks by farmer and status, only if a land_id is provided filter by that as well
-    tasks = MySchedule.objects.filter(farmer=farmer_instance, status=0)
+    # ✅ Query filters
+    land_id = request.query_params.get('land_id')
+    month = request.query_params.get('month')
+
+    tasks = MySchedule.objects.filter(farmer=farmer_instance, status=0).order_by("start_date")
 
     if land_id:
-        tasks = tasks.filter(my_land__id=land_id)  # Filter by land_id
+        tasks = tasks.filter(my_land__id=land_id)
 
     if month:
         try:
-            month_int = datetime.strptime(month, "%b").month  # Convert month (e.g., 'Jan') to integer
-            tasks = tasks.filter(start_date__month=month_int)  # Filter by the provided month
+            month_int = datetime.strptime(month, "%b").month  # 'Jan' → 1
+            tasks = tasks.filter(start_date__month=month_int)
         except ValueError:
-            return Response({"error": "Invalid month format. Use the 3-letter month abbreviation (e.g., 'Jan')."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid month format. Use 3-letter abbreviation (e.g., 'Jan')."}, status=status.HTTP_400_BAD_REQUEST)
 
-    if not tasks:
+    if not tasks.exists():
         return Response({"error": "No tasks found for this farmer."}, status=status.HTTP_404_NOT_FOUND)
 
-    grouped_tasks = defaultdict(list)
+    # ✅ Group by formatted date
+    grouped_tasks = OrderedDict()
     for task in tasks:
-        try:
-            # Format the actual date using the date_format
-            date_str = task.start_date.strftime(date_format)  # Apply the custom format
-        except ValueError:
-            return Response({"error": "Invalid date format in General Settings."}, status=status.HTTP_400_BAD_REQUEST)
-
-        day_name = task.start_date.strftime('%a')  # Get day name (e.g., 'Mon', 'Tue', etc.)
-
-        schedule_activity_type = task.schedule_activity_type
-        schedule_status = task.schedule_status
-        schedule_activity_type_name = schedule_activity_type.name if schedule_activity_type else None
-        schedule_status_id = schedule_status.id if schedule_status else None
+        date_str = task.start_date.strftime(date_format)
+        day_name = task.start_date.strftime('%a')
 
         crop_info = {
-            "id": task.id if task.id else None,
+            "id": task.id,
             "crop_name": (
                 task.my_crop.crop.get_translated_value('name', language_code)
-                if task.my_crop and task.my_crop.crop and task.my_crop.land
-                else "No Crop Available"
+                if task.my_crop and task.my_crop.crop else "No Crop Available"
             ),
-            "activity_type":schedule_activity_type_name,
-            "schedule_status":schedule_status_id,
-            "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}') if task.my_crop.crop.img else "",
+            "activity_type": task.schedule_activity_type.name if task.schedule_activity_type else None,
+            "schedule_status": task.schedule_status.id if task.schedule_status else None,
+            "crop_image": (
+                request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}')
+                if task.my_crop and task.my_crop.crop and task.my_crop.crop.img else ""
+            ),
         }
 
+        if date_str not in grouped_tasks:
+            grouped_tasks[date_str] = {"Day": day_name, "crops": []}
 
-        grouped_tasks[date_str].append({"Day": day_name, "crop": [crop_info]})
+        grouped_tasks[date_str]["crops"].append(crop_info)
 
-    # Prepare response data
+    # ✅ Prepare final response
     response_data = [
         {
-            "Date": date,  # This will now be formatted properly using date_format
-            "Day": day_info[0]['Day'],
-            "crop": [item['crop'][0] for item in day_info],  # Extracting the first crop info for each day
-            "language": {
-                "default": "en"
-            }
+            "Date": date,
+            "Day": data["Day"],
+            "crops": data["crops"],
+            "language": {"default": "en"}
         }
-        for date, day_info in grouped_tasks.items()
+        for date, data in grouped_tasks.items()
     ]
 
     return Response(response_data, status=status.HTTP_200_OK)
@@ -16765,6 +16764,31 @@ def update_my_schedule(request, id):
         "updated_schedule": serializer.data
     }, status=status.HTTP_200_OK)
 
+@api_view(["POST"])
+def update_schedule_status(request, schedule_id):
+    """
+    Request Body: { "schedule_status": 1 }
+    """
+    schedule = get_object_or_404(MySchedule, id=schedule_id)
+
+    schedule_status_id = request.data.get("schedule_status")
+ 
+    if schedule_status_id:
+        try:
+            schedule_status = get_object_or_404(ScheduleStatus, id=schedule_status_id)
+            schedule.schedule_status = schedule_status
+        except Exception as e:
+            return Response({"detail": f"Invalid schedule_status_id: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+    schedule.save()
+
+    return Response({
+        "id": schedule.id,
+        "schedule_status": schedule.schedule_status.id if schedule.schedule_status else None,
+        "status": schedule.status,
+        "message": "Schedule status updated successfully"
+    }, status=status.HTTP_200_OK)
+
  
 @api_view(['GET'])
 def get_near_by_markets(request, id, farmer_id):
@@ -19345,14 +19369,14 @@ def add_vehicle(request, farmer_id):
         FarmerNotification.objects.create(
             farmer=farmer,
             name='Vehicle Updated',
-            message=f'Vehicle {vehicle.registration_number} reset and updated.',
+            message=f'Vehicle {vehicle.register_number} reset and updated.',
             type='Vehicle'
         )
 
     # --- Validate required fields ---
     required_fields = [
-      'vehicle_name', 'vendor', 'purchase_amount', 'paid_amount',
-        'purchase_date', 'registration_number'
+      'vehicle_name',  'purchase_amount', 'paid_amount',
+        'purchase_date', 'register_number'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
@@ -19363,7 +19387,11 @@ def add_vehicle(request, farmer_id):
 
     # --- Validate vendor exists ---
     vendor_id = data.get('vendor')
-    vendor = get_object_or_404(MyVendor, id=vendor_id)
+
+    vendor = None
+    if vendor_id:
+        vendor = get_object_or_404(MyVendor, id=vendor_id)
+
 
     # --- Prepare data for serializer ---
     data['farmer'] = farmer.id
@@ -19456,7 +19484,7 @@ def add_vehicle(request, farmer_id):
         FarmerNotification.objects.create(
             farmer=farmer,
             name='New Vehicle Added',
-            message=f'Vehicle {vehicle_instance.registration_number} added successfully.',
+            message=f'Vehicle {vehicle_instance.register_number} added successfully.',
             type='Vehicle'
         )
 
@@ -26717,8 +26745,8 @@ def total_expense_and_purchase_amount(request, farmer_id):
     if not time_period:
         return Response({"detail": "Time period is required."}, status=400)
 
-    if time_period not in ['week', '30days', 'year']:
-        return Response({"detail": "Invalid time period. Use 'week', '30days', or 'year'."}, status=400)
+    if time_period not in ['week', 'month', 'year']:
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=400)
 
     # Get the farmer object
     farmer = get_object_or_404(Farmer, id=farmer_id)
@@ -26726,7 +26754,7 @@ def total_expense_and_purchase_amount(request, farmer_id):
  
     if time_period == 'week':
         date_from = current_date - timedelta(weeks=1)
-    elif time_period == '30days':
+    elif time_period == 'month':
         date_from = current_date - timedelta(days=30)
     elif time_period == 'year':
         date_from = current_date - timedelta(days=365)
@@ -27543,8 +27571,8 @@ def add_fuel(request, farmer_id):
 
     # --- Validate required fields ---
     required_fields = [
-        'date_of_consumption', 'inventory_type', 'inventory_category',
-        'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+        'date_of_consumption', 'inventory_type', 
+        'inventory_items', 'quantity', 'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
@@ -27556,13 +27584,13 @@ def add_fuel(request, farmer_id):
     # --- Validate vendor and inventory_type relationship ---
     vendor_id = data.get('vendor')
     inventory_type_id = data.get('inventory_type')
-    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
-        return Response({
-            "success": False,
-            "message": "This vendor is not associated with the selected inventory type."
-        }, status=status.HTTP_400_BAD_REQUEST)
+
+    # if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+    #     return Response({
+    #         "success": False,
+    #         "message": "This vendor is not associated with the selected inventory type."
+    #     }, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Prepare metadata for serializer ---
     data['farmer'] = farmer.id
@@ -27672,106 +27700,10 @@ def add_fuel(request, farmer_id):
             fuel_instance.available_quans = total_quantity
             fuel_instance.save()
 
-        # --- Vendor Outstanding & Balance Update Logic ---
-        purchase_amount = float(data.get('purchase_amount', 0))
-        paid_amount = float(data.get('paid_amount', 0))
 
-        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
-        current_balance = vendor.opening_balance or 0
-        updated_balance = current_balance + net_change
 
-        # Set credit/debit flags and opening_balance accordingly
-        if updated_balance > 0:
-            # Vendor owes you money (receivables)
-            vendor.credit = True
-            vendor.debit = False
-            vendor.opening_balance = updated_balance
-        elif updated_balance < 0:
-            # You owe vendor money (payables)
-            vendor.credit = False
-            vendor.debit = True
-            vendor.opening_balance = abs(updated_balance)
-        else:
-            # No outstanding balance
-            vendor.credit = False
-            vendor.debit = False
-            vendor.opening_balance = 0
 
-        # Update payables or receivables amounts on vendor accordingly
-        if net_change < 0:
-            # You owe vendor money → payables increase
-            vendor.payables = (vendor.payables or 0) + abs(net_change)
-        elif net_change > 0:
-            # Vendor owes you money → receivables increase
-            vendor.receivables = (vendor.receivables or 0) + net_change
 
-        vendor.save()
-
-        # Sync balances to customer if vendor is also a customer
-        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
-            customer = vendor.customer
-            customer.opening_balance = vendor.opening_balance
-            customer.payables = vendor.payables
-            customer.receivables = vendor.receivables
-            customer.is_credit = vendor.credit
-            customer.save()
-
-        # Prepare Outstanding record fields
-        balance = abs(net_change)
-        now = timezone.now()
-
-        # Depending on net_change, set appropriate Outstanding fields
-        if net_change < 0:
-            # Payables case (you owe vendor)
-            to_pay = abs(net_change)
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                fuel_purchase=fuel_instance,
-                balance=purchase_amount,
-                paid=paid_amount,
-                to_pay=to_pay,
-                paid_date=now,
-                total_paid=paid_amount,
-                identify=1,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        elif net_change > 0:
-            # Receivables case (vendor owes you)
-            to_receive = net_change
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                fuel_purchase=fuel_instance,
-                balance=balance,
-                paid=paid_amount,
-                to_receive=to_receive,
-                received_date=now,
-                total_received=paid_amount,
-                identify=1,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        else:
-            # Exact payment, no outstanding balance
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                fuel_purchase=fuel_instance,
-                balance=0,
-                paid=paid_amount,
-                to_pay=0,
-                paid_date=now,
-                total_paid=paid_amount,
-                received=paid_amount,
-                to_receive=0,
-                received_date=now,
-                total_received=paid_amount,
-                identify=1,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
 
         # Optional: Create Farmer Notification
         FarmerNotification.objects.create(
@@ -28455,7 +28387,7 @@ def add_fuel(request, farmer_id):
 def add_seeds(request, farmer_id):
     farmer = get_object_or_404(Farmer, id=farmer_id, status=0)
     data = request.data.copy()
-    user = request.user
+    
 
     # Required fields validation
     required_fields = [
@@ -31879,6 +31811,7 @@ def dashboard_task_list(request, farmer_id):
 
         for schedule in schedules:
             # Prepare the schedule info
+            schedule_activity_type = schedule.schedule_activity_type
             schedule_info = {
                 'id': schedule.id,
                 'schedule': schedule.get_translated_value("schedule", language_code) if schedule else "",
@@ -31890,6 +31823,7 @@ def dashboard_task_list(request, farmer_id):
                 'schedule_choice': schedule.schedule_choice,
                 'created_at': schedule.created_at,
                 'updated_at': schedule.updated_at,
+                "activity_type": schedule_activity_type.name if schedule_activity_type else None,
                 'my_land_id': schedule.my_land.id if schedule.my_land else "",
                 'land_name': schedule.my_land.get_translated_value("name", language_code) if schedule.my_land else "",  # Land name added
                 'farmer_id': schedule.farmer.id,
@@ -31912,6 +31846,7 @@ def dashboard_task_list(request, farmer_id):
     
     except MySchedule.DoesNotExist:
         return Response({'error': 'No schedules found for the given farmer_id'}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 
@@ -40123,37 +40058,34 @@ def get_task_calender_list_for_month_and_crop(request, farmer_id):
     }, status=status.HTTP_200_OK)
 
 
-# Schedule List for Crop 
- 
+# Schedule List for Crop
 @api_view(['GET'])
 def get_task_list_for_month_and_crop(request, id):
-    try:
-        user_language_pref = UserLanguagePreference.objects.get(user=id)
-        language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'
-    except UserLanguagePreference.DoesNotExist:
-        language_code = 'en'
+    # Get language preference
+    user_language_pref = UserLanguagePreference.objects.filter(user=id).first()
+    language_code = user_language_pref.language_code if user_language_pref and user_language_pref.language_code else 'en'
 
-    user_id = id
+    # Params
     land_id = request.query_params.get('land_id')
     crop_id = request.query_params.get('crop_id')
     month = request.query_params.get('month')
     year = request.query_params.get('year')
 
-    # Get farmer instance or return 404
+    # Farmer check
     try:
-        farmer_instance = Farmer.objects.get(id=user_id, status=0)
+        farmer_instance = Farmer.objects.get(id=id, status=0)
     except Farmer.DoesNotExist:
         return Response({"error": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Get date format from settings or fallback
+    # Date format from settings
     try:
         settings = GeneralSetting.objects.first()
         date_format = convert_to_strftime_format(settings.date_format)
     except Exception:
-        date_format = '%d-%m-%Y'  # fallback format
+        date_format = '%d-%m-%Y'  # fallback
 
-    # Start filtering tasks
-    tasks = MySchedule.objects.filter(farmer=farmer_instance, status=0)
+    # Base Query
+    tasks = MySchedule.objects.filter(farmer=farmer_instance, status=0).order_by("start_date")
 
     if land_id:
         tasks = tasks.filter(my_land__id=land_id)
@@ -40161,6 +40093,7 @@ def get_task_list_for_month_and_crop(request, id):
     if crop_id:
         tasks = tasks.filter(my_crop__id=crop_id)
 
+    # Month filter
     if month:
         try:
             month_int = int(month)
@@ -40170,6 +40103,7 @@ def get_task_list_for_month_and_crop(request, id):
         except ValueError:
             return Response({"error": "'month' parameter should be an integer between 1 and 12."}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Year filter
     if year:
         try:
             year_int = int(year)
@@ -40180,46 +40114,43 @@ def get_task_list_for_month_and_crop(request, id):
     if not tasks.exists():
         return Response({"error": "No tasks found for this farmer."}, status=status.HTTP_404_NOT_FOUND)
 
+    # Group tasks by date
     grouped_tasks = defaultdict(list)
     for task in tasks:
         try:
             date_str = task.start_date.strftime(date_format)
-        except ValueError:
+        except Exception:
             return Response({"error": "Invalid date format in General Settings."}, status=status.HTTP_400_BAD_REQUEST)
 
         day_name = task.start_date.strftime('%a')
 
         crop_info = {
-            "id": task.id if task.id else None,
+            "id": task.id,
             "crop_type": (
                 f"{task.my_crop.land.get_translated_value('name', language_code)} - {task.my_crop.crop.get_translated_value('name', language_code)}"
                 if task.my_crop and task.my_crop.crop and task.my_crop.land
                 else "No Crop Available"
             ),
-            "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}') if task.my_crop and task.my_crop.crop and task.my_crop.crop.img else "",
-            "description": (
-                task.get_translated_value('schedule', language_code)
-                if hasattr(task, 'get_translated_value') else (task.schedule or "No Description Available")
-            ),
+            "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}')
+            if task.my_crop and task.my_crop.crop and task.my_crop.crop.img else "",
+            "activity_type": task.schedule_activity_type.name if task.schedule_activity_type else None,
+            "schedule_status": task.schedule_status.id if task.schedule_status else None,
         }
 
         grouped_tasks[date_str].append({"Day": day_name, "crop": [crop_info]})
 
+    # Final Response
     response_data = [
         {
             "Date": date,
             "Day": day_info[0]['Day'],
-            "crop": [item['crop'][0] for item in day_info],
-            "language": {
-                "default": language_code
-            }
+            "crops": [item['crop'][0] for item in day_info],
+            "language": {"default": language_code}
         }
         for date, day_info in grouped_tasks.items()
     ]
 
     return Response(response_data, status=status.HTTP_200_OK)
-
-
 
 @api_view(['GET'])
 def land_vs_crop_chart(request, farmer_id): 
@@ -41303,10 +41234,7 @@ def update_employee_status(request, employee_id):
 )
 @api_view(['GET'])
 def get_employee_details(request, employee_id):
-    employee = get_object_or_404(Employee.objects.select_related(
-        "farmer", "manager", "employee_type", "work_type", "country", 
-        "state", "city", "taluk", "village", "employee_user"
-    ), id=employee_id)
+    employee = get_object_or_404(Employee, id=employee_id)
     
     # Get employee documents
     documents = EmployeeDocument.objects.filter(employee=employee).values(
@@ -41357,8 +41285,6 @@ def get_employee_details(request, employee_id):
         "employee_user": employee.employee_user.username if employee.employee_user else None,
         "translate_json": employee.translate_json,
         "documents": list(documents),
-        "created_at": employee.created_at,
-        "updated_at": employee.updated_at
     }
 
     return Response({"employee": data}, status=status.HTTP_200_OK)
@@ -41466,11 +41392,10 @@ def get_employees_attendance_list(request,):
         for emp in page_obj:
             attendance = None
             try:
-                attendance = AttendanceReport.objects.filter(employee=emp, created_at__date=date).first()
+                attendance = AttendanceReport.objects.filter(employee=emp.id, created_day=date).first()
             except Exception as e:
                 print(f"Error fetching attendance for employee {emp.id}: {e}")
-            finally:
-                print(f"Processed employee {emp.id}")
+          
 
             data.append({
                 "id": emp.id,
@@ -41846,18 +41771,14 @@ def add_attendance(request,):
             attendance = AttendanceReport.objects.filter(employee=employee, created_at__date=data['created_day']).first()
             if attendance is None:
                 attendance = AttendanceReport.objects.create(farmer=employee.farmer, employee=employee, created_at=timezone.now(),)
-            # Update fields if provided
-            update_fields = []
-            
+
             if 'id' in data:
                 employee = get_object_or_404(Employee, id=data['id'])
                 attendance.employee = employee
                 attendance.farmer = employee.farmer
-                update_fields.extend(['employee', 'farmer'])
             
             if 'present' in data:
                 attendance.present = data['present']
-                update_fields.append('present')
             
             if 'created_day' in data:
                 if data['created_day'] != str(attendance.created_day):
@@ -41871,7 +41792,6 @@ def add_attendance(request,):
                             "attendance_id": existing.id
                         }, status=status.HTTP_400_BAD_REQUEST)
                 attendance.created_day = data['created_day']
-                update_fields.append('created_day')
             
             # Handle time calculations
             login_time = data.get('login_time', attendance.login_time)
@@ -41902,28 +41822,23 @@ def add_attendance(request,):
                             time_diff = logout_datetime - login_datetime
                             total_hour = round(time_diff.total_seconds() / 3600, 2)
                             attendance.total_hour = total_hour
-                            update_fields.append('total_hour')
                             
                     except Exception as e:
                         return Response({"error": f"Invalid time format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
             
             attendance.login_time = login_time
             attendance.logout_time = logout_time
-            update_fields.extend(['login_time', 'logout_time'])
             
             # Update salary
             if 'salary' in data:
                 attendance.salary = data['salary']
-                update_fields.append('salary')
 
             
             if 'salary_status' in data:
                 attendance.salary_status = data['salary_status']
-                update_fields.append('salary_status')
             
-            # Save if any fields were updated
-            if update_fields:
-                attendance.save()
+            
+            attendance.save()
            
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -42006,7 +41921,7 @@ def create_or_update_employee_or_manager(request):
                     door_no=data.get("door_no"),
                     pincode=data.get("pincode"),
                     description=data.get("description"),
-                    status=data.get("status", 1),
+               
                     created_by=farmer.farmer_user,
                 )
                 return JsonResponse({"message": "Employee created", "id": employee.id})
@@ -42035,7 +41950,7 @@ def create_or_update_employee_or_manager(request):
                     name=data.get("name"),
                     farmer=farmer,
                     email=data.get("email"),
-                    gender_id=data.get("gender_id"),
+                    gender_id=data.get("gender_id", ),
                     mobile_no=mobile_no,
                     employee_type_id=data.get("employee_type_id"),
                     role_id=role_id,
@@ -42144,12 +42059,7 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
     paginator = Paginator(grouped_list, page_size)
     page_obj = paginator.get_page(page)
 
-    return Response({
-        "count": paginator.count,
-        "total_pages": paginator.num_pages,
-        "current_page": page,
-        "results": list(page_obj.object_list)
-    }, status=status.HTTP_200_OK)
+    return Response( list(page_obj.object_list), status=status.HTTP_200_OK)
 
 
 # --- EXPENSE LIST ---
@@ -42220,12 +42130,7 @@ def get_expense_list(request, farmer_id, time_period):
     paginator = Paginator(grouped_list, page_size)
     page_obj = paginator.get_page(page)
 
-    return Response({
-        "count": paginator.count,
-        "total_pages": paginator.num_pages,
-        "current_page": page,
-        "results": list(page_obj.object_list)
-    }, status=status.HTTP_200_OK)
+    return Response(list(page_obj.object_list), status=status.HTTP_200_OK)
 
 
 # --- SALES LIST ---
@@ -42285,24 +42190,19 @@ def get_sales_list(request, farmer_id, time_period):
     paginator = Paginator(grouped_list, page_size)
     page_obj = paginator.get_page(page)
 
-    return Response({
-        "count": paginator.count,
-        "total_pages": paginator.num_pages,
-        "current_page": page,
-        "results": list(page_obj.object_list)
-    }, status=status.HTTP_200_OK)
+    return Response( list(page_obj.object_list), status=status.HTTP_200_OK)
 
 
 @extend_schema(
      parameters=[
         OpenApiParameter(name='page', description="Page number", type=int, required=False),
         OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
-        OpenApiParameter(name='search_param', description="Search Param", type=int, required=False),
+        OpenApiParameter(name='search_param', description="Search Param", type=str, required=False),
         OpenApiParameter(name='Manager_param', description="Manager ID", type=int, required=False),
     ]
 )
 @api_view(["GET"])
-def get_employee_list_grouped_by_manager(request):
+def get_employee_list_grouped_by_manager(request,farmer_id):
     """
     Get Employee List grouped by Manager with pagination, search, and manager filter.
     """
@@ -42313,7 +42213,7 @@ def get_employee_list_grouped_by_manager(request):
         manager_id = request.GET.get("manager_id")
 
         # Managers base queryset
-        managers_qs = ManagerUser.objects.all().only("id", "name", "mobile_no", "email")
+        managers_qs = ManagerUser.objects.filter(farmer= farmer_id).only("id", "name", "mobile_no", "email","address")
 
         # Search filter (manager-level)
         if search:
@@ -42331,7 +42231,7 @@ def get_employee_list_grouped_by_manager(request):
         # Prefetch only needed employee fields
         managers_qs = managers_qs.prefetch_related(
             Prefetch("employee_set", queryset=Employee.objects.only(
-                "id", "name", "mobile_no", "employee_type_id", "work_type_id", "status"
+                "id", "name", "mobile_no", "employee_type_id", "work_type_id", "status","door_no"
             ))
         )
 
@@ -42346,13 +42246,7 @@ def get_employee_list_grouped_by_manager(request):
                 "employees": employees
             })
 
-        return Response({
-            "count": paginator.count,
-            "total_pages": paginator.num_pages,
-            "current_page": page,
-            "page_size": page_size,
-            "results": result
-        }, status=status.HTTP_200_OK)
+        return Response(result, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -42379,6 +42273,10 @@ def get_employee_detail(request, employee_id):
             "longitude": employee.longitude,
             "door_no": employee.door_no,
             "pincode": employee.pincode,
+            "salary": employee.salary,
+            "advance": employee.advance,
+            "attendance_payouts": employee.attendance_payouts,
+           
             "description": employee.description,
             "status": employee.status,
             "created_by": employee.created_by.id if employee.created_by else None,
@@ -42542,6 +42440,51 @@ def add_edit_employee_payout(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+
+
+# -------------------- Employee Payouts --------------------
+@extend_schema(operation_id="get_employee_detail",tags=["Vendors Outstanding"],)
+@api_view(["GET"])
+def get_employee_payouts_by_farmer(request, farmer_id, employee_id=None):
+    try:
+        if employee_id:
+            payouts = EmployeePayouts.objects.filter(farmer_id=farmer_id, employee_id=employee_id)
+        else:
+            payouts = EmployeePayouts.objects.filter(farmer_id=farmer_id)
+
+        data = list(payouts.values(
+            "id", "farmer_id", "employee_id",
+            "paid_salary", "unpaid_salary",
+            "advance_amount", "deduction_advance",
+            "balance_advance", "payout_amount", "topay",
+            "description", "created_day", "status",
+            "created_at", "updated_at"
+        ))
+        return Response(data, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"error": 0, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# -------------------- Employee Advances --------------------
+@extend_schema(operation_id="get_employee_detail",tags=["Vendors Outstanding"],)
+@api_view(["GET"])
+def get_employee_advances_by_farmer(request, farmer_id, employee_id=None):
+    try:
+        if employee_id:
+            advances = EmployeeAdvance.objects.filter(farmer_id=farmer_id, employee_id=employee_id)
+        else:
+            advances = EmployeeAdvance.objects.filter(farmer_id=farmer_id)
+
+        data = list(advances.values(
+            "id", "farmer_id", "employee_id", "employee_type_id",
+            "advance_amount", "previous_advance_amount",
+            "description", "created_day", "status",
+            "created_at", "updated_at"
+        ))
+        return Response(data, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"status": 0, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

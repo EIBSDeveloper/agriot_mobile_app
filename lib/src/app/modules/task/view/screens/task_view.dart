@@ -170,7 +170,7 @@ class TaskView extends GetView<TaskController> {
                                       vertical: 8,
                                     ),
                                     child: Text(
-                                      '${group.day}, ${group.date}',
+                                      group.date,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,

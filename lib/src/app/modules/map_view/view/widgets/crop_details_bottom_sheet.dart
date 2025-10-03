@@ -177,6 +177,7 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
           const SizedBox(height: 8),
           if (controller.cropDetails.value!.tasks.isNotEmpty)
             const TitleText("Today task"),
+          const SizedBox(height: 8),
           Obx(
             () => Column(
               children: [

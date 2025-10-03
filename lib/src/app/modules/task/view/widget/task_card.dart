@@ -5,9 +5,12 @@ import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../service/utils/enums.dart';
+import '../../../../widgets/input_card_style.dart';
+import '../../model/task_types_dropdown_item.dart';
+import '../../repostory/task_repository.dart';
 
-
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   const TaskCard({
     super.key,
     required this.task,
@@ -20,13 +23,35 @@ class TaskCard extends StatelessWidget {
   final List<Widget> trailing;
 
   @override
+  State<TaskCard> createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
+  late Task task;
+  final TaskRepository _taskRepository = TaskRepository();
+
+  final statusList = TaskTypes.values
+      .whereMap(
+        (task) => task == TaskTypes.all
+            ? null
+            : TaskTypesDropdownItem(task: task, name: getTaskName(task)),
+      )
+      .toList();
+
+  @override
+  void initState() {
+    super.initState();
+    task = widget.task; // copy from widget
+  }
+
+  @override
   Widget build(BuildContext context) => InkWell(
     onTap: () {
       Get.toNamed(Routes.taskDetail, arguments: {'taskId': task.id})?.then((
         result,
       ) {
-        if (refresh != null) {
-          refresh!();
+        if (widget.refresh != null) {
+          widget.refresh!();
         }
       });
     },
@@ -54,23 +79,14 @@ class TaskCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    task.cropType ?? '',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+                  if (task.cropType != null)
+                    Text(
+                      task.cropType ?? '',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   Text(task.activityTypeName ?? ''),
                   const SizedBox(height: 4),
-                  if (task.status != null)
-                    Text(
-                      getTaskName(task.status!),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: task.status != null
-                            ? getTaskColors(task.status!)
-                            : Colors.black,
-                      ),
-                    ),
+
                   if (task.description.isNotEmpty) ...[
                     const SizedBox(height: 2),
                     Text(
@@ -80,44 +96,100 @@ class TaskCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
+                  if (Get.mediaQuery.size.width <= 600) _buildStatus(),
                 ],
               ),
             ),
-//  Expanded(
-//           child: InputCardStyle(
-//             padding: const EdgeInsets.symmetric(horizontal: 8),
-//             child: DropdownButtonFormField<TaskTypes>(
-//               initialValue: controller.selectedValue.value,
-//               icon: const Icon(Icons.keyboard_arrow_down),
-//               decoration: const InputDecoration(
-//                 labelText: "Status",
-//                 border: InputBorder.none,
-//               ),
-//               items: controller.statusList
-//                   .map(
-//                     (item) => DropdownMenuItem(
-//                       value: item.task,
-//                       child: Text(
-//                         item.name,
-//                         selectionColor: getTaskColors(item.task),
-//                       ),
-//                     ),
-//                   )
-//                   .toList(),
-//               onChanged: (value) {
-//                 controller.selectedValue.value = value!;
-//               },
-//             ),
-//           ),
-//         ),
+            if (Get.mediaQuery.size.width > 600)
+              Expanded(child: _buildStatus()),
+
             /// Right section: trailing widgets
-            if (trailing.isNotEmpty) ...[
+            if (widget.trailing.isNotEmpty) ...[
               const SizedBox(width: 8),
-              Row(mainAxisSize: MainAxisSize.min, children: trailing),
+              Row(mainAxisSize: MainAxisSize.min, children: widget.trailing),
             ],
           ],
         ),
       ),
     ),
   );
+  Widget _buildStatus() {
+    bool isPastDate = false;
+
+    if (task.taskDate != null) {
+      final taskDate = DateTime(
+        task.taskDate!.year,
+        task.taskDate!.month,
+        task.taskDate!.day,
+      );
+      final today = DateTime.now();
+      final todayDate = DateTime(today.year, today.month, today.day);
+
+      isPastDate = taskDate.isBefore(todayDate);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Tooltip(
+                message: isPastDate
+                    ? 'Cannot change status for past tasks'
+                    : '',
+                child: Opacity(
+                  opacity: isPastDate ? 0.6 : 1.0, 
+                  child: IgnorePointer(
+                    ignoring: isPastDate, 
+                    child: DropdownButtonFormField<TaskTypes>(
+                      initialValue: task.status,
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      decoration: InputDecoration(
+                        labelText: "Status",
+                        border: InputBorder.none,
+                     
+                        enabled: !isPastDate,
+                      ),
+                      items: statusList
+                          .map(
+                            (item) => DropdownMenuItem(
+                              value: item.task,
+                              child: Text(
+                                item.name,
+                                style: TextStyle(
+                                  color: getTaskColors(item.task),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      // keep onChanged null when disabled for form semantics
+                      onChanged: isPastDate
+                          ? null
+                          : (value) async {
+                              if (value != null) {
+                                setState(() {
+                                  task = task.copyWith(status: value);
+                                });
+                                await _taskRepository.updateTask(
+                                  id: task.id,
+                                  scheduleStatus: getTaskId(
+                                    task.status ?? TaskTypes.completed,
+                                  ),
+                                );
+                              }
+                            },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

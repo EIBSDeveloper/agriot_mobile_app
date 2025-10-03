@@ -3,7 +3,6 @@ import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/expense_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_summary.dart';
 import 'package:argiot/src/app/modules/expense/model/file_type.dart';
-import 'package:argiot/src/app/modules/expense/model/purchase.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
@@ -11,29 +10,34 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../model/customer.dart';
-
 class ExpenseController extends GetxController {
   final ExpenseRepository _repository = Get.find<ExpenseRepository>();
   final farmerId = 1; // This should come from auth or previous screen
 
   // For overview screen
   final totalExpense = 0.0.obs;
-  final selectedPeriod = '30days'.obs;
+  final selectedPeriod = 'month'.obs;
   final expenseSummary = <ExpenseSummary>[].obs;
-  final expenses = <Expense>[].obs;
-  final purchases = <Purchase>[].obs;
-  final selectedTab = 0.obs; // 0: All, 1: Expenses, 2: Purchases
+  
+  // New grouped records
+  final allGroupedRecords = <GroupedExpenseRecord>[].obs;
+  final expenseGroupedRecords = <GroupedExpenseRecord>[].obs;
+  final salesGroupedRecords = <GroupedExpenseRecord>[].obs;
+  
+  // Keep old lists for backward compatibility
+  // final expenses = <ExpenseAndSales>[].obs;
+  // final sales = <ExpenseAndSales>[].obs;
+  
+  final selectedTab = 0.obs; // 0: All, 1: Expenses, 2: Sales
 
   // For add expense screen
   final isPurchase = false.obs;
   final selectedCrop = CropModel(id: 0, name: '').obs;
   final selectedDate = DateTime.now().obs;
-  // final selectedExpenseType = ExpenseType(id: 0, name: '').obs;
   final RxInt amount = 0.obs;
   final RxInt paidamonut = 0.obs;
   final description = ''.obs;
   final RxList<CropModel> crop = <CropModel>[].obs;
-  // final expenseTypes = <ExpenseType>[].obs;
   final fileTypes = <FileType>[].obs;
   final isLoading = false.obs;
   var selectedVendor = Rx<int?>(null);
@@ -49,39 +53,58 @@ class ExpenseController extends GetxController {
     const Color(0xFF9CCC65), // Tools - light green
     const Color(0xFFEF6C00), // Others - orange
   ];
+
   @override
   void onInit() {
     super.onInit();
     loadExpenseData();
-
+    fetchVendorList();
     loadFileTypes();
   }
 
   Future<void> loadExpenseData() async {
     try {
       isLoading(true);
+        await _loadGroupedData();
       final total = await _repository.getTotalExpense(selectedPeriod.value);
       totalExpense(total.expenseAmount);
       await fetchCrop();
-      // final summary = await _repository.getExpenseSummary(selectedPeriod.value);
-      // expenseSummary.assignAll(summary);
 
-      final response = await _repository.getExpenses(selectedPeriod.value);
-      expenses.assignAll(response.expenses);
-      purchases.assignAll(response.purchases);
+      // Load data based on selected tab
+    
 
       cardexpenses.clear();
       final summary = await _repository.getExpenseSummary(selectedPeriod.value);
-
       cardexpenses.addAll(summary);
       cardtotalExpenses.value = summary.fold(
         0,
         (sum, item) => sum + item.totalAmount,
       );
     } catch (e) {
-      showError('Error');
+      showError('Error loading data: $e');
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> _loadGroupedData() async {
+    try {
+      switch (selectedTab.value) {
+        case 0: // All
+          final data = await _repository.getBothExpensesAndSales(selectedPeriod.value);
+          allGroupedRecords.assignAll(data);
+          break;
+        case 1: // Expenses
+          final data = await _repository.getExpensesOnly(selectedPeriod.value);
+          expenseGroupedRecords.assignAll(data);
+          break;
+        case 2: // Sales
+          final data = await _repository.getSalesOnly(selectedPeriod.value);
+          salesGroupedRecords.assignAll(data);
+          break;
+      }
+    } catch (e) {
+      showError('Error loading grouped data: $e');
     }
   }
 
@@ -115,7 +138,6 @@ class ExpenseController extends GetxController {
   Future<bool> submitExpense() async {
     if (selectedCrop.value.id == 0) {
       showError('Please select a crop');
-
       return false;
     }
 
@@ -163,6 +185,7 @@ class ExpenseController extends GetxController {
 
   void changeTab(int index) {
     selectedTab(index);
+    _loadGroupedData(); // Load specific data when tab changes
   }
 
   Future<void> selectDate(BuildContext context) async {

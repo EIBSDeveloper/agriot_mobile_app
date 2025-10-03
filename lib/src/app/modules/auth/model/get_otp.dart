@@ -6,6 +6,8 @@ class GetOtp {
   bool? land;
   bool? crop;
   int? otp;
+  bool isManager;
+  int? managerID;
 
   GetOtp({
     this.message,
@@ -15,6 +17,8 @@ class GetOtp {
     required this.land,
     required this.crop,
     required this.otp,
+    this.isManager = false,
+    this.managerID,
   });
 
   factory GetOtp.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@ class GetOtp {
       details: json["details"],
       land: json["land"],
       crop: json["crop"],
+      isManager: json["is_manager"] ?? false,
+      managerID: json["manager_id"],
       otp: int.tryParse(farmer["otp"].toString()) ?? 0,
     );
   }

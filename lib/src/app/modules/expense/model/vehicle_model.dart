@@ -66,7 +66,6 @@ class VehicleModel {
     'purchase_date': dateOfConsumption.toIso8601String().split('T')[0],
     'vendor': vendor,
     'inventory_type': inventoryType,
-    'inventory_category': inventoryCategory,
     'inventory_items': inventoryItems,
     'register_number': registerNumber,
 

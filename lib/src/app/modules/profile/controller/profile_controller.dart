@@ -37,6 +37,8 @@ class ProfileController extends GetxController {
       appData.farmerId.value = '';
       appData.username.value = '';
       appData.emailId.value = '';
+      appData.isManager.value = false;
+      appData.managerID.value = '';
       Get.offAllNamed(Routes.login);
     } catch (e) {
       showError('Failed to logout');

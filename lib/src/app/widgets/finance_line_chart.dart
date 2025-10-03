@@ -4,13 +4,11 @@ import 'package:argiot/src/app/modules/dashboad/model/finance_data.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-// update with your actual import path
 class FinanceLineChart extends StatelessWidget {
   final FinanceData financeData;
 
   const FinanceLineChart({super.key, required this.financeData});
 
-  // Bottom axis labels with dynamic font size
   Widget bottomTitleWidgets(double value, TitleMeta meta, double chartWidth) =>
       SideTitleWidget(
         meta: meta,
@@ -25,7 +23,6 @@ class FinanceLineChart extends StatelessWidget {
         ),
       );
 
-  // Left axis labels with styling
   Widget leftTitleWidgets(double value, TitleMeta meta, double chartWidth) {
     final style = TextStyle(
       color: Colors.black54,
@@ -39,7 +36,6 @@ class FinanceLineChart extends StatelessWidget {
     );
   }
 
-  // Build LineChartBarData from finance data
   LineChartBarData _buildLine(List<DailyData> data, Color color) =>
       LineChartBarData(
         spots: data.map((d) => FlSpot(double.parse(d.day), d.amount)).toList(),
@@ -58,7 +54,6 @@ class FinanceLineChart extends StatelessWidget {
       aspectRatio: 1.8,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Compute minY and maxY dynamically for vertical scale
           final allAmounts = [
             ...financeData.sales.map((e) => e.amount),
             ...financeData.expenses.map((e) => e.amount),
@@ -113,6 +108,8 @@ class FinanceLineChart extends StatelessWidget {
                       );
                     },
                   ),
+                  axisNameWidget: const Text('Days'),
+                  axisNameSize: 20,
                 ),
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
@@ -130,6 +127,10 @@ class FinanceLineChart extends StatelessWidget {
                       );
                     },
                   ),
+                  axisNameWidget: const Text(
+                    'Amount', // Y-axis label
+                  ),
+                  axisNameSize: 20,
                 ),
                 topTitles: const AxisTitles(
                   sideTitles: SideTitles(showTitles: false),
@@ -139,7 +140,7 @@ class FinanceLineChart extends StatelessWidget {
                   sideTitles: SideTitles(showTitles: false),
                 ),
               ),
-              gridData: const FlGridData(show: false), // grid removed
+              gridData: const FlGridData(show: false),
               borderData: FlBorderData(
                 show: true,
                 border: Border.all(color: Colors.grey.withAlpha(150), width: 1),

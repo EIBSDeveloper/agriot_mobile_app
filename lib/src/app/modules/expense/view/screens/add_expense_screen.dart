@@ -31,7 +31,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
                 items: controller.crop,
                 selectedItem: controller.selectedCrop.value,
                 onChanged: (crop) => controller.selectedCrop(crop!),
-                label: "${'crop'.tr} ",
+                label: "${'crop'.tr} *",
               ),
               const SizedBox(height: 16),
               InputCardStyle(

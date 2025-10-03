@@ -64,7 +64,6 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     value == null || value.isEmpty ? 'Required field' : null,
               ),
             ),
-            const SizedBox(height: 16),
 
             //Email
             Obx(
@@ -76,7 +75,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                           child: TextFormField(
                             controller: controller.emailController,
                             decoration: const InputDecoration(
-                              labelText: 'Email ID',
+                              labelText: 'Email ID *',
                               hintText: 'Enter Email ID',
                               border: InputBorder.none,
                             ),
@@ -100,20 +99,21 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   FilteringTextInputFormatter.digitsOnly, // only digits
                   LengthLimitingTextInputFormatter(10), // max 6 digits
                 ],
+                validator: (value) => value == null ? 'Required field' : null,
                 decoration: const InputDecoration(
-                  labelText: 'Mobile No',
+                  labelText: 'Mobile No *',
                   hintText: 'Enter Mobile No',
                   border: InputBorder.none,
                 ),
               ),
             ),
-            const SizedBox(height: 16),
 
             /// Gender Dropdown
             Obx(
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
+                        const SizedBox(height: 16),
                         InputCardStyle(
                           child: DropdownButtonFormField<GenderModel>(
                             initialValue: controller.selectedGenderType.value,
@@ -128,24 +128,22 @@ class CreateManagerScreen extends GetView<ManagerController> {
                             onChanged: (value) =>
                                 controller.selectedGenderType.value = value,
                             decoration: const InputDecoration(
-                              labelText: 'Select Gender *',
+                              labelText: 'Select Gender ',
                               border: InputBorder.none,
                             ),
-                            validator: (value) =>
-                                value == null ? 'Required field' : null,
                           ),
                         ),
                       ],
                     )
                   : const SizedBox(),
             ),
-            const SizedBox(height: 16),
 
             // Date of Joining
             Obx(
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
+                        const SizedBox(height: 16),
                         InputCardStyle(
                           child: TextFormField(
                             controller: controller.dojcontroller,
@@ -199,13 +197,13 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
 
             // Date of Birth
             Obx(
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
+                        const SizedBox(height: 16),
                         InputCardStyle(
                           child: TextFormField(
                             controller: controller.dobcontroller,
@@ -288,16 +286,15 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   : const SizedBox(),
             ),
 
-            const SizedBox(height: 16),
-
             // Assign Manager
             Obx(() {
-              if (controller.selectedRoleType.value!.id == 0) {
+              if (controller.selectedRoleType.value?.id == 0) {
                 if (controller.isLoadingManager.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return Column(
                   children: [
+                    const SizedBox(height: 16),
                     InputCardStyle(
                       child: DropdownButtonFormField<AssignMangerModel>(
                         initialValue: controller.selectedManager.value,
@@ -330,6 +327,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             // Address
             InputCardStyle(
               child: TextFormField(
+                maxLines: 3,
                 controller: controller.addressController,
                 decoration: const InputDecoration(
                   labelText: 'Address *',
@@ -341,24 +339,28 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     : null,
               ),
             ),
-            const SizedBox(height: 16),
 
             //pincode
             Obx(
               () => controller.selectedRoleType.value?.id == 0
-                  ? InputCardStyle(
-                      child: TextFormField(
-                        controller: controller.pincodeController,
-                        decoration: const InputDecoration(
-                          labelText: 'Pincode *',
-                          hintText: 'Enter Pincode',
-                          border: InputBorder.none,
+                  ? Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        InputCardStyle(
+                          child: TextFormField(
+                            controller: controller.pincodeController,
+                            decoration: const InputDecoration(
+                              labelText: 'Pincode *',
+                              hintText: 'Enter Pincode',
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) =>
+                                value == null || value.trim().isEmpty
+                                ? 'Required field'
+                                : null,
+                          ),
                         ),
-                        validator: (value) =>
-                            value == null || value.trim().isEmpty
-                            ? 'Required field'
-                            : null,
-                      ),
+                      ],
                     )
                   : const SizedBox(), // empty widget if role is not 0
             ),
@@ -381,38 +383,29 @@ class CreateManagerScreen extends GetView<ManagerController> {
             // ---------------- Permissions Section ----------------
             Obx(
               () => controller.selectedRoleType.value?.id != 0
-                  ? Column(
-                      children: [
-                        InputCardStyle(
-                          child: SizedBox(
-                            height: 350, // fixed height with scrolling
-                            child: Obx(() {
-                              if (controller.isLoading.value) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
+                  ? InputCardStyle(
+                      child: Obx(() {
+                        if (controller.isLoading.value) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                              if (controller.permissions.isEmpty) {
-                                return const Center(
-                                  child: Text("No permissions found"),
-                                );
-                              }
+                        if (controller.permissions.isEmpty) {
+                          return const Center(
+                            child: Text("No permissions found"),
+                          );
+                        }
 
-                              return ListView(
-                                children: controller.permissions.values
-                                    .map(
-                                      (item) => _buildPermissionItem(
-                                        item,
-                                        controller,
-                                      ),
-                                    )
-                                    .toList(),
-                              );
-                            }),
-                          ),
-                        ),
-                      ],
+                        return Column(
+                          children: controller.permissions.values
+                              .map(
+                                (item) =>
+                                    _buildPermissionItem(item, controller),
+                              )
+                              .toList(),
+                        );
+                      }),
                     )
                   : const SizedBox(),
             ),
@@ -477,24 +470,24 @@ class CreateManagerScreen extends GetView<ManagerController> {
     PermissionItem item,
     ManagerController controller,
   ) => GetBuilder<ManagerController>(
-      builder: (_) => ExpansionTile(
-        title: Row(
-          children: [
-            Checkbox(
-              value: item.status == 1,
-              onChanged: (val) => controller.toggleStatus(item, val ?? false),
-            ),
-            Text(item.name),
-          ],
-        ),
-        children: item.children.values
-            .map(
-              (child) => Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: _buildPermissionItem(child, controller),
-              ),
-            )
-            .toList(),
+    builder: (_) => ExpansionTile(
+      title: Row(
+        children: [
+          Checkbox(
+            value: item.status == 1,
+            onChanged: (val) => controller.toggleStatus(item, val ?? false),
+          ),
+          Text(item.name),
+        ],
       ),
-    );
+      children: item.children.values
+          .map(
+            (child) => Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: _buildPermissionItem(child, controller),
+            ),
+          )
+          .toList(),
+    ),
+  );
 }

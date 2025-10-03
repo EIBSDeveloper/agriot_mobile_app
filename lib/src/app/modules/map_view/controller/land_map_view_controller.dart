@@ -1,4 +1,3 @@
-
 import 'package:argiot/src/app/modules/map_view/model/crop_details.dart';
 import 'package:argiot/src/app/modules/map_view/model/crop_map_data.dart';
 import 'package:argiot/src/app/modules/map_view/model/land_map_data.dart';
@@ -8,6 +7,7 @@ import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
 import 'package:argiot/src/app/modules/registration/repostrory/crop_service.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_crop.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
+import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -45,7 +45,6 @@ class LandMapViewController extends GetxController {
   final polygons = <Polygon>{}.obs;
   final markers = <Marker>{}.obs;
 
- 
   final List<Color> cropColors = [
     Colors.red,
     Colors.amber,
@@ -120,14 +119,13 @@ class LandMapViewController extends GetxController {
       final result = await _repository.fetchLandsAndCrops();
       lands.assignAll(result);
 
-
       if (result.isNotEmpty) {
         if (landId.value != 0) {
           selectedLand.value = result.firstWhere(
             (land) => land.id == landId.value,
           );
           await fetchLandsAndCropMap();
-          
+
           selectCrop(allCrop);
         } else {
           selectedLand.value = result.first;
@@ -141,8 +139,6 @@ class LandMapViewController extends GetxController {
     }
   }
 
-
-
   void _assignCropColors(List<CropMapData> crops) {
     cropColorMap.clear();
     for (int i = 0; i < crops.length; i++) {
@@ -152,7 +148,7 @@ class LandMapViewController extends GetxController {
     }
   }
 
-  Color getLandColor(int landId) =>  Colors.green;
+  Color getLandColor(int landId) => Colors.green;
 
   Color getCropColor(int cropId) => cropColorMap[cropId] ?? Colors.orange;
 
@@ -202,10 +198,11 @@ class LandMapViewController extends GetxController {
         Marker(
           markerId: MarkerId("crop_${crop.cropId}"),
           position: center,
+          draggable  :true,
           icon: icon,
           infoWindow: InfoWindow(
             title: crop.cropName ?? "Crop",
-            snippet: "Tap for details",
+            // snippet: "Tap for details",
           ),
           onTap: () {
             cropDetailsSheet(crop);
@@ -218,7 +215,7 @@ class LandMapViewController extends GetxController {
 
   Future fetchLandsAndCropMap() async {
     if (selectedLand.value == null) return;
-    
+
     try {
       final result = await _repository.fetchLandsAndCropMap(
         selectedLand.value!.id,
@@ -260,11 +257,11 @@ class LandMapViewController extends GetxController {
                 strokeWidth: 0,
               );
             }
-            
+
             final cropPoints = crop.geoMarks!
                 .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))
                 .toList();
-            
+
             return Polygon(
               polygonId: PolygonId("crop_${crop.cropId}"),
               points: cropPoints,
@@ -313,35 +310,42 @@ class LandMapViewController extends GetxController {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Land Details',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: getLandColor(selectedLand.value!.id),
-              ),
-            ),
-            const SizedBox(height: 15),
-            _buildDetailRow('Land Name:', selectedLand.value!.name),
-            _buildDetailRow('Land ID:', selectedLand.value!.id.toString()),
+            TitleText(capitalizeFirstLetter(selectedLand.value!.name)),
+            const SizedBox(height: 8),
+            // _buildDetailRow('Land ID:', selectedLand.value!.id.toString()),
             // if (landMapDetails.value?.totalArea != null)
             //   _buildDetailRow('Total Area:', '${landMapDetails.value!.totalArea} sqm'),
             if (landMapDetails.value?.crops != null)
-              _buildDetailRow('Number of Crops:', landMapDetails.value!.crops!.length.toString()),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: getLandColor(selectedLand.value!.id),
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Close'),
+              _buildDetailRow(
+                'Number of Crops:',
+                landMapDetails.value!.crops!.length.toString(),
               ),
-            ),
+
+            _buildDetailRow('Manager Name:', 'Ravi'),
+            _buildDetailRow('Totel employees:', '3'),
+
+            const Divider(height: 1),
+            const SizedBox(height: 8),
+            // if (controller.cropDetails.value!.tasks.isNotEmpty)
+            const TitleText("Today Status "),
+
+            _buildDetailRow('working employees:', '2'),
+            const SizedBox(height: 8),
+            // _buildDetailRow('Number of employees', ''),
+            const SizedBox(height: 50),
+            // SizedBox(
+            //   width: double.infinity,
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Get.back();
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: getLandColor(selectedLand.value!.id),
+            //       foregroundColor: Colors.white,
+            //     ),
+            //     child: const Text('Close'),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -349,29 +353,29 @@ class LandMapViewController extends GetxController {
   }
 
   Widget _buildDetailRow(String label, String value) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Text(
-            label,
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            value,
             style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.black54,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
             ),
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ),
+  );
 
   void zoomCrop() {
     if (landMapDetails.value?.crops == null) {

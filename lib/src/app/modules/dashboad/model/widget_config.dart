@@ -27,6 +27,6 @@ class WidgetConfig {
     'expenses_sales': expensesSales,
     'near_by_market_price': marketPrice,
     'schedulr_task': scheduleTask,
-    'guidelines': guidelines,
+    'guideliness': guidelines,
   };
 }

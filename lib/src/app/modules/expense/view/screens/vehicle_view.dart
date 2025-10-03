@@ -46,8 +46,8 @@ class VehicleView extends GetView<PurchasesAddController> {
             _buildAverageMileageField(),
             const SizedBox(height: 16),
             controller.buildPurchaseAmountField(),
-            const SizedBox(height: 16),
-            controller.buildPaidAmountField(),
+            // const SizedBox(height: 16),
+            // controller.buildPaidAmountField(),
             const SizedBox(height: 16),
 
             controller.buildDocumentsSection(),
@@ -73,8 +73,9 @@ class VehicleView extends GetView<PurchasesAddController> {
   Widget _buildRegNoField() => InputCardStyle(
     child: TextFormField(
       controller: controller.regNoController,
+      validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
       decoration: InputDecoration(
-        labelText: 'reg_no_label'.tr,
+        labelText: "${'reg_no_label'.tr} *",
         border: InputBorder.none,
         errorText: controller.errors['reg_no'],
       ),

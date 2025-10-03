@@ -13,24 +13,11 @@ class KycController extends GetxController {
   // Form controllers
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final numberController = TextEditingController();
   final companyController = TextEditingController();
   final taxNoController = TextEditingController();
   final doorNoController = TextEditingController();
   final pincodeController = TextEditingController();
-
-  // // Dropdown values
-  // final RxList<CountryModel> countries = <CountryModel>[].obs;
-  // final RxList<StateModel> states = <StateModel>[].obs;
-  // final RxList<CityModel> cities = <CityModel>[].obs;
-  // final RxList<TalukModel> taluks = <TalukModel>[].obs;
-  // final RxList<VillageModel> villages = <VillageModel>[].obs;
-
-  // // Selected values
-  // final Rx<CountryModel?> selectedCountry = Rx<CountryModel?>(null);
-  // final Rx<StateModel?> selectedState = Rx<StateModel?>(null);
-  // final Rx<CityModel?> selectedCity = Rx<CityModel?>(null);
-  // final Rx<TalukModel?> selectedTaluk = Rx<TalukModel?>(null);
-  // final Rx<VillageModel?> selectedVillage = Rx<VillageModel?>(null);
 
   // Loading states
   final RxBool isLoadingCountries = false.obs;
@@ -67,12 +54,8 @@ class KycController extends GetxController {
       // Call API (replace with your actual endpoint)
       Map? response = await farmerRepository.editFarmer(
         name: nameController.text.trim(),
+        phone: numberController.text.trim(),
         email: emailController.text.trim(),
-        // country: selectedCountry.value?.id ?? 1,
-        // state: selectedState.value?.id ?? 1,
-        // city: selectedCity.value?.id ?? 1,
-        // taluk: selectedTaluk.value?.id ?? 1,
-        // village: selectedVillage.value?.id ?? 1,
         doorNo: doorNoController.text.trim(),
         pincode: pincodeController.text.trim(),
         latitude: latitude.value,

@@ -10,6 +10,6 @@ class TaskGroup {
   factory TaskGroup.fromJson(Map<String, dynamic> json) => TaskGroup(
       date: json['Date'],
       day: json['Day'],
-      tasks: List<Task>.from(json['crop'].map((x) => Task.fromJson(x))),
+      tasks: List<Task>.from(json['crops'].map((x) => Task.fromJson(x))),
     );
 }

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-
 class ChatController extends GetxController {
   var messages = <Map<String, String>>[].obs;
   var isLoading = false.obs;
@@ -16,7 +15,7 @@ final String apiUrl =
   Future<void> sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
-    // add user message
+
     messages.add({"role": "user", "text": text});
 
     isLoading.value = true;
@@ -44,7 +43,7 @@ final String apiUrl =
 
         messages.add({"role": "bot", "text": reply});
       } else {
-        // Use response.statusCode for a clearer error
+      
         messages.add({"role": "bot", "text": "API Error: Status ${response.statusCode}, Body: ${response.body}"});
       }
     } catch (e) {

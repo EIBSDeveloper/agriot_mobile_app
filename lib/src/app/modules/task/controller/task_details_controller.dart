@@ -158,9 +158,6 @@ final statusList = TaskTypes.values.whereMap(
       isLoadingEdit(true);
       final response = await _taskRepository.updateTask(
         id: taskId,
-        myCrop: selectedCropType.value.id,
-        startDate: scheduleDate.value,
-        description: description.value,
         scheduleStatus: getTaskId(task.value?.status ?? TaskTypes.completed),
       );
       if (response.isNotEmpty) {}

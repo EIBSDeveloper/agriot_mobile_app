@@ -13,7 +13,7 @@ class EmployeeModel {
   final String? loginTime;
   final String? logoutTime;
   final String? totalHour;
-  final int? salary;
+  final String? salary;
   final bool? salaryStatus;
 
   EmployeeModel({
@@ -42,9 +42,7 @@ class EmployeeModel {
     loginTime: json['login_time'],
     logoutTime: json['logout_time'],
     totalHour: json['total_hour'],
-    salary: (json['salary'] != null)
-        ? int.tryParse(json['salary'].toString())
-        : null,
+    salary: (json['salary']??'--').toString(),
     salaryStatus: (json['salary_status'] is int)
         ? json['salary_status'] == 1
         : (json['salary_status'] as bool?),
@@ -70,7 +68,7 @@ class EmployeeModel {
     String? loginTime,
     String? logoutTime,
     String? totalHour,
-    int? salary,
+    String? salary,
     bool? salaryStatus,
   }) => EmployeeModel(
     id: id ?? this.id,

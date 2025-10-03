@@ -31,13 +31,13 @@ class RegLandController extends GetxController {
   // Dropdown values
   final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
   final RxList<AppDropdownItem> soilTypes = <AppDropdownItem>[].obs;
-  final RxList<AppDropdownItem> areaUnits = <AppDropdownItem>[].obs;
+  // final RxList<AppDropdownItem> areaUnits = <AppDropdownItem>[].obs;
   final RxList<AppDropdownItem> documentTypes = <AppDropdownItem>[].obs;
 
   // Selected values
   final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
-  final Rx<AppDropdownItem?> selectedAreaUnit = Rx<AppDropdownItem?>(null);
+  // final Rx<AppDropdownItem?> selectedAreaUnit = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedDocType = Rx<AppDropdownItem?>(null);
 
   // Location
@@ -67,7 +67,6 @@ class RegLandController extends GetxController {
     await Future.wait([
       loadLandUnits(),
       loadSoilTypes(),
-      loadAreaUnits(),
       loadDocumentTypes(),
     ]);
   }
@@ -92,15 +91,15 @@ class RegLandController extends GetxController {
     }
   }
 
-  Future<void> loadAreaUnits() async {
-    try {
-      isLoadingAreaUnits(true);
-      final result = await _landService.getAreaUnits();
-      areaUnits.assignAll(result);
-    } finally {
-      isLoadingAreaUnits(false);
-    }
-  }
+  // Future<void> loadAreaUnits() async {
+  //   try {
+  //     isLoadingAreaUnits(true);
+  //     final result = await _landService.getAreaUnits();
+  //     areaUnits.assignAll(result);
+  //   } finally {
+  //     isLoadingAreaUnits(false);
+  //   }
+  // }
 
   Future<void> loadDocumentTypes() async {
     try {
@@ -114,7 +113,7 @@ class RegLandController extends GetxController {
 
   void addSurveyItem() {
     surveyItems.add(
-      SurveyItem(surveyNo: '', measurement: '', unit: areaUnits.firstOrNull),
+      SurveyItem(surveyNo: '', measurement: '', unit: landUnits.firstOrNull),
     );
   }
 

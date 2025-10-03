@@ -270,7 +270,7 @@ class DashboardView extends GetView<DashboardController> {
     child: Container(
       color: color.withAlpha(5),
       width: double.infinity,
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -345,34 +345,16 @@ class DashboardView extends GetView<DashboardController> {
                           data: controller.landVSCropData.value!,
                         )
                       : SizedBox(
-                          height: 200,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          // height: 300,
+                          child: Column(
                             children: [
-                              if (controller.financeData.value != null) ...[
-                                if ((controller
-                                            .financeData
-                                            .value
-                                            ?.totalExpenses !=
-                                        0 ||
-                                    controller.financeData.value?.totalSales !=
-                                        0))
-                                  Expanded(
-                                    flex: 2,
-                                    child: SizedBox(
-                                      height: 200,
-                                      child: _buildFinanceChart(),
-                                    ),
-                                  ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Column(
+                              Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         child: _buildExpenssItem(
-                                          'sales',
+                                          'sales : ',
                                           controller
                                               .financeData
                                               .value!
@@ -386,7 +368,7 @@ class DashboardView extends GetView<DashboardController> {
                                       const Divider(),
                                       Expanded(
                                         child: _buildExpenssItem(
-                                          'expenses',
+                                          'expenses : ',
                                           controller
                                               .financeData
                                               .value!
@@ -405,10 +387,32 @@ class DashboardView extends GetView<DashboardController> {
                                       const SizedBox(height: 20),
                                     ],
                                   ),
-                                ),
-                              ] else ...[
-                                Center(child: Text('no_finance_data'.tr)),
-                              ],
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (controller.financeData.value != null) ...[
+                                    if ((controller
+                                                .financeData
+                                                .value
+                                                ?.totalExpenses !=
+                                            0 ||
+                                        controller.financeData.value?.totalSales !=
+                                            0))
+                                      Expanded(
+                                        flex: 2,
+                                        child: SizedBox(
+                                          height: 200,
+                                          child:FinanceLineChart(financeData: controller.financeData.value!),
+                                        ),
+                                      ),
+                                 
+                                 
+                                 
+                                  ] else ...[
+                                    Center(child: Text('no_finance_data'.tr)),
+                                  ],
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -420,8 +424,6 @@ class DashboardView extends GetView<DashboardController> {
         )
       : const SizedBox();
 
-  Widget _buildFinanceChart() =>
-      FinanceLineChart(financeData: controller.financeData.value!);
 
   Widget _buildGuidelinesCard() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,

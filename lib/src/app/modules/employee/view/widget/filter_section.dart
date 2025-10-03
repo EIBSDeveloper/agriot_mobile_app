@@ -19,7 +19,7 @@ class FilterSection extends StatelessWidget {
           child: Obx(
             () => DropdownButtonFormField<String>(
               initialValue: controller.selectedRole.value,
-              items: ['Manager', 'Employee']
+              items: [ 'Employee','Manager',]
                   .map(
                     (String role) => DropdownMenuItem<String>(
                       value: role,
@@ -42,19 +42,19 @@ class FilterSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        // const SizedBox(height: 10),
 
         // Search Field
-        InputCardStyle( padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: TextFormField(
-            onChanged: controller.updateSearchQuery,
-            decoration: InputDecoration(
-              labelText: 'search'.tr,
-              // prefixIcon: const Icon(Icons.search),
-              border: InputBorder.none,
-            ),
-          ),
-        ),
+        // InputCardStyle( padding: const EdgeInsets.symmetric(horizontal: 8),
+        //   child: TextFormField(
+        //     onChanged: controller.updateSearchQuery,
+        //     decoration: InputDecoration(
+        //       labelText: 'search'.tr,
+        //       // prefixIcon: const Icon(Icons.search),
+        //       border: InputBorder.none,
+        //     ),
+        //   ),
+        // ),
       ],
     ),
   );

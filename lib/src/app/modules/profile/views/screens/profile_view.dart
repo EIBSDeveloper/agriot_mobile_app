@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../controller/profile_controller.dart';
 import '../../model/profile_model.dart';
@@ -28,7 +29,7 @@ class ProfileView extends GetView<ProfileController> {
 
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       final profile = controller.profile.value;

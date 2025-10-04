@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/my_network_image.dart';
 import '../../../../widgets/title_text.dart';
 
@@ -36,7 +37,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
     appBar: CustomAppBar(title: 'schedule_details'.tr),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       final schedule = controller.selectedSchedule.value;

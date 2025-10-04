@@ -20,7 +20,8 @@ class UserListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Card(
-    margin: EdgeInsets.only(left: isIndented ? 24.0 : 0.0),
+    elevation: 1,
+    margin: EdgeInsets.only(left: isIndented ? 20.0 : 0.0),
     child: InkWell(
       onTap: () {
         Get.toNamed(
@@ -42,8 +43,9 @@ class UserListItem extends StatelessWidget {
         title: Text(user.name),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text(user.role), 
-          // Text(user.address.toString())
+          children: [
+            // Text(user.role), 
+          Text(user.address.toString())
           ],
         ),
         trailing: IconButton(

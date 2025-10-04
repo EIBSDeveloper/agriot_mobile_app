@@ -8,6 +8,7 @@ import 'package:argiot/src/app/widgets/toggle_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class AddTask extends GetView<TaskController> {
@@ -229,7 +230,7 @@ class AddTask extends GetView<TaskController> {
                         }
                       },
                 child: controller.isLoading.value
-                    ? const CircularProgressIndicator()
+                    ? const Loading(size:50)
                     : Text(isEditing ? 'update_task'.tr : 'add_task'.tr),
               ),
             ),

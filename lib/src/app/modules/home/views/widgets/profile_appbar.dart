@@ -6,21 +6,21 @@ import '../../../../controller/app_controller.dart';
 import '../../../../routes/app_routes.dart';
 import '../../contoller/user_profile_controller.dart';
 
-class ProfileAppBar extends GetView<UserProfileController>
-    implements PreferredSizeWidget {
-  const ProfileAppBar({super.key});
-
+class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
+  ProfileAppBar({super.key});
   @override
   Size get preferredSize => const Size.fromHeight(60);
-
+  final UserProfileController controller = Get.put(UserProfileController());
   @override
   Widget build(BuildContext context) => AppBar(
     iconTheme: IconThemeData(color: Get.theme.primaryColor),
     backgroundColor: Get.theme.colorScheme.primaryContainer.withAlpha(180),
-    title: Get.size.width> 450? SizedBox(
-      height: 40,
-      child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
-    ): null,
+    title: Get.size.width > 450
+        ? SizedBox(
+            height: 40,
+            child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
+          )
+        : null,
     actions: [
       IconButton(
         onPressed: showLanguageDialog,
@@ -32,14 +32,19 @@ class ProfileAppBar extends GetView<UserProfileController>
         },
         icon: NotificationIconButton(),
       ),
-      IconButton(
-        onPressed: () {
-          Get.toNamed(Routes.profile);
-        },
-        icon: Icon(
-          Icons.account_circle_outlined,
-          color: Get.theme.primaryColor,
-        ),
+
+      Obx(
+        () => controller.isshowProfile.value
+            ? IconButton(
+                onPressed: () {
+                  Get.toNamed(Routes.profile);
+                },
+                icon: Icon(
+                  Icons.account_circle_outlined,
+                  color: Get.theme.primaryColor,
+                ),
+              )
+            : const SizedBox(),
       ),
     ],
   );

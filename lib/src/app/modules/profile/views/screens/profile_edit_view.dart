@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class ProfileEditView extends GetView<ProfileEditController> {
   const ProfileEditView({super.key});
 
@@ -15,7 +17,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
     appBar: const CustomAppBar(title: 'Edit Profile', showBackButton: true),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       return SingleChildScrollView(

@@ -8,6 +8,8 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class GuidelinesView extends GetView<GuidelineController> {
   const GuidelinesView({super.key});
   @override
@@ -25,7 +27,7 @@ class GuidelinesView extends GetView<GuidelineController> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const Loading();
               }
               if (controller.filteredGuidelines.isEmpty) {
                 return Center(child: Text('no_guidelines_found'.tr));

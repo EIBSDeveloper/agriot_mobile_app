@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/loading.dart';
 import '../../controller/customer_add_controller/customer_add_controller.dart';
 import '../../controller/customercontroller/customer_salaes_controller.dart';
 import '../../repository/customer_add_repository/customer_add_repository.dart';
@@ -45,7 +46,7 @@ class CustomerSalesPage extends StatelessWidget {
       appBar: AppBar(title: Text(isPayable ? 'payables'.tr : 'receivables'.tr)),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
         if (controller.errorMessage.isNotEmpty) {
           return Center(child: Text('error'.tr));

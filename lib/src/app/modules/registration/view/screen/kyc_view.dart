@@ -26,26 +26,27 @@ class KycView extends GetView<KycController> {
                 label: 'Your Name *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
-              gap,
-              _buildTextField(
-                controller: controller.emailController,
-                label: 'Email *',
-                inputFormatters: [
-                  LowerCaseTextFormatter(),
-                ],
-                validator: (value) =>
-                    !GetUtils.isEmail(value!) ? 'Enter valid email' : null,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              gap,
-              _buildTextField(
-                controller: controller.numberController,
-                label: 'Mobile Number *',
-             
-                validator: (value) =>
-                    !GetUtils.isEmail(value!) ? 'Enter valid mobile number' : null,
-                keyboardType: TextInputType.number,
-              ),
+
+              if (!controller.isEmailLogin.value) ...[
+                gap,
+                _buildTextField(
+                  controller: controller.emailController,
+                  label: 'Email *',
+                  inputFormatters: [LowerCaseTextFormatter()],
+                  validator: (value) =>
+                      !GetUtils.isEmail(value!) ? 'Enter valid email' : null,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ] else ...[
+                gap,
+                _buildTextField(
+                  controller: controller.numberController,
+                  label: 'Mobile Number *',
+
+                 validator: (value) => value!.isEmpty ? 'Required field' : null,
+                  keyboardType: TextInputType.number,
+                ),
+              ],
               gap,
               _buildTextField(
                 controller: controller.companyController,
@@ -63,7 +64,6 @@ class KycView extends GetView<KycController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             
               _buildTextField(
                 controller: controller.pincodeController,
                 label: 'Pincode *',
@@ -77,9 +77,10 @@ class KycView extends GetView<KycController> {
                 keyboardType: TextInputType.number,
               ),
               gap,
-               _buildTextField(
+              _buildTextField(
                 controller: controller.doorNoController,
-                label: 'Address',maxLines: 3
+                label: 'Address',
+                maxLines: 3,
               ),
               gap,
               _buildTextField(
@@ -104,9 +105,10 @@ class KycView extends GetView<KycController> {
     required TextEditingController controller,
     required String label,
     List<TextInputFormatter>? inputFormatters,
-    String? Function(String?)? validator, 
+    String? Function(String?)? validator,
     TextInputType? keyboardType,
-    bool readOnly = false,int? maxLines = 1,
+    bool readOnly = false,
+    int? maxLines = 1,
     VoidCallback? onTap,
   }) => InputCardStyle(
     child: TextFormField(

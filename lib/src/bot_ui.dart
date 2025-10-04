@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'app/widgets/loading.dart';
 import 'bot.dart';
 
 class ChatPage extends StatelessWidget {
@@ -39,7 +40,7 @@ class ChatPage extends StatelessWidget {
           Obx(() => controller.isLoading.value
               ? const Padding(
                   padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
+                  child: Loading(size:50),
                 )
               : const SizedBox.shrink()),
           Padding(

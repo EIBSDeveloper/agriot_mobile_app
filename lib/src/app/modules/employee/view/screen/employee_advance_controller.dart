@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../controller/employee_advance_controller.dart';
 import '../../model/model.dart';
 class UpdateEmployeeAdvanceView extends GetView<EmployeeAdvanceController> {
@@ -144,7 +145,7 @@ class UpdateEmployeeAdvanceView extends GetView<EmployeeAdvanceController> {
   Widget _buildEmployeeInfo() => Obx(() {
       final data = controller.employeeData.value;
       if (data == null) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
       
       return Container(

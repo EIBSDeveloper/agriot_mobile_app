@@ -1,6 +1,6 @@
 class FuelEntryModel {
   final String dateOfConsumption;
-  final int vendor;
+  final int? vendor;
   final int inventoryType;
   final int inventoryCategory;
   final int inventoryItems;

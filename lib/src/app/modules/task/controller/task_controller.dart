@@ -111,11 +111,16 @@ class TaskController extends GetxController {
   }
 
   Future<void> loadTasks() async {
-    try {
-      await fetchTasks();
+    await fetchTasks();
+    await taskList();
+  }
+
+  Future<void> taskList() async {
+     try {
+      
       isLoading(true);
       taskGroups.clear();
-
+    
       final tasks = await _repository.getTaskList(
         landId: selectedLand.value.id,
         month: selectedMonth.value,
@@ -328,16 +333,7 @@ class TaskController extends GetxController {
     }
   }
 
-  Map<DateTime, List<Event>> get events {
-    if (taskResponse.value == null) return {};
-    final eventsMap = <DateTime, List<Event>>{};
-    for (final event in taskResponse.value!.events) {
-      final date = DateFormat('yyyy-MM-dd').parse(event.date);
-      eventsMap[date] = eventsMap[date] ?? [];
-      eventsMap[date]!.add(event);
-    }
-    return eventsMap;
-  }
+
 
   int getTotalTaskCount() {
     if (taskResponse.value == null) return 0;

@@ -61,6 +61,8 @@ class AppDrawer extends StatelessWidget {
         //     Get.toNamed(Routes.updateEmployeeAdvance);
         //   },
         // ),
+        
+        const Divider(),
         _buildDrawerItem(
           icon: Icons.account_balance_wallet,
           label: "My Outstanding",
@@ -77,14 +79,16 @@ class AppDrawer extends StatelessWidget {
             Get.toNamed(Routes.vendorCustomer);
           },
         ),
-        _buildDrawerItem(
-          icon: Icons.data_exploration_outlined,
-          label: "Sales",
-          onTap: () {
-            Get.back();
-            Get.toNamed(Routes.sales);
-          },
-        ),
+        // _buildDrawerItem(
+        //   icon: Icons.data_exploration_outlined,
+        //   label: "Sales",
+        //   onTap: () {
+        //     Get.back();
+        //     Get.toNamed(Routes.sales);
+        //   },
+        // ),
+        
+        const Divider(),
         _buildDrawerItem(
           icon: Icons.store,
           label: "Markets",
@@ -93,6 +97,7 @@ class AppDrawer extends StatelessWidget {
             Get.toNamed(Routes.nearMe);
           },
         ),
+        const Divider(),
         _buildDrawerItem(
           icon: Icons.subscriptions,
           label: "Subscription",
@@ -101,6 +106,7 @@ class AppDrawer extends StatelessWidget {
             Get.toNamed(Routes.subscriptionPlans);
           },
         ),
+        const Divider(),
       ],
     ),
   );

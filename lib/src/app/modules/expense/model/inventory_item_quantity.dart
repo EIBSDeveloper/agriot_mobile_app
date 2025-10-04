@@ -2,13 +2,13 @@ class InventoryItemQuantity {
   final int id;
   final int availableQuans;
   final String name;
-  final String unitType;
+  final String? unitType;
 
   InventoryItemQuantity({
     required this.id,
     required this.availableQuans,
     required this.name,
-    required this.unitType,
+     this.unitType,
   });
 
   factory InventoryItemQuantity.fromJson(Map<String, dynamic> json) =>

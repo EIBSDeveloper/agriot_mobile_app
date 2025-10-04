@@ -29,7 +29,7 @@ class FarmerRepository {
       // Prepare the request body
       final body = {
         "name": name,
-        if (phone != null) "phone": phone,
+        if (phone != null &&phone.isNotEmpty) "phone": phone,
         "email": email,
         "door_no": doorNo,
         "pincode": pincode,

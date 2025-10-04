@@ -19,24 +19,22 @@ class MyNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CachedNetworkImage(
-      imageUrl: imageUrl,
-      width: width,
-      height: height,
-      fit: fit,
-      progressIndicatorBuilder:
-          (context, url, downloadProgress) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: LoadingAnimationWidget.hexagonDots(
-                color: Get.theme.primaryColor,
-                size: 40,
-              ),
-            ),
-          ),
-      errorWidget:
-          (context, url, error) => const Icon(Icons.now_wallpaper_outlined),
-    );
+    imageUrl: imageUrl,
+    width: width,
+    height: height,
+    fit: fit,
+    progressIndicatorBuilder: (context, url, downloadProgress) => Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: LoadingAnimationWidget.hexagonDots(
+        color: Get.theme.primaryColor,
+        size: 50,
+      ),
+    ),
+    errorWidget: (context, url, error) =>
+        const Icon(Icons.broken_image_outlined),
+  );
 }
+
 class MyNetworkImageProvider extends StatelessWidget {
   const MyNetworkImageProvider(
     this.imageUrl, {
@@ -53,20 +51,19 @@ class MyNetworkImageProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CachedNetworkImage(
-      imageUrl: imageUrl,
-      fit: fit,
-      width: width,
-      height: height,
-      placeholder: (context, url) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: LoadingAnimationWidget.hexagonDots(
-            color: Get.theme.primaryColor,
-            size: 40,
-          ),
+    imageUrl: imageUrl,
+    fit: fit,
+    width: width,
+    height: height,
+    placeholder: (context, url) => Center(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: LoadingAnimationWidget.hexagonDots(
+          color: Get.theme.primaryColor,
+          size: 40,
         ),
       ),
-      errorWidget: (context, url, error) =>
-          const Icon(Icons.wallpaper_outlined),
-    );
+    ),
+    errorWidget: (context, url, error) => const Icon(Icons.wallpaper_outlined),
+  );
 }

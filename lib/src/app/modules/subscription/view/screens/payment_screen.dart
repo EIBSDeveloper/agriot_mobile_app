@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
+import '../../../../widgets/loading.dart';
+
 
 class PaymentScreen extends StatelessWidget {
   const PaymentScreen({super.key});
@@ -92,7 +94,7 @@ class PaymentScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               if (controller.isLoading.value)
-                const CircularProgressIndicator()
+                const Loading(size:50)
               else
                 ElevatedButton(
                   onPressed: () =>

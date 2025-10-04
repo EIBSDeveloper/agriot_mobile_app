@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
+import '../../../../widgets/loading.dart';
+
 class AddVendorCustomerView extends StatelessWidget {
   final VendorCustomerController controller = Get.put(VendorCustomerController());
    AddVendorCustomerView({super.key});
@@ -161,7 +163,7 @@ class AddVendorCustomerView extends StatelessWidget {
       const SizedBox(height: 8),
       Obx(() {
         if (controller.isinveroryLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         final model = controller.purchaseModel.value;

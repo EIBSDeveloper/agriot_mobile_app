@@ -87,15 +87,15 @@ class _TaskCardState extends State<TaskCard> {
                   Text(task.activityTypeName ?? ''),
                   const SizedBox(height: 4),
 
-                  if (task.description.isNotEmpty) ...[
-                    const SizedBox(height: 2),
-                    Text(
-                      task.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
+                  // if (task.description.isNotEmpty) ...[
+                  //   const SizedBox(height: 2),
+                  //   Text(
+                  //     task.description,
+                  //     maxLines: 1,
+                  //     overflow: TextOverflow.ellipsis,
+                  //     style: Theme.of(context).textTheme.bodySmall,
+                  //   ),
+                  // ],
                   if (Get.mediaQuery.size.width <= 600) _buildStatus(),
                 ],
               ),
@@ -114,20 +114,19 @@ class _TaskCardState extends State<TaskCard> {
     ),
   );
   Widget _buildStatus() {
-    bool isPastDate = false;
+   bool isEditable = false;
 
-    if (task.taskDate != null) {
-      final taskDate = DateTime(
-        task.taskDate!.year,
-        task.taskDate!.month,
-        task.taskDate!.day,
-      );
-      final today = DateTime.now();
-      final todayDate = DateTime(today.year, today.month, today.day);
+if (task.taskDate != null) {
+  final taskDate = DateTime(
+    task.taskDate!.year,
+    task.taskDate!.month,
+    task.taskDate!.day,
+  );
+  final today = DateTime.now();
+  final todayDate = DateTime(today.year, today.month, today.day);
 
-      isPastDate = taskDate.isBefore(todayDate);
-    }
-
+  isEditable = taskDate.isAtSameMomentAs(todayDate); 
+}
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -137,13 +136,13 @@ class _TaskCardState extends State<TaskCard> {
             child: InputCardStyle(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Tooltip(
-                message: isPastDate
+                message: !isEditable
                     ? 'Cannot change status for past tasks'
                     : '',
                 child: Opacity(
-                  opacity: isPastDate ? 0.6 : 1.0, 
+                  opacity: !isEditable ? 0.6 : 1.0, 
                   child: IgnorePointer(
-                    ignoring: isPastDate, 
+                    ignoring: !isEditable, 
                     child: DropdownButtonFormField<TaskTypes>(
                       initialValue: task.status,
                       icon: const Icon(Icons.keyboard_arrow_down),
@@ -151,7 +150,7 @@ class _TaskCardState extends State<TaskCard> {
                         labelText: "Status",
                         border: InputBorder.none,
                      
-                        enabled: !isPastDate,
+                        enabled: !isEditable,
                       ),
                       items: statusList
                           .map(
@@ -167,7 +166,7 @@ class _TaskCardState extends State<TaskCard> {
                           )
                           .toList(),
                       // keep onChanged null when disabled for form semantics
-                      onChanged: isPastDate
+                      onChanged: !isEditable
                           ? null
                           : (value) async {
                               if (value != null) {

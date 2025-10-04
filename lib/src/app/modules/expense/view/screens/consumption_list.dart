@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 
 class ConsumptionList extends StatelessWidget {
   final List<ConsumptionItem> records;
@@ -38,7 +39,7 @@ class ConsumptionList extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: isLoadingMore
-                  ? const CircularProgressIndicator()
+                  ? const Loading()
                   : const SizedBox.shrink(),
             ),
           );

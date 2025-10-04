@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../controller/employee_details_controller.dart';
 import '../widget/detail_row.dart';
 import '../widget/profile_header.dart';
@@ -18,7 +19,7 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
     ),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       return SingleChildScrollView(

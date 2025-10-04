@@ -337,7 +337,7 @@ double calculatePolygonAreaSqFt(List<LatLng> points) {
 //         appBar: const CustomAppBar(title: 'Land Details'),
 //         body: Obx(() {
 //           if (controller.isLoading.value) {
-//             return const Center(child: CircularProgressIndicator());
+//             return const Loading();
 //           }
 
 //           return Stack(

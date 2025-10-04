@@ -1206,7 +1206,7 @@ class MyFuelSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'farmer', 'date_of_consumption', 'vendor', 'inventory_type',  'inventory_items',
-            'inventory_category', 'inventory_items', 'quantity', 'purchase_amount', 
+         'inventory_items', 'quantity', 'purchase_amount', 
             'description'
             # 'documents'
         ]
@@ -1216,11 +1216,11 @@ class MyFuelSerializer(serializers.ModelSerializer):
             return obj.inventory_type.name  # Return the name of the related InventoryItem
         return None  # Return None or appropriate value if no related item exists
 
-    def get_inventory_category(self, obj):
-        # If inventory_items is a ForeignKey, access the related object directly
-        if obj.inventory_category:
-            return obj.inventory_category.name  # Return the name of the related InventoryItem
-        return None  # Return None or appropriate value if no related item exists
+    # def get_inventory_category(self, obj):
+    #     # If inventory_items is a ForeignKey, access the related object directly
+    #     if obj.inventory_category:
+    #         return obj.inventory_category.name  # Return the name of the related InventoryItem
+    #     return None  # Return None or appropriate value if no related item exists
     
     def get_inventory_items(self, obj):
         # If inventory_items is a ForeignKey or ManyToManyField, handle accordingly
@@ -1627,7 +1627,6 @@ class MyFuelAddSerializer(serializers.ModelSerializer):
             'date_of_consumption',
             'vendor',
             'inventory_type',
-            'inventory_category',
             'inventory_items',
             'quantity',
             'purchase_amount',
@@ -1641,12 +1640,14 @@ class MyFuelAddSerializer(serializers.ModelSerializer):
             'identify',
             'translate_json'
         ]
-
-    # Required Fields
+    # Required Fields 
     date_of_consumption = serializers.DateField(required=True)
-    vendor = serializers.PrimaryKeyRelatedField(queryset=MyVendor.objects.all(), required=True)
+    vendor = serializers.PrimaryKeyRelatedField(
+        queryset=MyVendor.objects.all(),
+        required=False,
+        allow_null=True
+    )
     inventory_type = serializers.PrimaryKeyRelatedField(queryset=InventoryType.objects.all(), required=True)
-    inventory_category = serializers.PrimaryKeyRelatedField(queryset=InventoryCategory.objects.all(), required=True)
     inventory_items = serializers.PrimaryKeyRelatedField(queryset=InventoryItems.objects.all(), required=True)
     quantity = serializers.DecimalField(required=True, max_digits=10, decimal_places=2)
     purchase_amount = serializers.DecimalField(required=True, max_digits=10, decimal_places=2)
@@ -1654,6 +1655,7 @@ class MyFuelAddSerializer(serializers.ModelSerializer):
 
     # Optional Fields
     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
 
 class MyVehicleAddSerializer(serializers.ModelSerializer):
     class Meta:
@@ -2811,14 +2813,27 @@ def ExpneseSerializeRecord(record, language_code, date_field, extra_fields=None)
     return data
 
 
-
 class EmployeeSerializer(serializers.ModelSerializer):
+    employee_type_name = serializers.CharField(source="employee_type.name", read_only=True)
+    work_type_name = serializers.CharField(source="work_type.name", read_only=True)  # optional if you also want work_type name
+
     class Meta:
         model = Employee
-        fields = ["id", "name", "mobile_no", "employee_type_id", "work_type_id", "status"]
-
+        fields = [
+            "id", "name", "mobile_no",
+            "employee_type", "employee_type_name",   # both id + name
+            "work_type", "work_type_name",           # both id + name
+            "status", "door_no"
+        ]
 
 class ManagerSerializer(serializers.ModelSerializer):
+    employee_type_name = serializers.CharField(source="employee_type.name", read_only=True)
+    role_name = serializers.CharField(source="role.name", read_only=True)
+
     class Meta:
         model = ManagerUser
-        fields = ["id", "name", "mobile_no", "email"]
+        fields = [
+            "id", "name", "mobile_no", "email", "address",
+            "employee_type", "employee_type_name",
+            "role", "role_name"
+        ]

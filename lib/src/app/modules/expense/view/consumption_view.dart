@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../service/utils/enums.dart';
+import '../../../widgets/loading.dart';
 import '../../document/document.dart';
 
 class ConsumptionView extends StatelessWidget {
@@ -340,7 +341,7 @@ class ConsumptionView extends StatelessWidget {
         minimumSize: const Size(double.infinity, 50),
       ),
       child: controller.isLoading.value
-          ? const CircularProgressIndicator()
+          ? const Loading(size:50)
           : Text('save'.tr),
     ),
   );

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
 import '../../../../service/utils/enums.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/my_network_image.dart';
 import '../../../near_me/views/widget/custom_app_bar.dart';
 import '../../controller/document_viewer_controller.dart' as forming;
@@ -31,7 +32,7 @@ class DocumentViewerView extends GetView<forming.DocumentViewerController> {
     ),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.error.isNotEmpty) {

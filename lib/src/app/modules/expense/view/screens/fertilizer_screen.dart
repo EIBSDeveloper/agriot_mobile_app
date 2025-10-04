@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../service/utils/utils.dart';
+import '../../../../widgets/loading.dart';
 
 class FertilizerScreen extends GetView<PurchasesAddController> {
   const FertilizerScreen({super.key});
@@ -62,7 +63,7 @@ class FertilizerScreen extends GetView<PurchasesAddController> {
                       ? controller.submitFertilizerForm
                       : null,
                   child: controller.isLoading.value
-                      ? const CircularProgressIndicator()
+                      ? const Loading(size:50)
                       : Text('add_button'.tr),
                 ),
               ),

@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/loading.dart';
 import '../../controller/vendorcontroller/vendorcontroller.dart';
 import '../../repository/vendor_repository/vendor_repository.dart';
 
@@ -35,7 +36,7 @@ class VendorHistoryPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         final historyList = isPayable

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../model/purchase_record.dart';
 import '../widgets/month_day_format.dart';
 
@@ -37,7 +38,7 @@ class PurchaseList extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: isLoadingMore
-                  ? const CircularProgressIndicator()
+                  ? const Loading()
                   : const SizedBox.shrink(),
             ),
           );

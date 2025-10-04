@@ -6,6 +6,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:argiot/src/app/widgets/finance_line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../widgets/loading.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
 import '../../../../../payable/pages/payables_receivables/payables_receivables_screen.dart';
 import '../../../../routes/app_routes.dart';
@@ -22,7 +23,7 @@ class DashboardView extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) => Obx(() {
     if (controller.isLoading.value) {
-      return const Center(child: CircularProgressIndicator());
+      return const Loading();
     }
 
     return RefreshIndicator(
@@ -510,7 +511,7 @@ class DashboardView extends GetView<DashboardController> {
         const SizedBox(height: 5),
         Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Loading();
           }
 
           if (controller.marketError.isNotEmpty) {

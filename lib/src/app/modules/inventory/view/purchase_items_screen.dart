@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
+import '../../../widgets/loading.dart';
 import '../controller/inventory_controller.dart';
 
 class PurchaseItemsScreen extends GetView<InventoryController> {
@@ -18,7 +19,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
       },
       child: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         if (controller.errorMessage.value.isNotEmpty) {
@@ -37,12 +38,11 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               '',
               open: () {},
               onTap: () {
+                Get.back();
                 Get.toNamed(Routes.newSales, arguments: {"new": true})?.then((
                   result,
                 ) {
-                  if (result ?? false) {
-                    // controller.fetchSalesList();
-                  }
+                  
                 });
               },
             ),
@@ -51,6 +51,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
               '',
               open: () {},
               onTap: () {
+                Get.back();
                 Get.toNamed(Routes.addExpense)?.then((res) {});
               },
             ),

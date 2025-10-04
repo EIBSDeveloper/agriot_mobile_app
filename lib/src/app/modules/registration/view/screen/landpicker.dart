@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../../widgets/loading.dart';
 import '../../controller/location_picker_controller.dart';
 
 class LocationPickerView extends GetView<LocationPickerController> {
@@ -22,7 +23,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
       children: [
         Obx(() {
           if (controller.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+            return const Loading();
           }
           return GoogleMap(
             // key: UniqueKey(),

@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/loading.dart';
 
 class AddExpenseScreen extends GetView<ExpenseController> {
   final _formKey = GlobalKey<FormState>();
@@ -22,7 +23,7 @@ class AddExpenseScreen extends GetView<ExpenseController> {
         key: _formKey,
         child: Obx(() {
           if (controller.isLoading.value ) {
-            return const Center(child: CircularProgressIndicator());
+            return const Loading();
           }
           return Column(
             children: [

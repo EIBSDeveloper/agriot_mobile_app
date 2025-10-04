@@ -7,10 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../service/utils/enums.dart';
-import '../../../../service/utils/pop_messages.dart';
-import '../../../../service/utils/utils.dart';
 import '../../../../routes/app_routes.dart';
-import '../../../subscription/model/package_usage.dart';
+import '../../../../widgets/loading.dart';
 
 class NewSalesView extends StatefulWidget {
   const NewSalesView({super.key});
@@ -37,7 +35,7 @@ class _NewSalesViewState extends State<NewSalesView> {
 
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
       return SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -146,7 +144,7 @@ class _NewSalesViewState extends State<NewSalesView> {
           child: DropdownButtonFormField<int>(
             icon: const Icon(Icons.keyboard_arrow_down),
             decoration: InputDecoration(
-              labelText: "${'customer'.tr } * ",
+              labelText: "${'customer'.tr} * ",
               border: InputBorder.none,
             ),
             initialValue: controller.selectedCustomer.value,
@@ -169,14 +167,9 @@ class _NewSalesViewState extends State<NewSalesView> {
         child: IconButton(
           color: Colors.white,
           onPressed: () async {
-            PackageUsage? package = await findLimit();
-            if (package!.customerBalance > 0) {
-              Get.toNamed( Routes.addVendorCustomer)?.then((result) {
-                controller.fetchCustomerList();
-              });
-            } else {
-              showDefaultGetXDialog("vendor_customer".tr);
-            }
+            Get.toNamed(Routes.addVendorCustomer)?.then((result) {
+              controller.fetchCustomerList();
+            });
           },
           icon: const Icon(Icons.add),
         ),
@@ -200,7 +193,8 @@ class _NewSalesViewState extends State<NewSalesView> {
       },
       child: InputDecorator(
         decoration: InputDecoration(
-          labelText: 'date'.tr,contentPadding: EdgeInsets.zero,
+          labelText: 'date'.tr,
+          contentPadding: EdgeInsets.zero,
           border: InputBorder.none,
         ),
         child: Row(
@@ -222,9 +216,8 @@ class _NewSalesViewState extends State<NewSalesView> {
   Widget _buildSalesQuantityField() => InputCardStyle(
     padding: const EdgeInsets.symmetric(horizontal: 8),
     child: TextFormField(
-
       decoration: InputDecoration(
-        labelText: "${'sales_quantity'.tr } *",
+        labelText: "${'sales_quantity'.tr} *",
         border: InputBorder.none,
       ),
       keyboardType: TextInputType.number,

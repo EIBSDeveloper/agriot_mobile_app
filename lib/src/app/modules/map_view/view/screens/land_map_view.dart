@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/loading.dart';
 
 class LandMapView extends GetView<LandMapViewController> {
   const LandMapView({super.key});
@@ -20,7 +21,7 @@ class LandMapView extends GetView<LandMapViewController> {
     appBar: const CustomAppBar(title: 'Land Details'),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       return Stack(

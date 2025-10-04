@@ -5,6 +5,7 @@ import 'package:argiot/src/app/modules/subscription/controller/subscription_cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 
 class SubscriptionPlansScreen extends StatelessWidget {
@@ -18,7 +19,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
       appBar: CustomAppBar(title: 'subscription_plans'.tr),
       body: Obx(() {
         if (controller.isLoading.value && controller.packages.value == null) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         if (controller.errorMessage.value.isNotEmpty) {

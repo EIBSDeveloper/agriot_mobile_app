@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_icons.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../controller/forming_controller.dart';
 import '../widget/land_card.dart';
 
@@ -14,7 +15,7 @@ class FormingView extends GetView<FormingController> {
   Widget build(BuildContext context) => Scaffold(
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.error.isNotEmpty) {

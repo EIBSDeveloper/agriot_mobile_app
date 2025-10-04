@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class CreateManagerScreen extends GetView<ManagerController> {
   const CreateManagerScreen({super.key});
 
@@ -290,7 +292,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             Obx(() {
               if (controller.selectedRoleType.value?.id == 0) {
                 if (controller.isLoadingManager.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Loading();
                 }
                 return Column(
                   children: [
@@ -387,7 +389,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                       child: Obx(() {
                         if (controller.isLoading.value) {
                           return const Center(
-                            child: CircularProgressIndicator(),
+                            child: Loading(),
                           );
                         }
 

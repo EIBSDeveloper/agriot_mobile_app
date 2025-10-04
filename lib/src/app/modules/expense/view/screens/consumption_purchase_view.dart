@@ -6,6 +6,8 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
   const ConsumptionPurchaseView({super.key});
 
@@ -80,7 +82,7 @@ class ConsumptionPurchaseView extends GetView<ConsumptionPurchaseController> {
           child: Obx(() {
             if (controller.isLoading.value ||
                 controller.selectedInventoryType.value == null) {
-              return const Center(child: CircularProgressIndicator());
+              return const Loading();
             }
             return TabBarView(
               controller: controller.tabController,

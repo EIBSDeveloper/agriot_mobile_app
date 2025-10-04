@@ -55,12 +55,16 @@ class Manager {
   final String name;
   final String mobileNo;
   final String email;
+  final String address;
+  final String employeeTypeName;
 
   Manager({
     required this.id,
     required this.name,
     required this.mobileNo,
     required this.email,
+    required this.address,
+    required this.employeeTypeName,
   });
 
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
@@ -68,6 +72,8 @@ class Manager {
       name: json['name'] ?? '',
       mobileNo: (json['mobile_no'] ?? '').toString(),
       email: json['email'] ?? '',
+       address: json['address'] ?? '',
+       employeeTypeName: json['employee_type_name'] ?? '',
     );
 
   // Convert to UserModel for compatibility
@@ -76,7 +82,7 @@ class Manager {
       name: name,
       role: 'Manager',
       number: mobileNo,
-      address: email,
+      address: address,
       profile: '',
     );
 }
@@ -85,16 +91,16 @@ class Employee {
   final int id;
   final String name;
   final String mobileNo;
-  final int? employeeTypeId;
-  final int? workTypeId;
+  final String? employeeType;
+  final String? workType;
   final int status;
 
   Employee({
     required this.id,
     required this.name,
     required this.mobileNo,
-    this.employeeTypeId,
-    this.workTypeId,
+    this.employeeType,
+    this.workType,
     required this.status,
   });
 
@@ -102,8 +108,8 @@ class Employee {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       mobileNo: (json['mobile_no'] ?? '').toString(),
-      employeeTypeId: json['employee_type_id'],
-      workTypeId: json['work_type_id'],
+      employeeType: json['employee_type_name'],
+      workType: json['work_type_name'],
       status: json['status'] ?? 0,
     );
 
@@ -113,7 +119,7 @@ class Employee {
       name: name,
       role: 'Employee',
       number: mobileNo,
-      address: '',
+      address:workType??'',
       profile: '',
     );
 }

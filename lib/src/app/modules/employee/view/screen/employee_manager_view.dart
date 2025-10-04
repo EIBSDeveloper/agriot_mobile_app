@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../controller/employee_manager_list_controller.dart';
 
 import '../widget/filter_section.dart';
@@ -49,7 +50,7 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
                           ? const Padding(
                               padding: EdgeInsets.all(100.0),
                               child:
-                                  Center(child: CircularProgressIndicator()),
+                                  Loading(),
                             )
                           : const SizedBox.shrink();
                     }
@@ -65,6 +66,7 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
                 );
               }),
             ),
+        
           ],
         ),
       ),

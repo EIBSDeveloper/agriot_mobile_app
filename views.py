@@ -101,7 +101,9 @@ from django.db.models import Prefetch
 from collections import OrderedDict
 
 logger = logging.getLogger('api')
+import logging
 
+mylogger = logging.getLogger(__name__)
 
 target_language = ['ta', 'hi']
 SUPPORTED_LANGUAGES = ['en', 'ta', 'hi']
@@ -1173,6 +1175,182 @@ def send_sms(mobile_number, message_content):
         print(f"Exception sending SMS: {e}")
         return {"status": "error", "message": str(e)}
 
+@api_view(['POST'])
+def edit_farmer(request, id=None):
+    try:       
+        farmer = get_object_or_404(Farmer, id=id)
+        data = request.data
+
+        old_status = farmer.status  # Save the old status before changes
+
+        # Validate unique phone number
+        if 'phone' in data:
+            phone = data.get('phone')
+            if Farmer.objects.exclude(id=id).filter(phone=phone).exists():
+                return JsonResponse({"error": "The phone number is already in use by another farmer."}, status=400)
+
+        # Google Translate logic
+        translate_json = farmer.translate_json if farmer.translate_json else {
+            "name": {},
+            "company_name": {},
+            "door_no": {},
+            "description": {}
+        }
+
+        # Name + Translation
+        farmer.name = data.get('name', farmer.name)
+        if 'name' in data:
+            for lang in target_language:
+                try:
+                    translated_name = GoogleTranslator(source='auto', target=lang).translate(farmer.name)
+                    translate_json["name"][lang] = translated_name
+                except Exception as e:
+                    print(f"Error translating name to {lang}: {e}")
+
+        # Description + Translation
+        farmer.description = data.get('description', farmer.description)
+        if 'description' in data:
+            for lang in target_language:
+                try:
+                    translated_desc = GoogleTranslator(source='auto', target=lang).translate(farmer.description)
+                    translate_json["description"][lang] = translated_desc
+                except Exception as e:
+                    print(f"Error translating description to {lang}: {e}")
+
+        # Company name + Translation
+        farmer.company_name = data.get('company_name', farmer.company_name)
+        if 'company_name' in data:
+            for lang in target_language:
+                try:
+                    translated_company = GoogleTranslator(source='auto', target=lang).translate(farmer.company_name)
+                    translate_json["company_name"][lang] = translated_company
+                except Exception as e:
+                    print(f"Error translating company name to {lang}: {e}")
+
+        # Door no + Translation
+        farmer.door_no = data.get('door_no', farmer.door_no)
+        if 'door_no' in data:
+            for lang in target_language:
+                try:
+                    translated_door = GoogleTranslator(source='auto', target=lang).translate(farmer.door_no)
+                    translate_json["door_no"][lang] = translated_door
+                except Exception as e:
+                    print(f"Error translating door no to {lang}: {e}")
+
+        # Other fields
+        farmer.phone = data.get('phone', farmer.phone)
+        farmer.email = data.get('email', farmer.email)
+        farmer.pincode = data.get('pincode', farmer.pincode)
+        farmer.tax_no = data.get('tax_no', farmer.tax_no)
+        farmer.created_at = timezone.now()
+
+        # Location fields update with URL parsing
+        locations_input = data.get('locations', farmer.locations)
+        farmer.locations = locations_input
+        mylogger.info("2")
+        mylogger.info("locations data loaded")
+        farmer.latitude = data.get('latitude', 0.0)
+        farmer.longitude = data.get('longitude', 0.0)
+        mylogger.info("3")
+        # Image handling
+        if 'img' in data:
+            img_data = data['img']
+            if img_data.startswith("data:image"):
+                try:
+                    image_data = img_data.split(';base64,')[1]
+                    img_name = f'farmer_{farmer.id}_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
+                    decoded_img = base64.b64decode(image_data)
+                    img_file = ContentFile(decoded_img, name=img_name)
+                    farmer.img.save(img_name, img_file, save=True)
+                except Exception as e:
+                    print(f"Image decoding failed: {e}")
+
+        # Set status to 0 (default)
+        farmer.status = 0
+        mylogger.info("4")
+        mylogger.info("image data load")
+        try:
+            with transaction.atomic():
+                farmer.full_clean()
+
+                # Update linked CustomUser
+                if farmer.farmer_user:
+                    farmer_user = farmer.farmer_user
+                    farmer_user.name = data.get('name', farmer_user.name)
+                    farmer_user.phone_number = data.get('phone', farmer_user.phone_number)
+                    farmer_user.email = data.get('email', farmer_user.email)
+                    farmer_user.save()
+
+                # Subscription status handling
+                if farmer.status == 0:
+                    subscription = AddSubcription.objects.filter(farmers=farmer).first()
+                    if subscription:
+                        subscription.status = 0
+                        subscription.save()
+
+                farmer.translate_json = translate_json
+                farmer.save()
+
+                # Check if status changed from 7 to 0 and create notification + send email
+                if old_status == 7 and farmer.status == 0:
+                    notification_message = "Try full access free for 3 days — subscribe to keep using the service."
+                    
+                    # Create DB notification
+                    FarmerNotification.objects.create(
+                        farmer=farmer,
+                        name="New Farmer",
+                        type="Farmer Management",
+                        message=notification_message,
+                        is_read=False
+                    )
+                    
+                    # Send notification email if email exists
+                    if farmer.email:
+                        try:
+                            send_notification_email(
+                                email=farmer.email,
+                                subject="Welcome to Our Service!",
+                                message=notification_message
+                            )
+                        except Exception as e:
+                            print(f"Error sending notification email: {e}")
+
+                    # **Send SMS notification to farmer's phone**
+                    if farmer.phone:
+                        try:
+                            sms_result = send_sms(farmer.phone, notification_message)
+                            print(f"SMS sending result: {sms_result}")
+                        except Exception as e:
+                            print(f"Error sending SMS notification: {e}")
+
+
+                # Create WidgetConfig if not exists
+                if not WidgetConfig.objects.filter(farmer=farmer).exists():
+                    WidgetConfig.objects.create(
+                        farmer=farmer,
+                        created_at=timezone.now()
+                    )
+                    print(f"WidgetConfig created for Farmer ID: {farmer.id}")
+
+                # Send welcome message
+                try:
+                    if farmer.email:
+                        send_welcome_email(farmer.email, farmer.name, farmer.email, farmer.phone)
+                    else:
+                        send_welcome_sms(farmer.phone, farmer.name, farmer.phone, farmer.phone)
+                except Exception as e:
+                    print(f"Error sending welcome notification: {e}")
+
+                mylogger.info("image load")
+                response_data = {"id": farmer.id}
+                return JsonResponse(response_data, status=200)
+
+        except ValidationError as e:
+            return JsonResponse({"errors": e.message_dict}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 @api_view(['PUT', 'DELETE', 'GET'])
@@ -1898,216 +2076,221 @@ def manage_farmer(request, id=None):
     #         return JsonResponse({"error": str(e)}, status=500)
 
     elif request.method == 'PUT':
-        farmer = get_object_or_404(Farmer, id=id)
-        data = request.data
+        try:       
+            farmer = get_object_or_404(Farmer, id=id)
+            data = request.data
 
-        old_status = farmer.status  # Save the old status before changes
+            old_status = farmer.status  # Save the old status before changes
 
-        # Validate unique phone number
-        if 'phone' in data:
-            phone = data.get('phone')
-            if Farmer.objects.exclude(id=id).filter(phone=phone).exists():
-                return JsonResponse({"error": "The phone number is already in use by another farmer."}, status=400)
+            # Validate unique phone number
+            if 'phone' in data:
+                phone = data.get('phone')
+                if Farmer.objects.exclude(id=id).filter(phone=phone).exists():
+                    return JsonResponse({"error": "The phone number is already in use by another farmer."}, status=400)
 
-        # Google Translate logic
-        translate_json = farmer.translate_json if farmer.translate_json else {
-            "name": {},
-            "company_name": {},
-            "door_no": {},
-            "description": {}
-        }
+            # Google Translate logic
+            translate_json = farmer.translate_json if farmer.translate_json else {
+                "name": {},
+                "company_name": {},
+                "door_no": {},
+                "description": {}
+            }
 
-        # Name + Translation
-        farmer.name = data.get('name', farmer.name)
-        if 'name' in data:
-            for lang in target_language:
+            # Name + Translation
+            farmer.name = data.get('name', farmer.name)
+            if 'name' in data:
+                for lang in target_language:
+                    try:
+                        translated_name = GoogleTranslator(source='auto', target=lang).translate(farmer.name)
+                        translate_json["name"][lang] = translated_name
+                    except Exception as e:
+                        print(f"Error translating name to {lang}: {e}")
+
+            # Description + Translation
+            farmer.description = data.get('description', farmer.description)
+            if 'description' in data:
+                for lang in target_language:
+                    try:
+                        translated_desc = GoogleTranslator(source='auto', target=lang).translate(farmer.description)
+                        translate_json["description"][lang] = translated_desc
+                    except Exception as e:
+                        print(f"Error translating description to {lang}: {e}")
+
+            # Company name + Translation
+            farmer.company_name = data.get('company_name', farmer.company_name)
+            if 'company_name' in data:
+                for lang in target_language:
+                    try:
+                        translated_company = GoogleTranslator(source='auto', target=lang).translate(farmer.company_name)
+                        translate_json["company_name"][lang] = translated_company
+                    except Exception as e:
+                        print(f"Error translating company name to {lang}: {e}")
+
+            # Door no + Translation
+            farmer.door_no = data.get('door_no', farmer.door_no)
+            if 'door_no' in data:
+                for lang in target_language:
+                    try:
+                        translated_door = GoogleTranslator(source='auto', target=lang).translate(farmer.door_no)
+                        translate_json["door_no"][lang] = translated_door
+                    except Exception as e:
+                        print(f"Error translating door no to {lang}: {e}")
+
+            # Other fields
+            farmer.phone = data.get('phone', farmer.phone)
+            farmer.email = data.get('email', farmer.email)
+            farmer.pincode = data.get('pincode', farmer.pincode)
+            farmer.tax_no = data.get('tax_no', farmer.tax_no)
+            farmer.created_at = timezone.now()
+
+            # Location fields update with URL parsing
+            locations_input = data.get('locations', farmer.locations)
+            farmer.locations = locations_input
+            mylogger.info("2")
+            mylogger.info("locations data loaded")
+            if locations_input and 'google.com/maps' in locations_input:
                 try:
-                    translated_name = GoogleTranslator(source='auto', target=lang).translate(farmer.name)
-                    translate_json["name"][lang] = translated_name
+                    import re
+                    match = re.search(r'@([-.\d]+),([-.\d]+)', locations_input)
+                    if match:
+                        farmer.latitude = float(match.group(1))
+                        farmer.longitude = float(match.group(2))
                 except Exception as e:
-                    print(f"Error translating name to {lang}: {e}")
+                    print(f"Error parsing coordinates from URL: {e}")
+            else:
+                farmer.latitude = data.get('latitude', farmer.latitude)
+                farmer.longitude = data.get('longitude', farmer.longitude)
+            mylogger.info("3")
+            # Image handling
+            if 'img' in data:
+                img_data = data['img']
+                if img_data.startswith("data:image"):
+                    try:
+                        image_data = img_data.split(';base64,')[1]
+                        img_name = f'farmer_{farmer.id}_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
+                        decoded_img = base64.b64decode(image_data)
+                        img_file = ContentFile(decoded_img, name=img_name)
+                        farmer.img.save(img_name, img_file, save=True)
+                    except Exception as e:
+                        print(f"Image decoding failed: {e}")
 
-        # Description + Translation
-        farmer.description = data.get('description', farmer.description)
-        if 'description' in data:
-            for lang in target_language:
-                try:
-                    translated_desc = GoogleTranslator(source='auto', target=lang).translate(farmer.description)
-                    translate_json["description"][lang] = translated_desc
-                except Exception as e:
-                    print(f"Error translating description to {lang}: {e}")
-
-        # Company name + Translation
-        farmer.company_name = data.get('company_name', farmer.company_name)
-        if 'company_name' in data:
-            for lang in target_language:
-                try:
-                    translated_company = GoogleTranslator(source='auto', target=lang).translate(farmer.company_name)
-                    translate_json["company_name"][lang] = translated_company
-                except Exception as e:
-                    print(f"Error translating company name to {lang}: {e}")
-
-        # Door no + Translation
-        farmer.door_no = data.get('door_no', farmer.door_no)
-        if 'door_no' in data:
-            for lang in target_language:
-                try:
-                    translated_door = GoogleTranslator(source='auto', target=lang).translate(farmer.door_no)
-                    translate_json["door_no"][lang] = translated_door
-                except Exception as e:
-                    print(f"Error translating door no to {lang}: {e}")
-
-        # Other fields
-        farmer.phone = data.get('phone', farmer.phone)
-        farmer.email = data.get('email', farmer.email)
-        farmer.pincode = data.get('pincode', farmer.pincode)
-        farmer.tax_no = data.get('tax_no', farmer.tax_no)
-        farmer.created_at = timezone.now()
-
-        # Location fields update with URL parsing
-        locations_input = data.get('locations', farmer.locations)
-        farmer.locations = locations_input
-
-        if locations_input and 'google.com/maps' in locations_input:
+            # Set status to 0 (default)
+            farmer.status = 0
+            mylogger.info("4")
+            mylogger.info("image data load")
             try:
-                import re
-                match = re.search(r'@([-.\d]+),([-.\d]+)', locations_input)
-                if match:
-                    farmer.latitude = float(match.group(1))
-                    farmer.longitude = float(match.group(2))
-            except Exception as e:
-                print(f"Error parsing coordinates from URL: {e}")
-        else:
-            farmer.latitude = data.get('latitude', farmer.latitude)
-            farmer.longitude = data.get('longitude', farmer.longitude)
+                with transaction.atomic():
+                    farmer.full_clean()
 
-        # Image handling
-        if 'img' in data:
-            img_data = data['img']
-            if img_data.startswith("data:image"):
-                try:
-                    image_data = img_data.split(';base64,')[1]
-                    img_name = f'farmer_{farmer.id}_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
-                    decoded_img = base64.b64decode(image_data)
-                    img_file = ContentFile(decoded_img, name=img_name)
-                    farmer.img.save(img_name, img_file, save=True)
-                except Exception as e:
-                    print(f"Image decoding failed: {e}")
+                    # Update linked CustomUser
+                    if farmer.farmer_user:
+                        farmer_user = farmer.farmer_user
+                        farmer_user.name = data.get('name', farmer_user.name)
+                        farmer_user.phone_number = data.get('phone', farmer_user.phone_number)
+                        farmer_user.email = data.get('email', farmer_user.email)
+                        farmer_user.save()
 
-        # Set status to 0 (default)
-        farmer.status = 0
+                    # Subscription status handling
+                    if farmer.status == 0:
+                        subscription = AddSubcription.objects.filter(farmers=farmer).first()
+                        if subscription:
+                            subscription.status = 0
+                            subscription.save()
 
-        try:
-            with transaction.atomic():
-                farmer.full_clean()
+                    farmer.translate_json = translate_json
+                    farmer.save()
 
-                # Update linked CustomUser
-                if farmer.farmer_user:
-                    farmer_user = farmer.farmer_user
-                    farmer_user.name = data.get('name', farmer_user.name)
-                    farmer_user.phone_number = data.get('phone', farmer_user.phone_number)
-                    farmer_user.email = data.get('email', farmer_user.email)
-                    farmer_user.save()
+                    # Check if status changed from 7 to 0 and create notification
+                    # if old_status == 7 and farmer.status == 0:
+                    #     notification_message = "Try full access free for 3 days — subscribe to keep using the service."
+                    #     FarmerNotification.objects.create(
+                    #         farmer=farmer,
+                    #         name="New Farmer",
+                    #         type="Farmer Management",
+                    #         message=notification_message,
+                    #         is_read=False
+                    #     )
 
-                # Subscription status handling
-                if farmer.status == 0:
-                    subscription = AddSubcription.objects.filter(farmers=farmer).first()
-                    if subscription:
-                        subscription.status = 0
-                        subscription.save()
+                    # Check if status changed from 7 to 0 and create notification + send email
+                    if old_status == 7 and farmer.status == 0:
+                        notification_message = "Try full access free for 3 days — subscribe to keep using the service."
+                        
+                        # Create DB notification
+                        FarmerNotification.objects.create(
+                            farmer=farmer,
+                            name="New Farmer",
+                            type="Farmer Management",
+                            message=notification_message,
+                            is_read=False
+                        )
+                        
+                        # Send notification email if email exists
+                        if farmer.email:
+                            try:
+                                send_notification_email(
+                                    email=farmer.email,
+                                    subject="Welcome to Our Service!",
+                                    message=notification_message
+                                )
+                            except Exception as e:
+                                print(f"Error sending notification email: {e}")
 
-                farmer.translate_json = translate_json
-                farmer.save()
-
-                # Check if status changed from 7 to 0 and create notification
-                # if old_status == 7 and farmer.status == 0:
-                #     notification_message = "Try full access free for 3 days — subscribe to keep using the service."
-                #     FarmerNotification.objects.create(
-                #         farmer=farmer,
-                #         name="New Farmer",
-                #         type="Farmer Management",
-                #         message=notification_message,
-                #         is_read=False
-                #     )
-
-                # Check if status changed from 7 to 0 and create notification + send email
-                if old_status == 7 and farmer.status == 0:
-                    notification_message = "Try full access free for 3 days — subscribe to keep using the service."
-                    
-                    # Create DB notification
-                    FarmerNotification.objects.create(
-                        farmer=farmer,
-                        name="New Farmer",
-                        type="Farmer Management",
-                        message=notification_message,
-                        is_read=False
-                    )
-                    
-                    # Send notification email if email exists
-                    if farmer.email:
-                        try:
-                            send_notification_email(
-                                email=farmer.email,
-                                subject="Welcome to Our Service!",
-                                message=notification_message
-                            )
-                        except Exception as e:
-                            print(f"Error sending notification email: {e}")
-
-                    # **Send SMS notification to farmer's phone**
-                    if farmer.phone:
-                        try:
-                            sms_result = send_sms(farmer.phone, notification_message)
-                            print(f"SMS sending result: {sms_result}")
-                        except Exception as e:
-                            print(f"Error sending SMS notification: {e}")
+                        # **Send SMS notification to farmer's phone**
+                        if farmer.phone:
+                            try:
+                                sms_result = send_sms(farmer.phone, notification_message)
+                                print(f"SMS sending result: {sms_result}")
+                            except Exception as e:
+                                print(f"Error sending SMS notification: {e}")
 
 
-                # Create WidgetConfig if not exists
-                if not WidgetConfig.objects.filter(farmer=farmer).exists():
-                    WidgetConfig.objects.create(
-                        farmer=farmer,
-                        created_at=timezone.now()
-                    )
-                    print(f"WidgetConfig created for Farmer ID: {farmer.id}")
-
-                # Send welcome message
-                try:
-                    if farmer.email:
-                        send_welcome_email(farmer.email, farmer.name, farmer.email, farmer.phone)
-                    else:
-                        send_welcome_sms(farmer.phone, farmer.name, farmer.phone, farmer.phone)
-                except Exception as e:
-                    print(f"Error sending welcome notification: {e}")
-
-                img_url = request.build_absolute_uri(f'/SuperAdmin{farmer.img.url}') if farmer.img else None
-
-                response_data = {
-                    "id": farmer.id,
-                    "name": farmer.name,
-                    "phone": farmer.phone,
-                    "email": farmer.email,
-                    "door_no": farmer.door_no,
-                    "pincode": farmer.pincode,
-                    "description": farmer.description,
-                    "company_name": farmer.company_name,
-                    "tax_no": farmer.tax_no,
-                    "status": farmer.status,
-                    "locations": farmer.locations,
-                    "latitude": farmer.latitude,
-                    "longitude": farmer.longitude,
-                    "img": img_url,
-                    "language": {
-                        "default": "en"
+                    # Create WidgetConfig if not exists
+                    if not WidgetConfig.objects.filter(farmer=farmer).exists():
+                        WidgetConfig.objects.create(
+                            farmer=farmer,
+                            created_at=timezone.now()
+                        )
+                        print(f"WidgetConfig created for Farmer ID: {farmer.id}")
+                    mylogger.info("01")
+                    # Send welcome message
+                    try:
+                        if farmer.email:
+                            send_welcome_email(farmer.email, farmer.name, farmer.email, farmer.phone)
+                        else:
+                            send_welcome_sms(farmer.phone, farmer.name, farmer.phone, farmer.phone)
+                    except Exception as e:
+                        print(f"Error sending welcome notification: {e}")
+                    img_url = request.build_absolute_uri(f'/SuperAdmin{farmer.img.url}') if farmer.img else None
+                    mylogger.info("image load")
+                    response_data = {
+                        "id": farmer.id,
+                        "name": farmer.name,
+                        "phone": farmer.phone,
+                        "email": farmer.email,
+                        "door_no": farmer.door_no,
+                        "pincode": farmer.pincode,
+                        "description": farmer.description,
+                        "company_name": farmer.company_name,
+                        "tax_no": farmer.tax_no,
+                        "status": farmer.status,
+                        "locations": farmer.locations,
+                        "latitude": farmer.latitude,
+                        "longitude": farmer.longitude,
+                        "img": img_url,
+                        "language": {
+                            "default": "en"
+                        }
                     }
-                }
 
-                return JsonResponse(response_data, status=200)
+                    return JsonResponse(response_data, status=200)
 
-        except ValidationError as e:
-            return JsonResponse({"errors": e.message_dict}, status=400)
+            except ValidationError as e:
+                return JsonResponse({"errors": e.message_dict}, status=400)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=500)
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=500)
+
 
 
 
@@ -12244,7 +12427,6 @@ def get_otp(request):
                 existing_farmer.name,
                 existing_farmer.phone or True,
                 existing_farmer.email or True,
-                existing_farmer.pincode,
             ])
             name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
 
@@ -12320,7 +12502,6 @@ def get_otp(request):
             existing_farmer.name,
             existing_farmer.phone or True,
             existing_farmer.email or True,
-            existing_farmer.pincode,
         ])
         name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
         
@@ -13394,6 +13575,7 @@ def get_task_list(request, id):
                 task.my_crop.crop.get_translated_value('name', language_code)
                 if task.my_crop and task.my_crop.crop else "No Crop Available"
             ),
+            "created_at":date_str,
             "activity_type": task.schedule_activity_type.name if task.schedule_activity_type else None,
             "schedule_status": task.schedule_status.id if task.schedule_status else None,
             "crop_image": (
@@ -13488,15 +13670,19 @@ def get_task_list_for_month(request, id):
         localized_status_name = status_info["name"].get(language_code, status_info["name"]["en"])
 
         response_by_date[task_date]["task_count"] += 1
+        response_by_date[task_date][schedule_status] += 1
         response_by_date[task_date]["tasks"].append({
             "task_id": task.get('id'),
             "activity_type_name": task.get('schedule_activity_type'),
             "description": task.get('schedule'),
+           
+            "crop_name":  task.get('my_crop'),
+            "created_at":task_date,
             "status_id": status_info["id"],
             "status": localized_status_name
         })
 
-        response_by_date[task_date][schedule_status] += 1
+        
 
     completed, waiting, cancelled, pending, in_progress, events = [], [], [], [], [], []
 
@@ -13511,15 +13697,50 @@ def get_task_list_for_month(request, id):
         })
 
         if data["Completed"] > 0:
-            completed.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            completed_tasks = [task for task in data["tasks"] if task["status_id"] == 2]
+            if completed_tasks:
+                completed.append({
+                    "Date": date_str,
+                    "tasks": completed_tasks,
+                    "count": len(completed_tasks)
+                })
+
         if data["Waiting Completion"] > 0:
-            waiting.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            waiting_tasks = [task for task in data["tasks"] if task["status_id"] == 1]
+            if waiting_tasks:
+                waiting.append({
+                    "Date": date_str,
+                    "tasks": waiting_tasks,
+                    "count": len(waiting_tasks)
+                })
+
         if data["Cancelled"] > 0:
-            cancelled.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            cancelled_tasks = [task for task in data["tasks"] if task["status_id"] == 5]
+            if cancelled_tasks:
+                cancelled.append({
+                    "Date": date_str,
+                    "tasks": cancelled_tasks,
+                    "count": len(cancelled_tasks)
+                })
+
         if data["Pending"] > 0:
-            pending.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            pending_tasks = [task for task in data["tasks"] if task["status_id"] == 4]
+            if pending_tasks:
+                pending.append({
+                    "Date": date_str,
+                    "tasks": pending_tasks,
+                    "count": len(pending_tasks)
+                })
+
         if data["In Progress"] > 0:
-            in_progress.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            in_progress_tasks = [task for task in data["tasks"] if task["status_id"] == 3]
+            if in_progress_tasks:
+                in_progress.append({
+                    "Date": date_str,
+                    "tasks": in_progress_tasks,
+                    "count": len(in_progress_tasks)
+                })
+
 
     return Response({
         "completed_task": completed,
@@ -13608,7 +13829,7 @@ def monthly_schedules(request):
                 'id': schedule_status_id,
                 'name': schedule_status_name
             },
-            'start_date': schedule.start_date,
+            'task_date': schedule.start_date,
             'end_date': schedule.end_date,
             'schedule': schedule.schedule,
             'status': schedule.status,
@@ -19385,13 +19606,6 @@ def add_vehicle(request, farmer_id):
             "message": f"Missing required fields: {', '.join(missing_fields)}"
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    # --- Validate vendor exists ---
-    vendor_id = data.get('vendor')
-
-    vendor = None
-    if vendor_id:
-        vendor = get_object_or_404(MyVendor, id=vendor_id)
-
 
     # --- Prepare data for serializer ---
     data['farmer'] = farmer.id
@@ -19889,7 +20103,7 @@ def add_machinery(request, farmer_id):
     # --- Validate required fields ---
     required_fields = [
         'date_of_consumption', 'inventory_type', 'inventory_category',
-        'inventory_items', 'vendor', 'purchase_amount', 'paid_amount'
+        'inventory_items',  'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
@@ -19907,15 +20121,15 @@ def add_machinery(request, farmer_id):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Validate vendor and inventory_type relationship ---
-    vendor_id = data.get('vendor')
+    # vendor_id = data.get('vendor')
     inventory_type_id = data.get('inventory_type')
-    vendor = get_object_or_404(MyVendor, id=vendor_id)
+    # vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
-        return Response({
-            "success": False,
-            "message": "This vendor is not associated with the selected inventory type."
-        }, status=status.HTTP_400_BAD_REQUEST)
+    # if not vendor.inventory_type.filter(id=inventory_type_id).exists():
+    #     return Response({
+    #         "success": False,
+    #         "message": "This vendor is not associated with the selected inventory type."
+    #     }, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Prepare metadata for serializer ---
     data['farmer'] = farmer.id
@@ -20025,92 +20239,7 @@ def add_machinery(request, farmer_id):
             machinery_instance.save()
 
         # --- Vendor Outstanding & Balance Update Logic ---
-        purchase_amount = float(data.get('purchase_amount', 0))
-        paid_amount = float(data.get('paid_amount', 0))
-
-        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
-        current_balance = vendor.opening_balance or 0
-        updated_balance = current_balance + net_change
-
-        if updated_balance > 0:
-            vendor.credit = True
-            vendor.debit = False
-            vendor.opening_balance = updated_balance
-        elif updated_balance < 0:
-            vendor.credit = False
-            vendor.debit = True
-            vendor.opening_balance = abs(updated_balance)
-        else:
-            vendor.credit = False
-            vendor.debit = False
-            vendor.opening_balance = 0
-
-        if net_change < 0:
-            vendor.payables = (vendor.payables or 0) + abs(net_change)
-        elif net_change > 0:
-            vendor.receivables = (vendor.receivables or 0) + net_change
-
-        vendor.save()
-
-        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
-            customer = vendor.customer
-            customer.opening_balance = vendor.opening_balance
-            customer.payables = vendor.payables
-            customer.receivables = vendor.receivables
-            customer.is_credit = vendor.credit
-            customer.save()
-
-        # Create Outstanding record
-        now = timezone.now()
-        balance = abs(net_change)
-
-        if net_change < 0:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                machinery_purchase=machinery_instance,
-                balance=purchase_amount,
-                paid=paid_amount,
-                to_pay=abs(net_change),
-                paid_date=now,
-                total_paid=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        elif net_change > 0:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                machinery_purchase=machinery_instance,
-                balance=balance,
-                paid=paid_amount,
-                to_receive=net_change,
-                received_date=now,
-                total_received=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        else:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                machinery_purchase=machinery_instance,
-                balance=0,
-                paid=paid_amount,
-                to_pay=0,
-                paid_date=now,
-                total_paid=paid_amount,
-                received=paid_amount,
-                to_receive=0,
-                received_date=now,
-                total_received=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-
+      
         # Notification
         FarmerNotification.objects.create(
             farmer=farmer,
@@ -20585,7 +20714,7 @@ def add_tools(request, farmer_id):
     # Validate required fields
     required_fields = [
         'date_of_consumption', 'inventory_type',
-        'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+        'inventory_items',  'quantity', 'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
@@ -20595,15 +20724,11 @@ def add_tools(request, farmer_id):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # Validate vendor and inventory_type relationship
-    vendor_id = data.get('vendor')
+    # vendor_id = data.get('vendor')
     inventory_type_id = data.get('inventory_type')
-    vendor = get_object_or_404(MyVendor, id=vendor_id)
+    # vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
-        return Response({
-            "success": False,
-            "message": "This vendor is not associated with the selected inventory type."
-        }, status=status.HTTP_400_BAD_REQUEST)
+
 
     # Add farmer and metadata
     data['farmer'] = farmer.id
@@ -21421,7 +21546,7 @@ def add_pesticides(request, farmer_id):
     # --- Validate required fields ---
     required_fields = [
         'date_of_purchase', 'inventory_type', 'inventory_category',
-        'inventory_items', 'vendor', 'quantity', 'purchase_amount', 'paid_amount'
+        'inventory_items',  'quantity', 'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
     if missing_fields:
@@ -21431,15 +21556,9 @@ def add_pesticides(request, farmer_id):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Validate vendor and inventory_type relationship ---
-    vendor_id = data.get('vendor')
-    inventory_type_id = data.get('inventory_type')
-    vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
-        return Response({
-            "success": False,
-            "message": "This vendor is not associated with the selected inventory type."
-        }, status=status.HTTP_400_BAD_REQUEST)
+    inventory_type_id = data.get('inventory_type')
+
 
     # --- Prepare metadata for serializer ---
     data['farmer'] = farmer.id
@@ -21549,115 +21668,7 @@ def add_pesticides(request, farmer_id):
             pesticide_instance.available_quans = total_quantity
             pesticide_instance.save()
 
-        # --- Vendor Outstanding & Balance Update Logic ---
-        purchase_amount = float(data.get('purchase_amount', 0))
-        paid_amount = float(data.get('paid_amount', 0))
-
-        net_change = paid_amount - purchase_amount  # Positive means vendor owes you; negative means you owe vendor
-        current_balance = vendor.opening_balance or 0
-        updated_balance = current_balance + net_change
-
-        # Set credit/debit flags and opening_balance accordingly
-        if updated_balance > 0:
-            # Vendor owes you money (receivables)
-            vendor.credit = True
-            vendor.debit = False
-            vendor.opening_balance = updated_balance
-        elif updated_balance < 0:
-            # You owe vendor money (payables)
-            vendor.credit = False
-            vendor.debit = True
-            vendor.opening_balance = abs(updated_balance)
-        else:
-            # No outstanding balance
-            vendor.credit = False
-            vendor.debit = False
-            vendor.opening_balance = 0
-
-        # Update payables or receivables amounts on vendor accordingly
-        if net_change < 0:
-            # You owe vendor money → payables increase
-            vendor.payables = (vendor.payables or 0) + abs(net_change)
-        elif net_change > 0:
-            # Vendor owes you money → receivables increase
-            vendor.receivables = (vendor.receivables or 0) + net_change
-
-        vendor.save()
-
-        # Sync balances to customer if vendor is also a customer
-        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
-            customer = vendor.customer
-            customer.opening_balance = vendor.opening_balance
-            customer.payables = vendor.payables
-            customer.receivables = vendor.receivables
-            customer.is_credit = vendor.credit
-            customer.save()
-
-        # Prepare Outstanding record fields
-        balance = abs(net_change)
-        now = timezone.now()
-
-        # Depending on net_change, set appropriate Outstanding fields
-        if net_change < 0:
-            # Payables case (you owe vendor)
-            to_pay = abs(net_change)
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                pesticide_purchase=pesticide_instance,
-                balance=purchase_amount,
-                paid=paid_amount,
-                to_pay=to_pay,
-                paid_date=now,
-                total_paid=paid_amount,
-                identify=1,
-                created_by=user,
-                created_at=now
-            )
-        elif net_change > 0:
-            # Receivables case (vendor owes you)
-            to_receive = net_change
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                pesticide_purchase=pesticide_instance,
-                balance=balance,
-                paid=paid_amount,
-                to_receive=to_receive,
-                received_date=now,
-                total_received=paid_amount,
-                identify=1,
-                created_by=user,
-                created_at=now
-            )
-        else:
-            # Exact payment, no outstanding balance
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                pesticide_purchase=pesticide_instance,
-                balance=0,
-                paid=paid_amount,
-                to_pay=0,
-                paid_date=now,
-                total_paid=paid_amount,
-                received=paid_amount,
-                to_receive=0,
-                received_date=now,
-                total_received=paid_amount,
-                identify=1,
-                created_by=user,
-                created_at=now
-            )
-
-        # Create Farmer Notification for new pesticide purchase
-        FarmerNotification.objects.create(
-            farmer=farmer,
-            name='New Purchase Created',
-            message=f'{pesticide_instance.inventory_items.name}',
-            type='Pesticide'
-        )
-
+      
         return Response({
             "success": True,
             "message": "Pesticide added successfully!",
@@ -22505,7 +22516,7 @@ def add_fertilizer(request, farmer_id):
     # --- Validate required fields ---
     required_fields = [
         'date_of_consumption', 'inventory_type', 'inventory_category',
-        'inventory_items', 'vendor', 'quantity', 'quantity_unit',
+        'inventory_items',  'quantity', 'quantity_unit',
         'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
@@ -22517,14 +22528,11 @@ def add_fertilizer(request, farmer_id):
 
     # --- Validate vendor and inventory_type relationship ---
     vendor_id = data.get('vendor')
-    inventory_type_id = data.get('inventory_type')
-    vendor = get_object_or_404(MyVendor, id=vendor_id)
+    vendor =None 
+    if(vendor_id):
+        inventory_type_id = data.get('inventory_type')
+        vendor = get_object_or_404(MyVendor, id=vendor_id)
 
-    if not vendor.inventory_type.filter(id=inventory_type_id).exists():
-        return Response({
-            "success": False,
-            "message": "This vendor is not associated with the selected inventory type."
-        }, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Prepare metadata for serializer ---
     data['farmer'] = farmer.id
@@ -22632,91 +22640,7 @@ def add_fertilizer(request, farmer_id):
             fertilizer_instance.available_quans = total_quantity
             fertilizer_instance.save()
 
-        # --- Vendor Outstanding & Balance Update Logic ---
-        purchase_amount = float(data.get('purchase_amount', 0))
-        paid_amount = float(data.get('paid_amount', 0))
-
-        net_change = paid_amount - purchase_amount
-        current_balance = vendor.opening_balance or 0
-        updated_balance = current_balance + net_change
-
-        if updated_balance > 0:
-            vendor.credit = True
-            vendor.debit = False
-            vendor.opening_balance = updated_balance
-        elif updated_balance < 0:
-            vendor.credit = False
-            vendor.debit = True
-            vendor.opening_balance = abs(updated_balance)
-        else:
-            vendor.credit = False
-            vendor.debit = False
-            vendor.opening_balance = 0
-
-        if net_change < 0:
-            vendor.payables = (vendor.payables or 0) + abs(net_change)
-        elif net_change > 0:
-            vendor.receivables = (vendor.receivables or 0) + net_change
-
-        vendor.save()
-
-        if vendor.is_customer_is_vendor and hasattr(vendor, 'customer'):
-            customer = vendor.customer
-            customer.opening_balance = vendor.opening_balance
-            customer.payables = vendor.payables
-            customer.receivables = vendor.receivables
-            customer.is_credit = vendor.credit
-            customer.save()
-
-        balance = abs(net_change)
-        now = timezone.now()
-
-        if net_change < 0:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                fertilizer_purchase=fertilizer_instance,
-                balance=purchase_amount,
-                paid=paid_amount,
-                to_pay=abs(net_change),
-                paid_date=now,
-                total_paid=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        elif net_change > 0:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                fertilizer_purchase=fertilizer_instance,
-                balance=balance,
-                paid=paid_amount,
-                to_receive=net_change,
-                received_date=now,
-                total_received=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
-        else:
-            Outstanding.objects.create(
-                farmer=farmer,
-                vendor=vendor,
-                fertilizer_purchase=fertilizer_instance,
-                balance=0,
-                paid=paid_amount,
-                to_pay=0,
-                paid_date=now,
-                total_paid=paid_amount,
-                received=paid_amount,
-                to_receive=0,
-                received_date=now,
-                total_received=paid_amount,
-                identify=2,
-                created_by=farmer.farmer_user,
-                created_at=now
-            )
+      
 
         # Create Farmer Notification
         FarmerNotification.objects.create(
@@ -24265,34 +24189,34 @@ def get_schedule_details(request, farmer_id):
         expense_data = []
         total_expense_amount = 0  # Initialize the total expense amount
 
-        for expense in crop_expenses:
-            expense_files = ExpenseFile.objects.filter(my_expense=expense)
+        # for expense in crop_expenses:
+        #     expense_files = ExpenseFile.objects.filter(my_expense=expense)
 
-            files_data = []
-            for file in expense_files:
-                files_data.append({
-                    'file_url': request.build_absolute_uri(f'/assets{file.file.url}' if file.file.url else file.file.url) if file.file else "",
-                    # 'file_type': file.file_type.name if file.file_type else None,
-                    'file_type': file.file_type.get_translated_value("name", language_code) if file.file_type else None,
-                    'uploaded_at': file.uploaded_at
-                })
+        #     files_data = []
+        #     for file in expense_files:
+        #         files_data.append({
+        #             'file_url': request.build_absolute_uri(f'/assets{file.file.url}' if file.file.url else file.file.url) if file.file else "",
+        #             # 'file_type': file.file_type.name if file.file_type else None,
+        #             'file_type': file.file_type.get_translated_value("name", language_code) if file.file_type else None,
+        #             'uploaded_at': file.uploaded_at
+        #         })
 
-            # Format the created_day of the expense (if applicable)
-            created_day = expense.created_day.strftime(date_format) if expense.created_day else ""
+        #     # Format the created_day of the expense (if applicable)
+        #     created_day = expense.created_day.strftime(date_format) if expense.created_day else ""
 
-            expense_data.append({
-                'expense_id': expense.id,
-                'type_expenses': expense.type_expenses.get_translated_value("name", language_code) if expense.type_expenses else None,
-                # 'type_expenses': expense.type_expenses.name if expense.type_expenses else None,
-                'amount': expense.amount,
-                # 'description': expense.description,
-                'description': expense.get_translated_value("description", language_code) if expense else " ",
-                'created_day': created_day,  # Add formatted created_day
-                'status': expense.status,
-                'documents': files_data
-            })
+        #     expense_data.append({
+        #         'expense_id': expense.id,
+        #         'type_expenses': expense.type_expenses.get_translated_value("name", language_code) if expense.type_expenses else None,
+        #         # 'type_expenses': expense.type_expenses.name if expense.type_expenses else None,
+        #         'amount': expense.amount,
+        #         # 'description': expense.description,
+        #         'description': expense.get_translated_value("description", language_code) if expense else " ",
+        #         'created_day': created_day,  # Add formatted created_day
+        #         'status': expense.status,
+        #         'documents': files_data
+        #     })
 
-            total_expense_amount += expense.amount  # Add the expense amount to the total
+        #     total_expense_amount += expense.amount  # Add the expense amount to the total
 
         # Prepare the schedule data with id and name for relevant fields
         schedule_data = {
@@ -24326,8 +24250,8 @@ def get_schedule_details(request, farmer_id):
             # 'comment': my_schedule.comment,
             'description': my_schedule.get_translated_value("schedule", language_code) if my_schedule.schedule and language_code == 'ta' else my_schedule.schedule if my_schedule.schedule else None,
             'comment': my_schedule.get_translated_value("comment", language_code) if my_schedule.comment and language_code == 'ta' else my_schedule.comment if my_schedule.comment else None,
-            'crop_expenses': expense_data,
-            'total_expense_amount': total_expense_amount,  # Add total expense amount to response
+            # 'crop_expenses': expense_data,
+            # 'total_expense_amount': total_expense_amount,  # Add total expense amount to response
             'language': {
                 'default': "en"
             }
@@ -27582,7 +27506,7 @@ def add_fuel(request, farmer_id):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # --- Validate vendor and inventory_type relationship ---
-    vendor_id = data.get('vendor')
+
     inventory_type_id = data.get('inventory_type')
 
 
@@ -28391,8 +28315,8 @@ def add_seeds(request, farmer_id):
 
     # Required fields validation
     required_fields = [
-        'date_of_consumption', 'inventory_type'
-        'inventory_items', 'vendor', 'quantity', 'quantity_unit', 
+        'date_of_consumption', 'inventory_type',
+        'inventory_items',  'quantity', 'quantity_unit', 
         'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
@@ -28524,12 +28448,12 @@ def add_seeds(request, farmer_id):
         seed_instance.save()
 
         # Optional: Create FarmerNotification if you want
-        # FarmerNotification.objects.create(
-        #     farmer=farmer,
-        #     name='New Seed Purchase Created',
-        #     message=f'{seed_instance.inventory_items.name}',
-        #     type='Seeds'
-        # )
+        FarmerNotification.objects.create(
+            farmer=farmer,
+            name='New Seed Purchase Created',
+            message=f'{seed_instance.inventory_items.name}',
+            type='Seeds'
+        )
 
         return Response({
             "success": True,
@@ -31808,8 +31732,13 @@ def dashboard_task_list(request, farmer_id):
             date_format = convert_to_strftime_format(settings.date_format)
         except Exception as e:
             date_format = '%d-%m-%Y'  # Fallback to the default format
+        # try:
+        #     task_date = datetime.strptime(task_date_raw, '%Y-%m-%d').date() if isinstance(task_date_raw, str) else task_date_raw
+        # except Exception:
+        #     continue  
 
         for schedule in schedules:
+            
             # Prepare the schedule info
             schedule_activity_type = schedule.schedule_activity_type
             schedule_info = {
@@ -33433,22 +33362,11 @@ def get_farmer_land_usage(request, farmer_id):
             try:
                 package = PackageManagement.objects.get(id=package_id)
             except PackageManagement.DoesNotExist:
-                continue  # Skip if package not found
+                continue  
 
             # Usage counts
             land_count_used = MyLand.objects.filter(farmer=farmer, status=0).count()
             crop_count_used = MyCrop.objects.filter(farmer=farmer, status=0).count()
-            expense_count_used = MyExpense.objects.filter(farmer=farmer, status=0).count()
-            sales_count_used = MySales.objects.filter(farmer=farmer, status=0).count()
-            customer_count_used = MyCustomer.objects.filter(farmer=farmer, status=0).count()
-            myfuel_count_used = MyFuel.objects.filter(farmer=farmer, status=0).count()
-            myvehicle_count_used = MyVehicle.objects.filter(farmer=farmer, status=0).count()
-            mymachinery_count_used = MyMachinery.objects.filter(farmer=farmer, status=0).count()
-            mytools_count_used = MyTools.objects.filter(farmer=farmer, status=0).count()
-            mypesticides_count_used = MyPesticides.objects.filter(farmer=farmer, status=0).count()
-            myfertilizers_count_used = MyFertilizers.objects.filter(farmer=farmer, status=0).count()
-            myseeds_count_used = MySeeds.objects.filter(farmer=farmer, status=0).count()
-            myvendor_count_used = MyVendor.objects.filter(farmer=farmer, status=0).count()
             employee_count_used = Employee.objects.filter(farmer=farmer, status=0).count()
 
             # Add package usage details to the list
@@ -33459,41 +33377,12 @@ def get_farmer_land_usage(request, farmer_id):
                 "land_count_used": land_count_used,
                 "mycrops_count": package.mycrops_count,
                 "crop_count_used": crop_count_used,
-                "myexpense_count": package.myexpense_count,
-                "expense_count_used": expense_count_used,
-                "mysale_count": package.mysale_count,
-                "sales_count_used": sales_count_used,
-                "customer_count": package.customer_count,
-                "customer_count_used": customer_count_used,
-                "myfuel_count": package.myfuel_count,
-                "myfuel_count_used": myfuel_count_used,
-                "myvechicle_count": package.myvechicle_count,
-                "myvehicle_count_used": myvehicle_count_used,
-                "mymachinery_count": package.mymachinery_count,
-                "mymachinery_count_used": mymachinery_count_used,
-                "mytools_count": package.mytools_count,
-                "mytools_count_used": mytools_count_used,
-                "mypesticides_count": package.mypesticides_count,
-                "mypesticides_count_used": mypesticides_count_used,
-                "myfertilizers_count": package.myfertilizers_count,
-                "myfertilizers_count_used": myfertilizers_count_used,
-                "myseeds_count": package.myseeds_count,
-                "myseeds_count_used": myseeds_count_used,
-                "myinventory_vendors": package.myinventory_vendors,
-                "myvendor_count_used": myvendor_count_used,
                 "employee_count": package.employee_count,
                 "employee_count_used": employee_count_used,
-                "employee_count": package.employee_count,
                 "is_widget": package.is_widget,
             })
 
         return Response({
-            # "farmer": {
-            #     "name": farmer.name,
-            #     "start_date": farmer.subscription_start_date,
-            #     "end_date": farmer.subscription_end_date,
-            #     "package_details": package_details
-            # }
             "name": farmer.name,
             "start_date": farmer.subscription_start_date,
             "end_date": farmer.subscription_end_date,
@@ -40016,6 +39905,7 @@ def get_task_calender_list_for_month_and_crop(request, farmer_id):
         response_by_date[task_date]["task_count"] += 1
         response_by_date[task_date]["tasks"].append({
             "task_id": task.get('id'),
+            "task_date": task_date_raw,
             "activity_type_name": task.get('schedule_activity_type'),
             "description": task.get('schedule'),
             "status_id": status_info["id"],
@@ -40036,16 +39926,52 @@ def get_task_calender_list_for_month_and_crop(request, farmer_id):
             "tasks": data["tasks"]
         })
 
+
         if data["Completed"] > 0:
-            completed.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            completed_tasks = [task for task in data["tasks"] if task["status_id"] == 2]
+            if completed_tasks:
+                completed.append({
+                    "Date": date_str,
+                    "tasks": completed_tasks,
+                    "count": len(completed_tasks)
+                })
+
         if data["Waiting Completion"] > 0:
-            waiting.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            waiting_tasks = [task for task in data["tasks"] if task["status_id"] == 1]
+            if waiting_tasks:
+                waiting.append({
+                    "Date": date_str,
+                    "tasks": waiting_tasks,
+                    "count": len(waiting_tasks)
+                })
+
         if data["Cancelled"] > 0:
-            cancelled.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            cancelled_tasks = [task for task in data["tasks"] if task["status_id"] == 5]
+            if cancelled_tasks:
+                cancelled.append({
+                    "Date": date_str,
+                    "tasks": cancelled_tasks,
+                    "count": len(cancelled_tasks)
+                })
+
         if data["Pending"] > 0:
-            pending.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            pending_tasks = [task for task in data["tasks"] if task["status_id"] == 4]
+            if pending_tasks:
+                pending.append({
+                    "Date": date_str,
+                    "tasks": pending_tasks,
+                    "count": len(pending_tasks)
+                })
+
         if data["In Progress"] > 0:
-            in_progress.append({"Date": date_str, "tasks": data["tasks"], "count": data["task_count"]})
+            in_progress_tasks = [task for task in data["tasks"] if task["status_id"] == 3]
+            if in_progress_tasks:
+                in_progress.append({
+                    "Date": date_str,
+                    "tasks": in_progress_tasks,
+                    "count": len(in_progress_tasks)
+                })
+
 
     return Response({
         "completed_task": completed,
@@ -41407,7 +41333,7 @@ def get_employees_attendance_list(request,):
                 "present": attendance.present if attendance and attendance.present else False,
                 "login_time": attendance.login_time if attendance and attendance.login_time else None,
                 "logout_time": attendance.logout_time if attendance and attendance.logout_time else None,
-                "total_hour": attendance.total_hour if attendance and attendance.total_hour else None,
+                "total_hour": str(attendance.total_hour) if attendance and attendance.total_hour else None,
                 "salary": attendance.salary if attendance and attendance.salary else None,
                 "salary_status": attendance.salary_status if attendance and attendance.salary_status else None,
             })

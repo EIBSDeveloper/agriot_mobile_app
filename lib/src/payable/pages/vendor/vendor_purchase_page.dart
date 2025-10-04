@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/modules/expense/view/widgets/month_day_format.dart';
+import '../../../app/widgets/loading.dart';
 import '../../controller/vendor_add_controller/vendor_add_controller.dart';
 import '../../controller/vendorcontroller/vendorcontroller.dart';
 import '../../model/vendor/vendor_purchase_model.dart';
@@ -48,7 +49,7 @@ class VendorPurchasePage extends StatelessWidget {
  
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         if (controller.errorMessage.isNotEmpty) {

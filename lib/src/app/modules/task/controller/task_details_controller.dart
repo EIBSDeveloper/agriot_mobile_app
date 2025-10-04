@@ -17,6 +17,7 @@ class TaskDetailsController extends GetxController {
   final TaskRepository _taskRepository = TaskRepository();
   final Rx<TaskDetails?> task = Rx<TaskDetails?>(null);
   final RxBool isLoading = false.obs;
+  final RxBool isupdatable = true.obs;
   final RxString errorMessage = ''.obs;
   int taskId = 0;
   final formKey = GlobalKey<FormState>();

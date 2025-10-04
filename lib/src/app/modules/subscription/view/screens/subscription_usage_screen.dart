@@ -4,6 +4,8 @@ import 'package:argiot/src/app/modules/subscription/controller/subscription_cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class SubscriptionUsageScreen extends StatelessWidget {
   const SubscriptionUsageScreen({super.key});
 
@@ -15,7 +17,7 @@ class SubscriptionUsageScreen extends StatelessWidget {
       appBar: CustomAppBar(title: 'current_subscription'.tr),
       body: Obx(() {
         if (controller.isLoading.value ) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         if (controller.errorMessage.value.isNotEmpty) {
@@ -76,8 +78,8 @@ class SubscriptionUsageScreen extends StatelessWidget {
                         ),
                         _buildUsageItem(
                           'manager_limit'.tr,
-                          packageUsage.expenseCountUsed,
-                          packageUsage.myexpenseCount,
+                          packageUsage.employeeCount,
+                          packageUsage.employeeCountUsed,
                         ),
                        
                       ],

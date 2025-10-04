@@ -4,6 +4,8 @@ import 'package:argiot/src/payable/pages/vendor/vendor_purchase_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/loading.dart';
+
 class PayablesList extends StatelessWidget {
   final int selectedTopToggle; // 0 = Customer, 1 = Vendor
   final CustomerlistController controller = Get.find<CustomerlistController>();
@@ -38,7 +40,7 @@ class PayablesList extends StatelessWidget {
             if (controller.payablesCurrentMax.value < items.length) {
               return const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Center(child: CircularProgressIndicator()),
+                child: Loading(),
               );
             } else if (controller.payablesEndMessage.isNotEmpty) {
               return Padding(

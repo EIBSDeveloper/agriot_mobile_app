@@ -8,7 +8,7 @@ import '../view/screen/landpicker.dart';
 import 'resgister_controller.dart';
 
 class KycController extends GetxController {
-  // final AddressService _addressService = AddressService();
+  // final AppDataController appData = AppDataController();
 
   // Form controllers
   final nameController = TextEditingController();
@@ -20,6 +20,7 @@ class KycController extends GetxController {
   final pincodeController = TextEditingController();
 
   // Loading states
+  final RxBool isEmailLogin = false.obs;
   final RxBool isLoadingCountries = false.obs;
   final RxBool isLoadingStates = false.obs;
   final RxBool isLoadingCities = false.obs;
@@ -40,6 +41,7 @@ class KycController extends GetxController {
 
   Future<void> loadData() async {
     AppDataController appData = Get.put(AppDataController());
+    isEmailLogin.value =appData.emailId.value.isNotEmpty;
     emailController.text = appData.emailId.value;
     nameController.text = appData.username.value;
   }

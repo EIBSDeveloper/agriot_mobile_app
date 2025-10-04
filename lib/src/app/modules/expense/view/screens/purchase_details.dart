@@ -5,6 +5,8 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class PurchaseDetails extends GetView<InventoryDetailsController> {
   const PurchaseDetails({super.key});
 
@@ -13,7 +15,7 @@ class PurchaseDetails extends GetView<InventoryDetailsController> {
       appBar: const CustomAppBar(title: "Purchase Details"),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         if (controller.error.value.isNotEmpty) {

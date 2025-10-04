@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/toggle_bar.dart';
 
 class VendorCustomerListView extends GetView<VendorCustomerController> {
@@ -21,7 +22,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
+                return const Loading();
               }
               return ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),

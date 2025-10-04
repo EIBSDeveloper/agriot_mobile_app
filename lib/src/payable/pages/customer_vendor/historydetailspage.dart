@@ -54,7 +54,7 @@ class HistoryDetailsPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         final list =
@@ -375,6 +375,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/widgets/loading.dart';
 import '../../controller/customer_vendor_controller/customer_vendor_controller.dart';
 import '../../model/customer_history/customer_sales_history.dart';
 import '../../repository/customer_vendor_repository/customer_vendor_repository.dart';
@@ -424,7 +425,7 @@ class HistoryDetailsPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         final list =

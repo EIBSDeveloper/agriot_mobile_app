@@ -8,6 +8,7 @@ import '../../../../../core/app_icons.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/pop_messages.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/my_network_image.dart';
 import '../../controller/land_detail_controller.dart';
 import '../widget/crop_card.dart';
@@ -55,7 +56,7 @@ class LandDetailView extends GetView<LandDetailController> {
 
   Widget _buildBody() {
     if (controller.isLoading.value) {
-      return const Center(child: CircularProgressIndicator());
+      return const Loading();
     }
 
     if (controller.error.isNotEmpty) {

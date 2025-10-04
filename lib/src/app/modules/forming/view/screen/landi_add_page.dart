@@ -90,14 +90,14 @@ class LandViewPage extends GetView<LandController> {
                 // validator: (value) => value == null ? 'Required field' : null,
                 displayItem: (value) => value.name.toString(),
               ), 
-              gap,
-              SearchableDropdown<AppDropdownItem>(
-                label: 'Manager',
-                items: controller.soilTypes,
-                selectedItem: controller.selectedSoilType.value,
-                onChanged: (value) => controller.selectedSoilType.value = value,
-                displayItem: (value) => value.name.toString(),
-              ),
+              // gap,
+              // SearchableDropdown<AppDropdownItem>(
+              //   label: 'Manager',
+              //   items: controller.soilTypes,
+              //   selectedItem: controller.selectedSoilType.value,
+              //   onChanged: (value) => controller.selectedSoilType.value = value,
+              //   displayItem: (value) => value.name.toString(),
+              // ),
 
               gap,
               _buildTextField(

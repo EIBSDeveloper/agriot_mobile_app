@@ -5,6 +5,7 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../service/utils/enums.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/my_network_image.dart';
 
 class DocumentThumbnail extends StatefulWidget {
@@ -110,7 +111,7 @@ class _DocumentThumbnailState extends State<DocumentThumbnail> {
       return const SizedBox(
         height: 100,
         width: 100,
-        child: Center(child: CircularProgressIndicator()),
+        child: Loading(),
       );
     }
 

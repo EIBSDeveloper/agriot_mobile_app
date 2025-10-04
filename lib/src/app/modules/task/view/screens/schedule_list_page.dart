@@ -7,6 +7,8 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
+
 class ScheduleListPage extends GetView<ScheduleController> {
   const ScheduleListPage({super.key});
 
@@ -101,7 +103,7 @@ class ScheduleListPage extends GetView<ScheduleController> {
         Expanded(
           child: Obx(() {
             if (controller.isLoading.value) {
-              return const Center(child: CircularProgressIndicator());
+              return const Loading();
             }
 
             if (controller.filteredSchedules.isEmpty) {

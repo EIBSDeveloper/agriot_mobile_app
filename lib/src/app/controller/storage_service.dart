@@ -18,7 +18,7 @@ class StorageService extends GetxService {
     await _box.write('userId', data.farmerID);
     await _box.write('isManager', data.isManager);
     await _box.write('managerID', data.managerID);
-    await updateUser(data:data);
+    await updateUser(data: data);
   }
 
   Future<void> updateLoginState(bool status) async {
@@ -33,13 +33,17 @@ class StorageService extends GetxService {
 
   Future<void> updateUser({VerifyOtp? data}) async {
     AppDataController appData = Get.put(AppDataController());
-    appData.farmerId.value = data?.farmerID ?? _box.read('userId');
-    appData.isManager.value = data?.isManager ?? _box.read('isManager');
-    appData.managerID.value = data?.managerID ?? _box.read('managerID');
+    appData.farmerId.value =
+        data?.farmerID.toString() ?? _box.read('userId').toString();
+    var read = _box.read('isManager');
+    appData.isManager.value = data?.isManager ?? read;
+    appData.managerID.value =
+        (data?.managerID?.toString()) ??
+        _box.read('managerID')?.toString() ??
+        '';
+    appData.update();
     return;
   }
-
-
 
   bool get isLoggedIn => _box.read('isLoggedIn') ?? false;
 

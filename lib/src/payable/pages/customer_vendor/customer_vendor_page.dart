@@ -43,7 +43,7 @@ class _CustomerVendorDetailsPageState extends State<CustomerVendorDetailsPage> {
     appBar: AppBar(title: Text('Customer & Vendor Details'.tr)),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
       if (controller.error.isNotEmpty) {
         return Center(child: Text('${'Error:'.tr} ${controller.error.value}'));

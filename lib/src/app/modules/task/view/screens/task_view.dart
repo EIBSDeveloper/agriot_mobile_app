@@ -8,6 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
 import '../widget/task_card.dart';
@@ -40,7 +41,7 @@ class TaskView extends GetView<TaskController> {
                     backgroundColor: Get.theme.primaryColor,
                   ),
                   onPressed: () {
-                    Get.toNamed( Routes.schedules)?.then((reslut) {
+                    Get.toNamed(Routes.schedules)?.then((reslut) {
                       if (reslut != null) {
                         controller.loadTasks();
                       }
@@ -86,6 +87,7 @@ class TaskView extends GetView<TaskController> {
                         child: IconButton(
                           onPressed: () {
                             controller.isList.value = false;
+                            controller.fetchTasks();
                           },
                           icon: Icon(
                             Icons.calendar_month,
@@ -113,6 +115,7 @@ class TaskView extends GetView<TaskController> {
                         child: IconButton(
                           onPressed: () {
                             controller.isList.value = true;
+                            controller.taskList();
                           },
                           icon: Icon(
                             Icons.list,
@@ -141,7 +144,7 @@ class TaskView extends GetView<TaskController> {
             }
             if (controller.isLoading.value ||
                 (controller.isLoading.value && controller.taskGroups.isEmpty)) {
-              return const Center(child: CircularProgressIndicator());
+              return const Loading();
             }
 
             return (controller.isList.value)
@@ -271,14 +274,14 @@ class TaskView extends GetView<TaskController> {
                 child: Row(
                   children: [
                     ...events.map(
-                      (e) => Container(
+                      (event) => Container(
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           color: Get.theme.primaryColor,
                           shape: BoxShape.circle,
                         ),
                         child: Text(
-                          '${events[0].tasks.length}',
+                          '${event.count}',
                           style: Get.textTheme.bodyMedium?.copyWith(
                             color: Get.theme.scaffoldBackgroundColor,
                             fontSize: 10,

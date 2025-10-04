@@ -1,10 +1,10 @@
 class Vendor {
 
   Vendor({
-    required this.id,
-    required this.name,
-    required this.businessName,
-    required this.mobileNo,
+     this.id,
+     this.name,
+     this.businessName,
+     this.mobileNo,
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
@@ -13,8 +13,8 @@ class Vendor {
       businessName: json['business_name'] ?? '',
       mobileNo: json['mobile_no']?.toString() ?? '',
     );
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
   final String? businessName;
   final String? mobileNo;
 }

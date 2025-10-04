@@ -21,6 +21,9 @@ class CountCard extends StatelessWidget {
   Widget build(BuildContext context) => InkWell(
       onTap: onTap,
       child: Container(
+        constraints: const BoxConstraints(
+          minHeight:80
+        ),
         decoration: AppStyle.decoration,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/bindings/app_binding.dart';
+import 'package:argiot/src/app/controller/app_permission.dart';
 import 'package:argiot/src/core/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -15,7 +16,9 @@ class App extends StatelessWidget {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context) => GetMaterialApp(
+  Widget build(BuildContext context) {
+    AppPermission.requestNotificationPermission();
+    return GetMaterialApp(
     title: 'ARGIOT App',
     theme: AppTheme.lightTheme,
     // darkTheme: AppTheme.darkTheme,
@@ -24,8 +27,9 @@ class App extends StatelessWidget {
     fallbackLocale: const Locale('en', 'US'),
     initialBinding: AppBinding(),
     // home: ChatPage(),
-    initialRoute: Routes.home,
+    initialRoute: Routes.splash,
     getPages: AppPages.routes,
     debugShowCheckedModeBanner: false,
   );
+  }
 }

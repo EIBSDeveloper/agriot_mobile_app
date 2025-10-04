@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/loading.dart';
 import '../../controller/customercontroller/customer_salaes_controller.dart';
 import '../../model/customer_history/customer_sales_history.dart';
 import '../../repository/customer_repository/customer_sales_repository.dart';
@@ -56,7 +57,7 @@ class HistoryPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
         if (controller.errorMessage.isNotEmpty) {
           return Center(child: Text(controller.errorMessage.value));

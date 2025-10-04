@@ -5,6 +5,7 @@ import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../controller/new_sales_controller.dart';
 import '../../model/sales_detail.dart';
 import '../../../../widgets/title_text.dart';
@@ -44,7 +45,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
     body: Obx(() {
       final salesDetail = controller.salesDetail.value;
       if (salesDetail == null) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       return SingleChildScrollView(

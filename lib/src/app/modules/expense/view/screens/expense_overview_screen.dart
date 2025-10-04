@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../../widgets/toggle_bar.dart';
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
@@ -17,7 +18,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
     child: Scaffold(
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

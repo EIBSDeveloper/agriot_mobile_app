@@ -122,7 +122,10 @@ class PurchasesAddController extends GetxController {
   Future<void> fetchVendorList() async {
     try {
       final response = await _repository.getVendorList();
-      vendorList.assignAll(response);
+      vendorList.assignAll([
+        Customer(id: 0,name: "Other vendor"),
+        ...response]);
+        selectedVendor.value = vendorList.first.id;
     } catch (e) {
       showError('Failed to fetch customers: $e');
     }
@@ -227,7 +230,7 @@ class PurchasesAddController extends GetxController {
     try {
       final fuelEntry = FuelEntryModel(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value ?? 0,
+        vendor:  selectedVendor.value ==0 ?null:selectedVendor.value,
         inventoryType: selectedInventoryType.value!,
         inventoryCategory: selectedInventoryType.value!,
         inventoryItems: selectedInventoryItem.value!,
@@ -273,7 +276,7 @@ class PurchasesAddController extends GetxController {
     try {
       final machinery = Machinery(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value??0,
+        vendor: selectedVendor.value ==0 ?null:selectedVendor.value,
         inventoryType:
             selectedInventoryType.value!, // Map to your actual values
         inventoryCategory: selectedInventoryType.value!,
@@ -326,7 +329,7 @@ class PurchasesAddController extends GetxController {
       final vehicle = VehicleModel(
         farmerId: appData.farmerId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
-        vendor: selectedVendor.value ?? 0,
+        vendor:  selectedVendor.value ==0 ?null:selectedVendor.value,
         inventoryType: selectedInventoryType.value!, // Assuming default value
         inventoryCategory: selectedInventoryType.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
@@ -425,7 +428,7 @@ class PurchasesAddController extends GetxController {
     try {
       final fertilizer = FertilizerModel(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value,
+        vendor: selectedVendor.value ==0 ?null:selectedVendor.value,
         inventoryType: selectedInventoryType.value!,
         inventoryCategory: selectedInventoryType.value!,
 

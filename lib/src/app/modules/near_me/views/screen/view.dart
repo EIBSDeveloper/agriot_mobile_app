@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Worker;
 
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../controller/controllers.dart';
 import '../../model/models.dart';
 
@@ -119,7 +120,7 @@ class PlaceTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.placeCategories.isEmpty) {
@@ -215,7 +216,7 @@ class ManPowerTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.manPowerAgents.isEmpty) {
@@ -338,7 +339,7 @@ class RentalTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.rentalItems.isEmpty) {

@@ -2,6 +2,8 @@ import 'package:argiot/src/app/modules/employee/controller/employee_details_cont
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/my_network_image.dart';
+
 class ProfileHeader extends StatelessWidget {
   final EmployeeDetailsController controller;
 
@@ -15,16 +17,12 @@ class ProfileHeader extends StatelessWidget {
           backgroundColor: Get.theme.colorScheme.primaryContainer,
           child: controller.employeeDetails.value.profile.isNotEmpty
               ? ClipOval(
-                  child: Image.network(
+                  child: MyNetworkImage(
                     controller.employeeDetails.value.profile,
                     width: 90,
                     height: 90,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Get.theme.colorScheme.onPrimaryContainer,
-                      ),
+                  
                   ),
                 )
               : Icon(

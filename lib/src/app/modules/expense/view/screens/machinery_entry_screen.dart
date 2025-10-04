@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/loading.dart';
 
 class MachineryEntryScreen extends GetView<PurchasesAddController> {
   const MachineryEntryScreen({super.key});
@@ -125,7 +126,7 @@ Widget _buildMachineryTypeRadio() => Obx(
             ? null
             : controller.submitMachineryForm,
         child: controller.isLoading.value
-            ? const CircularProgressIndicator()
+            ? const Loading(size:50)
             : Text('add_button'.tr),
       ),
     ),

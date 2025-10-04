@@ -15,7 +15,9 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../../../core/app_icons.dart';
 import '../../../../service/utils/enums.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
+import '../../../task/model/event.dart';
 import '../../../task/view/widget/task_card.dart';
 
 class CropOverviewScreen extends StatefulWidget {
@@ -54,7 +56,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       },
       child: Obx(() {
         if (controller.isOverviewLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
         if (controller.overview.value == null) {
           return const Center(child: Text('No crop data available'));
@@ -87,7 +89,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
   Widget _buildCropInfoSection() => Obx(() {
     if (controller.isDetailsLoading.value) {
-      return const Center(child: CircularProgressIndicator());
+      return const Loading();
     }
     if (controller.details.value == null) {
       return const SizedBox.shrink();
@@ -234,7 +236,10 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           const SizedBox(height: 10),
           _buildDetailRow('Crop Type', details!.cropType!.name),
           _buildDetailRow('Harvest Frequency', details.harvestingType!.name),
-          _buildDetailRow('Plantation Date', DateFormat('dd/MM/yyyy').format(details.plantationDate!)),
+          _buildDetailRow(
+            'Plantation Date',
+            DateFormat('dd/MM/yyyy').format(details.plantationDate!),
+          ),
           _buildDetailRow(
             'Measurement',
             '${details.measurementValue} ${details.measurementUnit!.name}',
@@ -393,14 +398,12 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             scrollDirection: Axis.horizontal,
             itemCount: overview.guidelines.length,
             itemBuilder: (context, index) => SizedBox(
-                width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: GuidelineCard(
-                    guideline:  overview.guidelines[index]
-                  ),
-                ),
+              width: 300,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: GuidelineCard(guideline: overview.guidelines[index]),
               ),
+            ),
           ),
         ),
       ],
@@ -408,137 +411,133 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
   }
 
   Widget _buildTasksSection(CropOverview overview) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: TitleText('tasks'.tr),
-            ),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: TitleText('tasks'.tr),
+          ),
 
-            const SizedBox(width: 10),
-            Obx(
-              () => Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: !(controller.isList.value)
-                          ? Get.theme.primaryColor
-                          : Colors.transparent,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
-                      border: Border.all(
-                        color: Get.theme.primaryColor,
-                        width: 1,
-                      ),
+          const SizedBox(width: 10),
+          Obx(
+            () => Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: !(controller.isList.value)
+                        ? Get.theme.primaryColor
+                        : Colors.transparent,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
                     ),
-                    child: IconButton(
-                      onPressed: () {
-                        controller.isList.value = false;
-                      },
-                      icon: Icon(
-                        Icons.calendar_month,
-                        color: !(controller.isList.value)
-                            ? Colors.white
-                            : Get.theme.primaryColor,
-                      ),
+                    border: Border.all(color: Get.theme.primaryColor, width: 1),
+                  ),
+                  child: IconButton(
+                    onPressed: () {
+                      controller.isList.value = false;
+                      controller.fetchTasks();
+                    },
+                    icon: Icon(
+                      Icons.calendar_month,
+                      color: !(controller.isList.value)
+                          ? Colors.white
+                          : Get.theme.primaryColor,
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: (controller.isList.value)
+                        ? Get.theme.primaryColor
+                        : Colors.transparent,
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                    border: Border.all(color: Get.theme.primaryColor, width: 1),
+                  ),
+
+                  child: IconButton(
+                    onPressed: () {
+                      controller.isList.value = true;
+                      controller.fetchTaskLIist();
+                    },
+                    icon: Icon(
+                      Icons.list,
                       color: (controller.isList.value)
-                          ? Get.theme.primaryColor
-                          : Colors.transparent,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        bottomRight: Radius.circular(10),
-                      ),
-                      border: Border.all(
-                        color: Get.theme.primaryColor,
-                        width: 1,
+                          ? Colors.white
+                          : Get.theme.primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+
+      Obx(() {
+        if (controller.isLoading.value ||
+            (controller.isLoading.value && controller.taskGroups.isEmpty)) {
+          return const Loading();
+        }
+
+        return (controller.isList.value)
+            ? Column(
+                children: [
+                  if (controller.errorMessage.value.isNotEmpty)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 100),
+                        child: Text("No data found"),
                       ),
                     ),
-
-                    child: IconButton(
-                      onPressed: () {
-                        controller.isList.value = true;
-                      },
-                      icon: Icon(
-                        Icons.list,
-                        color: (controller.isList.value)
-                            ? Colors.white
-                            : Get.theme.primaryColor,
-                      ),
+                  ...controller.taskGroups.map(
+                    (group) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 0,
+                            vertical: 8,
+                          ),
+                          child: Text(
+                            group.date,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        ...group.tasks.map(
+                          (task) => TaskCard(
+                            task: task,
+                            refresh: () {
+                              controller.loadTasks();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
-              ),
-            ),
-          ],
-        ),
-
-        Obx(() {
-          if (controller.isLoading.value ||
-              (controller.isLoading.value && controller.taskGroups.isEmpty)) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return (controller.isList.value)
-              ? Column(
-                  children: [
-                    if (controller.errorMessage.value.isNotEmpty)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 100),
-                          child: Text("No data found"),
-                        ),
-                      ),
-                    ...controller.taskGroups.map(
-                      (group) => Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 0,
-                              vertical: 8,
-                            ),
-                            child: Text(
-                              group.date,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          ...group.tasks.map(
-                            (task) => TaskCard(
-                              task: task,
-                              refresh: () {
-                                controller.loadTasks();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildCalendarSection(),
-                    _buildFilterSection(),
-                    _buildTaskListSection(),
-                  ],
-                );
-        }),
-        const SizedBox(height: 180),
-      ],
-    );
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildCalendarSection(),
+                  _buildFilterSection(),
+                  _buildTaskListSection(),
+                ],
+              );
+      }),
+      const SizedBox(height: 180),
+    ],
+  );
 
   Widget _buildCalendarSection() => Card(
     elevation: 0,
@@ -557,7 +556,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             controller.selectedDay.value = focusedDay;
             controller.refreshData(month: focusedDay);
           },
-      
+
           selectedDayPredicate: (day) =>
               isSameDay(day, controller.selectedDay.value),
 
@@ -592,24 +591,31 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           },
           eventLoader: (day) => controller.getEventsForDay(day),
           calendarBuilders: CalendarBuilders(
-            markerBuilder: (context, date, events) {
+            markerBuilder: (context, date,List<Event> events) {
               if (events.isEmpty) return const SizedBox.shrink();
+
               return Positioned(
                 right: 1,
                 bottom: 1,
-                child: Container(
-                  padding: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: Get.theme.primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Text(
-                    '${events.length}',
-                    style: Get.textTheme.bodyMedium?.copyWith(
-                      color: Get.theme.scaffoldBackgroundColor,
-                      fontSize: 10,
+                child: Row(
+                  children: [
+                    ...events.map(
+                      (event) => Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Get.theme.primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${event.count}',
+                          style: Get.textTheme.bodyMedium?.copyWith(
+                            color: Get.theme.scaffoldBackgroundColor,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               );
             },

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../controller/notification_controller.dart';
 
 class NotificationView extends GetView<NotificationController> {
@@ -17,7 +18,7 @@ class NotificationView extends GetView<NotificationController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return const Loading();
         }
 
         if (controller.error.isNotEmpty) {

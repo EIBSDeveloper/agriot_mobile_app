@@ -116,11 +116,16 @@ class CropDetailsController extends GetxController {
   }
 
   Future<void> loadTasks() async {
-    try {
-      await fetchTasks();
+    await fetchTaskLIist();
+    await fetchTasks();
+  }
+
+  Future<void> fetchTaskLIist() async {
+      try {
+      
       isLoading(true);
       taskGroups.clear();
-
+    
       final tasks = await _repository.getTaskList(
         landId: landId.value,
         month: selectedMonth.value,

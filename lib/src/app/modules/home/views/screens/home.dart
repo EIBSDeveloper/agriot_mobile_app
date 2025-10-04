@@ -9,7 +9,7 @@ class Home extends GetView<BottomBarContoller> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const ProfileAppBar(),
+    appBar:  ProfileAppBar(),
     drawer: const AppDrawer(),
     body: SafeArea(
       

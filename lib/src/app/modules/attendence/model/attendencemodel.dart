@@ -41,7 +41,7 @@ class EmployeeModel {
     present: json['present'] ?? false,
     loginTime: json['login_time'],
     logoutTime: json['logout_time'],
-    totalHour: json['total_hour'],
+    totalHour: json['total_hour'].toString(),
     salary: (json['salary']??'--').toString(),
     salaryStatus: (json['salary_status'] is int)
         ? json['salary_status'] == 1

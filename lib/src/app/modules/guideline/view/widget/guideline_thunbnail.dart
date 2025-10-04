@@ -1,6 +1,7 @@
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/guideline/model/guideline.dart';
 import 'package:argiot/src/app/service/utils/utils.dart';
+import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -30,40 +31,22 @@ class GuidelineThunbnail extends StatelessWidget {
           ),
           child: (guideline.mediaType == 'video' && youtubeThumbnailUrl == null)
               ?   Icon(Icons.play_circle_fill, size: 40, color: Get.theme.colorScheme.primary,)
-              : Image.network(
+              : MyNetworkImage(
                   "${appData.imageBaseUrl.value}${guideline.document}",
                   fit: BoxFit.cover,
                   height: 60,
                   width: 60,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) {
-                      return child;
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  errorBuilder: (context, error, stackTrace) =>  Icon(
-                    Icons.insert_drive_file,
-                    size: 40,
-                  color: Get.theme.colorScheme.primary,
-                  ),
+                
                 ),
         ),
        
          
         if (youtubeThumbnailUrl != null && guideline.mediaType == 'video')
-          Image.network(
+         MyNetworkImage(
             youtubeThumbnailUrl,
             fit: BoxFit.cover,
             height: 60,
             width: 60,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
-            errorBuilder: (context, error, stackTrace) =>
-                const Text("Thumbnail not found"),
           ),
       ],
     );

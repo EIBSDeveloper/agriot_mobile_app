@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/loading.dart';
 
 class VehicleView extends GetView<PurchasesAddController> {
   const VehicleView({super.key});
@@ -348,7 +349,7 @@ class VehicleView extends GetView<PurchasesAddController> {
             ? null
             : controller.submitVehicleForm,
         child: controller.isLoading.value
-            ? const CircularProgressIndicator()
+            ? const Loading(size:50)
             : Text('add_button'.tr),
       ),
     ),

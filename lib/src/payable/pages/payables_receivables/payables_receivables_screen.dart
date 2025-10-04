@@ -4,6 +4,7 @@ import 'package:argiot/src/payable/repository/repo_pay_receive/pay_receiverepo.d
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/loading.dart';
 import '../../../app/widgets/toggle_bar.dart';
 import '../../widgets/payable_receivableswidget/payables_list_widget.dart';
 import '../../widgets/payable_receivableswidget/receivables_list_widget.dart';
@@ -72,7 +73,7 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
           controller.isLoadingVendorReceivables.value;
 
       if (isLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       return Column(

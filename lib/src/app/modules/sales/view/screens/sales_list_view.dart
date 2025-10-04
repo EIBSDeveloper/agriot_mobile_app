@@ -3,6 +3,7 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../widgets/loading.dart';
 import '../../controller/sales_controller.dart';
 class SalesListView extends GetView<SalesController> {
   const SalesListView({super.key});
@@ -98,7 +99,7 @@ class SalesListView extends GetView<SalesController> {
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Loading();
                 }
 
                 return ListView.builder(

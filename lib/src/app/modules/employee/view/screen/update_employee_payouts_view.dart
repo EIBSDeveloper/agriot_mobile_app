@@ -4,6 +4,7 @@ import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../../manager/model/dropdown_model.dart';
 import '../../controller/update_employee_payouts_controller.dart';
 
@@ -29,7 +30,7 @@ class UpdateEmployeePayoutsView
     appBar: CustomAppBar(title: 'update_employee_payouts'.tr),
     body: Obx(() {
       if (controller.isLoading.value && controller.employeeData.value == null) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.errorMessage.value.isNotEmpty &&

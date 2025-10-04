@@ -5,6 +5,7 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../widgets/loading.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class EditTask extends GetView<TaskDetailsController> {
@@ -94,7 +95,7 @@ class EditTask extends GetView<TaskDetailsController> {
                           controller.task.value!.scheduleId,
                         ),
                   child: controller.isLoadingEdit.value
-                      ? const CircularProgressIndicator()
+                      ? const Loading(size:50)
                       : const Text('Update Task'),
                 ),
               ),

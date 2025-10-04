@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/app_images.dart';
+import '../../../../widgets/loading.dart';
 
 LatLng calculateCenter(List<LatLng> points) {
   if (points.isEmpty) {
@@ -62,7 +63,7 @@ class _LandPickerViewState extends State<LandPickerView> {
     ),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
       return Stack(
         children: [

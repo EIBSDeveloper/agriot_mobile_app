@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../service/utils/enums.dart';
 import '../../../../widgets/input_card_style.dart';
+import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
@@ -24,14 +25,14 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       showBackButton: true,
       actions: [
         IconButton(
-          onPressed: () => _confirmDeleteTask(),
+          onPressed: _confirmDeleteTask,
           icon: Icon(Icons.delete, color: Get.theme.primaryColor),
         ),
       ],
     ),
     body: Obx(() {
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
+        return const Loading();
       }
 
       if (controller.errorMessage.value.isNotEmpty) {
@@ -54,6 +55,14 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         return const Center(child: Text('No task details available'));
       }
 
+      // 🔹 Local date logic
+      DateTime taskDate = DateFormat("dd-MM-yyyy").parse(task.startDate);
+      final taskDate1 = DateTime(taskDate.year, taskDate.month, taskDate.day);
+      final today = DateTime.now();
+      final todayDate = DateTime(today.year, today.month, today.day);
+
+      bool isEditable = taskDate1.isAtSameMomentAs(todayDate);
+
       return RefreshIndicator(
         onRefresh: controller.fetchTaskDetails,
         child: SingleChildScrollView(
@@ -62,7 +71,6 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // _buildSectionHeader('Land Information'),
               const TitleText('Crop Information'),
               const SizedBox(height: 16),
               Row(
@@ -88,23 +96,18 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 10),
 
               const TitleText('Task Details'),
               _buildDetailItem('Activity Type', task.scheduleActivityType.name),
-
-              _buildDetailItem('Date', task.endDate),
-
+              _buildDetailItem('Date', task.startDate),
               _buildDetailItem('Description', task.description),
-
               _buildDetailItem('Comment', task.comment),
-              _buildStatus('Status', DateFormat("dd/MM/yyyy").parse(task.startDate)),
+              _buildStatus('Status', isEditable: isEditable),
 
               const SizedBox(height: 24),
-
               _buildActionButtons(),
               const SizedBox(height: 200),
             ],
@@ -112,25 +115,39 @@ class TaskDetailView extends GetView<TaskDetailsController> {
         ),
       );
     }),
+    floatingActionButton: Obx(() {
+      final task = controller.task.value;
+      if (task == null) return const SizedBox.shrink();
 
-    floatingActionButton: Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        FloatingActionButton(
-          heroTag: null,
-          backgroundColor: Get.theme.primaryColor,
-          onPressed: _showAddCommentDialog,
-          child: const Icon(Icons.message),
-        ),
-        const SizedBox(height: 10),
-        FloatingActionButton(
-          heroTag: null,
-          backgroundColor: Get.theme.primaryColor,
-          onPressed: _showEditTaskSheet,
-          child: const Icon(Icons.edit),
-        ),
-      ],
-    ),
+      // 🔹 Local date logic again for FAB visibility
+      DateTime taskDate = DateFormat("dd-MM-yyyy").parse(task.startDate);
+      final taskDate1 = DateTime(taskDate.year, taskDate.month, taskDate.day);
+      final today = DateTime.now();
+      final todayDate = DateTime(today.year, today.month, today.day);
+
+      bool isUpdatable = taskDate1.isBefore(todayDate);
+
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (!isUpdatable)
+            FloatingActionButton(
+              heroTag: "commentBtn",
+              backgroundColor: Get.theme.primaryColor,
+              onPressed: _showAddCommentDialog,
+              child: const Icon(Icons.message),
+            ),
+          const SizedBox(height: 10),
+          if (!isUpdatable)
+            FloatingActionButton(
+              heroTag: "editBtn",
+              backgroundColor: Get.theme.primaryColor,
+              onPressed: _showEditTaskSheet,
+              child: const Icon(Icons.edit),
+            ),
+        ],
+      );
+    }),
   );
 
   void _showEditTaskSheet() {
@@ -158,10 +175,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           ),
         )
       : const SizedBox.shrink();
-Widget _buildStatus(String label, DateTime taskDate) {
-  final isPast = taskDate.isBefore(DateTime.now());
-
-  return Padding(
+  Widget _buildStatus(String label, {bool isEditable = false}) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 4.0),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -169,36 +183,42 @@ Widget _buildStatus(String label, DateTime taskDate) {
         Expanded(
           child: InputCardStyle(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DropdownButtonFormField<TaskTypes>(
-              initialValue: controller.selectedValue.value,
-              icon: const Icon(Icons.keyboard_arrow_down),
-              decoration: const InputDecoration(
-                labelText: "Status",
-                border: InputBorder.none,
+            child: Tooltip(
+              message: !isEditable ? 'Cannot change status for past tasks' : '',
+              child: IgnorePointer(
+                ignoring: !isEditable,
+                child: DropdownButtonFormField<TaskTypes>(
+                  initialValue: controller.selectedValue.value,
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  decoration: InputDecoration(
+                    labelText: label,
+                    border: InputBorder.none,
+                    enabled: !isEditable,
+                  ),
+                  items: controller.statusList
+                      .map(
+                        (item) => DropdownMenuItem(
+                          value: item.task,
+                          child: Text(
+                            item.name,
+                            style: TextStyle(color: getTaskColors(item.task)),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: !isEditable
+                      ? null // disable if past date
+                      : (value) {
+                          controller.selectedValue.value = value!;
+                        },
+                ),
               ),
-              items: controller.statusList
-                  .map(
-                    (item) => DropdownMenuItem(
-                      value: item.task,
-                      child: Text(
-                        item.name,
-                        style: TextStyle(color: getTaskColors(item.task)),
-                      ),
-                    ),
-                  )
-                  .toList(),
-              onChanged: isPast
-                  ? null // disable if past date
-                  : (value) {
-                      controller.selectedValue.value = value!;
-                    },
             ),
           ),
         ),
       ],
     ),
   );
-}
 
   Widget _buildActionButtons() => Obx(
     () =>

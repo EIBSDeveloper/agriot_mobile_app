@@ -173,6 +173,7 @@ class AttendenceController extends GetxController {
   /// Called when search text changes
   void onSearchChanged(String query) {
     searchQuery.value = query.toLowerCase();
+
     loadEmployees(reset: true);
   }
 
@@ -183,7 +184,7 @@ class AttendenceController extends GetxController {
   }
 
   Future<void> addAttendance({required List<EmployeeModel> employees}) async {
-    final employeeList = employees
+    final employeeList = employees.where((e)=>e.isEdited==true)
         .map((e) => e.toJson())
         .toList(); // call toJson()
 

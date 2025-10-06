@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/loading.dart';
+import '../../../../widgets/my_network_image.dart';
 import '../../controller/employee_details_controller.dart';
 import '../widget/detail_row.dart';
-import '../widget/profile_header.dart';
 
 class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
   const EmployeeDetailsView({super.key});
@@ -28,7 +28,50 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Header
-            ProfileHeader(controller: controller),
+            Obx(
+    () => Row(
+      children: [
+        CircleAvatar(
+          radius: 35,
+          backgroundColor: Get.theme.colorScheme.primaryContainer,
+          child: controller.employeeDetails.value.profile.isNotEmpty
+              ? ClipOval(
+                  child: MyNetworkImage(
+                    controller.employeeDetails.value.profile,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              : Icon(
+                  Icons.person,
+                  size: 60,
+                  color: Get.theme.colorScheme.onPrimaryContainer,
+                ),
+        ),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              controller.employeeDetails.value.name,
+              style: Get.theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            // const SizedBox(height: 8),
+            Text(
+              controller.employeeDetails.value.mobileNumber,
+              style: Get.theme.textTheme.titleMedium?.copyWith(
+                color: Get.theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+      ],
+    ),
+  ),
 
             // Details Section
             Column(
@@ -97,7 +140,7 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                 // Pincode
                 DetailRow(
                   label: 'pincode',
-                  value: controller.employeeDetails.value.pincode,
+                  value: controller.employeeDetails.value.address,
                 ),
             
                 // Manager-specific fields

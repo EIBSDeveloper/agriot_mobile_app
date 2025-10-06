@@ -15,6 +15,7 @@ class EmployeeModel {
   final String? totalHour;
   final String? salary;
   final bool? salaryStatus;
+  final bool? isEdited;
 
   EmployeeModel({
     required this.id,
@@ -28,6 +29,7 @@ class EmployeeModel {
     this.logoutTime,
     this.totalHour,
     this.salary,
+    this.isEdited=false,
     this.salaryStatus,
   });
 

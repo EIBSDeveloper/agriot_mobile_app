@@ -139,7 +139,43 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     )
                   : const SizedBox(),
             ),
-
+            // Date of Birth
+            Obx(
+              () => controller.selectedRoleType.value?.id != 0
+                  ? Column(
+                      children: [
+                        const SizedBox(height: 16),
+                        InputCardStyle(
+                          child: TextFormField(
+                            controller: controller.dobcontroller,
+                            readOnly: true,
+                            decoration: const InputDecoration(
+                              labelText: 'Date of Birth ',
+                              hintText: 'Select Date of Birth',
+                              border: InputBorder.none,
+                              suffixIcon: Icon(
+                                Icons.calendar_today,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            onTap: () async {
+                              DateTime? picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1950),
+                                lastDate: DateTime.now(),
+                              );
+                              if (picked != null) {
+                                controller.dobcontroller.text =
+                                    "${picked.day}/${picked.month}/${picked.year}";
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
+            ),
             // Date of Joining
             Obx(
               () => controller.selectedRoleType.value?.id != 0
@@ -197,62 +233,6 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   ),
                   validator: (value) => value == null ? 'Required field' : null,
                 ),
-              ),
-            ),
-
-            // Date of Birth
-            Obx(
-              () => controller.selectedRoleType.value?.id != 0
-                  ? Column(
-                      children: [
-                        const SizedBox(height: 16),
-                        InputCardStyle(
-                          child: TextFormField(
-                            controller: controller.dobcontroller,
-                            readOnly: true,
-                            decoration: const InputDecoration(
-                              labelText: 'Date of Birth ',
-                              hintText: 'Select Date of Birth',
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.calendar_today,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            onTap: () async {
-                              DateTime? picked = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1950),
-                                lastDate: DateTime.now(),
-                              );
-                              if (picked != null) {
-                                controller.dobcontroller.text =
-                                    "${picked.day}/${picked.month}/${picked.year}";
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox(),
-            ),
-            const SizedBox(height: 16),
-
-            // Location URL
-            InputCardStyle(
-              child: TextFormField(
-                controller: controller.locationController,
-                decoration: const InputDecoration(
-                  labelText: 'Location *',
-                  hintText: 'Location',
-                  border: InputBorder.none,
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Required field'
-                    : null,
-                readOnly: true,
-                onTap: controller.pickLocation,
               ),
             ),
 
@@ -324,25 +304,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 return const SizedBox();
               }
             }),
-            const SizedBox(height: 16),
-
-            // Address
-            InputCardStyle(
-              child: TextFormField(
-                maxLines: 3,
-                controller: controller.addressController,
-                decoration: const InputDecoration(
-                  labelText: 'Address *',
-                  hintText: 'Enter Address',
-                  border: InputBorder.none,
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Required field'
-                    : null,
-              ),
-            ),
-
-            //pincode
+// //pincode
             Obx(
               () => controller.selectedRoleType.value?.id == 0
                   ? Column(
@@ -368,6 +330,44 @@ class CreateManagerScreen extends GetView<ManagerController> {
             ),
             const SizedBox(height: 16),
 
+            // Location URL
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Location *',
+                  hintText: 'Location',
+                  border: InputBorder.none,
+                ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
+                readOnly: true,
+                onTap: controller.pickLocation,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // Address
+            InputCardStyle(
+              child: TextFormField(
+                maxLines: 3,
+                controller: controller.addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Address *',
+                  hintText: 'Enter Address',
+                  border: InputBorder.none,
+                ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
+              ),
+            ),
+
+            
+            const SizedBox(height: 16),
+
             // Description
             InputCardStyle(
               child: TextFormField(
@@ -388,9 +388,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   ? InputCardStyle(
                       child: Obx(() {
                         if (controller.isLoading.value) {
-                          return const Center(
-                            child: Loading(),
-                          );
+                          return const Center(child: Loading());
                         }
 
                         if (controller.permissions.isEmpty) {

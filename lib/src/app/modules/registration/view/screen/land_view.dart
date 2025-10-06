@@ -23,10 +23,8 @@ class LandView extends GetView<RegLandController> {
       children: [
         gap,
         CustomTextField(
-          controller: controller.landIdController,
-          onChanged: (value) {
-            controller.formKey.currentState!.validate();
-          },
+          controller: controller.landNameController,
+
           label: 'Land Name *',
           validator: (value) => value!.isEmpty ? 'Required field' : null,
         ),
@@ -48,7 +46,21 @@ class LandView extends GetView<RegLandController> {
               ? ('Required field')
               : (value.length != 6 ? "Ender 6 digit Pincode" : null),
         ),
-
+        gap,
+        InputCardStyle(
+          child: TextFormField(
+            controller: controller.locationListController,
+            decoration: const InputDecoration(
+              labelText: 'Location Coordinates *',
+              border: InputBorder.none,
+              isDense: true,
+              suffixIcon: Icon(Icons.location_on),
+            ),
+            validator: (value) => value!.isEmpty ? 'Required field' : null,
+            readOnly: true,
+            onTap: controller.listpickLocation,
+          ),
+        ),
         gap,
         Row(
           children: [
@@ -58,9 +70,7 @@ class LandView extends GetView<RegLandController> {
                 controller: controller.measurementController,
                 label: 'Measurement *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
-                onChanged: (value) {
-                  controller.formKey.currentState!.validate();
-                },
+
                 keyboardType: TextInputType.number,
               ),
             ),
@@ -74,7 +84,6 @@ class LandView extends GetView<RegLandController> {
                 selectedItem: controller.selectedLandUnit.value,
                 onChanged: (value) {
                   controller.selectedLandUnit.value = value;
-                  controller.formKey.currentState!.validate();
                 },
                 validator: (value) {
                   if (controller.selectedLandUnit.value != null) {
@@ -95,21 +104,7 @@ class LandView extends GetView<RegLandController> {
 
           displayItem: (value) => value.name.toString(),
         ),
-        gap,
-        InputCardStyle(
-          child: TextFormField(
-            controller: controller.locationListController,
-            decoration: const InputDecoration(
-              labelText: 'Location Coordinates *',
-              border: InputBorder.none,
-              isDense: true,
-              suffixIcon: Icon(Icons.location_on),
-            ),
-            validator: (value) => value!.isEmpty ? 'Required field' : null,
-            readOnly: true,
-            onTap: controller.listpickLocation,
-          ),
-        ),
+
         gap,
         // _buildCountryDropdown(),
         // gap,

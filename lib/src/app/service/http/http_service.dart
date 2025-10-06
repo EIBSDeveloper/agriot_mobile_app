@@ -93,7 +93,7 @@ class HttpService extends GetxService {
     try {
       final updatedEndpoint = endpoint.contains('?')
           ? '$endpoint&lang=$languageCode'
-          : '$endpoint?lang=$languageCode}';
+          : '$endpoint?lang=$languageCode';
       final url = Uri.parse(baseUrl + updatedEndpoint);
 
       final response = await http

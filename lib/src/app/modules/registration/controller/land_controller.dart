@@ -19,25 +19,25 @@ import '../view/screen/location_picker_view.dart';
 
 class RegLandController extends GetxController {
   final LandService _landService = Get.find();
+  final AppDataController appDeta = Get.put(AppDataController());
 
   // Form controllers
-  final landIdController = TextEditingController();
+  final landId = 0.obs;
+  final landNameController = TextEditingController();
   final pattaNoController = TextEditingController();
   final pinCode = TextEditingController();
+  final RxBool newSurveyItems = false.obs;
   final measurementController = TextEditingController();
-  // final locationController = TextEditingController();
   final locationListController = TextEditingController();
   final RxList<LatLng?> landCoordinates = <LatLng>[].obs;
   // Dropdown values
   final RxList<AppDropdownItem> landUnits = <AppDropdownItem>[].obs;
   final RxList<AppDropdownItem> soilTypes = <AppDropdownItem>[].obs;
-  // final RxList<AppDropdownItem> areaUnits = <AppDropdownItem>[].obs;
   final RxList<AppDropdownItem> documentTypes = <AppDropdownItem>[].obs;
 
   // Selected values
   final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
-  // final Rx<AppDropdownItem?> selectedAreaUnit = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedDocType = Rx<AppDropdownItem?>(null);
 
   // Location
@@ -64,11 +64,7 @@ class RegLandController extends GetxController {
   }
 
   Future<void> _loadInitialData() async {
-    await Future.wait([
-      loadLandUnits(),
-      loadSoilTypes(),
-      loadDocumentTypes(),
-    ]);
+    await Future.wait([loadLandUnits(), loadSoilTypes(), loadDocumentTypes()]);
   }
 
   Future<void> loadLandUnits() async {
@@ -91,16 +87,6 @@ class RegLandController extends GetxController {
     }
   }
 
-  // Future<void> loadAreaUnits() async {
-  //   try {
-  //     isLoadingAreaUnits(true);
-  //     final result = await _landService.getAreaUnits();
-  //     areaUnits.assignAll(result);
-  //   } finally {
-  //     isLoadingAreaUnits(false);
-  //   }
-  // }
-
   Future<void> loadDocumentTypes() async {
     try {
       isLoadingDocTypes(true);
@@ -122,9 +108,9 @@ class RegLandController extends GetxController {
   }
 
   void addDocumentItem() {
-   Get.toNamed(
-   Routes.addDocument, arguments: {"type": DocTypes.land}
-    )?.then((result) {
+    Get.toNamed(Routes.addDocument, arguments: {"type": DocTypes.land})?.then((
+      result,
+    ) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);
       }
@@ -165,53 +151,70 @@ class RegLandController extends GetxController {
     try {
       isSubmitting(true);
 
-      // Prepare survey details
-      final surveyDetails = surveyItems.asMap().map(
-        (index, item) => MapEntry(
-          'survey_details_${index + 1}',
-          'survey_no:${item.surveyNo},'
-          'survey_measurement_value:${item.measurement},'
-        'survey_measurement_unit_id:${item.unit?.id}',
-        ),
-      );
+      final dynamic surveyDetails;
+      if (landId.value != 0) {
+        surveyDetails = surveyItems.map((survey) {
+          Map map = {
+            if (survey.id != null) "id": survey.id,
+            "survey_no": survey.surveyNo,
+            "survey_measurement_value": survey.measurement,
+            "survey_measurement_unit": survey.unit?.id,
+          };
+          return map;
+        }).toList();
+      } else {
+        surveyDetails = surveyItems.asMap().map(
+          (index, item) => MapEntry(
+            'survey_details_${index + 1}',
+            'survey_no:${item.surveyNo},'
+                'survey_measurement_value:${item.measurement},'
+                'survey_measurement_unit_id:${item.unit?.id}',
+          ),
+        );
+      }
 
-      // Prepare documents
       final documentItemsList = documentItems.map((doc) {
         var json = doc.toJson();
         return json;
       }).toList();
 
-      final AppDataController appDeta = Get.put(AppDataController());
+      // Create request based on whether we're creating or editing
       final request = {
+        if (landId.value != 0) "id": landId.value,
         "farmer": appDeta.farmerId.value,
-        "name": landIdController.text.trim(),
-        "measurement_value": measurementController.text.trim(),
+        "name": landNameController.text.trim(),
+        "measurement_value": double.parse(measurementController.text.trim()),
         "measurement_unit": selectedLandUnit.value?.id,
         if (selectedSoilType.value?.id != null)
           "soil_type": selectedSoilType.value?.id,
-        // "country": Get.find<KycController>().selectedCountry.value?.id ?? 1,
-        // "state": Get.find<KycController>().selectedState.value?.id ?? 1,
-        // "city": Get.find<KycController>().selectedCity.value?.id ?? 1,
-        // "taluk": Get.find<KycController>().selectedTaluk.value?.id ?? 1,
-        // "village": Get.find<KycController>().selectedVillage.value?.id ?? 1,
-        "door_no": Get.find<KycController>().doorNoController.text.trim(),
+
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
+        "pincode": pinCode.text,
         "geo_marks": convertLatLngListToMap(landCoordinates),
         if (pattaNoController.text.isNotEmpty)
           "patta_number": pattaNoController.text.trim(),
-        if (surveyItems.isNotEmpty) ...surveyDetails,
+        "description": '',
+        if (newSurveyItems.value && landId.value == 0) ...surveyDetails,
+        if (landId.value != 0) "surveyDetails": surveyDetails,
         "document": documentItemsList,
       };
 
-      // Call API
-      final response = await _landService.addLand(request: request);
-      if (response.isNotEmpty) {
-        showSuccess('Land added successfully');
+      // Call appropriate API based on whether we're creating or editing
+      if (landId.value == 0) {
+        // Create new land
+        await _landService.addLand(request: request);
         ResgisterController resgisterController = Get.find();
         resgisterController.moveNextPage();
+        showSuccess('Land added successfully');
+      } else {
+        // Edit existing land
+        await _landService.editLand(request: request);
+        ResgisterController resgisterController = Get.find();
+        resgisterController.moveNextPage();
+        showSuccess('Land updated successfully');
       }
     } catch (e) {
-      showError('Error');
+      showError('Error: ${e.toString()}');
     } finally {
       isSubmitting(false);
     }
@@ -219,7 +222,7 @@ class RegLandController extends GetxController {
 
   @override
   void onClose() {
-    landIdController.dispose();
+    landNameController.dispose();
     pattaNoController.dispose();
     measurementController.dispose();
     locationListController.dispose();

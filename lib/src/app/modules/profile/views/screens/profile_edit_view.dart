@@ -131,13 +131,6 @@ class ProfileEditView extends GetView<ProfileEditController> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
-          _buildTextField(
-            controller: controller.doorNoController,
-            label: 'Address',
-            // validator: (value) =>
-            //     value?.isEmpty ?? true ? 'Required field' : null,
-          ),
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.pincodeController,
@@ -156,7 +149,16 @@ class ProfileEditView extends GetView<ProfileEditController> {
             label: 'Location Coordinates *',
             validator: (value) => value!.isEmpty ? 'Required field' : null,
             readOnly: true,
+            maxLines: 1,
             onTap: controller.pickLocation,
+          ),
+          const SizedBox(height: 12),
+          _buildTextField(
+            controller: controller.doorNoController,
+            label: 'Address',
+            maxLines: 3,
+            // validator: (value) =>
+            //     value?.isEmpty ?? true ? 'Required field' : null,
           ),
           const SizedBox(height: 12),
         ],
@@ -219,7 +221,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
         isDense: true,
         suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
       ),
-maxLines:maxLines ,
+      maxLines: maxLines,
       validator: validator,
       keyboardType: keyboardType,
       readOnly: readOnly,

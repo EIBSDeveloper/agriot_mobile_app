@@ -76,12 +76,7 @@ class KycView extends GetView<KycController> {
                     : (value.length != 6 ? "Ender 6 digit Pincode" : null),
                 keyboardType: TextInputType.number,
               ),
-              gap,
-              _buildTextField(
-                controller: controller.doorNoController,
-                label: 'Address',
-                maxLines: 3,
-              ),
+             
               gap,
               _buildTextField(
                 controller: controller.locationController,
@@ -89,6 +84,11 @@ class KycView extends GetView<KycController> {
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
                 readOnly: true,
                 onTap: controller.pickLocation,
+              ), gap,
+              _buildTextField(
+                controller: controller.doorNoController,
+                label: 'Address',
+                maxLines: 3,
               ),
             ],
           ),

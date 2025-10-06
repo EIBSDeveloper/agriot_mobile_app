@@ -15,23 +15,8 @@ class EmptyLandCard extends StatelessWidget {
           padding: EdgeInsets.only(top: Get.size.height * 0.1),
           child: Center(
             child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              elevation: 6,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(
-                    colors: [
-                      Get.theme.colorScheme.onPrimaryContainer,
-                      Get.theme.colorScheme.onPrimaryContainer,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
+              elevation: 1,
+              child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

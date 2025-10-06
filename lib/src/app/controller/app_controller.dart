@@ -4,7 +4,7 @@ import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
 import 'package:get/get.dart';
 
 class AppDataController extends GetxController {
-  RxString farmerId = '120'.obs;
+  RxString farmerId = '1'.obs;
   RxBool isManager= false.obs;
   RxString managerID= ''.obs;
   RxString emailId = ''.obs;
@@ -13,9 +13,9 @@ class AppDataController extends GetxController {
   Rx<GetOtp?> loginState = Rx<GetOtp?>(null);
   Rx<Locale> appLanguage = const Locale('en', 'US').obs;
   RxString apiKey = 'eb0d8580a7a6e8a3a5f25a2d6b1366b8'.obs;
-  RxString baseUrl = 'https://dev.agriotwifarm.com/Api'.obs;
-  RxString imageBaseUrl = 'https://dev.agriotwifarm.com/SuperAdmin'.obs;
-  RxString baseUrlWithoutAPi = 'https://dev.agriotwifarm.com'.obs;
+  RxString baseUrl = 'http://192.168.3.87:5000/Api'.obs;
+  RxString imageBaseUrl = 'http://192.168.3.87:5000/SuperAdmin'.obs;
+  RxString baseUrlWithoutAPi = 'http://192.168.3.87:5000'.obs;
   String weatherBaseUrl = 'https://api.openweathermap.org/data/2.5/weather';
   String weatherApiKey = 'f0dd3d4a11a1446a7e29124d1911268b';
 }

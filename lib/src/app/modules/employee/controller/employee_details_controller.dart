@@ -13,7 +13,7 @@ class EmployeeDetailsController extends GetxController {
     super.onInit();
     employeeId.value = Get.arguments['employeeId'];
     isManager.value = Get.arguments['isManager'] ?? false;
-     loadEmployeeDetails();
+    loadEmployeeDetails();
   }
 
   // Observables
@@ -30,7 +30,7 @@ class EmployeeDetailsController extends GetxController {
     mobileNumber: '',
     alternativeMobileNumber: '',
     emailId: '',
-    pincode: '',
+    address: '',
     description: '',
   ).obs;
 

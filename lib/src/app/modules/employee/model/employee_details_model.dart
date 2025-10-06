@@ -12,7 +12,7 @@ class EmployeeDetailsModel {
   final String mobileNumber;
   final String alternativeMobileNumber;
   final String emailId;
-  final String pincode;
+  final String address;
   final String description;
 
   EmployeeDetailsModel({
@@ -29,7 +29,7 @@ class EmployeeDetailsModel {
     required this.mobileNumber,
     required this.alternativeMobileNumber,
     required this.emailId,
-    required this.pincode,
+    required this.address,
     required this.description,
   });
 
@@ -44,10 +44,10 @@ class EmployeeDetailsModel {
       role: json['role'] ?? '',
       salaryType: json['salary_type'] ?? '',
       salary: (json['salary'] ?? 0).toDouble(),
-      mobileNumber: json['mobile_number']?.toString() ?? '',
+      mobileNumber: json['mobile_no']?.toString() ?? '',
       alternativeMobileNumber: json['alternative_mobile_number']?.toString() ?? '',
-      emailId: json['email_id'] ?? '',
-      pincode: json['pincode']?.toString() ?? '',
+      emailId: json['email'] ?? '',
+      address: json['address']?.toString() ?? '',
       description: json['discription'] ?? '',
     );
 
@@ -65,7 +65,7 @@ class EmployeeDetailsModel {
       'mobile_number': mobileNumber,
       'alternative_mobile_number': alternativeMobileNumber,
       'email_id': emailId,
-      'pincode': pincode,
+      'pincode': address,
       'discription': description,
     };
 }

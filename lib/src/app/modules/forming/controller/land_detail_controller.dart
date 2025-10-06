@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/forming/model/land_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
@@ -7,7 +8,7 @@ import '../repostroy/forming_repository.dart';
 class LandDetailController extends GetxController {
   final FormingRepository _repository = FormingRepository();
 
-  final RxMap<String, dynamic> landDetails = <String, dynamic>{}.obs;
+  final Rx<LandModel?> landDetails =  Rx<LandModel?>(null);
   final RxBool isLoading = true.obs;
   final RxInt landId = 0.obs;
   final RxString error = ''.obs;
@@ -28,7 +29,7 @@ class LandDetailController extends GetxController {
       isLoading(true);
       error('');
       final result = await _repository.getLandDetails(landId.value);
-      landDetails.assignAll(result);
+      landDetails.value=result;
     } catch (e) {
       error(e.toString());
       showError('Failed to load land details');

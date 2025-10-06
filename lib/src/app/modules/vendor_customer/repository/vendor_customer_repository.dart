@@ -5,7 +5,6 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_for
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
-import '../../inventory/model/inventory_item.dart';
 
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
@@ -18,11 +17,9 @@ class VendorCustomerRepository {
         case 0:
           endpoint = '/get_customer_list/$farmerId';
           break;
-        case 1:
+        default:
           endpoint = '/get_vendor/$farmerId';
           break;
-        default:
-          endpoint = '/both_customers_and_vendors/$farmerId';
       }
 
       final response = await _httpService.get(endpoint);
@@ -30,22 +27,8 @@ class VendorCustomerRepository {
       List list = json.decode(response.body);
       return list;
     } catch (e) {
-      // List list = [];
-      // return list;
-      throw Exception('Error fetching vendor/customer list: $e');
-    }
-  }
-
-  Future<List<InventoryType>> getInventory() async {
-    try {
-      final farmerId = appDeta.farmerId;
-      final response = await _httpService.get(
-        '/inventory_types_quantity/$farmerId',
-      );
-      final response2 = jsonDecode(response.body) as List;
-      return response2.map((data) => InventoryType.fromJson(data)).toList();
-    } catch (e) {
-      rethrow;
+      List list = [];
+      return list;
     }
   }
 
@@ -65,14 +48,9 @@ class VendorCustomerRepository {
     var endPoint = '';
     if (type == 'customer') {
       endPoint = '/deactivate_my_customer/$userId/';
-    } else if (type == 'vendor') {
-      endPoint = '/deactivate_my_vendor/$userId/';
     } else {
-      endPoint = '/deactivate_customer_and_vendor/$userId/$id';
-      final response = await _httpService.delete(endPoint);
-      return json.decode(response.body);
+      endPoint = '/deactivate_my_vendor/$userId/';
     }
-
     final response = await _httpService.post(endPoint, {"${type}_id": id});
     return json.decode(response.body);
   }
@@ -150,45 +128,6 @@ class VendorCustomerRepository {
     }
   }
 
-  Future<int> addBoth(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.farmerId;
-    try {
-      var json2 = formData.toJson();
-      json2["is_customer_is_vendor"] = "yes";
+ 
 
-      final response = await _httpService.post(
-        '/add_customer/$farmerId',
-        json2,
-      );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decode = json.decode(response.body);
-        return decode['id'] ?? 0;
-      } else {
-        throw Exception('Failed to add customer/vendor');
-      }
-    } catch (e) {
-      throw Exception('Error adding customer/vendor: $e');
-    }
-  }
-
-  Future<int> editBoth(VendorCustomerFormData formData) async {
-    final farmerId = appDeta.farmerId;
-    try {
-      var json2 = formData.toJson();
-      json2["is_customer_is_vendor"] = "yes";
-
-      final response = await _httpService.put(
-        '/update_manage_customer/$farmerId/${formData.id}',
-        json2,
-      );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var decode = json.decode(response.body);
-        return decode['id'] ?? 0;
-      } else {
-        throw Exception('Failed to add customer/vendor');
-      }
-    } catch (e) {
-      throw Exception('Error adding customer/vendor: $e');
-    }
-  }
 }

@@ -1,71 +1,70 @@
+import 'package:argiot/src/app/modules/employee/model/user_model.dart';
+
+import '../../forming/model/soil_type.dart';
 class EmployeeDetailsModel {
   final int id;
   final String name;
-  final String profile;
-  final String joiningDate;
-  final String? userName;
-  final String? password;
-  final String gender;
-  final String role;
-  final String salaryType;
-  final double salary;
-  final String mobileNumber;
-  final String alternativeMobileNumber;
-  final String emailId;
+  final String email;
+  final String mobileNo;
+  final String AlternativeMobile;
+  final SoilType role;
+  final SoilType employeeType;
+  final SoilType gender;
+  final String? dob;
+  final String doj;
   final String address;
+  final String locations;
+  final double latitude;
+  final double longitude;
+  final String pincode;
   final String description;
+  // final Permissions permissions;
+  final List<Employee> employees;
 
   EmployeeDetailsModel({
     required this.id,
     required this.name,
-    required this.profile,
-    required this.joiningDate,
-    this.userName,
-    this.password,
-    required this.gender,
+    required this.email,
+    required this.mobileNo,
+    required this.AlternativeMobile,
     required this.role,
-    required this.salaryType,
-    required this.salary,
-    required this.mobileNumber,
-    required this.alternativeMobileNumber,
-    required this.emailId,
+    required this.employeeType,
+    required this.gender,
+    this.dob,
+    required this.doj,
     required this.address,
+    required this.locations,
+    required this.latitude,
+    required this.longitude,
+    required this.pincode,
     required this.description,
+    // required this.permissions,
+    required this.employees,
   });
 
   factory EmployeeDetailsModel.fromJson(Map<String, dynamic> json) => EmployeeDetailsModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
-      profile: json['profile'] ?? '',
-      joiningDate: json['joing_date'] ?? '',
-      userName: json['user_name'],
-      password: json['password'],
-      gender: json['gender'] ?? '',
-      role: json['role'] ?? '',
-      salaryType: json['salary_type'] ?? '',
-      salary: (json['salary'] ?? 0).toDouble(),
-      mobileNumber: json['mobile_no']?.toString() ?? '',
-      alternativeMobileNumber: json['alternative_mobile_number']?.toString() ?? '',
-      emailId: json['email'] ?? '',
-      address: json['address']?.toString() ?? '',
-      description: json['discription'] ?? '',
+      email: json['email'] ?? '',
+      mobileNo: json['mobile_no']?.toString() ?? '',
+      AlternativeMobile: json['alternative_mobile']?.toString() ?? '',
+      role: SoilType.fromJson(json['role'] ?? {}),
+      employeeType: SoilType.fromJson(json['employee_type'] ?? {}),
+      gender: SoilType.fromJson(json['gender'] ?? {}),
+      dob: json['dob'],
+      doj: json['doj'] ?? '',
+      address: json['address'] ?? '',
+      locations: json['locations'] ?? '',
+      latitude: (json['latitude'] ?? 0).toDouble(),
+      longitude: (json['longitude'] ?? 0).toDouble(),
+      pincode: (json['pincode'] ?? '').toString(),
+      description: json['description'] ?? 
+      '',
+      // permissions: Permissions.fromJson(json['permissions'] ?? {}),
+      employees: (json['employees'] as List<dynamic>?)
+              ?.map((e) => Employee.fromJson(e))
+              .toList() ??
+          [],
     );
 
-  Map<String, dynamic> toJson() => {
-      'id': id,
-      'name': name,
-      'profile': profile,
-      'joing_date': joiningDate,
-      'user_name': userName,
-      'password': password,
-      'gender': gender,
-      'role': role,
-      'salary_type': salaryType,
-      'salary': salary,
-      'mobile_number': mobileNumber,
-      'alternative_mobile_number': alternativeMobileNumber,
-      'email_id': emailId,
-      'pincode': address,
-      'discription': description,
-    };
-}
+ }

@@ -2,9 +2,11 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../document/document.dart';
+import '../../../manager/model/dropdown_model.dart';
 import '../../../registration/controller/kyc_controller.dart';
 import '../../../registration/model/dropdown_item.dart';
 import '../../../registration/view/widget/searchable_dropdown.dart';
@@ -43,18 +45,79 @@ class LandViewPage extends GetView<LandController> {
                 // validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
               gap,
-              // _buildTextField(
-              //   controller: controller.pincodeController,
-              //   label: 'Pincode *',
-              //   inputFormatters: [
-              //     FilteringTextInputFormatter.digitsOnly,
-              //     LengthLimitingTextInputFormatter(6),
-              //   ],
-              //   validator: (value) =>
-              //       value?.isEmpty ?? true ? 'Required field' : null,
-              //   keyboardType: TextInputType.number,
-              // ),
-              // gap,
+              Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => InputCardStyle(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: DropdownButtonFormField<AssignMangerModel>(
+                          initialValue: controller.selectedManger.value,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          items: controller.managers
+                              .map(
+                                (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e.name),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) =>
+                              controller.selectedManger.value = value,
+                          decoration: const InputDecoration(
+                            labelText: 'Assign Manager',
+                            border: InputBorder.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: Get.theme.primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        Get.toNamed(Routes.employeeAdd)?.then((result) {
+                          controller.loadManagers();
+                        });
+                      },
+                      tooltip: 'Add Manager Detail',
+                    ),
+                  ),
+                ],
+              ),
+              gap,
+              SearchableDropdown<AppDropdownItem>(
+                label: 'Soil Type ',
+                items: controller.soilTypes,
+                selectedItem: controller.selectedSoilType.value,
+                onChanged: (value) => controller.selectedSoilType.value = value,
+                // validator: (value) => value == null ? 'Required field' : null,
+                displayItem: (value) => value.name.toString(),
+              ),
+
+              gap,
+              _buildTextField(
+                controller: controller.locationListController,
+                label: 'Location Coordinates *',
+                validator: (value) => value!.isEmpty ? 'Required field' : null,
+                readOnly: true,
+                onTap: controller.listpickLocation,
+              ),
+              gap,
+              _buildTextField(
+                controller: controller.pincodeController,
+                label: 'Pincode *',
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                validator: (value) =>
+                    value?.isEmpty ?? true ? 'Required field' : null,
+                keyboardType: TextInputType.number,
+              ),
+              gap,
               Row(
                 children: [
                   Expanded(
@@ -68,45 +131,23 @@ class LandViewPage extends GetView<LandController> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                Obx(()=> Expanded(
-                    flex: 2,
-                    child: SearchableDropdown<AppDropdownItem>(
-                      label: 'Unit *',
-                      items: controller.landUnits,
-                      displayItem: (value) => value.name.toString(),
-                      selectedItem: controller.selectedLandUnit.value,
-                      onChanged: (value) => controller.selectedLandUnit.value = value,
-                      // validator: (value) => value == null ? 'Required field' : null,
+                  Obx(
+                    () => Expanded(
+                      flex: 2,
+                      child: SearchableDropdown<AppDropdownItem>(
+                        label: 'Unit *',
+                        items: controller.landUnits,
+                        displayItem: (value) => value.name.toString(),
+                        selectedItem: controller.selectedLandUnit.value,
+                        onChanged: (value) =>
+                            controller.selectedLandUnit.value = value,
+                        // validator: (value) => value == null ? 'Required field' : null,
+                      ),
                     ),
-                  ))
+                  ),
                 ],
               ),
-              gap,
-              SearchableDropdown<AppDropdownItem>(
-                label: 'Soil Type ',
-                items: controller.soilTypes,
-                selectedItem: controller.selectedSoilType.value,
-                onChanged: (value) => controller.selectedSoilType.value = value,
-                // validator: (value) => value == null ? 'Required field' : null,
-                displayItem: (value) => value.name.toString(),
-              ), 
-              // gap,
-              // SearchableDropdown<AppDropdownItem>(
-              //   label: 'Manager',
-              //   items: controller.soilTypes,
-              //   selectedItem: controller.selectedSoilType.value,
-              //   onChanged: (value) => controller.selectedSoilType.value = value,
-              //   displayItem: (value) => value.name.toString(),
-              // ),
 
-              gap,
-              _buildTextField(
-                controller: controller.locationListController,
-                label: 'Location Coordinates *',
-                validator: (value) => value!.isEmpty ? 'Required field' : null,
-                readOnly: true,
-                onTap: controller.listpickLocation,
-              ),
               gap,
               const Divider(),
               _buildSurveyDetailsSection(),
@@ -171,10 +212,10 @@ class LandViewPage extends GetView<LandController> {
     ],
   );
 
-  Widget _buildDocumentsSection() =>     DocumentsSection(
-                documentItems: controller.documentItems,
-                type: DocTypes.land,
-              );
+  Widget _buildDocumentsSection() => DocumentsSection(
+    documentItems: controller.documentItems,
+    type: DocTypes.land,
+  );
   Widget _buildSubmitButton() => Obx(
     () => ElevatedButton(
       onPressed: controller.isSubmitting.value ? null : controller.submitForm,
@@ -202,7 +243,7 @@ class LandViewPage extends GetView<LandController> {
     TextInputType? keyboardType,
     bool readOnly = false,
     VoidCallback? onTap,
-  }) =>  InputCardStyle(
+  }) => InputCardStyle(
     child: TextFormField(
       controller: controller,
       inputFormatters: inputFormatters,

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 
-
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
+import '../../manager/model/dropdown_model.dart';
 import '../../near_me/model/models.dart';
 import '../model/dropdown_item.dart';
 import '../model/land_model.dart';
@@ -40,6 +40,18 @@ class LandService extends GetxService {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<List<AssignMangerModel>> fetchAssignManager() async {
+    final userId = appDeta.farmerId;
+    final response = await _httpService.get("/manager_by_fermer/$userId");
+
+    if (response.statusCode == 200) {
+      final List data = json.decode(response.body);
+      return data.map((e) => AssignMangerModel.fromJson(e)).toList();
+    } else {
+      throw Exception('Failed to load permissions: ${response.statusCode}');
     }
   }
 

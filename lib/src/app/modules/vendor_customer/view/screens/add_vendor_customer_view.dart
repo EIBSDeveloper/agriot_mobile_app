@@ -5,9 +5,7 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import '../../../../widgets/loading.dart';
 
 class AddVendorCustomerView extends StatelessWidget {
   final VendorCustomerController controller = Get.put(VendorCustomerController());
@@ -25,11 +23,11 @@ class AddVendorCustomerView extends StatelessWidget {
             _buildBasicInfoSection(),
             _buildLocationSection(),
             _buildFinancialSection(),
-            Obx(
-              () => (controller.selectedType.value == 'vendor')
-                  ? _buildInventoryTypeSection()
-                  : const SizedBox.shrink(),
-            ),
+            // Obx(
+            //   () => (controller.selectedType.value == 'vendor')
+            //       ? _buildInventoryTypeSection()
+            //       : const SizedBox.shrink(),
+            // ),
             _buildSubmitButton(),
           ],
         ),
@@ -156,47 +154,47 @@ class AddVendorCustomerView extends StatelessWidget {
     ],
   );
 
-  Widget _buildInventoryTypeSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text("${'inventory_type'.tr} *", style: Get.textTheme.titleSmall),
-      const SizedBox(height: 8),
-      Obx(() {
-        if (controller.isinveroryLoading.value) {
-          return const Loading();
-        }
+  // Widget _buildInventoryTypeSection() => Column(
+  //   crossAxisAlignment: CrossAxisAlignment.start,
+  //   children: [
+  //     Text("${'inventory_type'.tr} *", style: Get.textTheme.titleSmall),
+  //     const SizedBox(height: 8),
+  //     Obx(() {
+  //       if (controller.isinveroryLoading.value) {
+  //         return const Loading();
+  //       }
 
-        final model = controller.purchaseModel.value;
-        if (model == null) {
-          return Center(child: Text('no_data_available'.tr));
-        }
+  //       final model = controller.purchaseModel.value;
+  //       if (model == null) {
+  //         return Center(child: Text('no_data_available'.tr));
+  //       }
 
-        return MultiSelectDialogField<String>(
-          items: model
-              .map((item) => MultiSelectItem<String>(item.name, item.name))
-              .toList(),
-          dialogHeight: 300,
-          initialValue: controller.selectedKeys.toList(),
-          title: Text('select_inventory_types'.tr),
-          itemsTextStyle: const TextStyle(color: Colors.black),
-          selectedItemsTextStyle: const TextStyle(color: Colors.black),
-          searchHintStyle: const TextStyle(color: Colors.black),
-          searchTextStyle: const TextStyle(color: Colors.black),
-          buttonText: Text('select_inventory_types'.tr),
-          selectedColor: Get.theme.primaryColor,
-          chipDisplay: MultiSelectChipDisplay(
-            textStyle: const TextStyle(color: Colors.black),
-            chipColor: Get.theme.colorScheme.primary.withAlpha(140),
-            onTap: (value) => controller.toggleSelection(value),
-          ),
-          onConfirm: (values) {
-            controller.setSelectedKeys(values.toSet());
-          },
-        );
-      }),
-      const SizedBox(height: 16),
-    ],
-  );
+  //       return MultiSelectDialogField<String>(
+  //         items: model
+  //             .map((item) => MultiSelectItem<String>(item.name, item.name))
+  //             .toList(),
+  //         dialogHeight: 300,
+  //         initialValue: controller.selectedKeys.toList(),
+  //         title: Text('select_inventory_types'.tr),
+  //         itemsTextStyle: const TextStyle(color: Colors.black),
+  //         selectedItemsTextStyle: const TextStyle(color: Colors.black),
+  //         searchHintStyle: const TextStyle(color: Colors.black),
+  //         searchTextStyle: const TextStyle(color: Colors.black),
+  //         buttonText: Text('select_inventory_types'.tr),
+  //         selectedColor: Get.theme.primaryColor,
+  //         chipDisplay: MultiSelectChipDisplay(
+  //           textStyle: const TextStyle(color: Colors.black),
+  //           chipColor: Get.theme.colorScheme.primary.withAlpha(140),
+  //           onTap: (value) => controller.toggleSelection(value),
+  //         ),
+  //         onConfirm: (values) {
+  //           controller.setSelectedKeys(values.toSet());
+  //         },
+  //       );
+  //     }),
+  //     const SizedBox(height: 16),
+  //   ],
+  // );
 
   Widget _buildLocationSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,

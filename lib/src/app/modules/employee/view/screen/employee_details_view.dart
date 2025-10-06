@@ -29,49 +29,49 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
           children: [
             // Profile Header
             Obx(
-    () => Row(
-      children: [
-        CircleAvatar(
-          radius: 35,
-          backgroundColor: Get.theme.colorScheme.primaryContainer,
-          child: controller.employeeDetails.value.profile.isNotEmpty
-              ? ClipOval(
-                  child: MyNetworkImage(
-                    controller.employeeDetails.value.profile,
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
+              () => Row(
+                children: [
+                  CircleAvatar(
+                    radius: 35,
+                    backgroundColor: Get.theme.colorScheme.primaryContainer,
+                    child: controller.employeeDetails.value!.name.isNotEmpty
+                        ? ClipOval(
+                            child: MyNetworkImage(
+                              controller.employeeDetails.value!.name,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Get.theme.colorScheme.onPrimaryContainer,
+                          ),
                   ),
-                )
-              : Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Get.theme.colorScheme.onPrimaryContainer,
-                ),
-        ),
-        const SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              controller.employeeDetails.value.name,
-              style: Get.theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        controller.employeeDetails.value!.name,
+                        style: Get.theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      // const SizedBox(height: 8),
+                      Text(
+                        controller.employeeDetails.value!.mobileNo,
+                        style: Get.theme.textTheme.titleMedium?.copyWith(
+                          color: Get.theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
-            // const SizedBox(height: 8),
-            Text(
-              controller.employeeDetails.value.mobileNumber,
-              style: Get.theme.textTheme.titleMedium?.copyWith(
-                color: Get.theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-      ],
-    ),
-  ),
 
             // Details Section
             Column(
@@ -79,93 +79,91 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                 // Role
                 DetailRow(
                   label: 'role',
-                  value: controller.employeeDetails.value.role,
+                  value: controller.employeeDetails.value?.role.name ?? "",
                   isImportant: true,
                 ),
                 const Divider(),
-            
+
                 // Salary Type
                 DetailRow(
                   label: 'salary_type',
-                  value: controller.employeeDetails.value.salaryType.tr,
+                  value:
+                      controller.employeeDetails.value?.employeeType.name ?? "",
                 ),
+                // const Divider(),
+
+                // // Work Type (using role as work type)
+                // DetailRow(
+                //   label: 'work_type',
+                //   value: controller.employeeDetails.value?.w.name??"",
+                // ),
                 const Divider(),
-            
-                // Work Type (using role as work type)
-                DetailRow(
-                  label: 'work_type',
-                  value: controller.employeeDetails.value.role,
-                ),
-                const Divider(),
-            
+
                 // Joining Date
                 DetailRow(
                   label: 'joining_date',
-                  value: controller.employeeDetails.value.joiningDate,
+                  value: controller.employeeDetails.value?.doj ?? "",
                 ),
                 const Divider(),
-            
+
                 // Gender
                 DetailRow(
                   label: 'gender',
-                  value: controller.getGenderText(),
+                  value: controller.employeeDetails.value?.gender.name ?? "",
                 ),
                 const Divider(),
-            
+
                 // Alternative Mobile Number
                 DetailRow(
-                  label: 'alternative_mobile',
-                  value: controller
-                      .employeeDetails
-                      .value
-                      .alternativeMobileNumber,
+                  label: 'mobile',
+                  value: "${controller.employeeDetails.value?.mobileNo ?? ""} ${controller.employeeDetails.value?.AlternativeMobile ?? ""}",
                 ),
                 const Divider(),
-            
+
                 // Email ID
                 DetailRow(
                   label: 'email_id',
-                  value: controller.employeeDetails.value.emailId,
+                  value: controller.employeeDetails.value?.email??"",
                 ),
                 const Divider(),
-            
+
                 // Salary
                 DetailRow(
                   label: 'salary',
-                  value: controller.getFormattedSalary(),
+                  value: controller.employeeDetails.value?.employeeType.name ?? "",
                   isImportant: true,
                 ),
                 const Divider(),
-            
+
                 // Pincode
                 DetailRow(
                   label: 'pincode',
-                  value: controller.employeeDetails.value.address,
+                  value: controller.employeeDetails.value!.pincode,
                 ),
-            
-                // Manager-specific fields
-                if (controller.employeeDetails.value.userName != null) ...[
-                  const Divider(),
-                  DetailRow(
-                    label: 'user_id',
-                    value: controller.employeeDetails.value.userName!,
-                  ),
-                ],
-            
-                if (controller.employeeDetails.value.password != null) ...[
-                  const Divider(),
-                  DetailRow(
-                    label: 'password',
-                    value: controller.employeeDetails.value.password!,
-                  ),
-                ], const Divider(),
+
+                // // Manager-specific fields
+                // if (controller.employeeDetails.value!.name != null) ...[
+                //   const Divider(),
+                //   DetailRow(
+                //     label: 'user_id',
+                //     value: controller.employeeDetails.value!.name!,
+                //   ),
+                // ],
+
+                // if (controller.employeeDetails.value.password != null) ...[
+                //   const Divider(),
+                //   DetailRow(
+                //     label: 'password',
+                //     value: controller.employeeDetails.value.password!,
+                //   ),
+                // ],
+                const Divider(),
               ],
             ),
 
-     
             // Address Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10,vertical:8 ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -177,12 +175,12 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    controller.employeeDetails.value.description.isNotEmpty
-                        ? controller.employeeDetails.value.description
+                    controller.employeeDetails.value!.description.isNotEmpty
+                        ? controller.employeeDetails.value!.description
                         : 'address_not_provided'.tr,
                     style: Get.theme.textTheme.bodyMedium?.copyWith(
                       fontStyle:
-                          controller.employeeDetails.value.description.isEmpty
+                          controller.employeeDetails.value!.description.isEmpty
                           ? FontStyle.italic
                           : FontStyle.normal,
                       color: Get.theme.colorScheme.onSurfaceVariant,

@@ -20,7 +20,7 @@ class LandDetailView extends GetView<LandDetailController> {
   Widget build(BuildContext context) => Obx(
     () => Scaffold(
       appBar: CustomAppBar(
-        title: controller.landDetails['name'] ?? 'Loading...',
+        title: controller.landDetails.value?.name ?? 'Loading...',
         showBackButton: true,
         actions: [
           IconButton(
@@ -128,24 +128,29 @@ class LandDetailView extends GetView<LandDetailController> {
 
       _buildDetailRow(
         'Soil Type',
-        controller.landDetails['soil_type']!['name'] ?? "",
+        controller.landDetails.value?.soilType?.name ?? "",
+      ),
+
+      _buildDetailRow(
+        'Manager',
+        controller.landDetails.value?.manager?.name ?? "",
       ),
 
       _buildDetailRow(
         'Patta No',
-        controller.landDetails['patta_number'] ?? 'Not available',
+        controller.landDetails.value?.pattaNumber ??"",
       ),
       _buildDetailRow(
         'Measurement',
-        '${controller.landDetails['measurement_value']} ${controller.landDetails['measurement_unit']['name']}',
+        '${controller.landDetails.value?.measurementValue} ${controller.landDetails.value?.measurementUnit?.name??""}',
       ),
-      if (controller.landDetails['description'] != null)
-        _buildDetailRow('Description', controller.landDetails['description']),
+      if (controller.landDetails.value?.description != null)
+        _buildDetailRow('Description', controller.landDetails.value?.description??""),
     ],
   );
 
   Widget _buildSurveySection() {
-    final surveys = controller.landDetails['survey_details'] as List? ?? [];
+    final surveys = controller.landDetails.value?.surveyDetails ?? [];
     if (surveys.isEmpty) return const SizedBox();
 
     return Column(
@@ -181,28 +186,9 @@ class LandDetailView extends GetView<LandDetailController> {
     );
   }
 
-  // Widget _buildDocumentsSection() {
-  //   final documents = controller.landDetails['documents'] as List? ?? [];
-  //   if (documents.isEmpty) return const SizedBox();
 
-  //   List<DocumentView> allDocs = [];
-
-  //   for (var doc in documents) {
-  //     final List innerDocs = doc['documents'] ?? [];
-  //     allDocs.addAll(
-  //       innerDocs.map(
-  //         (e) => DocumentView(
-  //           label: e['document_category']['name'],
-  //           url: e['upload_document'],
-  //         ),
-  //       ),
-  //     );
-  //   }
-
-  //   return DocumentSection(docs: allDocs);
-  // }
   Widget _buildDocumentsSection() {
-    final documents = controller.landDetails['documents'] as List? ?? [];
+    final documents = controller.landDetails.value?.documents?? [];
     if (documents.isEmpty) return const SizedBox();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +232,7 @@ class LandDetailView extends GetView<LandDetailController> {
   }
 
   Widget _buildCropsSection() {
-    final crops = controller.landDetails['crop_details'] as List? ?? [];
+    final crops = controller.landDetails.value?.cropDetails ?? [];
     if (crops.isEmpty) return addNewCrop();
     var crop = crops.map((e) => CropCardModel.fromJson(e));
     return Column(
@@ -287,7 +273,7 @@ class LandDetailView extends GetView<LandDetailController> {
           if (package!.cropBalance > 0) {
             Get.toNamed(
               Routes.addCrop,
-              arguments: controller.landDetails['id'],
+              arguments: controller.landDetails.value?.id,
             )?.then((result) {
               if (result ?? false) {
                 controller.fetchLandDetails();

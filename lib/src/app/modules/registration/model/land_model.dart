@@ -65,6 +65,7 @@ class LandDetail {
   final String name;
   final double measurementValue;
   final MeasurementUnit measurementUnit;
+  final SoilType? manager;
   final SoilType? soilType;
   final String doorNo;
   final String locations;
@@ -76,11 +77,6 @@ class LandDetail {
   final String? code;
   final int status;
   final int lStatus;
-  final String createdAt;
-  final CreatedBy createdBy;
-  final String updatedAt;
-  final dynamic updatedBy;
-  final TranslateJson translateJson;
   final List<SurveyDetail> surveyDetails;
   final List<dynamic> documents;
 
@@ -90,11 +86,7 @@ class LandDetail {
     required this.measurementValue,
     required this.measurementUnit,
     this.soilType,
-    // required this.country,
-    // required this.state,
-    // required this.city,
-    // required this.taluk,
-    // required this.village,
+    this.manager,
     required this.doorNo,
     required this.locations,
     required this.latitude,
@@ -105,11 +97,6 @@ class LandDetail {
     this.code,
     required this.status,
     required this.lStatus,
-    required this.createdAt,
-    required this.createdBy,
-    required this.updatedAt,
-    this.updatedBy,
-    required this.translateJson,
     required this.surveyDetails,
     required this.documents,
   });
@@ -120,11 +107,7 @@ class LandDetail {
       measurementValue: (json['measurement_value'] ?? 0).toDouble(),
       measurementUnit: MeasurementUnit.fromJson(json['measurement_unit'] ?? {}),
       soilType: SoilType.fromJson(json['soil_type'] ?? {}),
-      // country: Country.fromJson(json['country'] ?? {}),
-      // state: State.fromJson(json['state'] ?? {}),
-      // city: City.fromJson(json['city'] ?? {}),
-      // taluk: Taluk.fromJson(json['taluk'] ?? {}),
-      // village: Village.fromJson(json['village'] ?? {}),
+      manager: SoilType.fromJson(json['manager'] ?? {}),
       doorNo: json['door_no'] ?? '',
       locations: json['locations'] ?? '',
       latitude: (json['latitude'] ?? 0.0).toDouble(),
@@ -135,87 +118,11 @@ class LandDetail {
       code: json['code'],
       status: json['status'] ?? 0,
       lStatus: json['l_status'] ?? 0,
-      createdAt: json['created_at'] ?? '',
-      createdBy: CreatedBy.fromJson(json['created_by'] ?? {}),
-      updatedAt: json['updated_at'] ?? '',
-      updatedBy: json['updated_by'],
-      translateJson: TranslateJson.fromJson(json['translate_json'] ?? {}),
       surveyDetails:
           (json['survey_details'] as List<dynamic>?)
               ?.map((detail) => SurveyDetail.fromJson(detail))
               .toList() ??
           [],
       documents: json['documents'] ?? [],
-    );
-}
-
-class Country {
-  final int id;
-  final String name;
-
-  Country({required this.id, required this.name});
-
-  factory Country.fromJson(Map<String, dynamic> json) => Country(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class State {
-  final int id;
-  final String name;
-
-  State({required this.id, required this.name});
-
-  factory State.fromJson(Map<String, dynamic> json) => State(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class City {
-  final int id;
-  final String name;
-
-  City({required this.id, required this.name});
-
-  factory City.fromJson(Map<String, dynamic> json) => City(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class Taluk {
-  final int id;
-  final String name;
-
-  Taluk({required this.id, required this.name});
-
-  factory Taluk.fromJson(Map<String, dynamic> json) => Taluk(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class Village {
-  final int id;
-  final String name;
-
-  Village({required this.id, required this.name});
-
-  factory Village.fromJson(Map<String, dynamic> json) => Village(id: json['id'] ?? 0, name: json['name'] ?? '');
-}
-
-class CreatedBy {
-  final int id;
-
-  CreatedBy({required this.id});
-
-  factory CreatedBy.fromJson(Map<String, dynamic> json) => CreatedBy(id: json['id'] ?? 0);
-}
-
-class TranslateJson {
-  final Map<String, dynamic> name;
-  final Map<String, dynamic> doorNo;
-  final Map<String, dynamic> description;
-
-  TranslateJson({
-    required this.name,
-    required this.doorNo,
-    required this.description,
-  });
-
-  factory TranslateJson.fromJson(Map<String, dynamic> json) => TranslateJson(
-      name: Map<String, dynamic>.from(json['name'] ?? {}),
-      doorNo: Map<String, dynamic>.from(json['door_no'] ?? {}),
-      description: Map<String, dynamic>.from(json['description'] ?? {}),
     );
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/forming/model/crop_overview.dart';
+import 'package:argiot/src/app/modules/forming/model/land_model.dart';
 import 'package:argiot/src/app/modules/forming/model/my_crop_details.dart';
 import 'package:argiot/src/app/modules/task/model/task_group.dart';
 import 'package:argiot/src/app/modules/task/model/task_response.dart';
@@ -19,12 +20,12 @@ class FormingRepository {
     return List<Land>.from(jsonData['lands'].map((x) => Land.fromJson(x)));
   }
 
-  Future<Map<String, dynamic>> getLandDetails(int landId) async {
+  Future<LandModel> getLandDetails(int landId) async {
     final userId = appDeta.farmerId;
     final response = await _httpService.get(
       '/land_details_with_crop/$userId?land_id=$landId',
     );
-    return json.decode(response.body);
+    return LandModel.fromJson(json.decode(response.body));
   }
 
   Future<Map<String, dynamic>> daleteLandDetails(int landId) async {

@@ -14,7 +14,7 @@ import '../../../../widgets/loading.dart';
 
 class CreateManagerScreen extends GetView<ManagerController> {
   const CreateManagerScreen({super.key});
-
+  final gap = const SizedBox(height: 14);
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: const CustomAppBar(title: 'Employee'),
@@ -24,42 +24,67 @@ class CreateManagerScreen extends GetView<ManagerController> {
         key: controller.formKey,
         child: Column(
           children: [
-            const SizedBox(height: 16),
+            gap,
 
             // Manager Photo
             _buildImagePicker(),
-            const SizedBox(height: 16),
+            gap,
 
             /// Role Dropdown
-            Obx(
-              () => InputCardStyle(
-                child: DropdownButtonFormField<RoleModel>(
-                  initialValue: controller.selectedRoleType.value,
-                  items: controller.roleTypes
-                      .map(
-                        (r) => DropdownMenuItem(value: r, child: Text(r.name)),
-                      )
-                      .toList(),
-                  onChanged: (value) =>
-                      controller.selectedRoleType.value = value,
-                  decoration: const InputDecoration(
-                    labelText: 'Select Role *',
-                    border: InputBorder.none,
+            Row(
+              children: [
+                Expanded(
+                  child: Obx(
+                    () => InputCardStyle(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: DropdownButtonFormField<RoleModel>(
+                        initialValue: controller.selectedRoleType.value,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        items: controller.roleTypes
+                            .map(
+                              (r) => DropdownMenuItem(
+                                value: r,
+                                child: Text(r.name),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (value) =>
+                            controller.selectedRoleType.value = value,
+                        decoration: const InputDecoration(
+                          labelText: 'Select Role *',
+                          border: InputBorder.none,
+                        ),
+                        validator: (value) =>
+                            value == null ? 'Required field' : null,
+                      ),
+                    ),
                   ),
-                  validator: (value) => value == null ? 'Required field' : null,
                 ),
-              ),
+                Card(
+                  color: Get.theme.primaryColor,
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      // Get.toNamed(Routes.employeeAdd)?.then((result) {
+                      //   controller.loadManagers();
+                      // });
+                    },
+                    tooltip: 'Add Survey Detail',
+                  ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 16),
+            gap,
 
             //Usersname
             InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 controller: controller.usernameController,
                 decoration: const InputDecoration(
                   labelText: ' Name *',
-                  hintText: 'Enter Name',
                   border: InputBorder.none,
                 ),
                 validator: (value) =>
@@ -72,13 +97,13 @@ class CreateManagerScreen extends GetView<ManagerController> {
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
-                        const SizedBox(height: 16),
+                        gap,
                         InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
                             controller: controller.emailController,
                             decoration: const InputDecoration(
                               labelText: 'Email ID *',
-                              hintText: 'Enter Email ID',
                               border: InputBorder.none,
                             ),
                             validator: (value) => value == null || value.isEmpty
@@ -90,10 +115,11 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     )
                   : const SizedBox(),
             ),
-            const SizedBox(height: 16),
+            gap,
 
             // Mobile No
             InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 controller: controller.mobileController,
                 keyboardType: TextInputType.phone,
@@ -104,7 +130,6 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 validator: (value) => value == null ? 'Required field' : null,
                 decoration: const InputDecoration(
                   labelText: 'Mobile No *',
-                  hintText: 'Enter Mobile No',
                   border: InputBorder.none,
                 ),
               ),
@@ -115,10 +140,12 @@ class CreateManagerScreen extends GetView<ManagerController> {
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
-                        const SizedBox(height: 16),
+                        gap,
                         InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: DropdownButtonFormField<GenderModel>(
                             initialValue: controller.selectedGenderType.value,
+                            icon: const Icon(Icons.keyboard_arrow_down),
                             items: controller.genderTypes
                                 .map(
                                   (g) => DropdownMenuItem(
@@ -144,14 +171,14 @@ class CreateManagerScreen extends GetView<ManagerController> {
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
-                        const SizedBox(height: 16),
+                        gap,
                         InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
                             controller: controller.dobcontroller,
                             readOnly: true,
                             decoration: const InputDecoration(
                               labelText: 'Date of Birth ',
-                              hintText: 'Select Date of Birth',
                               border: InputBorder.none,
                               suffixIcon: Icon(
                                 Icons.calendar_today,
@@ -181,14 +208,14 @@ class CreateManagerScreen extends GetView<ManagerController> {
               () => controller.selectedRoleType.value?.id != 0
                   ? Column(
                       children: [
-                        const SizedBox(height: 16),
+                        gap,
                         InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: TextFormField(
                             controller: controller.dojcontroller,
                             readOnly: true,
                             decoration: const InputDecoration(
                               labelText: 'Date of Joining ',
-                              hintText: 'Select Date of Joining',
                               border: InputBorder.none,
                               suffixIcon: Icon(
                                 Icons.calendar_today,
@@ -213,13 +240,15 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     )
                   : const SizedBox(),
             ),
-            const SizedBox(height: 16),
+            gap,
 
             /// Employee Type Dropdown
             Obx(
               () => InputCardStyle(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: DropdownButtonFormField<EmployeeTypeModel>(
                   initialValue: controller.selectedEmployeeType.value,
+                  icon: const Icon(Icons.keyboard_arrow_down),
                   items: controller.employeeTypes
                       .map(
                         (e) => DropdownMenuItem(value: e, child: Text(e.name)),
@@ -241,10 +270,12 @@ class CreateManagerScreen extends GetView<ManagerController> {
               () => controller.selectedRoleType.value?.id == 0
                   ? Column(
                       children: [
-                        const SizedBox(height: 16),
+                        gap,
                         InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: DropdownButtonFormField<WorkTypeModel>(
                             initialValue: controller.selectedWorkType.value,
+                            icon: const Icon(Icons.keyboard_arrow_down),
                             items: controller.workTypes
                                 .map(
                                   (e) => DropdownMenuItem<WorkTypeModel>(
@@ -276,10 +307,12 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 }
                 return Column(
                   children: [
-                    const SizedBox(height: 16),
+                    gap,
                     InputCardStyle(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: DropdownButtonFormField<AssignMangerModel>(
                         initialValue: controller.selectedManager.value,
+                        icon: const Icon(Icons.keyboard_arrow_down),
                         items: controller.managers
                             .map(
                               (e) => DropdownMenuItem(
@@ -291,11 +324,11 @@ class CreateManagerScreen extends GetView<ManagerController> {
                         onChanged: (value) =>
                             controller.selectedManager.value = value,
                         decoration: const InputDecoration(
-                          labelText: 'Assign Manager *',
+                          labelText: 'Assign Manager',
                           border: InputBorder.none,
                         ),
-                        validator: (value) =>
-                            value == null ? 'Required field' : null,
+                        // validator: (value) =>
+                        //     value == null ? 'Required field' : null,
                       ),
                     ),
                   ],
@@ -304,39 +337,35 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 return const SizedBox();
               }
             }),
-// //pincode
-            Obx(
-              () => controller.selectedRoleType.value?.id == 0
-                  ? Column(
-                      children: [
-                        const SizedBox(height: 16),
-                        InputCardStyle(
-                          child: TextFormField(
-                            controller: controller.pincodeController,
-                            decoration: const InputDecoration(
-                              labelText: 'Pincode *',
-                              hintText: 'Enter Pincode',
-                              border: InputBorder.none,
-                            ),
-                            validator: (value) =>
-                                value == null || value.trim().isEmpty
-                                ? 'Required field'
-                                : null,
-                          ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox(), // empty widget if role is not 0
+            // //pincode
+            gap,
+            InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TextFormField(
+                controller: controller.pincodeController,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Pincode *',
+                  border: InputBorder.none,
+                ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
+              ),
             ),
-            const SizedBox(height: 16),
+
+            gap,
 
             // Location URL
             InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 controller: controller.locationController,
                 decoration: const InputDecoration(
                   labelText: 'Location *',
-                  hintText: 'Location',
                   border: InputBorder.none,
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
@@ -347,16 +376,16 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            gap,
 
             // Address
             InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 maxLines: 3,
                 controller: controller.addressController,
                 decoration: const InputDecoration(
                   labelText: 'Address *',
-                  hintText: 'Enter Address',
                   border: InputBorder.none,
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
@@ -365,27 +394,27 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             ),
 
-            
-            const SizedBox(height: 16),
+            gap,
 
             // Description
             InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 controller: controller.descriptionController,
                 maxLines: 3,
                 decoration: const InputDecoration(
                   labelText: 'Description',
-                  hintText: 'Enter Description',
                   border: InputBorder.none,
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            gap,
 
             // ---------------- Permissions Section ----------------
             Obx(
               () => controller.selectedRoleType.value?.id != 0
                   ? InputCardStyle(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Obx(() {
                         if (controller.isLoading.value) {
                           return const Center(child: Loading());
@@ -409,7 +438,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     )
                   : const SizedBox(),
             ),
-            const SizedBox(height: 16),
+            gap,
 
             // Submit Button
             SizedBox(

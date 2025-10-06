@@ -9,6 +9,7 @@ import '../../../service/utils/enums.dart';
 import '../../../service/utils/utils.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
+import '../../manager/model/dropdown_model.dart';
 import '../../registration/model/dropdown_item.dart';
 import '../../registration/model/land_model.dart';
 import '../../registration/model/survey_model.dart';
@@ -24,6 +25,7 @@ class LandController extends GetxController {
   final landIdController = TextEditingController();
   final pattaNoController = TextEditingController();
 
+  var managers = <AssignMangerModel>[].obs;
   final pincodeController = TextEditingController();
   final measurementController = TextEditingController();
   final locationListController = TextEditingController();
@@ -41,6 +43,7 @@ class LandController extends GetxController {
   final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedDocType = Rx<AppDropdownItem?>(null);
+  final Rx<AssignMangerModel?> selectedManger = Rx<AssignMangerModel?>(null);
 
   // Location
   final RxDouble latitude = 0.0.obs;
@@ -56,7 +59,7 @@ class LandController extends GetxController {
   final RxBool isLoadingSoilTypes = false.obs;
   final RxBool isLoadingDocTypes = false.obs;
   final RxBool isSubmitting = false.obs;
-
+  var isLoadingManager = false.obs;
   final formKey = GlobalKey<FormState>();
   var landDetail = LandDetail(
     id: 0,
@@ -71,10 +74,6 @@ class LandController extends GetxController {
     pattaNumber: '',
     status: 0,
     lStatus: 0,
-    createdAt: '',
-    createdBy: CreatedBy(id: 0),
-    updatedAt: '',
-    translateJson: TranslateJson(name: {}, doorNo: {}, description: {}),
     surveyDetails: [],
     documents: [],
   ).obs;
@@ -88,10 +87,22 @@ class LandController extends GetxController {
   }
 
   Future<void> _loadInitialData() async {
-    await Future.wait([loadLandUnits(), loadSoilTypes(), loadDocumentTypes()]);
+    await Future.wait([loadLandUnits(), loadSoilTypes(), loadManagers()]);
     if (landId.value != 0) {
       await fetchLandDetail();
       _populateFormWithExistingData();
+    }
+  }
+
+  Future<void> loadManagers() async {
+    try {
+      isLoadingManager.value = true;
+      final data = await _landService.fetchAssignManager();
+      managers.value = data;
+    } catch (e) {
+      print('Error fetching managers: $e');
+    } finally {
+      isLoadingManager.value = false;
     }
   }
 
@@ -133,6 +144,16 @@ class LandController extends GetxController {
       id: landDetail.value.measurementUnit.id,
       name: landDetail.value.measurementUnit.name,
     );
+    if (landDetail.value.manager?.id != null) {
+      selectedManger.value = managers.firstWhereOrNull(
+        (manager) => manager.id == landDetail.value.manager!.id!,
+      );
+    }
+    if (landDetail.value.soilType?.id != null) {
+      selectedSoilType.value = soilTypes.firstWhereOrNull(
+        (soilType) => soilType.id == landDetail.value.soilType!.id!,
+      );
+    }
     // Populate survey items
     surveyItems.clear();
     for (var survey in landDetail.value.surveyDetails) {
@@ -141,7 +162,9 @@ class LandController extends GetxController {
           id: survey.id,
           surveyNo: survey.surveyNo!,
           measurement: survey.measurementValue.toString(),
-          unit:  landUnits.firstWhere((unit)=> unit.name==survey.measurementUnit)
+          unit: landUnits.firstWhere(
+            (unit) => unit.name == survey.measurementUnit,
+          ),
         ),
       );
     }
@@ -175,15 +198,15 @@ class LandController extends GetxController {
     }
   }
 
-  Future<void> loadDocumentTypes() async {
-    try {
-      isLoadingDocTypes(true);
-      final result = await _landService.getDocumentTypes(2); // 2 for Land docs
-      documentTypes.assignAll(result);
-    } finally {
-      isLoadingDocTypes(false);
-    }
-  }
+  // Future<void> loadDocumentTypes() async {
+  //   try {
+  //     isLoadingDocTypes(true);
+  //     final result = await _landService.getDocumentTypes(2); // 2 for Land docs
+  //     documentTypes.assignAll(result);
+  //   } finally {
+  //     isLoadingDocTypes(false);
+  //   }
+  // }
 
   void addSurveyItem() {
     newSurveyItems.value = true;
@@ -197,9 +220,9 @@ class LandController extends GetxController {
   }
 
   void addDocumentItem() {
-    Get.toNamed(
-   Routes.addDocument, arguments: {"type": DocTypes.land}
-    )?.then((result) {
+    Get.toNamed(Routes.addDocument, arguments: {"type": DocTypes.land})?.then((
+      result,
+    ) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);
       }
@@ -276,7 +299,7 @@ class LandController extends GetxController {
         "measurement_unit": selectedLandUnit.value?.id,
         if (selectedSoilType.value?.id != null)
           "soil_type": selectedSoilType.value?.id,
-
+        "manager": selectedManger.value?.id,
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
         "pincode": pincodeController.text,
         "l_status": 0,

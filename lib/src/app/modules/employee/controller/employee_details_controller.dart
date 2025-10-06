@@ -18,21 +18,7 @@ class EmployeeDetailsController extends GetxController {
 
   // Observables
   var isLoading = false.obs;
-  var employeeDetails = EmployeeDetailsModel(
-    id: 0,
-    name: '',
-    profile: '',
-    joiningDate: '',
-    gender: '',
-    role: '',
-    salaryType: '',
-    salary: 0,
-    mobileNumber: '',
-    alternativeMobileNumber: '',
-    emailId: '',
-    address: '',
-    description: '',
-  ).obs;
+  var employeeDetails = Rx<EmployeeDetailsModel?>(null);
 
   // Storage keys
   final String farmerIdKey = 'farmer_id';
@@ -61,21 +47,8 @@ class EmployeeDetailsController extends GetxController {
     }
   }
 
-  String getFormattedSalary() =>
-      '${employeeDetails.value.salary} / ${employeeDetails.value.salaryType == 'regular' ? 'month' : employeeDetails.value.salaryType}';
 
-  String getGenderText() {
-    switch (employeeDetails.value.gender.toLowerCase()) {
-      case 'male':
-        return 'male'.tr;
-      case 'female':
-        return 'female'.tr;
-      case 'other':
-        return 'other'.tr;
-      default:
-        return employeeDetails.value.gender;
-    }
-  }
+  
 
   @override
   void onClose() {

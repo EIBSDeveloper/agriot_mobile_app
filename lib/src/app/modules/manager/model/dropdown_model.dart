@@ -41,7 +41,7 @@ class WorkTypeModel {
 }
 
 class AssignMangerModel {
-  final int id;
+  final int? id;
   final String name;
 
   AssignMangerModel({required this.id, required this.name});

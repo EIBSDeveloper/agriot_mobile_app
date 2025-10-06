@@ -50,7 +50,7 @@ class ManagerController extends GetxController {
   var roleTypes = <RoleModel>[].obs;
   var workTypes = <WorkTypeModel>[].obs;
   var managers = <AssignMangerModel>[].obs;
-
+  var isLoadingManager = false.obs;
   final formKey = GlobalKey<FormState>();
 
   final RxDouble latitude = 0.0.obs;
@@ -396,7 +396,7 @@ class ManagerController extends GetxController {
     }
   }
 
-  var isLoadingManager = false.obs;
+
 
   Future<void> loadManagers() async {
     try {
@@ -409,59 +409,7 @@ class ManagerController extends GetxController {
       isLoadingManager.value = false;
     }
   }
-
-  /*  /// Submit Form
-  Future<void> submitForm() async {
-    if (!formKey.currentState!.validate()) return;
-
-    try {
-      isLoading.value = true;
-
-      final response = await repository.createEmployeeManager(
-        role: selectedRoleType.value,
-        name: usernameController.text.trim(),
-        phone: mobileController.text.trim(),
-        email: emailController.text.trim(),
-        employeeTypeId: selectedEmployeeType.value?.id,
-        genderId: selectedGenderType.value?.id,
-        address: addressController.text.trim(),
-        // used for both employee & manager
-        latitude: latitude.value,
-        longitude: longitude.value,
-        permissions: permissions.value,
-        managerId: selectedRoleType.value?.id == 0
-            ? selectedManager.value?.id
-            : null,
-        workTypeId: selectedRoleType.value?.id == 0
-            ? selectedWorkType.value?.id
-            : null,
-        pincode: selectedRoleType.value?.id == 0
-            ? pincodeController.text.trim()
-            : null,
-        description: selectedRoleType.value?.id == 0
-            ? descriptionController.text.trim()
-            : null,
-        // Pass actual controller values
-        dob: formatDate(dobcontroller.text),
-        doj: formatDate(dojcontroller.text),
-      );
-
-      // ✅ Determine message based on role
-      final isEmployee = selectedRoleType.value?.id == 0;
-      final successMessage = isEmployee
-          ? "Employee created successfully"
-          : "Manager created successfully";
-      showSuccess(successMessage);
-      _clearFormFields();
-      Get.back();
-      print("✅ API Response: $response");
-    } catch (e) {
-      showError(e.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }*/
-  /// Submit Form
+  // Submit Form
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
 
@@ -486,7 +434,7 @@ class ManagerController extends GetxController {
         permissions: isEmployee ? null : permissions,
         managerId: isEmployee ? selectedManager.value?.id : null,
         workTypeId: isEmployee ? selectedWorkType.value?.id : null,
-        pincode: isEmployee ? pincodeController.text.trim() : null,
+        pincode:  pincodeController.text.trim(),
         description: isEmployee ? descriptionController.text.trim() : null,
       );
 

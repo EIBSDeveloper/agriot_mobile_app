@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../inventory/model/inventory_item.dart';
 
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();
@@ -38,12 +37,6 @@ class VendorCustomerController extends GetxController {
 
   // Location dropdowns
 
-  // Dropdown data
-  // final RxList<CountryModel> countries = <CountryModel>[].obs;
-  // final RxList<StateModel> states = <StateModel>[].obs;
-  // final RxList<CityModel> cities = <CityModel>[].obs;
-  // final RxList<TalukModel> taluks = <TalukModel>[].obs;
-  // final RxList<VillageModel> villages = <VillageModel>[].obs;
 
   // Loading states
   final markets = <Market>[].obs;
@@ -62,7 +55,7 @@ class VendorCustomerController extends GetxController {
       selectedType.value = type;
     }
     fetchVendorCustomerList();
-    loadPurchaseList();
+    // loadPurchaseList();
     loadMarkets();
   }
 
@@ -82,33 +75,33 @@ class VendorCustomerController extends GetxController {
   }
 
   //inventory
-  Rxn<List<InventoryType>> purchaseModel = Rxn<List<InventoryType>>();
-  RxSet<String> selectedKeys = <String>{}.obs;
-  RxBool isinveroryLoading = false.obs;
+  // Rxn<List<InventoryType>> purchaseModel = Rxn<List<InventoryType>>();
+  // RxSet<String> selectedKeys = <String>{}.obs;
+  // RxBool isinveroryLoading = false.obs;
 
-  Future<void> loadPurchaseList() async {
-    try {
-      isinveroryLoading.value = true;
-      final result = await _repository.getInventory();
-      purchaseModel.value = result;
-    } catch (e) {
-      print('Error loading purchase list: $e');
-    } finally {
-      isinveroryLoading.value = false;
-    }
-  }
+  // Future<void> loadPurchaseList() async {
+  //   try {
+  //     isinveroryLoading.value = true;
+  //     final result = await _repository.getInventory();
+  //     purchaseModel.value = result;
+  //   } catch (e) {
+  //     print('Error loading purchase list: $e');
+  //   } finally {
+  //     isinveroryLoading.value = false;
+  //   }
+  // }
 
-  void toggleSelection(String key) {
-    if (selectedKeys.contains(key)) {
-      selectedKeys.remove(key);
-    } else {
-      selectedKeys.add(key);
-    }
-  }
+  // void toggleSelection(String key) {
+  //   if (selectedKeys.contains(key)) {
+  //     selectedKeys.remove(key);
+  //   } else {
+  //     selectedKeys.add(key);
+  //   }
+  // }
 
-  void setSelectedKeys(Set<String> keys) {
-    selectedKeys.assignAll(keys);
-  }
+  // void setSelectedKeys(Set<String> keys) {
+  //   selectedKeys.assignAll(keys);
+  // }
 
   ////inventory end
   //Market
@@ -212,37 +205,33 @@ class VendorCustomerController extends GetxController {
         marketIds: selectedMarket.value?.id != null
             ? [selectedMarket.value!.id]
             : [],
-        inventoryTypeIds: selectedType.value == 'vendor'
-            ? [
-                ...purchaseModel.value!
-                    .where((inventory) => selectedKeys.contains(inventory.name))
-                    .map((inventory) => inventory.id),
-              ]
-            : null,
+        // inventoryTypeIds: selectedType.value == 'vendor'
+        //     ? [
+        //         ...purchaseModel.value!
+        //             .where((inventory) => selectedKeys.contains(inventory.name))
+        //             .map((inventory) => inventory.id),
+        //       ]
+        //     : null,
       );
       int newId = 0;
       if (id != null) {
         if (selectedType.value == 'customer') {
           newId = await _repository.editCustomer(formData);
-        } else if (selectedType.value == 'vendor') {
-          newId = await _repository.editVendor(formData);
         } else {
-          newId = await _repository.editBoth(formData);
+          newId = await _repository.editVendor(formData);
         }
       } else {
         if (selectedType.value == 'customer') {
           newId = await _repository.addCustomer(formData);
-        } else if (selectedType.value == 'vendor') {
-          newId = await _repository.addVendor(formData);
         } else {
-          newId = await _repository.addBoth(formData);
+          newId = await _repository.addVendor(formData);
         }
       }
 
       if (newId > 0) {
-     
         fetchVendorCustomerList();
-        showSuccess('Added successfully');   Get.back();
+        showSuccess('Added successfully');
+        Get.back();
       }
     } catch (e) {
       showError('Failed to submit');

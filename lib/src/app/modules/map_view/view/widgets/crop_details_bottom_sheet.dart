@@ -32,14 +32,14 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
           Row(
             children: [
               if (crop.cropImage != null)
-               MyNetworkImage(crop.cropImage!, height: 80, width: 80),
+                MyNetworkImage(crop.cropImage!, height: 80, width: 80),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      TitleText(crop.cropName ?? "Crop"),
+                      TitleText(crop.cropName ?? "crop".tr),
                       Text(
                         crop.cropType != null ? "(${crop.cropType})" : "",
                         style: const TextStyle(fontSize: 12),
@@ -49,9 +49,9 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                   const Divider(),
                   Row(
                     children: [
-                      const Text(
-                        'Expense: ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Text(
+                        '${'expense'.tr}: ',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       InkWell(
                         onTap: () {
@@ -94,9 +94,9 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      const Text(
-                        'Sales: ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Text(
+                        '${'sales'.tr}: ',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       InkWell(
                         onTap: () {
@@ -140,43 +140,48 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
           const SizedBox(height: 5),
           const Divider(height: 1),
           Obx(
-            () => controller.weatherData.value != null? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    '${kelvinToCelsius(controller.weatherData.value!.temperature).toStringAsFixed(1)}°C|°F'
-                        .tr,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Get.theme.primaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                const Text("/"),
-                const SizedBox(width: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(controller.weatherData.value!.condition.tr),
-                ),
-                const SizedBox(width: 4),
-                const Text("/"),
-                const SizedBox(width: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    "${'humidity_percentage'.tr}${controller.weatherData.value!.humidity.toString()}",
-                  ),
-                ),
-              ],
-            ):const SizedBox.square(),
+            () => controller.weatherData.value != null
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          '${kelvinToCelsius(controller.weatherData.value!.temperature).toStringAsFixed(1)}°C|°F'
+                              .tr,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Get.theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Text("/"),
+                      const SizedBox(width: 4),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(controller.weatherData.value!.condition.tr),
+                      ),
+                      const SizedBox(width: 4),
+                      const Text("/"),
+                      const SizedBox(width: 4),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          "humidity_percentage".trParams({
+                            'percentage': controller.weatherData.value!.humidity
+                                .toString(),
+                          }),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.square(),
           ),
           const Divider(height: 1),
           const SizedBox(height: 8),
           if (controller.cropDetails.value!.tasks.isNotEmpty)
-            const TitleText("Today task"),
+            TitleText("today_task".tr),
           const SizedBox(height: 8),
           Obx(
             () => Column(

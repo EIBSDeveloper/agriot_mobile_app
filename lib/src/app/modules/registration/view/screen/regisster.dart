@@ -1,6 +1,7 @@
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../controller/resgister_controller.dart';
 import 'stepper.dart';
 
@@ -28,9 +29,9 @@ class Registration extends GetView<ResgisterController> {
                 margin: const EdgeInsets.symmetric(horizontal: 15),
                 child: InkWell(
                   onTap: controller.skip,
-                  child: const Text(
-                    "Skip",
-                    style: TextStyle(
+                  child: Text(
+                    "skip".tr,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -51,7 +52,7 @@ class Registration extends GetView<ResgisterController> {
             children: [
               Obx(
                 () => MinimalHorizontalStepper(
-                  steps: const ['KYC', 'Land', 'Crop'],
+                  steps: ['kyc'.tr, 'land'.tr, 'crop'.tr],
                   currentStep: controller.pageIndex.value,
                   activeColor: Get.theme.primaryColor,
                   top: (int index) {

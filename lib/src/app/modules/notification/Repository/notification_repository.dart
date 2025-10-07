@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:argiot/src/app/modules/notification/view/widget/notification_count.dart';
-import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
+import 'package:argiot/src/app/modules/notification/model/notification_count.dart';
+import 'package:argiot/src/app/modules/notification/model/notification_item.dart';
 import 'package:get/get.dart';
 
 import '../../../controller/app_controller.dart';
 import '../../../service/http/http_service.dart';
-import '../notification_model.dart';
+import '../model/notification_model.dart';
 
 class NotificationRepository {
   final HttpService _httpService = Get.find();

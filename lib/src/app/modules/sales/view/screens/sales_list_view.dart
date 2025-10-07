@@ -2,15 +2,17 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/loading.dart';
 import '../../controller/sales_controller.dart';
+
 class SalesListView extends GetView<SalesController> {
   const SalesListView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar:  CustomAppBar(title: 'sales_list'.tr, showBackButton: true),
+    appBar: CustomAppBar(title: 'sales_list'.tr, showBackButton: true),
     body: RefreshIndicator(
       onRefresh: () async {
         await controller.fetchSalesList();
@@ -48,7 +50,7 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-                 const SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
@@ -70,7 +72,7 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-              const SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: InputCardStyle(
                       child: DropdownButtonHideUnderline(
@@ -93,7 +95,7 @@ class SalesListView extends GetView<SalesController> {
                       ),
                     ),
                   ),
-                     ],
+                ],
               ),
             ),
             Expanded(
@@ -142,7 +144,9 @@ class SalesListView extends GetView<SalesController> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("${'sale_quantity'.tr}: ${sale.salesQuantity}"),
+                                  Text(
+                                    "${'sale_quantity'.tr}: ${sale.salesQuantity}",
+                                  ),
                                 ],
                               ),
                               trailing: Text(

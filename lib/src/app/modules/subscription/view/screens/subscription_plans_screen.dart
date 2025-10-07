@@ -1,7 +1,7 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
+import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
 import 'package:argiot/src/app/modules/subscription/model/package.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
-import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -46,7 +46,6 @@ class SubscriptionPlansScreen extends StatelessWidget {
         }
 
         return SingleChildScrollView(
-
           child: Column(
             children: [
               const SizedBox(height: 16),
@@ -84,7 +83,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
   }) => Column(
     children: [
       Card(
-        margin: const EdgeInsets.only(bottom: 8,top: 8,right: 10,left: 10),
+        margin: const EdgeInsets.only(bottom: 8, top: 8, right: 10, left: 10),
         elevation: 1,
         color: isSelected ? Get.theme.colorScheme.primary : null,
         child: InkWell(

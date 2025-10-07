@@ -29,9 +29,12 @@ class AddSchedule extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const ButtomSheetScrollButton(),
-              const Text(
-                'Add Schedule',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                'add_schedule'.tr,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -40,7 +43,7 @@ class AddSchedule extends StatelessWidget {
                 child: TextFormField(
                   readOnly: true, // disable keyboard
                   decoration: InputDecoration(
-                    labelText: "Schedule Date*",
+                    labelText: "${"schedule_date".tr}*",
                     suffixIcon: Icon(
                       Icons.calendar_today,
                       color: Get.theme.primaryColor,
@@ -68,7 +71,7 @@ class AddSchedule extends StatelessWidget {
                   },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please select schedule date";
+                      return "please_select_schedule_date".tr;
                     }
                     return null;
                   },
@@ -81,7 +84,7 @@ class AddSchedule extends StatelessWidget {
                   Obx(
                     () => CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('Recurring Task'),
+                      title: Text('recurring_task'.tr),
                       value: controller.isRecurring.value,
                       onChanged: (value) =>
                           controller.isRecurring.value = value ?? false,
@@ -101,7 +104,7 @@ class AddSchedule extends StatelessWidget {
                             controller.recurrenceType.value = index;
                           },
                           activePageIndex: controller.recurrenceType.value,
-                          buttonsList: const ["Daily", "Weekly ", "Monthly "],
+                          buttonsList: ["daily".tr, "weekly".tr, "monthly".tr],
                         ),
                         const SizedBox(height: 16),
 
@@ -111,13 +114,13 @@ class AddSchedule extends StatelessWidget {
                             spacing: 8,
                             children: List.generate(7, (index) {
                               final day = [
-                                'Mon',
-                                'Tue',
-                                'Wed',
-                                'Thu',
-                                'Fri',
-                                'Sat',
-                                'Sun',
+                                'mon'.tr,
+                                'tue'.tr,
+                                'wed'.tr,
+                                'thu'.tr,
+                                'fri'.tr,
+                                'sat'.tr,
+                                'sun'.tr,
                               ][index];
                               return FilterChip(
                                 label: Text(day),
@@ -141,12 +144,12 @@ class AddSchedule extends StatelessWidget {
                           child: TextFormField(
                             readOnly: true, // prevent keyboard
                             decoration: InputDecoration(
-                              labelText: "Schedule End Date*",
+                              labelText: "${"schedule_end_date".tr}*",
                               suffixIcon: Icon(
                                 Icons.calendar_today,
                                 color: Get.theme.primaryColor,
                               ),
-                            
+
                               border: InputBorder.none,
                             ),
                             controller: TextEditingController(
@@ -171,7 +174,7 @@ class AddSchedule extends StatelessWidget {
                             },
                             validator: (value) {
                               if (controller.scheduleEndDate.value == null) {
-                                return "Please select end date";
+                                return "please_select_end_date".tr;
                               }
                               return null;
                             },
@@ -188,8 +191,8 @@ class AddSchedule extends StatelessWidget {
               InputCardStyle(
                 noHeight: true,
                 child: TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Description*',
+                  decoration: InputDecoration(
+                    labelText: "${'description'.tr}*",
                     border: InputBorder.none,
                   ),
 
@@ -197,7 +200,7 @@ class AddSchedule extends StatelessWidget {
                   maxLines: 2,
                   onChanged: (value) => controller.description.value = value,
                   validator: (value) => value?.isEmpty ?? true
-                      ? 'Please enter description'
+                      ? 'please_enter_description'.tr
                       : null,
                 ),
               ),
@@ -209,8 +212,8 @@ class AddSchedule extends StatelessWidget {
                       ? null
                       : controller.addTask,
                   child: controller.isLoading.value
-                      ? const Loading(size:50)
-                      : const Text('Add Task Schedule'),
+                      ? const Loading(size: 50)
+                      : Text('add_task_schedule'.tr),
                 ),
               ),
             ],

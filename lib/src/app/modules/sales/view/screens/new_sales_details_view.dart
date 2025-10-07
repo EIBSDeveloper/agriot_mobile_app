@@ -5,11 +5,11 @@ import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../routes/app_routes.dart';
 import '../../../../widgets/loading.dart';
+import '../../../../widgets/title_text.dart';
 import '../../controller/new_sales_controller.dart';
 import '../../model/sales_detail.dart';
-import '../../../../widgets/title_text.dart';
-import '../../../../routes/app_routes.dart';
 
 class NewSalesDetailsView extends StatefulWidget {
   const NewSalesDetailsView({super.key});
@@ -24,7 +24,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(
-      title: 'Sales Details',
+      title: 'sales_details'.tr,
       showBackButton: true,
       actions: [
         IconButton(
@@ -103,12 +103,12 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDetailRow('Date', salesDetail.datesOfSales),
-          _buildDetailRow('Customer Name', salesDetail.myCustomer.name),
-          _buildDetailRow('Gross Sales', '₹${salesDetail.salesAmount}'),
-          // _buildDetailRow('Deduction', '₹${salesDetail.deductionAmount}'),
-          _buildDetailRow('Net Sales', '₹${salesDetail.totalSalesAmount}'),
-          _buildDetailRow('Amount Paid', '₹${salesDetail.amountPaid}'),
+          _buildDetailRow('date'.tr, salesDetail.datesOfSales),
+          _buildDetailRow('customer_name'.tr, salesDetail.myCustomer.name),
+          _buildDetailRow('gross_sales'.tr, '₹${salesDetail.salesAmount}'),
+          // _buildDetailRow('deduction'.tr, '₹${salesDetail.deductionAmount}'),
+          _buildDetailRow('net_sales'.tr, '₹${salesDetail.totalSalesAmount}'),
+          _buildDetailRow('amount_paid'.tr, '₹${salesDetail.amountPaid}'),
         ],
       ),
     ),
@@ -128,7 +128,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   Widget _buildDeductionsSection(SalesDetail salesDetail) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const TitleText('Deductions'),
+      TitleText('deductions'.tr),
       const SizedBox(height: 8),
       ...salesDetail.deductions.map(
         (deduction) => Card(
@@ -146,7 +146,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   Widget _buildDocumentsSection(SalesDetail salesDetail) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('Documents', style: Get.textTheme.titleMedium),
+      Text('documents'.tr, style: Get.textTheme.titleMedium),
       const SizedBox(height: 8),
       Wrap(
         spacing: 8,
@@ -155,7 +155,9 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
             .map(
               (document) => InkWell(
                 onTap: () {
-                  var list = document.documents.map((doc)=>doc.uploadDocument).toList();
+                  var list = document.documents
+                      .map((doc) => doc.uploadDocument)
+                      .toList();
                   Get.toNamed(Routes.docViewer, arguments: list);
                 },
                 child: Column(
@@ -180,7 +182,7 @@ class _NewSalesDetailsViewState extends State<NewSalesDetailsView> {
   Widget _buildDescriptionSection(SalesDetail salesDetail) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('Description', style: Get.textTheme.titleMedium),
+      Text('description'.tr, style: Get.textTheme.titleMedium),
       const SizedBox(height: 8),
       Text(salesDetail.description ?? ''),
     ],

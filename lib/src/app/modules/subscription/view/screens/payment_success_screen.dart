@@ -7,38 +7,34 @@ class PaymentSuccessScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.check_circle, color: Colors.green, size: 100),
-            const SizedBox(height: 24),
-            Text(
-              'payment_successful'.tr,
-              style: Get.textTheme.headlineMedium?.copyWith(
-                color: Colors.green,
-              ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.check_circle, color: Colors.green, size: 100),
+          const SizedBox(height: 24),
+          Text(
+            'payment_successful'.tr,
+            style: Get.textTheme.headlineMedium?.copyWith(color: Colors.green),
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              'payment_success_message'.tr,
+              textAlign: TextAlign.center,
+              style: Get.textTheme.bodyLarge,
             ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              child: Text(
-                'payment_success_message'.tr,
-                textAlign: TextAlign.center,
-                style: Get.textTheme.bodyLarge,
-              ),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {
-                Get.offAllNamed(
-                  Routes.home,
-                ); // Replace with your dashboard route
-              },
-              child: Text('continue_to_dashboard'.tr),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () {
+              Get.offAllNamed(Routes.home); // Replace with your dashboard route
+            },
+            child: Text('continue_to_dashboard'.tr),
+          ),
+        ],
       ),
-    );
+    ),
+  );
 }

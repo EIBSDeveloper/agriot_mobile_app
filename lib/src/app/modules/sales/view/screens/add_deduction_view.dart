@@ -4,6 +4,7 @@ import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 class AddDeductionView extends StatelessWidget {
   final NewSalesController controller = Get.find<NewSalesController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -15,7 +16,7 @@ class AddDeductionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar:  CustomAppBar(title: 'add_deduction'.tr),
+    appBar: CustomAppBar(title: 'add_deduction'.tr),
     body: Padding(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -67,14 +68,15 @@ class AddDeductionView extends StatelessWidget {
               ),
             ),
           ),
-      Card(
-            color: Get.theme.primaryColor,
-            child: IconButton(
-          onPressed: () {
-            controller.isNewReason.value = !controller.isNewReason.value;
-          },
-          icon: const Icon(Icons.add,color: Colors.white,),
-        ),)
+        Card(
+          color: Get.theme.primaryColor,
+          child: IconButton(
+            onPressed: () {
+              controller.isNewReason.value = !controller.isNewReason.value;
+            },
+            icon: const Icon(Icons.add, color: Colors.white),
+          ),
+        ),
       ],
     ),
   );
@@ -113,7 +115,8 @@ class AddDeductionView extends StatelessWidget {
   );
 
   Widget _buildTypeSelector() => Obx(
-    () => InputCardStyle(          padding: const EdgeInsets.symmetric(horizontal: 8),
+    () => InputCardStyle(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonFormField<String>(
         initialValue: _selectedType.value,
         onChanged: (String? newValue) {
@@ -130,10 +133,10 @@ class AddDeductionView extends StatelessWidget {
             child: Row(children: [Icon(Icons.percent, size: 18)]),
           ),
         ],
-        decoration: const InputDecoration(
-          // : 'Discount Type',
+        decoration: InputDecoration(
+          hintText: 'discount_type'.tr,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         isExpanded: true,
       ),

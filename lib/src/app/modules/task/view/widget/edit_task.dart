@@ -1,6 +1,6 @@
+import 'package:argiot/src/app/modules/task/controller/task_details_controller.dart';
 import 'package:argiot/src/app/modules/task/model/activity_model.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
-import 'package:argiot/src/app/modules/task/controller/task_details_controller.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,9 +27,12 @@ class EditTask extends GetView<TaskDetailsController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const ButtomSheetScrollButton(),
-              const Text(
-                'Edit Task',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                'edit_task'.tr,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -40,7 +43,7 @@ class EditTask extends GetView<TaskDetailsController> {
                   selectedItem: controller.selectedActivityType.value,
                   onChanged: (activity) =>
                       controller.selectedActivityType.value = activity!,
-                  label: 'Activity type*',
+                  label: '${'activity_type'.tr}*',
                 ),
               ),
               const SizedBox(height: 8),
@@ -50,7 +53,7 @@ class EditTask extends GetView<TaskDetailsController> {
                 () => InputCardStyle(
                   noHeight: true,
                   child: ListTile(
-                    title: const Text('Schedule Date*'),
+                    title: Text('${'schedule_date'.tr}*'),
                     subtitle: Text(
                       '${controller.scheduleDate.value.day}/${controller.scheduleDate.value.month}/${controller.scheduleDate.value.year}',
                     ),
@@ -76,8 +79,8 @@ class EditTask extends GetView<TaskDetailsController> {
                 noHeight: true,
                 child: TextFormField(
                   initialValue: controller.description.value,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
+                  decoration: InputDecoration(
+                    labelText: 'description'.tr,
                     border: InputBorder.none,
                   ),
                   maxLines: 3,
@@ -95,8 +98,8 @@ class EditTask extends GetView<TaskDetailsController> {
                           controller.task.value!.scheduleId,
                         ),
                   child: controller.isLoadingEdit.value
-                      ? const Loading(size:50)
-                      : const Text('Update Task'),
+                      ? const Loading(size: 50)
+                      : Text('update_task'.tr),
                 ),
               ),
             ],

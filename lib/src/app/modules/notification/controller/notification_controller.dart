@@ -1,8 +1,8 @@
-import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
+import 'package:argiot/src/app/modules/notification/model/notification_item.dart';
 import 'package:get/get.dart';
 
 import '../Repository/notification_repository.dart';
-import '../notification_model.dart';
+import '../model/notification_model.dart';
 
 class NotificationController extends GetxController {
   final NotificationRepository _repository = NotificationRepository();

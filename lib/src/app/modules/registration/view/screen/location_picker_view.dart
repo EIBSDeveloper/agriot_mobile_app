@@ -56,7 +56,7 @@ class _LandPickerViewState extends State<LandPickerView> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(
-      title: 'Select Location',
+      title: 'select_location'.tr,
       actions: [
         IconButton(icon: const Icon(Icons.info_outline), onPressed: infoImage),
       ],
@@ -147,7 +147,7 @@ class _LandPickerViewState extends State<LandPickerView> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: controller.confirmSelection,
-                        child: const Text('Confirm Location'),
+                        child: Text('confirm_location'.tr),
                       ),
                     ),
                   ],
@@ -181,7 +181,7 @@ class _LandPickerViewState extends State<LandPickerView> {
   );
 
   infoImage() => Get.defaultDialog(
-    title: "Mark your land boundarie",
+    title: "mark_your_land_boundaries".tr,
     content: Image.asset(
       AppImages.landMark,
       width: 300,
@@ -193,7 +193,7 @@ class _LandPickerViewState extends State<LandPickerView> {
         onPressed: () {
           Get.back();
         },
-        child: const Text("Close"),
+        child: Text("close".tr),
       ),
     ],
   );

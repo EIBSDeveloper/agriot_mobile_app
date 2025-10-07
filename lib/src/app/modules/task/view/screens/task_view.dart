@@ -11,8 +11,8 @@ import '../../../../service/utils/enums.dart';
 import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../forming/view/widget/empty_land_card.dart';
-import '../widget/task_card.dart';
 import '../../controller/task_controller.dart';
+import '../widget/task_card.dart';
 
 class TaskView extends GetView<TaskController> {
   const TaskView({super.key});
@@ -47,7 +47,7 @@ class TaskView extends GetView<TaskController> {
                       }
                     });
                   },
-                  child: const Text("Best schedule"),
+                  child: Text("best_schedule".tr),
                 ),
               ],
             ),
@@ -152,10 +152,10 @@ class TaskView extends GetView<TaskController> {
                     child: Column(
                       children: [
                         if (controller.errorMessage.value.isNotEmpty)
-                          const Center(
+                          Center(
                             child: Padding(
-                              padding: EdgeInsets.only(top: 100),
-                              child: Text("No data found"),
+                              padding: const EdgeInsets.only(top: 100),
+                              child: Text("no_data_found".tr),
                             ),
                           ),
 
@@ -341,7 +341,9 @@ class TaskView extends GetView<TaskController> {
         child: Padding(
           padding: const EdgeInsets.only(top: 100),
           child: Text(
-            'No tasks for ${DateFormat('d MMMM y').format(selectedDate)}'.tr,
+            'no_tasks_for_date'.trParams({
+              'date': DateFormat('d MMMM y').format(selectedDate),
+            }),
           ),
         ),
       );

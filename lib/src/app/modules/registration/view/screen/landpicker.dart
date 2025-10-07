@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import '../../../../widgets/loading.dart';
 import '../../controller/location_picker_controller.dart';
 
@@ -10,8 +11,8 @@ class LocationPickerView extends GetView<LocationPickerController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(
-      title: 'Select Location',
+    appBar: CustomAppBar(
+      title: 'select_location'.tr,
       // actions: [
       //   IconButton(
       //     icon: const Icon(Icons.my_location),
@@ -44,7 +45,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
             myLocationButtonEnabled: false,
           );
         }),
-        // keep overlays (buttons, cards) outside so they don’t rebuild Map
+        // keep overlays (buttons, cards) outside so they don't rebuild Map
         Positioned(
           bottom: 20,
           left: 20,
@@ -60,7 +61,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: controller.confirmSelection,
-                      child: const Text('Confirm Location'),
+                      child: Text('confirm_location'.tr),
                     ),
                   ),
                 ],

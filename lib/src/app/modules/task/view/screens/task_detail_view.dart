@@ -21,7 +21,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: CustomAppBar(
-      title: 'Task Details',
+      title: 'task_details'.tr,
       showBackButton: true,
       actions: [
         IconButton(
@@ -43,7 +43,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               Text(controller.errorMessage.value),
               ElevatedButton(
                 onPressed: controller.fetchTaskDetails,
-                child: const Text('Retry'),
+                child: Text('retry'.tr),
               ),
             ],
           ),
@@ -52,7 +52,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
 
       final task = controller.task.value;
       if (task == null) {
-        return const Center(child: Text('No task details available'));
+        return Center(child: Text('no_task_details_available'.tr));
       }
 
       // 🔹 Local date logic
@@ -71,7 +71,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const TitleText('Crop Information'),
+              TitleText('crop_information'.tr),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -100,12 +100,15 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               const Divider(),
               const SizedBox(height: 10),
 
-              const TitleText('Task Details'),
-              _buildDetailItem('Activity Type', task.scheduleActivityType.name),
-              _buildDetailItem('Date', task.startDate),
-              _buildDetailItem('Description', task.description),
-              _buildDetailItem('Comment', task.comment),
-              _buildStatus('Status', isEditable: isEditable),
+              TitleText('task_details'.tr),
+              _buildDetailItem(
+                'activity_type'.tr,
+                task.scheduleActivityType.name,
+              ),
+              _buildDetailItem('date'.tr, task.startDate),
+              _buildDetailItem('description'.tr, task.description),
+              _buildDetailItem('comment'.tr, task.comment),
+              _buildStatus('status'.tr, isEditable: isEditable),
 
               const SizedBox(height: 24),
               _buildActionButtons(),
@@ -184,7 +187,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           child: InputCardStyle(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Tooltip(
-              message: !isEditable ? 'Cannot change status for past tasks' : '',
+              message: !isEditable ? 'cannot_change_status_past_tasks'.tr : '',
               child: IgnorePointer(
                 ignoring: !isEditable,
                 child: DropdownButtonFormField<TaskTypes>(
@@ -233,7 +236,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               onPressed: () {
                 controller.markTaskCompleted();
               },
-              child: const Text('Update'),
+              child: Text('update'.tr),
             ),
           )
         : const SizedBox.shrink(),
@@ -242,17 +245,17 @@ class TaskDetailView extends GetView<TaskDetailsController> {
   void _confirmDeleteTask() {
     Get.dialog(
       AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this task?'),
+        title: Text('confirm_delete'.tr),
+        content: Text('delete_task_confirmation'.tr),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(onPressed: () => Get.back(), child: Text('cancel'.tr)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () {
               Get.back();
               controller.deleteTask();
             },
-            child: const Text('Delete'),
+            child: Text('delete'.tr),
           ),
         ],
       ),
@@ -278,17 +281,17 @@ class TaskDetailView extends GetView<TaskDetailsController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             const ButtomSheetScrollButton(),
-            const Text(
-              'Add Comment',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              'add_comment'.tr,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: commentController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Enter your comment...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: 'enter_comment'.tr,
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
@@ -297,7 +300,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               children: [
                 TextButton(
                   onPressed: () => Get.back(),
-                  child: const Text('Cancel'),
+                  child: Text('cancel'.tr),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -307,7 +310,7 @@ class TaskDetailView extends GetView<TaskDetailsController> {
                       Get.back();
                     }
                   },
-                  child: const Text('Save'),
+                  child: Text('save'.tr),
                 ),
               ],
             ),

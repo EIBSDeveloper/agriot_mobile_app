@@ -1,4 +1,4 @@
-import 'package:argiot/src/app/modules/notification/view/widget/notification_item.dart';
+import 'package:argiot/src/app/modules/notification/model/notification_item.dart';
 import 'package:intl/intl.dart';
 
 class NotificationModel {

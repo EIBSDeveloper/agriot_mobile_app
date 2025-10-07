@@ -1,8 +1,9 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';
+import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../../../widgets/loading.dart';

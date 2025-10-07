@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-
 class AddVendorCustomerView extends StatelessWidget {
-  final VendorCustomerController controller = Get.put(VendorCustomerController());
-   AddVendorCustomerView({super.key});
+  final VendorCustomerController controller = Get.put(
+    VendorCustomerController(),
+  );
+  AddVendorCustomerView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -153,48 +154,6 @@ class AddVendorCustomerView extends StatelessWidget {
       _buildMarketTypeSection(),
     ],
   );
-
-  // Widget _buildInventoryTypeSection() => Column(
-  //   crossAxisAlignment: CrossAxisAlignment.start,
-  //   children: [
-  //     Text("${'inventory_type'.tr} *", style: Get.textTheme.titleSmall),
-  //     const SizedBox(height: 8),
-  //     Obx(() {
-  //       if (controller.isinveroryLoading.value) {
-  //         return const Loading();
-  //       }
-
-  //       final model = controller.purchaseModel.value;
-  //       if (model == null) {
-  //         return Center(child: Text('no_data_available'.tr));
-  //       }
-
-  //       return MultiSelectDialogField<String>(
-  //         items: model
-  //             .map((item) => MultiSelectItem<String>(item.name, item.name))
-  //             .toList(),
-  //         dialogHeight: 300,
-  //         initialValue: controller.selectedKeys.toList(),
-  //         title: Text('select_inventory_types'.tr),
-  //         itemsTextStyle: const TextStyle(color: Colors.black),
-  //         selectedItemsTextStyle: const TextStyle(color: Colors.black),
-  //         searchHintStyle: const TextStyle(color: Colors.black),
-  //         searchTextStyle: const TextStyle(color: Colors.black),
-  //         buttonText: Text('select_inventory_types'.tr),
-  //         selectedColor: Get.theme.primaryColor,
-  //         chipDisplay: MultiSelectChipDisplay(
-  //           textStyle: const TextStyle(color: Colors.black),
-  //           chipColor: Get.theme.colorScheme.primary.withAlpha(140),
-  //           onTap: (value) => controller.toggleSelection(value),
-  //         ),
-  //         onConfirm: (values) {
-  //           controller.setSelectedKeys(values.toSet());
-  //         },
-  //       );
-  //     }),
-  //     const SizedBox(height: 16),
-  //   ],
-  // );
 
   Widget _buildLocationSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,

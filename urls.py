@@ -433,6 +433,7 @@ name='get_inventory_items_by_category'),
     # Advances
     
     path('advances_list/<int:farmer_id>', get_employees_advances_list, name='get_employees_by_farmer'),
+    path('mail', myMail, name='mail'),
     path("farmer/<int:farmer_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer"),
     path("farmer/<int:farmer_id>/employee/<int:employee_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer-employee"),
 

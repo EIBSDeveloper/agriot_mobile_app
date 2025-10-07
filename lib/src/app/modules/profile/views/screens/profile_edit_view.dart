@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/profile/controller/profile_edit_controller.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
@@ -14,7 +15,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Edit Profile', showBackButton: true),
+    appBar: CustomAppBar(title: 'edit_profile'.tr, showBackButton: true),
     body: Obx(() {
       if (controller.isLoading.value) {
         return const Loading();
@@ -92,7 +93,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Personal Information',
+            'personal_information'.tr,
             style: Get.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -100,17 +101,17 @@ class ProfileEditView extends GetView<ProfileEditController> {
           const SizedBox(height: 16),
           _buildTextField(
             controller: controller.nameController,
-            label: 'Full Name *',
+            label: '${'full_name'.tr} *',
             validator: (value) =>
-                value?.isEmpty ?? true ? 'Required field' : null,
+                value?.isEmpty ?? true ? 'required_field'.tr : null,
           ),
 
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.emailController,
-            label: 'Email *',
+            label: '${'email'.tr} *',
             validator: (value) =>
-                !GetUtils.isEmail(value ?? '') ? 'Enter valid email' : null,
+                !GetUtils.isEmail(value ?? '') ? 'enter_valid_email'.tr : null,
             keyboardType: TextInputType.emailAddress,
           ),
         ],
@@ -126,7 +127,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Address Information',
+            'address_information'.tr,
             style: Get.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -134,20 +135,20 @@ class ProfileEditView extends GetView<ProfileEditController> {
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.pincodeController,
-            label: 'Pincode *',
+            label: '${'pincode'.tr} *',
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(6),
             ],
             validator: (value) =>
-                value?.isEmpty ?? true ? 'Required field' : null,
+                value?.isEmpty ?? true ? 'required_field'.tr : null,
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.locationController,
-            label: 'Location Coordinates *',
-            validator: (value) => value!.isEmpty ? 'Required field' : null,
+            label: '${'location_coordinates'.tr} *',
+            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
             readOnly: true,
             maxLines: 1,
             onTap: controller.pickLocation,
@@ -155,10 +156,10 @@ class ProfileEditView extends GetView<ProfileEditController> {
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.doorNoController,
-            label: 'Address',
+            label: 'address'.tr,
             maxLines: 3,
             // validator: (value) =>
-            //     value?.isEmpty ?? true ? 'Required field' : null,
+            //     value?.isEmpty ?? true ? 'required_field'.tr : null,
           ),
           const SizedBox(height: 12),
         ],
@@ -174,7 +175,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Company Information',
+            'company_information'.tr,
             style: Get.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -182,19 +183,18 @@ class ProfileEditView extends GetView<ProfileEditController> {
           const SizedBox(height: 16),
           _buildTextField(
             controller: controller.companyController,
-            label: 'Company Name',
+            label: 'company_name'.tr,
           ),
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.taxNoController,
-            label: 'Tax Identification Number',
+            label: 'tax_identification_number'.tr,
             keyboardType: TextInputType.text,
           ),
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.descriptionController,
-            label: 'Description',
-
+            label: 'description'.tr,
             maxLines: 3,
           ),
         ],
@@ -246,7 +246,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
                   color: Colors.white,
                 ),
               )
-            : const Text('Save Changes', style: TextStyle(fontSize: 16)),
+            : Text('save_changes'.tr, style: const TextStyle(fontSize: 16)),
       ),
     ),
   );

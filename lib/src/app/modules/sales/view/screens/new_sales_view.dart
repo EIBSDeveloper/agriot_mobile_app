@@ -1,13 +1,13 @@
+import 'package:argiot/src/app/modules/document/view/widget/documents_section.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/sales/controller/new_sales_controller.dart';
-import 'package:argiot/src/app/modules/document/view/widget/documents_section.dart';
 import 'package:argiot/src/app/modules/task/model/my_dropdown.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../service/utils/enums.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/enums.dart';
 import '../../../../widgets/loading.dart';
 
 class NewSalesView extends StatefulWidget {

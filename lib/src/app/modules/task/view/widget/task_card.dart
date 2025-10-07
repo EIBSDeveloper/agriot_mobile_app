@@ -114,19 +114,19 @@ class _TaskCardState extends State<TaskCard> {
     ),
   );
   Widget _buildStatus() {
-   bool isEditable = false;
+    bool isEditable = false;
 
-if (task.taskDate != null) {
-  final taskDate = DateTime(
-    task.taskDate!.year,
-    task.taskDate!.month,
-    task.taskDate!.day,
-  );
-  final today = DateTime.now();
-  final todayDate = DateTime(today.year, today.month, today.day);
+    if (task.taskDate != null) {
+      final taskDate = DateTime(
+        task.taskDate!.year,
+        task.taskDate!.month,
+        task.taskDate!.day,
+      );
+      final today = DateTime.now();
+      final todayDate = DateTime(today.year, today.month, today.day);
 
-  isEditable = taskDate.isAtSameMomentAs(todayDate); 
-}
+      isEditable = taskDate.isAtSameMomentAs(todayDate);
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -137,19 +137,19 @@ if (task.taskDate != null) {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Tooltip(
                 message: !isEditable
-                    ? 'Cannot change status for past tasks'
+                    ? 'cannot_change_status_past_tasks'.tr
                     : '',
                 child: Opacity(
-                  opacity: !isEditable ? 0.6 : 1.0, 
+                  opacity: !isEditable ? 0.6 : 1.0,
                   child: IgnorePointer(
-                    ignoring: !isEditable, 
+                    ignoring: !isEditable,
                     child: DropdownButtonFormField<TaskTypes>(
                       initialValue: task.status,
                       icon: const Icon(Icons.keyboard_arrow_down),
                       decoration: InputDecoration(
-                        labelText: "Status",
+                        labelText: "status".tr,
                         border: InputBorder.none,
-                     
+
                         enabled: !isEditable,
                       ),
                       items: statusList

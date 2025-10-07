@@ -3,6 +3,7 @@
 import 'package:argiot/src/app/modules/near_me/model/models.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LandDropdown extends StatelessWidget {
   final List<Land> lands;
@@ -19,8 +20,8 @@ class LandDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => InputCardStyle(   
-     padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 5),
+  Widget build(BuildContext context) => InputCardStyle(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
     child: DropdownButtonFormField<Land>(
       initialValue: selectedLand,
       padding: EdgeInsets.zero,
@@ -32,10 +33,10 @@ class LandDropdown extends StatelessWidget {
           .toList(),
       icon: const Icon(Icons.keyboard_arrow_down_rounded),
       onChanged: onChanged,
-      decoration: const InputDecoration(
-        labelText: 'Land',
+      decoration: InputDecoration(
+        labelText: 'land'.tr,
         border: InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(horizontal: 0),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
       ),
     ),
   );

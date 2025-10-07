@@ -29,8 +29,7 @@ class PayoutModel {
     this.isEdited = false, // default false
   });
 
-  factory PayoutModel.fromJson(Map<String, dynamic> json) {
-    return PayoutModel(
+  factory PayoutModel.fromJson(Map<String, dynamic> json) => PayoutModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       role: json['role'] ?? '',
@@ -55,10 +54,8 @@ class PayoutModel {
           : json['payout_amount']),
       isEdited: json['isEdited'] ?? false,
     );
-  }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
       'role': role,
@@ -73,9 +70,6 @@ class PayoutModel {
       'payout_amount': payoutAmount,
       "isEdited": isEdited,
     };
-  }
 
-  static List<PayoutModel> listFromJson(List<dynamic> jsonList) {
-    return jsonList.map((json) => PayoutModel.fromJson(json)).toList();
-  }
+  static List<PayoutModel> listFromJson(List<dynamic> jsonList) => jsonList.map((json) => PayoutModel.fromJson(json)).toList();
 }

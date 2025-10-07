@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/modules/subscription/model/package.dart';
 import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
+import 'package:argiot/src/app/modules/subscription/model/package.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../../widgets/loading.dart';
-
 
 class PaymentScreen extends StatelessWidget {
   const PaymentScreen({super.key});
@@ -94,7 +93,7 @@ class PaymentScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
               if (controller.isLoading.value)
-                const Loading(size:50)
+                const Loading(size: 50)
               else
                 ElevatedButton(
                   onPressed: () =>
@@ -108,26 +107,26 @@ class PaymentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentRow(String label, String value, {bool isTotal = false}) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: isTotal
-                ? Get.textTheme.titleMedium
-                : Get.textTheme.bodyLarge,
-          ),
-          Text(
-            value,
-            style: isTotal
-                ? Get.textTheme.titleMedium
-                : Get.textTheme.bodyLarge,
-          ),
-        ],
-      ),
-    );
+  Widget _buildPaymentRow(
+    String label,
+    String value, {
+    bool isTotal = false,
+  }) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: isTotal ? Get.textTheme.titleMedium : Get.textTheme.bodyLarge,
+        ),
+        Text(
+          value,
+          style: isTotal ? Get.textTheme.titleMedium : Get.textTheme.bodyLarge,
+        ),
+      ],
+    ),
+  );
 
   Future<void> _initiatePayment(
     SubscriptionController controller,
@@ -135,9 +134,7 @@ class PaymentScreen extends StatelessWidget {
   ) async {
     try {
       // Create order
-      final order = await controller.repository.createOrder(
-        20 * 100,
-      );
+      final order = await controller.repository.createOrder(20 * 100);
 
       // Initialize Razorpay
       final razorpay = Razorpay();
@@ -154,21 +151,17 @@ class PaymentScreen extends StatelessWidget {
       // Open payment dialog
       final options = {
         'key': order.keyId,
-        'name': 'AgriTech App',
+        'name': 'app_name'.tr,
         'description': package.name,
         'order_id': order.orderId,
         'theme': {
-          'color':Get.theme.colorScheme.primary.toARGB32().toRadixString(16)
-,
+          'color': Get.theme.colorScheme.primary.toARGB32().toRadixString(16),
         },
       };
 
       razorpay.open(options);
     } catch (e) {
-     showError(
-        'error'.tr,
-       
-      );
+      showError('error'.tr);
     }
   }
 }

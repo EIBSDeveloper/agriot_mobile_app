@@ -97,7 +97,9 @@ from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import OpenApiParameter
 from django.core.paginator import Paginator 
 from django.db.models import Prefetch
-
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, OpenApiTypes
+from drf_spectacular.types import OpenApiTypes
+from rest_framework import serializers
 from collections import OrderedDict
 from django.core.mail import send_mail
 from django.conf import settings
@@ -2249,7 +2251,7 @@ def manage_farmer(request, id=None):
                             send_welcome_sms(farmer.phone, farmer.name, farmer.phone, farmer.phone)
                     except Exception as e:
                         print(f"Error sending welcome notification: {e}")
-                    img_url = request.build_absolute_uri(f'/SuperAdmin{farmer.img.url}') if farmer.img else None
+                    img_url = request.build_absolute_uri(f'{farmer.img.url}') if farmer.img else None
                     mylogger.info("image load")
                     response_data = {
                         "id": farmer.id,
@@ -3278,21 +3280,10 @@ def manage_vendor(request, id=None):
     except Farmer.DoesNotExist:
         return Response({"detail": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Vendor limit check based on farmer's subscription
-    subscription = AddSubcription.objects.filter(farmers=farmer, status=0).first()
-    if subscription:
-        vendor_limit = subscription.packages.myinventory_vendors
-        current_vendor_count = MyVendor.objects.filter(Q(status=0) | Q(status=1), farmer=farmer).count()
-
-        if current_vendor_count >= vendor_limit:
-            return Response({
-                'detail': f"You have already reached the maximum vendor limit of {vendor_limit} for your subscription package."
-            }, status=status.HTTP_400_BAD_REQUEST)
-
     data = request.data
     print(f"Request data received: {data}")
 
-    required_fields = ['name', 'inventory_type', 'email', 'mobile_no','pincode']
+    required_fields = ['name',  'email', 'mobile_no','pincode']
     
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
@@ -7693,24 +7684,6 @@ def add_expense(request, farmer_id):
                 return Response({"success": False, "message": "crop not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
-        print(f"Fetching farmer with id: {farmer_id}")
-
-        subscription = farmer.subscriptions.filter(status=0).first()
-        if not subscription or not subscription.packages:
-            return Response(
-                {"success": False, "message": "No active subscription found."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        package = subscription.packages
-        max_expense_count = package.myexpense_count
-        current_expense_count = MyExpense.objects.filter(farmer=farmer, status=0).count()
-
-        if current_expense_count >= max_expense_count:
-            return Response(
-                {"success": False, "message": f"Expense limit exceeded. You can add up to {max_expense_count} expenses with your current package."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
 
         file_data = request.data.get('document', [])
@@ -10145,18 +10118,6 @@ def add_sales_with_deductions(request, farmer_id):
     except Farmer.DoesNotExist:
         return Response({"detail": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    subscription = AddSubcription.objects.filter(farmers=farmer, status=0).first()
-    if not subscription:
-        return Response({"detail": "No active subscription."}, status=status.HTTP_400_BAD_REQUEST)
-
-    mysale_count_limit = subscription.packages.mysale_count
-    current_sales_count = MySales.objects.filter(farmer=farmer, status=0).count()
-
-    if current_sales_count >= mysale_count_limit:
-        return Response({
-            "detail": f"Sales limit reached. Max allowed: {mysale_count_limit}"
-        }, status=status.HTTP_400_BAD_REQUEST)
-
     data = request.data
     deductions = data.pop("deductions", [])
     file_data = data.pop("file_data", [])
@@ -10263,7 +10224,7 @@ def add_sales_with_deductions(request, farmer_id):
         else:
             outstanding_data.update({'balance': 0})
 
-        outstanding = Outstanding.objects.create(**outstanding_data)
+        Outstanding.objects.create(**outstanding_data)
 
         # Update customer opening balance
         customer = sale.my_customer
@@ -10609,19 +10570,6 @@ def add_customer(request, farmer_id):
         farmer = Farmer.objects.get(id=farmer_id)
     except Farmer.DoesNotExist:
         return Response({"detail": "Farmer not found."}, status=status.HTTP_404_NOT_FOUND)
-
-    # Check the farmer's subscription and customer limit
-    subscription = AddSubcription.objects.filter(farmers=farmer, status=0).first()
-    if subscription:
-        customer_limit = subscription.packages.customer_count or 0
-        current_customer_count = MyCustomer.objects.filter(
-            Q(status=0) | Q(status=1), farmer=farmer
-        ).count()
-
-        if current_customer_count >= customer_limit:
-            return Response({
-                'detail': f"You have already reached the maximum customer limit of {customer_limit} for your subscription package."
-            }, status=status.HTTP_400_BAD_REQUEST)
 
     data = request.data.copy()  # Make mutable copy
 
@@ -12418,10 +12366,10 @@ def get_otp(request):
             otp_sent = True
 
         OTP_STORAGE[mobile_number or email] = otp_value
-        if mobile_number:
-            send_otp_sms(mobile_number, otp_value)
-        else:
-            send_otp_email(email, otp_value)
+        # if mobile_number:
+        #     send_otp_sms(mobile_number, otp_value)
+        # else:
+        #     send_otp_email(email, otp_value)
 
         return Response({
             "message": "Existing Farmer",
@@ -12471,10 +12419,10 @@ def get_otp(request):
         )
         OTP_STORAGE[mobile_number or email] = otp_value
 
-        if mobile_number:
-            send_otp_sms(mobile_number, otp_value)
-        else:
-            send_otp_email(email, otp_value)
+        # if mobile_number:
+        #     send_otp_sms(mobile_number, otp_value)
+        # else:
+        #     send_otp_email(email, otp_value)
 
     return Response({
         "message": "New Farmer",
@@ -24080,54 +24028,17 @@ def get_schedule_details(request, farmer_id):
         my_schedule = MySchedule.objects.get(farmer_id=farmer_id, id=schedule_id, status=0)
 
         # Get the schedule date format from the settings or default
-        try:
-            settings = GeneralSetting.objects.first()
-            date_format = convert_to_strftime_format(settings.date_format)
-        except Exception as e:
-            date_format = '%d-%m-%Y'  # Fallback to default format
+        # try:
+        #     settings = GeneralSetting.objects.first()
+        #     date_format = convert_to_strftime_format(settings.date_format)
+        # except Exception as e:
+        date_format = '%d-%m-%Y'  # Fallback to default format
 
         # Format the start_date and end_date
         start_date = my_schedule.start_date.strftime(date_format) if my_schedule.start_date else ""
         end_date = my_schedule.end_date.strftime(date_format) if my_schedule.end_date else ""
 
-        # Prepare schedule data
-        schedule_table_id = my_schedule.manage_schedule.id if my_schedule.manage_schedule else None
-        my_crop = my_schedule.my_crop
 
-        # Fetch expenses for the crop
-        crop_expenses = MyExpense.objects.filter(my_crop=my_crop, status=0)
-
-        expense_data = []
-        total_expense_amount = 0  # Initialize the total expense amount
-
-        # for expense in crop_expenses:
-        #     expense_files = ExpenseFile.objects.filter(my_expense=expense)
-
-        #     files_data = []
-        #     for file in expense_files:
-        #         files_data.append({
-        #             'file_url': request.build_absolute_uri(f'/assets{file.file.url}' if file.file.url else file.file.url) if file.file else "",
-        #             # 'file_type': file.file_type.name if file.file_type else None,
-        #             'file_type': file.file_type.get_translated_value("name", language_code) if file.file_type else None,
-        #             'uploaded_at': file.uploaded_at
-        #         })
-
-        #     # Format the created_day of the expense (if applicable)
-        #     created_day = expense.created_day.strftime(date_format) if expense.created_day else ""
-
-        #     expense_data.append({
-        #         'expense_id': expense.id,
-        #         'type_expenses': expense.type_expenses.get_translated_value("name", language_code) if expense.type_expenses else None,
-        #         # 'type_expenses': expense.type_expenses.name if expense.type_expenses else None,
-        #         'amount': expense.amount,
-        #         # 'description': expense.description,
-        #         'description': expense.get_translated_value("description", language_code) if expense else " ",
-        #         'created_day': created_day,  # Add formatted created_day
-        #         'status': expense.status,
-        #         'documents': files_data
-        #     })
-
-        #     total_expense_amount += expense.amount  # Add the expense amount to the total
 
         # Prepare the schedule data with id and name for relevant fields
         schedule_data = {
@@ -24142,7 +24053,7 @@ def get_schedule_details(request, farmer_id):
                 'id': my_schedule.my_crop.id if my_schedule.my_crop else None,
                 # 'name': my_schedule.my_crop.crop.name if my_schedule.my_crop else None,
                 'name': my_schedule.my_crop.crop.get_translated_value("name", language_code) if my_schedule.my_crop and my_schedule.my_crop.crop and language_code == 'ta' else my_schedule.my_crop.crop.name if my_schedule.my_crop and my_schedule.my_crop.crop else None,
-                "crop_img": request.build_absolute_uri(f'/SuperAdmin{my_schedule.my_crop.crop.img.url}' if my_schedule.my_crop.crop.img else my_schedule.my_crop.crop.img.url) if my_schedule.my_crop.crop.img else "",
+                "crop_img": request.build_absolute_uri(f'/{my_schedule.my_crop.crop.img.url}' if my_schedule.my_crop.crop.img else my_schedule.my_crop.crop.img.url) if my_schedule.my_crop.crop.img else "",
             },
             'schedule_activity_type': {
                 'id': my_schedule.schedule_activity_type.id if my_schedule.schedule_activity_type else None,
@@ -24157,15 +24068,9 @@ def get_schedule_details(request, farmer_id):
                 'name': my_schedule.schedule_status.get_translated_value("name", language_code) if my_schedule.schedule_status and language_code == 'ta' else my_schedule.schedule_status.name if my_schedule.schedule_status else None,
             },
             'status': my_schedule.status,
-            # 'description': my_schedule.schedule,
-            # 'comment': my_schedule.comment,
             'description': my_schedule.get_translated_value("schedule", language_code) if my_schedule.schedule and language_code == 'ta' else my_schedule.schedule if my_schedule.schedule else None,
             'comment': my_schedule.get_translated_value("comment", language_code) if my_schedule.comment and language_code == 'ta' else my_schedule.comment if my_schedule.comment else None,
-            # 'crop_expenses': expense_data,
-            # 'total_expense_amount': total_expense_amount,  # Add total expense amount to response
-            'language': {
-                'default': "en"
-            }
+         
         }
 
         return Response(schedule_data, status=status.HTTP_200_OK)
@@ -38236,16 +38141,16 @@ def validate_image_type(document_base64):
 #         traceback_str = traceback.format_exc()
 #         print(f"Full traceback: {traceback_str}")
 #         return Response({"detail": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-from decimal import Decimal
-from datetime import datetime
-import base64
-from django.core.files.base import ContentFile
-from django.utils import timezone
-import traceback
+# from rest_framework.decorators import api_view
+# from rest_framework.response import Response
+# from rest_framework import status
+# from django.shortcuts import get_object_or_404
+# from decimal import Decimal
+# from datetime import datetime
+# import base64
+# from django.core.files.base import ContentFile
+# from django.utils import timezone
+# import traceback
 
 @api_view(['POST'])
 def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
@@ -40342,14 +40247,15 @@ def get_crop_summary(request, farmer_id, land_id, crop_id):
             my_land=land,
             my_crop=mycrop,
             start_date__lte=today,
-            end_date__gte=today,
             status=0
         )
 
         tasks = []
         for task in tasks_qs:
+            date_format = '%d-%m-%Y'
             tasks.append({
                 "id": task.id,
+                "created_at": task.start_date.strftime(date_format) if task.start_date else "",
                 "activity_type": task.schedule_activity_type.get_translated_value("name", "en") if task.schedule_activity_type else "",
                 "description": task.get_translated_value("comment", "en") if task else "",
                 "schedule_status": task.schedule_status.id if task.schedule_status else None,
@@ -41722,7 +41628,7 @@ def create_or_update_employee_or_manager(request):
                 employee.locations = data.get("locations", employee.locations)
                 employee.latitude = data.get("latitude", employee.latitude)
                 employee.longitude = data.get("longitude", employee.longitude)
-                employee.door_no = data.get("door_no", employee.door_no)
+                employee.door_no = data.get("address", employee.door_no)
                 employee.pincode = data.get("pincode", employee.pincode)
                 employee.description = data.get("description", employee.description)
                 employee.status = data.get("status", employee.status)
@@ -41741,7 +41647,7 @@ def create_or_update_employee_or_manager(request):
                     locations=data.get("locations"),
                     latitude=data.get("latitude"),
                     longitude=data.get("longitude"),
-                    door_no=data.get("door_no"),
+                    door_no=data.get("address"),
                     pincode=data.get("pincode"),
                     description=data.get("description"),
                
@@ -41763,7 +41669,7 @@ def create_or_update_employee_or_manager(request):
                 manager.date_of_join = data.get("doj", manager.date_of_join)
                 manager.address = data.get("address", manager.address)
                 manager.locations = data.get("locations", manager.locations)
-                manager.pincode = data.get("pincode", employee.pincode)
+                manager.pincode = data.get("pincode", manager.pincode)
                 manager.latitude = data.get("latitude", manager.latitude)
                 manager.longitude = data.get("longitude", manager.longitude)
                 manager.permissions = permissions
@@ -41808,7 +41714,7 @@ def create_or_update_employee_or_manager(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-
+# --- BOTH EXPENSE + SALES LIST ---
 @extend_schema(
     parameters=[
         OpenApiParameter(name='page', description="Page number", type=int, required=False),
@@ -41817,7 +41723,6 @@ def create_or_update_employee_or_manager(request):
 )
 @api_view(['GET'])
 def get_both_expense_sales_list(request, farmer_id, time_period):
-    
     try:
         user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
         language_code = user_language_pref.language_code or 'en'
@@ -41825,7 +41730,8 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
         language_code = 'en'
 
     if time_period not in ['week', 'month', 'year']:
-        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     farmer = get_object_or_404(Farmer, id=farmer_id)
     current_date = timezone.now()
@@ -41839,7 +41745,7 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
 
     all_records = []
 
-    # ✅ Expenses
+    
     for expense in MyExpense.objects.filter(farmer=farmer, status=0, created_day__gte=date_from):
         all_records.append(ExpneseSerializeRecord(expense, language_code, "created_day", {
             "description": expense.get_translated_value("description", language_code) or ""
@@ -41859,6 +41765,7 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
         for record in model.objects.filter(farmer_id=farmer_id, status=0, **{f"{date_field}__gte": date_from}):
             all_records.append(ExpneseSerializeRecord(record, language_code, date_field))
 
+    #  Sales
     for sale in MySales.objects.filter(farmer_id=farmer_id, status=0, dates_of_sales__gte=date_from):
         all_records.append(ExpneseSerializeRecord(sale, language_code, "dates_of_sales", {
             "quantity": str(sale.sales_quantity) if sale.sales_quantity else "",
@@ -41869,22 +41776,37 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
             }
         }))
 
+    # Group by date
     grouped_data = {}
     for record in all_records:
-        date = record.get("date", "")
-        if date not in grouped_data:
-            grouped_data[date] = []
-        grouped_data[date].append(record)
+        date_str = record.get("date", "")
+        if date_str not in grouped_data:
+            grouped_data[date_str] = []
+        grouped_data[date_str].append(record)
 
-    grouped_list = [{"date": date, "records": records} for date, records in grouped_data.items()]
+    # ✅ Helper function to parse date safely
+    def parse_date(date_str):
+        for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%Y/%m/%d"):
+            try:
+                return datetime.strptime(date_str, fmt)
+            except Exception:
+                continue
+        return timezone.now()
 
+    # ✅ Sort latest first
+    grouped_list = sorted(
+        [{"date": date, "records": records} for date, records in grouped_data.items()],
+        key=lambda x: parse_date(x["date"]),
+        reverse=True
+    )
+
+    # ✅ Pagination
     page = int(request.GET.get("page", 1))
     page_size = int(request.GET.get("page_size", 10))
-
     paginator = Paginator(grouped_list, page_size)
     page_obj = paginator.get_page(page)
 
-    return Response( list(page_obj.object_list), status=status.HTTP_200_OK)
+    return Response(list(page_obj.object_list), status=status.HTTP_200_OK)
 
 
 # --- EXPENSE LIST ---
@@ -41903,7 +41825,8 @@ def get_expense_list(request, farmer_id, time_period):
         language_code = 'en'
 
     if time_period not in ['week', 'month', 'year']:
-        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     farmer = get_object_or_404(Farmer, id=farmer_id)
     current_date = timezone.now()
@@ -41941,21 +41864,35 @@ def get_expense_list(request, farmer_id, time_period):
     # Group by date
     grouped_data = {}
     for record in all_expenses:
-        date = record.get("date", "")
-        if date not in grouped_data:
-            grouped_data[date] = []
-        grouped_data[date].append(record)
+        date_str = record.get("date", "")
+        if date_str not in grouped_data:
+            grouped_data[date_str] = []
+        grouped_data[date_str].append(record)
 
-    grouped_list = [{"date": date, "records": records} for date, records in grouped_data.items()]
+    # Convert dict → list and sort by actual date (latest first)
+    def parse_date(date_str):
+        """Try to parse different possible date formats safely"""
+        for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%Y/%m/%d"):
+            try:
+                return datetime.strptime(date_str, fmt)
+            except Exception:
+                continue
+        return timezone.now()  # fallback if parsing fails
+
+    grouped_list = sorted(
+        [{"date": date, "records": records} for date, records in grouped_data.items()],
+        key=lambda x: parse_date(x["date"]),
+        reverse=True
+    )
 
     # Pagination
     page = int(request.GET.get("page", 1))
     page_size = int(request.GET.get("page_size", 10))
-
     paginator = Paginator(grouped_list, page_size)
     page_obj = paginator.get_page(page)
 
     return Response(list(page_obj.object_list), status=status.HTTP_200_OK)
+
 
 
 # --- SALES LIST ---
@@ -41974,7 +41911,8 @@ def get_sales_list(request, farmer_id, time_period):
         language_code = 'en'
 
     if time_period not in ['week', 'month', 'year']:
-        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Invalid time period. Use 'week', 'month', or 'year'."},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     farmer = get_object_or_404(Farmer, id=farmer_id)
     current_date = timezone.now()
@@ -42001,21 +41939,35 @@ def get_sales_list(request, farmer_id, time_period):
     # Group by date
     grouped_data = {}
     for record in sales_records:
-        date = record.get("date", "")
-        if date not in grouped_data:
-            grouped_data[date] = []
-        grouped_data[date].append(record)
+        date_str = record.get("date", "")
+        if date_str not in grouped_data:
+            grouped_data[date_str] = []
+        grouped_data[date_str].append(record)
 
-    grouped_list = [{"date": date, "records": records} for date, records in grouped_data.items()]
+    # Helper function to parse date strings safely
+    def parse_date(date_str):
+        """Try to parse multiple date formats"""
+        for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%Y/%m/%d"):
+            try:
+                return datetime.strptime(date_str, fmt)
+            except Exception:
+                continue
+        return timezone.now()  # fallback if parsing fails
+
+    # Convert dict → list and sort by actual date (latest first)
+    grouped_list = sorted(
+        [{"date": date, "records": records} for date, records in grouped_data.items()],
+        key=lambda x: parse_date(x["date"]),
+        reverse=True
+    )
 
     # Pagination
     page = int(request.GET.get("page", 1))
     page_size = int(request.GET.get("page_size", 10))
-
     paginator = Paginator(grouped_list, page_size)
     page_obj = paginator.get_page(page)
 
-    return Response( list(page_obj.object_list), status=status.HTTP_200_OK)
+    return Response(list(page_obj.object_list), status=status.HTTP_200_OK)
 
 
 @extend_schema(
@@ -42089,7 +42041,7 @@ def get_employee_detail(request, employee_id):
             "id": employee.id,
             "name": employee.name,
             "mobile_no": employee.mobile_no,
-            "employee_type_id":{
+            "employee_type":{
                 "id": employee.employee_type.id,
                 "name": employee.employee_type.name
             },
@@ -42105,10 +42057,10 @@ def get_employee_detail(request, employee_id):
             "locations": employee.locations,
             "latitude": employee.latitude,
             "longitude": employee.longitude,
-            "door_no": employee.door_no,
+            "address": employee.door_no,
             "pincode": employee.pincode,
-            "salary": employee.salary,
-            "advance": employee.advance,
+            "salary": int(employee.salary) if employee.salary else 0 ,
+            "advance": int(employee.advance) if employee.advance else 0,
             "attendance_payouts": employee.attendance_payouts,
             "description": employee.description,
             "status": employee.status,
@@ -42143,8 +42095,10 @@ def get_manager_detail(request, manager_id):
         data = {
             "id": manager.id,
             "name": manager.name,
+            # "profile": manager.image,
             "email": manager.email,
             "mobile_no": manager.mobile_no,
+            "alternative_mobile": manager.alter_no,
             "role": {
                 "id" : manager.role.id,
                 "name" :manager.role. name
@@ -42160,10 +42114,11 @@ def get_manager_detail(request, manager_id):
             "dob": manager.date_of_birth,
             "doj": manager.date_of_join,
             "address": manager.address,
-            "locations": manager.locations,
+            "pincode": manager.pincode,
             "latitude": manager.latitude,
             "longitude": manager.longitude,
             "permissions": manager.permissions,
+            "description": manager.description,
             "employees": employees
         }
 
@@ -42388,10 +42343,188 @@ def get_employees_advances_list(request,farmer_id):
 
 
 
+@extend_schema(
+    request=VendorPurchasePayablesOutstandingSerializer,
+    responses={
+        201: OpenApiTypes.OBJECT,
+        400: OpenApiTypes.OBJECT,
+        500: OpenApiTypes.OBJECT,
+    },
+    tags=["Vendor Purchase Payables"]
+)
+@api_view(['POST'])
+def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
+    try:
+        farmer = get_object_or_404(Farmer, id=farmer_id)
+
+        payment_date_str = request.data.get('date')
+        expense_id = request.data.get('expense_id')
+        payment = request.data.get('payment_amount')
+
+        description = request.data.get('description')
+        documents_data = request.data.get('documents', [])
+
+        # Validate documents_data to be a list
+        if documents_data and not isinstance(documents_data, list):
+            return Response({"detail": "'documents' must be a list of objects."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        if not expense_id:
+            return Response({"detail": "Purchase Id required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            payment = Decimal(payment)
+        except Exception:
+            return Response({"detail": "Invalid payment amount."}, status=status.HTTP_400_BAD_REQUEST)
+
+        expense = get_object_or_404(MyExpense, pk=int(expense_id))
+        vendor = get_object_or_404(MyVendor, pk=vendor_id)
+
+        # Parse date if provided
+        payment_date = None
+        if payment_date_str:
+            try:
+                payment_date = datetime.strptime(payment_date_str, "%d-%m-%Y").date()
+            except ValueError:
+                return Response({"detail": "Invalid date format. Use 'dd-mm-yyyy'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        last_outstanding = Outstanding.objects.filter(
+            farmer=farmer,
+            vendor=vendor
+        ).last()
+
+        if last_outstanding and last_outstanding.to_pay <= 0:
+            return Response({
+                "detail": "Account is already closed. No outstanding balance left to pay."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        original_balance = Decimal(getattr(expense, expense.paid_amount))
+
+        if last_outstanding:
+            previous_to_pay = last_outstanding.to_pay
+            if payment > previous_to_pay:
+                return Response({
+                    "detail": f"Payment cannot exceed the outstanding amount of {previous_to_pay}."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            paid = last_outstanding.paid + payment
+            total_paid = last_outstanding.total_paid + payment
+            to_pay = previous_to_pay - payment
+        else:
+            paid = payment
+            total_paid = payment
+            to_pay = original_balance - payment
+
+        if to_pay < 0:
+            to_pay = Decimal(0)
+
+        # Create Outstanding entry
+        outstanding = Outstanding.objects.create(
+            farmer=farmer,
+            vendor=vendor,
+            expense=expense,
+            balance=to_pay,
+            paid=paid,
+            to_pay=to_pay,
+            paid_date=payment_date,
+            total_paid=total_paid,
+            payment_amount=payment,
+            created_by=None,
+            created_at=timezone.now(),
+            description=description if description else None
+        )
+
+        # Process documents (if any)
+        if documents_data:
+            for idx, doc_data in enumerate(documents_data):
+                # Defensive: doc_data must be dict
+                if not isinstance(doc_data, dict):
+                    return Response({"detail": f"Each document entry must be an object. Error at index {idx}."},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                file_type_id = doc_data.get('file_type')
+                document_base64 = doc_data.get('document')
+
+                if file_type_id is None or not document_base64:
+                    return Response({"detail": "File type and document are required for each document."},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                try:
+                    # Validate MIME type - you need to have validate_image_type function defined elsewhere
+                    mime_type = validate_image_type(document_base64)
+                    if not mime_type:
+                        return Response({'detail': 'Invalid document format. Only images and PDFs allowed.'},
+                                        status=status.HTTP_400_BAD_REQUEST)
+
+                    # Extract base64 content after comma
+                    if ';base64,' in document_base64:
+                        document_data = document_base64.split(';base64,')[1]
+                    else:
+                        document_data = document_base64  # Assume pure base64
+
+                    document_bytes = base64.b64decode(document_data)
+
+                    if len(document_bytes) > (10 * 1024 * 1024):  # 10MB limit
+                        return Response({'detail': 'File is too large. Max size is 10MB.'},
+                                        status=status.HTTP_400_BAD_REQUEST)
+
+                    ext = 'pdf' if 'pdf' in mime_type else 'jpg'  # Basic extension guess
+                    document_name = f"purchase_outstanding_{farmer_id}_{vendor_id}_{expense_id}_{idx}.{ext}"
+                    document_file = ContentFile(document_bytes, name=document_name)
+
+                    file_type = get_object_or_404(DocumentCategory, id=file_type_id)
+
+                    OutstandingDocuments.objects.create(
+                        outstanding=outstanding,
+                        document_type=file_type,
+                        document=document_file,
+                        uploaded_at=timezone.now(),
+                        created_by=None,
+                        created_at=timezone.now()
+                    )
+
+                except Exception as e:
+                    return Response({'detail': f"Error processing document: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Close outstanding if fully paid
+        if to_pay <= 0:
+            outstanding.status = 1  # Closed
+            outstanding.save()
+            return Response({
+                "detail": "Payment Created and Outstanding Closed",
+                "data": {
+                    "total_paid": float(total_paid),
+                    "to_pay": float(to_pay),
+                    "payment_amount": float(payment)
+                }
+            }, status=status.HTTP_201_CREATED)
+
+        return Response({
+            "detail": "Payment Created Successfully",
+            "data": {
+                "total_paid": float(total_paid),
+                "to_pay": float(to_pay),
+                "payment_amount": float(payment)
+            }
+        }, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        traceback_str = traceback.format_exc()
+        print(f"Full traceback: {traceback_str}")
+        return Response({"detail": f"An error occurred: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER)
 
 
 
+@extend_schema(operation_id="mail",tags=["mail"],)
+@api_view(['Get'])
+def myMail(request,):
+    try:
+        send_welcome_email('bala@gmail.com', "namefarmer", 'bala@gmail.com', "9608080510")
 
+    except Exception as e:
+        return Response("response_data11", status=200)
+    
+    return Response("response_data", status=200)
 
 
 

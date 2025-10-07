@@ -12,7 +12,7 @@ class Payoutlistscreen extends GetView<PayoutController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Payout List'),
+    appBar: CustomAppBar(title: 'payout_list'.tr),
     body: Column(
       children: [
         Padding(
@@ -20,12 +20,16 @@ class Payoutlistscreen extends GetView<PayoutController> {
           child: InputCardStyle(
             child: TextField(
               controller: controller.searchController,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search, size: 22, color: Colors.grey),
-                hintText: "Search employee...",
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 22,
+                  color: Colors.grey,
+                ),
+                hintText: "search_employee".tr,
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
               ),
               onChanged: controller.onSearchChanged,
             ),
@@ -41,7 +45,7 @@ class Payoutlistscreen extends GetView<PayoutController> {
                 await controller.loadadvancelist(reset: true);
               },
               child: payouts.isEmpty
-                  ? const Center(child: Text("No payouts found"))
+                  ? Center(child: Text("no_payouts_found".tr))
                   : ListView.builder(
                       padding: const EdgeInsets.all(10),
                       itemCount: payouts.length,
@@ -111,72 +115,72 @@ Widget payoutCard(PayoutModel pay) => Card(
                     ),
                   ),
                   const SizedBox(width: 5),
-                  if (pay.role != null) ...[
-                    Text(
-                      '(${pay.role!})',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[600],
-                      ),
+                  ...[
+                  Text(
+                    '(${pay.role})',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[600],
                     ),
-                  ],
+                  ),
+                ],
                 ],
               ),
 
               const SizedBox(height: 6),
 
               /// Salary Type
-              if (pay.salaryType != null) ...[
-                Text(
-                  "Salary Type: ${pay.salaryType}",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-              ],
+              ...[
+              Text(
+                "${"salary_type".tr}: ${pay.salaryType}",
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+            ],
               const SizedBox(height: 4),
 
               /// Work Type
-              if (pay.workType != null) ...[
-                Text(
-                  "Work Type: ${pay.workType}",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-              ],
+              ...[
+              Text(
+                "${"work_type".tr}: ${pay.workType}",
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+            ],
               const SizedBox(height: 4),
 
               /// Working Days
-              if (pay.workingDays != null) ...[
-                Text(
-                  "Working Days: ${pay.workingDays}",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-              ],
+              ...[
+              Text(
+                "${"working_days".tr}: ${pay.workingDays}",
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
+              ),
+            ],
               const SizedBox(height: 4),
 
               /// Paid Salary
-              if (pay.paidSalary != null) ...[
-                Text(
-                  "Paid Salary: ${pay.paidSalary}",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ...[
+              Text(
+                "${"paid_salary".tr}: ${pay.paidSalary}",
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            ],
               const SizedBox(height: 4),
 
               /// Unpaid Salary
-              if (pay.unpaidSalary != null) ...[
-                Text(
-                  "Unpaid Salary: ${pay.unpaidSalary}",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ...[
+              Text(
+                "${"unpaid_salary".tr}: ${pay.unpaidSalary}",
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
+            ],
             ],
           ),
         ),

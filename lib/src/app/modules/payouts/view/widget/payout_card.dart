@@ -130,9 +130,9 @@ class PayoutCard extends GetView<PayoutController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Deduction",
-                              style: TextStyle(
+                            Text(
+                              "deduction".tr,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey,
                               ),
@@ -143,10 +143,10 @@ class PayoutCard extends GetView<PayoutController> {
                                 controller:
                                     controller.deductionControllers[index],
                                 keyboardType: TextInputType.number,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   border: InputBorder.none,
                                   isDense: true,
-                                  hintText: "Enter deduction",
+                                  hintText: "enter_deduction".tr,
                                 ),
                                 style: TextStyle(
                                   fontSize: 14,
@@ -193,9 +193,9 @@ class PayoutCard extends GetView<PayoutController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Payout Amount",
-                              style: TextStyle(
+                            Text(
+                              "payout_amount".tr,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey,
                               ),

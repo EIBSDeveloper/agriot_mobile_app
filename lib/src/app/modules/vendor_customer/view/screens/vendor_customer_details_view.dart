@@ -68,19 +68,19 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
   ) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this item?'),
+        title: Text('confirm_delete'.tr),
+        content: Text('delete_confirmation_message'.tr),
         actions: [
           TextButton(
             onPressed: () => Get.back(), // close dialog
-            child: const Text('Cancel'),
+            child: Text('cancel'.tr),
           ),
           TextButton(
             onPressed: () {
               Get.back(); // close dialog
               controller.deleteDetails(id, type);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text('delete'.tr, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -103,7 +103,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
   Widget _buildCustomerDetails(VendorCustomer item) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      TitleText('Details'.tr),
+      TitleText('details'.tr),
       const SizedBox(height: 8),
       if (item.shopName != null)
         _buildDetailRow('shop_name'.tr, item.shopName!),
@@ -148,7 +148,10 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(value.isNotEmpty ?value:"--", style: TextStyle(color: color)),
+          child: Text(
+            value.isNotEmpty ? value : "--",
+            style: TextStyle(color: color),
+          ),
         ),
       ],
     ),

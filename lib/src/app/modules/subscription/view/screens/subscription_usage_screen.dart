@@ -1,6 +1,6 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/modules/subscription/controller/subscription_controller.dart';
+import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +16,7 @@ class SubscriptionUsageScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: 'current_subscription'.tr),
       body: Obx(() {
-        if (controller.isLoading.value ) {
+        if (controller.isLoading.value) {
           return const Loading();
         }
 
@@ -81,7 +81,6 @@ class SubscriptionUsageScreen extends StatelessWidget {
                           packageUsage.employeeCount,
                           packageUsage.employeeCountUsed,
                         ),
-                       
                       ],
                     ),
                   ),
@@ -94,7 +93,7 @@ class SubscriptionUsageScreen extends StatelessWidget {
                       onPressed: () =>
                           Get.toNamed(Routes.subscriptionPlans)?.then((result) {
                             // if (result ?? false) {
-                              controller.loadData();
+                            controller.loadData();
                             // }
                           }),
                       child: Text('view_subscription_plans'.tr),

@@ -1,8 +1,8 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/modules/task/view/widget/schedule_card.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_controller.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_crop.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
+import 'package:argiot/src/app/modules/task/view/widget/schedule_card.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -42,8 +42,8 @@ class ScheduleListPage extends GetView<ScheduleController> {
                         controller.selectLand(land);
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      decoration: const InputDecoration(
-                        labelText: 'Land',
+                      decoration: InputDecoration(
+                        labelText: 'land'.tr,
                         border: InputBorder.none,
                       ),
                     ),
@@ -62,8 +62,8 @@ class ScheduleListPage extends GetView<ScheduleController> {
                         items: const [],
                         padding: EdgeInsets.zero,
                         onChanged: null,
-                        decoration: const InputDecoration(
-                          labelText: 'Select land first',
+                        decoration: InputDecoration(
+                          labelText: 'select_land_first'.tr,
                           border: InputBorder.none,
                         ),
                       ),
@@ -88,8 +88,8 @@ class ScheduleListPage extends GetView<ScheduleController> {
                         controller.selectCrop(crop);
                       },
                       icon: const Icon(Icons.keyboard_arrow_down),
-                      decoration: const InputDecoration(
-                        labelText: 'Crop',
+                      decoration: InputDecoration(
+                        labelText: 'crop'.tr,
                         border: InputBorder.none,
                       ),
                     ),

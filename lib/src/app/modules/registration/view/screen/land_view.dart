@@ -2,6 +2,7 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+
 import '../../../../service/utils/enums.dart';
 import '../../../document/document.dart';
 import '../../controller/kyc_controller.dart';
@@ -24,39 +25,38 @@ class LandView extends GetView<RegLandController> {
         gap,
         CustomTextField(
           controller: controller.landNameController,
-
-          label: 'Land Name *',
-          validator: (value) => value!.isEmpty ? 'Required field' : null,
+          label: '${'land_name'.tr} *',
+          validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         ),
         gap,
         CustomTextField(
           controller: controller.pattaNoController,
-          label: 'Patta Number',
+          label: 'patta_number'.tr,
         ),
         gap,
         CustomTextField(
           controller: controller.pinCode,
-          label: 'Pincode *',
+          label: '${'pincode'.tr} *',
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
             LengthLimitingTextInputFormatter(6),
           ],
           keyboardType: TextInputType.number,
           validator: (value) => (value!.isEmpty)
-              ? ('Required field')
-              : (value.length != 6 ? "Ender 6 digit Pincode" : null),
+              ? ('required_field'.tr)
+              : (value.length != 6 ? "enter_6_digit_pincode".tr : null),
         ),
         gap,
         InputCardStyle(
           child: TextFormField(
             controller: controller.locationListController,
-            decoration: const InputDecoration(
-              labelText: 'Location Coordinates *',
+            decoration: InputDecoration(
+              labelText: '${'location_coordinates'.tr} *',
               border: InputBorder.none,
               isDense: true,
-              suffixIcon: Icon(Icons.location_on),
+              suffixIcon: const Icon(Icons.location_on),
             ),
-            validator: (value) => value!.isEmpty ? 'Required field' : null,
+            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
             readOnly: true,
             onTap: controller.listpickLocation,
           ),
@@ -68,9 +68,9 @@ class LandView extends GetView<RegLandController> {
               flex: 3,
               child: CustomTextField(
                 controller: controller.measurementController,
-                label: 'Measurement *',
-                validator: (value) => value!.isEmpty ? 'Required field' : null,
-
+                label: '${'measurement'.tr} *',
+                validator: (value) =>
+                    value!.isEmpty ? 'required_field'.tr : null,
                 keyboardType: TextInputType.number,
               ),
             ),
@@ -78,7 +78,7 @@ class LandView extends GetView<RegLandController> {
             Expanded(
               flex: 2,
               child: SearchableDropdown<AppDropdownItem>(
-                label: 'Unit *',
+                label: '${'unit'.tr} *',
                 items: controller.landUnits,
                 displayItem: (value) => value.name.toString(),
                 selectedItem: controller.selectedLandUnit.value,
@@ -89,7 +89,7 @@ class LandView extends GetView<RegLandController> {
                   if (controller.selectedLandUnit.value != null) {
                     return null;
                   }
-                  return value == null ? 'Required field' : null;
+                  return value == null ? 'required_field'.tr : null;
                 },
               ),
             ),
@@ -97,11 +97,10 @@ class LandView extends GetView<RegLandController> {
         ),
         gap,
         SearchableDropdown<AppDropdownItem>(
-          label: 'Soil Type',
+          label: 'soil_type'.tr,
           items: controller.soilTypes,
           selectedItem: controller.selectedSoilType.value,
           onChanged: (value) => controller.selectedSoilType.value = value,
-
           displayItem: (value) => value.name.toString(),
         ),
 
@@ -118,8 +117,8 @@ class LandView extends GetView<RegLandController> {
         // gap,
         // CustomTextField(
         //   controller: controller.locationController,
-        //   label: 'Location Coordinates *',
-        //   validator: (value) => value!.isEmpty ? 'Required field' : null,
+        //   label: 'location_coordinates'.tr + ' *',
+        //   validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         //   readOnly: true,
         //   onTap: controller.pickLocation,
         // ),
@@ -141,9 +140,9 @@ class LandView extends GetView<RegLandController> {
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Survey Details',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          Text(
+            'survey_details'.tr,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Card(
             color: Get.theme.primaryColor,
@@ -151,18 +150,18 @@ class LandView extends GetView<RegLandController> {
               color: Colors.white,
               icon: const Icon(Icons.add),
               onPressed: controller.addSurveyItem,
-              tooltip: 'Add Survey Detail',
+              tooltip: 'add_survey_detail'.tr,
             ),
           ),
         ],
       ),
       Obx(() {
         if (controller.surveyItems.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
             child: Text(
-              'No survey details added',
-              style: TextStyle(color: Colors.grey),
+              'no_survey_details_added'.tr,
+              style: const TextStyle(color: Colors.grey),
             ),
           );
         }
@@ -174,7 +173,6 @@ class LandView extends GetView<RegLandController> {
             index: index,
             item: controller.surveyItems[index],
             areaUnits: controller.landUnits,
-
             onRemove: () => controller.removeSurveyItem(index),
             onChanged: (item) {
               controller.surveyItems[index] = item;
@@ -206,7 +204,7 @@ class LandView extends GetView<RegLandController> {
                 color: Colors.white,
               ),
             )
-          : const Text('Save Land Details'),
+          : Text('save_land_details'.tr),
     ),
   );
 }

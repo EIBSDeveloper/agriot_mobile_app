@@ -1,5 +1,6 @@
 import 'package:argiot/src/core/app_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../widgets/input_card_style.dart';
 // Often not needed for this pattern, but kept if you have other uses.
@@ -196,7 +197,9 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        labelText: 'Search ${widget.label}',
+                        labelText: 'search_label'.trParams({
+                          'label': widget.label,
+                        }),
                         prefixIcon: const Icon(Icons.search),
                         border: InputBorder.none,
                       ),
@@ -206,15 +209,15 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
                 if (widget.addNew != null)
                   ElevatedButton(
                     onPressed: widget.addNew,
-                    child: const Text("Add New"),
+                    child: Text("add_new".tr),
                   ),
               ],
             ),
             const SizedBox(height: 10),
             _filteredItems.isEmpty
-                ? const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('No matching items found.'),
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text('no_matching_items_found'.tr),
                   )
                 : Expanded(
                     child: ListView.builder(

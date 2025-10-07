@@ -23,39 +23,40 @@ class KycView extends GetView<KycController> {
               const SizedBox(height: 10),
               _buildTextField(
                 controller: controller.nameController,
-                label: 'Your Name *',
-                validator: (value) => value!.isEmpty ? 'Required field' : null,
+                label: '${'your_name'.tr} *',
+                validator: (value) =>
+                    value!.isEmpty ? 'required_field'.tr : null,
               ),
 
               if (!controller.isEmailLogin.value) ...[
                 gap,
                 _buildTextField(
                   controller: controller.emailController,
-                  label: 'Email *',
+                  label: '${'email'.tr} *',
                   inputFormatters: [LowerCaseTextFormatter()],
                   validator: (value) =>
-                      !GetUtils.isEmail(value!) ? 'Enter valid email' : null,
+                      !GetUtils.isEmail(value!) ? 'enter_valid_email'.tr : null,
                   keyboardType: TextInputType.emailAddress,
                 ),
               ] else ...[
                 gap,
                 _buildTextField(
                   controller: controller.numberController,
-                  label: 'Mobile Number *',
-
-                 validator: (value) => value!.isEmpty ? 'Required field' : null,
+                  label: '${'mobile_number'.tr} *',
+                  validator: (value) =>
+                      value!.isEmpty ? 'required_field'.tr : null,
                   keyboardType: TextInputType.number,
                 ),
               ],
               gap,
               _buildTextField(
                 controller: controller.companyController,
-                label: 'Company Name',
+                label: 'company_name'.tr,
               ),
               gap,
               _buildTextField(
                 controller: controller.taxNoController,
-                label: 'Tax Number',
+                label: 'tax_number'.tr,
                 keyboardType: TextInputType.number,
               ),
             ],
@@ -66,28 +67,30 @@ class KycView extends GetView<KycController> {
             children: [
               _buildTextField(
                 controller: controller.pincodeController,
-                label: 'Pincode *',
+                label: '${'pincode'.tr} *',
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(6),
                 ],
                 validator: (value) => (value!.isEmpty)
-                    ? ('Required field')
-                    : (value.length != 6 ? "Ender 6 digit Pincode" : null),
+                    ? ('required_field'.tr)
+                    : (value.length != 6 ? "enter_6_digit_pincode".tr : null),
                 keyboardType: TextInputType.number,
               ),
-             
+
               gap,
               _buildTextField(
                 controller: controller.locationController,
-                label: 'Location Coordinates *',
-                validator: (value) => value!.isEmpty ? 'Required field' : null,
+                label: '${'location_coordinates'.tr} *',
+                validator: (value) =>
+                    value!.isEmpty ? 'required_field'.tr : null,
                 readOnly: true,
                 onTap: controller.pickLocation,
-              ), gap,
+              ),
+              gap,
               _buildTextField(
                 controller: controller.doorNoController,
-                label: 'Address',
+                label: 'address'.tr,
                 maxLines: 3,
               ),
             ],
@@ -144,7 +147,7 @@ class KycView extends GetView<KycController> {
                 color: Colors.white,
               ),
             )
-          : const Text('Save & Continue'),
+          : Text('save_continue'.tr),
     ),
   );
 }

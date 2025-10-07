@@ -3,6 +3,7 @@ import 'package:argiot/src/app/widgets/my_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
@@ -23,7 +24,7 @@ class ProfileView extends GetView<ProfileController> {
       //       Get.toNamed(  Routes.vendorCustomer,);
       //     },
       //     icon: const Icon(Icons.account_box),
-      //   ),
+      //   },
       // ],
     ),
 
@@ -170,7 +171,7 @@ class ProfileView extends GetView<ProfileController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(child: TitleText('current_plan'.tr)),
-const SizedBox(width: 8,),
+                const SizedBox(width: 8),
                 InkWell(
                   onTap: () {
                     Get.toNamed(Routes.subscriptionUsage);

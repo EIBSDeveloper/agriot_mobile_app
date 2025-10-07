@@ -3,8 +3,6 @@ import 'package:argiot/src/app/modules/map_view/view/widgets/map_float_action_bu
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_crop.dart';
 import 'package:argiot/src/app/modules/task/model/schedule_land.dart';
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
@@ -18,7 +16,7 @@ class LandMapView extends GetView<LandMapViewController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Land Details'),
+    appBar: CustomAppBar(title: 'land_details'.tr),
     body: Obx(() {
       if (controller.isLoading.value) {
         return const Loading();
@@ -91,8 +89,8 @@ class LandMapView extends GetView<LandMapViewController> {
             )
             .toList(),
         onChanged: controller.selectLand,
-        decoration: const InputDecoration(
-          labelText: 'Land',
+        decoration: InputDecoration(
+          labelText: 'land'.tr,
           border: InputBorder.none,
         ),
       ),
@@ -105,14 +103,14 @@ class LandMapView extends GetView<LandMapViewController> {
       child: DropdownButtonFormField<ScheduleCrop>(
         initialValue: controller.selectedCrop.value,
         items: [
-          DropdownMenuItem(value: controller.allCrop, child: const Text("All")),
+          DropdownMenuItem(value: controller.allCrop, child: Text("all".tr)),
           ...controller.cropsForSelectedLand.map(
             (crop) => DropdownMenuItem(value: crop, child: Text(crop.name)),
           ),
         ],
         onChanged: controller.selectCrop,
-        decoration: const InputDecoration(
-          labelText: 'Crop',
+        decoration: InputDecoration(
+          labelText: 'crop'.tr,
           border: InputBorder.none,
         ),
       ),

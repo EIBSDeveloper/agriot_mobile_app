@@ -22,7 +22,7 @@ class AddpayoutScreen extends GetView<PayoutController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Add Payouts'),
+    appBar: CustomAppBar(title: 'add_payouts'.tr),
     body: Obx(() {
       if (controller.isLoading.value && controller.advancelist.isEmpty) {
         return const Loading();
@@ -38,12 +38,16 @@ class AddpayoutScreen extends GetView<PayoutController> {
           InputCardStyle(
             child: TextField(
               controller: controller.searchController,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search, size: 22, color: Colors.grey),
-                hintText: "Search employee...",
+              decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.search,
+                  size: 22,
+                  color: Colors.grey,
+                ),
+                hintText: "search_employee".tr,
                 border: InputBorder.none,
                 isDense: true,
-                contentPadding: EdgeInsets.symmetric(vertical: 12),
+                contentPadding: const EdgeInsets.symmetric(vertical: 12),
               ),
               onChanged: controller.onSearchChanged,
             ),
@@ -52,7 +56,7 @@ class AddpayoutScreen extends GetView<PayoutController> {
           const SizedBox(height: 12),
 
           if (controller.advancelist.isEmpty)
-            const Center(child: Text("No payouts found"))
+            Center(child: Text("no_payouts_found".tr))
           else
             ...List.generate(
               controller.advancelist.length,
@@ -92,7 +96,7 @@ class AddpayoutScreen extends GetView<PayoutController> {
 
             // Here you can call your API with editedEmployees
           },
-          child: const Text('Submit'),
+          child: Text('submit'.tr),
         ),
       ),
     ),

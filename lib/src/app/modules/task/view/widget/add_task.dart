@@ -89,8 +89,12 @@ class AddTask extends GetView<TaskController> {
                 children: [
                   const SizedBox(height: 8),
                   Obx(
-                    () => CheckboxListTile(contentPadding: EdgeInsets.zero,
-                      title: Text('recurring_task'.tr,style: const TextStyle(fontWeight: FontWeight.bold),),
+                    () => CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        'recurring_task'.tr,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       value: controller.isRecurring.value,
                       onChanged: (value) =>
                           controller.isRecurring.value = value ?? false,
@@ -150,11 +154,12 @@ class AddTask extends GetView<TaskController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               InputCardStyle(
-                                
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                ),
                                 child: ListTile(
                                   title: Text("${'schedule_end_date'.tr} *"),
-                                contentPadding: EdgeInsets.zero,
+                                  contentPadding: EdgeInsets.zero,
                                   subtitle: Text(
                                     controller.scheduleEndDate.value == null
                                         ? 'not_selected'.tr
@@ -230,7 +235,7 @@ class AddTask extends GetView<TaskController> {
                         }
                       },
                 child: controller.isLoading.value
-                    ? const Loading(size:50)
+                    ? const Loading(size: 50)
                     : Text(isEditing ? 'update_task'.tr : 'add_task'.tr),
               ),
             ),

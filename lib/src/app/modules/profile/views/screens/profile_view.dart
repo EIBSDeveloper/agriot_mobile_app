@@ -169,8 +169,8 @@ class ProfileView extends GetView<ProfileController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TitleText('current_plan'.tr),
-
+                Expanded(child: TitleText('current_plan'.tr)),
+const SizedBox(width: 8,),
                 InkWell(
                   onTap: () {
                     Get.toNamed(Routes.subscriptionUsage);

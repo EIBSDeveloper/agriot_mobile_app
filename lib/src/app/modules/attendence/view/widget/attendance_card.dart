@@ -3,6 +3,8 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
+
 class AttendanceCard extends GetView<AttendenceController> {
   final int index;
 
@@ -12,9 +14,18 @@ class AttendanceCard extends GetView<AttendenceController> {
   Widget build(BuildContext context) => Obx(() {
     final emp = controller.employees[index];
 
+    // Calculate salary if totalHour & salaryPerHour are available
+    int workingHours = 0;
+    if (emp.totalHour != null && emp.totalHour!.isNotEmpty) {
+      final parts = emp.totalHour!.split(" "); // "8 hrs"
+      workingHours = int.tryParse(parts[0]) ?? 0;
+    }
+
+    final calculatedSalary =
+        workingHours * (int.tryParse(emp.salary ?? '0') ?? 0);
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       elevation: 1,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -39,10 +50,6 @@ class AttendanceCard extends GetView<AttendenceController> {
                         fontSize: 16,
                       ),
                     ),
-                    // Text(
-                    //   emp.role,
-                    //   style: const TextStyle(color: Colors.black54),
-                    // ),
                     Text(
                       emp.salaryType,
                       style: const TextStyle(color: Colors.blue, fontSize: 12),
@@ -61,20 +68,17 @@ class AttendanceCard extends GetView<AttendenceController> {
                     onTap: () => controller.pickTime(index, true, context),
                     child: InputCardStyle(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          // vertical: 12,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            /*const Text(
                               "Login Time",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
                               ),
-                            ),
+                            ),*/
                             const SizedBox(height: 4),
                             Text(
                               emp.loginTime?.isNotEmpty == true
@@ -99,20 +103,10 @@ class AttendanceCard extends GetView<AttendenceController> {
                     onTap: () => controller.pickTime(index, false, context),
                     child: InputCardStyle(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          // vertical: 12,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Logout Time",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black54,
-                              ),
-                            ),
                             const SizedBox(height: 4),
                             Text(
                               emp.logoutTime?.isNotEmpty == true
@@ -138,20 +132,6 @@ class AttendanceCard extends GetView<AttendenceController> {
             /// Working Hours & Salary
             Row(
               children: [
-                /*Expanded(
-                  child: InputCardStyle(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 17,
-                      ),
-                      child: Text(
-                        emp.totalHour ?? '',
-                        style: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
-                ),*/
                 Expanded(
                   child: InputCardStyle(
                     child: Padding(
@@ -160,19 +140,17 @@ class AttendanceCard extends GetView<AttendenceController> {
                         vertical: 8,
                       ),
                       child: Text(
-                        (emp.totalHour == null || emp.totalHour!.isEmpty)
-                            ? 'Working hrs' // 🔥 placeholder
-                            : emp.totalHour!,
+                        emp.totalHour?.isNotEmpty == true
+                            ? emp.totalHour!
+                            : 'Working hrs',
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Colors
-                              .black54, // optional lighter color for placeholder
+                          color: Colors.black54,
                         ),
                       ),
                     ),
                   ),
                 ),
-
                 const SizedBox(width: 8),
                 Expanded(
                   child: InputCardStyle(
@@ -181,12 +159,19 @@ class AttendanceCard extends GetView<AttendenceController> {
                       keyboardType: TextInputType.number,
                       controller: controller.salaryControllers[index],
                       onChanged: (val) {
-                        controller.employees[index] = emp.copyWith(salary: val);
+                        final updatedEmp = emp.copyWith(
+                          salary: val,
+                          salaryStatus: val.isNotEmpty
+                              ? true
+                              : emp.salaryStatus,
+                          isEdited: true,
+                        );
+                        controller.employees[index] = updatedEmp;
                         controller.employees.refresh();
                       },
-                      decoration: const InputDecoration(
-                        labelText: "Salary",
+                      decoration: InputDecoration(
                         border: InputBorder.none,
+                        hintText: calculatedSalary.toString(),
                       ),
                     ),
                   ),
@@ -201,6 +186,7 @@ class AttendanceCard extends GetView<AttendenceController> {
               onChanged: (val) {
                 controller.employees[index] = emp.copyWith(
                   salaryStatus: val ?? true,
+                  isEdited: true,
                 );
                 controller.employees.refresh();
               },

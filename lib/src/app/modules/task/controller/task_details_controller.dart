@@ -152,6 +152,7 @@ final statusList = TaskTypes.values.whereMap(
     }
   }
 
+
   Future<void> updateTask(int taskId) async {
     if (!formKey.currentState!.validate()) return;
 
@@ -159,6 +160,10 @@ final statusList = TaskTypes.values.whereMap(
       isLoadingEdit(true);
       final response = await _taskRepository.updateTask(
         id: taskId,
+        myCrop: selectedCropType.value.id,
+        startDate: scheduleDate.value,
+        activityType:selectedActivityType.value.id ,
+        description: description.value,
         scheduleStatus: getTaskId(task.value?.status ?? TaskTypes.completed),
       );
       if (response.isNotEmpty) {}

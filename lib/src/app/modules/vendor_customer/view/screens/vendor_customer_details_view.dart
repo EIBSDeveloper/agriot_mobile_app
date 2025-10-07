@@ -148,7 +148,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(value, style: TextStyle(color: color)),
+          child: Text(value.isNotEmpty ?value:"--", style: TextStyle(color: color)),
         ),
       ],
     ),

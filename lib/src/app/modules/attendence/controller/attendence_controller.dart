@@ -102,9 +102,8 @@ class AttendenceController extends GetxController {
 
     final diff = logoutTime.difference(loginTime);
     final hoursWorked = diff.inHours;
-    final minutesWorked = diff.inMinutes.remainder(60);
 
-    return "$hoursWorked h $minutesWorked m";
+    return "$hoursWorked hrs";
   }
 
   /// Set Paid/Unpaid
@@ -135,7 +134,7 @@ class AttendenceController extends GetxController {
     isLoading.value = true;
     try {
       final fetched = await repository.fetchEmployees(
-        date: DateFormat('yyyy-MM-dd').format( selectedDate.value ),
+        date: DateFormat('yyyy-MM-dd').format(selectedDate.value),
         page: page.value,
         search: searchQuery.value,
       );
@@ -184,7 +183,8 @@ class AttendenceController extends GetxController {
   }
 
   Future<void> addAttendance({required List<EmployeeModel> employees}) async {
-    final employeeList = employees.where((e)=>e.isEdited==true)
+    final employeeList = employees
+        .where((e) => e.isEdited == true)
         .map((e) => e.toJson())
         .toList(); // call toJson()
 

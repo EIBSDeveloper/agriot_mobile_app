@@ -8,6 +8,13 @@ class EmployeeDetailsController extends GetxController {
       Get.find<EmployeeDetailsRepository>();
   RxInt employeeId = 0.obs;
   RxBool isManager = false.obs;
+  
+  // Observables
+  var isLoading = false.obs;
+  var employeeDetails = Rx<EmployeeDetailsModel?>(null);
+
+  // Storage keys
+  final String farmerIdKey = 'farmer_id';
   @override
   void onInit() {
     super.onInit();
@@ -16,12 +23,6 @@ class EmployeeDetailsController extends GetxController {
     loadEmployeeDetails();
   }
 
-  // Observables
-  var isLoading = false.obs;
-  var employeeDetails = Rx<EmployeeDetailsModel?>(null);
-
-  // Storage keys
-  final String farmerIdKey = 'farmer_id';
 
   Future<void> loadEmployeeDetails() async {
     try {

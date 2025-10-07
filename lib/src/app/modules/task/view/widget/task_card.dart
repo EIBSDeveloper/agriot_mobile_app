@@ -173,7 +173,7 @@ if (task.taskDate != null) {
                                 setState(() {
                                   task = task.copyWith(status: value);
                                 });
-                                await _taskRepository.updateTask(
+                                await _taskRepository.statusUpdate(
                                   id: task.id,
                                   scheduleStatus: getTaskId(
                                     task.status ?? TaskTypes.completed,

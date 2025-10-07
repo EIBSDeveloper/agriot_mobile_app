@@ -2,6 +2,7 @@ import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart'
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../routes/app_routes.dart';
 import '../../../../widgets/loading.dart';
 import '../../../../widgets/my_network_image.dart';
 import '../../controller/employee_details_controller.dart';
@@ -16,6 +17,24 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
       title: controller.isManager.value
           ? 'manager_details'.tr
           : 'employee_details'.tr,
+      actions: [
+        IconButton(
+          onPressed: () {
+            var i = !controller.isManager.value ? 0 : controller.employeeDetails.value?.role.id;
+            Get.toNamed(
+              Routes.employeeAdd,
+              arguments: {
+                "id": controller.employeeDetails.value?.id,
+                "role": i ,
+              },
+            )?.then((result) {
+              controller.loadEmployeeDetails();
+            });
+          },
+          color: Get.theme.primaryColor,
+          icon: const Icon(Icons.edit),
+        ),
+      ],
     ),
     body: Obx(() {
       if (controller.isLoading.value) {
@@ -72,7 +91,7 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                 ],
               ),
             ),
-
+            const SizedBox(height: 16),
             // Details Section
             Column(
               children: [
@@ -90,13 +109,19 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                   value:
                       controller.employeeDetails.value?.employeeType.name ?? "",
                 ),
-                // const Divider(),
+                const Divider(),
 
-                // // Work Type (using role as work type)
-                // DetailRow(
-                //   label: 'work_type',
-                //   value: controller.employeeDetails.value?.w.name??"",
-                // ),
+                // Work Type (using role as work type)
+                DetailRow(
+                  label: 'work_type',
+                  value: controller.employeeDetails.value?.workType!.name ?? "",
+                ),
+                const Divider(),
+                // Manager Type (using role as work type)
+                DetailRow(
+                  label: 'manager',
+                  value: controller.employeeDetails.value?.manager!.name ?? "",
+                ),
                 const Divider(),
 
                 // Joining Date
@@ -109,28 +134,30 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                 // Gender
                 DetailRow(
                   label: 'gender',
-                  value: controller.employeeDetails.value?.gender.name ?? "",
+                  value: controller.employeeDetails.value?.gender?.name ?? "",
                 ),
                 const Divider(),
 
                 // Alternative Mobile Number
                 DetailRow(
                   label: 'mobile',
-                  value: "${controller.employeeDetails.value?.mobileNo ?? ""} ${controller.employeeDetails.value?.AlternativeMobile ?? ""}",
+                  value:
+                      "${controller.employeeDetails.value?.mobileNo ?? ""} ${controller.employeeDetails.value?.alternativeMobile ?? ""}",
                 ),
                 const Divider(),
 
                 // Email ID
                 DetailRow(
                   label: 'email_id',
-                  value: controller.employeeDetails.value?.email??"",
+                  value: controller.employeeDetails.value?.email ?? "",
                 ),
                 const Divider(),
 
                 // Salary
                 DetailRow(
                   label: 'salary',
-                  value: controller.employeeDetails.value?.employeeType.name ?? "",
+                  value:
+                      controller.employeeDetails.value?.employeeType.name ?? "",
                   isImportant: true,
                 ),
                 const Divider(),
@@ -141,54 +168,58 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                   value: controller.employeeDetails.value!.pincode,
                 ),
 
-                // // Manager-specific fields
-                // if (controller.employeeDetails.value!.name != null) ...[
-                //   const Divider(),
-                //   DetailRow(
-                //     label: 'user_id',
-                //     value: controller.employeeDetails.value!.name!,
-                //   ),
-                // ],
+                // Manager-specific fields
+                if (controller.employeeDetails.value?.userName != null) ...[
+                  const Divider(),
+                  DetailRow(
+                    label: 'user_id',
+                    value: controller.employeeDetails.value!.userName!,
+                  ),
+                ],
 
-                // if (controller.employeeDetails.value.password != null) ...[
-                //   const Divider(),
-                //   DetailRow(
-                //     label: 'password',
-                //     value: controller.employeeDetails.value.password!,
-                //   ),
-                // ],
+                if (controller.employeeDetails.value?.password != null) ...[
+                  const Divider(),
+                  DetailRow(
+                    label: 'password',
+                    value: controller.employeeDetails.value!.password!,
+                  ),
+                ],
                 const Divider(),
               ],
             ),
 
             // Address Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'address'.tr,
-                    style: Get.theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+            if (controller.employeeDetails.value!.description.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'address'.tr,
+                      style: Get.theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    controller.employeeDetails.value!.description.isNotEmpty
-                        ? controller.employeeDetails.value!.description
-                        : 'address_not_provided'.tr,
-                    style: Get.theme.textTheme.bodyMedium?.copyWith(
-                      fontStyle:
-                          controller.employeeDetails.value!.description.isEmpty
-                          ? FontStyle.italic
-                          : FontStyle.normal,
-                      color: Get.theme.colorScheme.onSurfaceVariant,
+                    const SizedBox(height: 8),
+                    Text(
+                      controller.employeeDetails.value!.description.isNotEmpty
+                          ? controller.employeeDetails.value!.address
+                          : 'address_not_provided'.tr,
+                      style: Get.theme.textTheme.bodyMedium?.copyWith(
+                        fontStyle:
+                            controller.employeeDetails.value!.address.isEmpty
+                            ? FontStyle.italic
+                            : FontStyle.normal,
+                        color: Get.theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       );

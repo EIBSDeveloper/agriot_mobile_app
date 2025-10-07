@@ -12,7 +12,7 @@ class HttpService extends GetxService {
   late final String baseUrl = appData.baseUrl.value;
   late final String baseUrlIWithodAPi = appData.baseUrlWithoutAPi.value;
   final int timeoutSeconds = 30;
- late String languageCode = appData.appLanguage.value.languageCode;
+
   /// GET Request
   Future<http.Response> getWithodAPi(
     String endpoint, {
@@ -37,6 +37,7 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
+      String languageCode = appData.appLanguage.value.languageCode;
      
       final updatedEndpoint = endpoint.contains('?')
           ? '$endpoint&lang=$languageCode'
@@ -71,6 +72,7 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
+      String languageCode = appData.appLanguage.value.languageCode;
       final updatedEndpoint = endpoint.contains('?')
           ? '$endpoint&lang=$languageCode'
           : '$endpoint?lang=$languageCode';
@@ -91,6 +93,7 @@ class HttpService extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
+      String languageCode = appData.appLanguage.value.languageCode;
       final updatedEndpoint = endpoint.contains('?')
           ? '$endpoint&lang=$languageCode'
           : '$endpoint?lang=$languageCode';

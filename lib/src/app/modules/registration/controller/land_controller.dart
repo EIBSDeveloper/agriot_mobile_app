@@ -1,4 +1,3 @@
-
 import 'package:argiot/src/app/modules/registration/controller/resgister_controller.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +201,9 @@ class RegLandController extends GetxController {
       // Call appropriate API based on whether we're creating or editing
       if (landId.value == 0) {
         // Create new land
-        await _landService.addLand(request: request);
+        Map land = await _landService.addLand(request: request);
+        var land2 = land["my_land"];
+        landId.value = land2["id"];
         ResgisterController resgisterController = Get.find();
         resgisterController.moveNextPage();
         showSuccess('Land added successfully');
@@ -211,6 +212,7 @@ class RegLandController extends GetxController {
         await _landService.editLand(request: request);
         ResgisterController resgisterController = Get.find();
         resgisterController.moveNextPage();
+        
         showSuccess('Land updated successfully');
       }
     } catch (e) {

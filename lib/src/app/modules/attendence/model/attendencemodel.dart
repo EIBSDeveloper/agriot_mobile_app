@@ -14,8 +14,9 @@ class EmployeeModel {
   final String? logoutTime;
   final String? totalHour;
   final String? salary;
+  final int? salaryPerHour; // int field
   final bool? salaryStatus;
-  final bool? isEdited;
+  final bool isEdited; // updated to non-nullable
 
   EmployeeModel({
     required this.id,
@@ -29,8 +30,9 @@ class EmployeeModel {
     this.logoutTime,
     this.totalHour,
     this.salary,
-    this.isEdited=false,
+    this.salaryPerHour,
     this.salaryStatus,
+    this.isEdited = false, // default false
   });
 
   factory EmployeeModel.fromJson(Map<String, dynamic> json) => EmployeeModel(
@@ -43,11 +45,13 @@ class EmployeeModel {
     present: json['present'] ?? false,
     loginTime: json['login_time'],
     logoutTime: json['logout_time'],
-    totalHour: json['total_hour'].toString(),
-    salary: (json['salary']??'--').toString(),
+    totalHour: (json['total_hour'] ?? '').toString(),
+    salary: (json['salary'] ?? '').toString(),
+    salaryPerHour: json['salary_per_hour'] ?? 0,
     salaryStatus: (json['salary_status'] is int)
         ? json['salary_status'] == 1
         : (json['salary_status'] as bool?),
+    isEdited: json['isEdited'] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,7 +60,9 @@ class EmployeeModel {
     "login_time": loginTime,
     "logout_time": logoutTime,
     "salary": salary ?? 0.0,
+    "salary_per_hour": salaryPerHour ?? 0,
     "salary_status": salaryStatus,
+    "isEdited": isEdited,
   };
 
   EmployeeModel copyWith({
@@ -71,7 +77,9 @@ class EmployeeModel {
     String? logoutTime,
     String? totalHour,
     String? salary,
+    int? salaryPerHour,
     bool? salaryStatus,
+    bool? isEdited,
   }) => EmployeeModel(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -84,7 +92,9 @@ class EmployeeModel {
     logoutTime: logoutTime ?? this.logoutTime,
     totalHour: totalHour ?? this.totalHour,
     salary: salary ?? this.salary,
+    salaryPerHour: salaryPerHour ?? this.salaryPerHour,
     salaryStatus: salaryStatus ?? this.salaryStatus,
+    isEdited: isEdited ?? this.isEdited,
   );
 
   static List<EmployeeModel> listFromJson(String str) =>

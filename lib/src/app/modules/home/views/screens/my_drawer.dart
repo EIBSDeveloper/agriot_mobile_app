@@ -52,16 +52,16 @@ class AppDrawer extends StatelessWidget {
             Get.back();
             Get.toNamed(Routes.updateEmployeePayouts);
           },
+        ), _buildDrawerItem(
+          icon: Icons.account_balance_wallet,
+          label: "Employee Payouts List",
+          onTap: () {
+            Get.back();
+            Get.toNamed(Routes.payoutlistscreen);
+          },
         ),
-        // _buildDrawerItem(
-        //   icon: Icons.payments,
-        //   label: "Employee Payouts",
-        //   onTap:  () {
-        //     Get.back();
-        //     Get.toNamed(Routes.updateEmployeeAdvance);
-        //   },
-        // ),
-        
+
+      
         const Divider(),
         _buildDrawerItem(
           icon: Icons.account_balance_wallet,
@@ -71,6 +71,7 @@ class AppDrawer extends StatelessWidget {
             Get.to(const PayablesReceivablesPage());
           },
         ),
+
         _buildDrawerItem(
           icon: Icons.contacts,
           label: "My Contacts",
@@ -79,6 +80,7 @@ class AppDrawer extends StatelessWidget {
             Get.toNamed(Routes.vendorCustomer);
           },
         ),
+
         // _buildDrawerItem(
         //   icon: Icons.data_exploration_outlined,
         //   label: "Sales",
@@ -87,7 +89,6 @@ class AppDrawer extends StatelessWidget {
         //     Get.toNamed(Routes.sales);
         //   },
         // ),
-        
         const Divider(),
         _buildDrawerItem(
           icon: Icons.store,

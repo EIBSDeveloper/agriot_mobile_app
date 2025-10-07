@@ -90,7 +90,6 @@ class Attendancelistscreen extends GetView<AttendenceController> {
 
 Widget employeeCard(EmployeeModel emp) => Card(
   elevation: 1,
-  // margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
   child: Padding(
     padding: const EdgeInsets.all(10),
     child: Row(
@@ -132,24 +131,14 @@ Widget employeeCard(EmployeeModel emp) => Card(
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
-                  ), const SizedBox(width: 5,) ,if (emp.workType != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  emp.workType!,
-                  style: const TextStyle(
-                    fontSize: 10,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 5),
+                  if (emp.workType != null) ...[
+                    const SizedBox(height: 4),
+                    Text(emp.workType!, style: const TextStyle(fontSize: 10)),
+                  ],
                 ],
               ),
-
-              // const SizedBox(height: 2),
-              // Text(
-              //   emp.role,
-              //   style: const TextStyle(fontSize: 13, color: Colors.grey),
-              // ),
-             
 
               const SizedBox(height: 6),
 
@@ -189,11 +178,6 @@ Widget employeeCard(EmployeeModel emp) => Card(
               if (emp.totalHour != null)
                 Row(
                   children: [
-                    // Icon(
-                    //   Icons.access_time,
-                    //   size: 23,
-                    //   color: Get.theme.colorScheme.primary,
-                    // ),
                     const Text("Working Hours"),
                     const SizedBox(width: 4),
                     Text(
@@ -203,7 +187,7 @@ Widget employeeCard(EmployeeModel emp) => Card(
                   ],
                 ),
 
-              const SizedBox(height:4),
+              const SizedBox(height: 4),
 
               /// Salary & Status
               Row(
@@ -211,11 +195,6 @@ Widget employeeCard(EmployeeModel emp) => Card(
                 children: [
                   Row(
                     children: [
-                      // Icon(
-                      //   Icons.currency_rupee,
-                      //   size: 23,
-                      //   color: Get.theme.colorScheme.primary,
-                      // ),
                       const Text("Salary "),
                       const SizedBox(width: 4),
                       Text(

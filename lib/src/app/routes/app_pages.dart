@@ -51,6 +51,9 @@ import '../modules/expense/binding/cunsumption_detail_binding.dart';
 import '../modules/expense/view/screens/consumption_details.dart';
 import '../modules/manager/bindings/manager_binding.dart';
 import '../modules/manager/view/screen/create_manager_screen.dart';
+import '../modules/payouts/bindings/payout_binding.dart';
+import '../modules/payouts/view/screens/add_payout_screen.dart';
+import '../modules/payouts/view/screens/payout_list_screen.dart';
 import '../modules/sales/view/screens/add_deduction_view.dart';
 import '../modules/task/view/screens/schedule_details_page.dart';
 import '../modules/map_view/view/screens/land_map_view.dart';
@@ -366,6 +369,17 @@ class AppPages {
       name: Routes.attendencelistscreen,
       page: () => const Attendancelistscreen(),
       binding: AttendenceBinding(),
+    ),
+       GetPage(
+      name: Routes.addPayout,
+      page: () => AddpayoutScreen(),
+      binding: PayoutBinding(),
+    ),
+
+    GetPage(
+      name: Routes.payoutlistscreen,
+      page: () => const Payoutlistscreen(),
+      binding: PayoutBinding(),
     ),
     // GetPage(
     //   name: '/inventory/:type/:id',

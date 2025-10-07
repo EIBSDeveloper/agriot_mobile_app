@@ -78,15 +78,16 @@ class CropView extends GetView<CropController> {
                 return const SizedBox();
               }),
               const SizedBox(height: 16),
-              _buildMeasurementSection(),
-
-              _buildTextField(
+               _buildTextField(
                 controller: controller.locationController,
                 label: 'Location Coordinates *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
                 readOnly: true,
                 onTap: controller.pickLocation,
               ),
+              _buildMeasurementSection(),
+
+             
               const SizedBox(height: 16),
               _buildTextField(
                 controller: controller.descriptionController,

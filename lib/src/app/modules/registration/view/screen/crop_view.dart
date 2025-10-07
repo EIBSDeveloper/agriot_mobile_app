@@ -102,9 +102,7 @@ class CropView extends GetView<RegCropController> {
     });
 
   Widget _buildCropDropdown() => Obx(() {
-      if (controller.selectedCropType.value == null) {
-        return _buildDisabledDropdown('Select crop type first');
-      }
+      
       if (controller.isLoadingCrops.value) {
         return _buildLoadingDropdown('Loading crops...');
       }
@@ -262,28 +260,6 @@ class CropView extends GetView<RegCropController> {
       ),
     );
 
-  Widget _buildDisabledDropdown(String text) => InputCardStyle(
-               
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: text,
-          border: InputBorder.none,
-          isDense: true,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Icon(
-                Icons.keyboard_arrow_down_outlined,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+
 
 }

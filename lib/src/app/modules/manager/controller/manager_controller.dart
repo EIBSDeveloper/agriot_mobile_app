@@ -6,11 +6,14 @@ import 'package:argiot/src/app/modules/manager/model/dropdown_model.dart';
 import 'package:argiot/src/app/modules/manager/model/permission_model.dart';
 import 'package:argiot/src/app/modules/registration/view/screen/landpicker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 import '../../../service/utils/pop_messages.dart';
+import '../../employee/model/employee_details_model.dart';
+import '../../employee/repository/employee_details_repository.dart';
 import '../repository/manager_repository.dart';
 
 final AppDataController appDeta = Get.put(AppDataController());
@@ -26,6 +29,12 @@ Map<String, dynamic> flattenPermissions(Map<String, PermissionItem> perms) {
 
 class ManagerController extends GetxController {
   final ManagerRepository repository = Get.find();
+  final EmployeeDetailsRepository _repository =
+      Get.find<EmployeeDetailsRepository>();
+  final RxInt id = 0.obs;
+  final RxInt role = 0.obs;
+  var employeeDetails = Rx<EmployeeDetailsModel?>(null);
+
   final usernameController = TextEditingController();
   final dobcontroller = TextEditingController();
   final dojcontroller = TextEditingController();
@@ -61,9 +70,91 @@ class ManagerController extends GetxController {
   final RxString base64Image = ''.obs;
 
   @override
+  void onInit() {
+    super.onInit();
+    var argument = Get.arguments;
+    if (argument?['id'] != null) {
+      id.value = argument['id'];
+      role.value = argument['role'] ?? 0;
+    }
+
+    laod();
+  }
+
+  Future<void> laod() async {
+    await loadPermissionsFromApi();
+    await fetchDropdownData();
+    await loadManagers();
+    await loadEmployeeDetails();
+  }
+
+  @override
   void onClose() {
     _clearControllers();
     super.onClose();
+  }
+
+  Future<void> loadEmployeeDetails() async {
+    if (id.value == 0) {
+      return;
+    }
+    try {
+      isLoading.value = true;
+
+      EmployeeDetailsModel response;
+
+      if (role.value != 0) {
+        response = await _repository.getManagerDetails(id.value);
+      } else {
+        response = await _repository.getEmployeeDetails(id.value);
+      }
+
+      employeeDetails.value = response;
+      usernameController.text = employeeDetails.value?.name ?? '';
+      dobcontroller.text = employeeDetails.value?.dob ?? '';
+      dojcontroller.text = employeeDetails.value?.doj ?? '';
+      mobileController.text = employeeDetails.value?.mobileNo ?? '';
+      alternativemobileController.text =
+          employeeDetails.value?.alternativeMobile ?? '';
+      emailController.text = employeeDetails.value?.email ?? '';
+      pincodeController.text = employeeDetails.value?.pincode ?? '';
+      descriptionController.text = employeeDetails.value?.description ?? '';
+      if (employeeDetails.value?.employeeType.id != null) {
+        selectedEmployeeType.value = employeeTypes.firstWhere(
+          (empoloyee) => empoloyee.id == employeeDetails.value?.employeeType.id,
+        );
+      }
+      if (employeeDetails.value?.gender?.id != null) {
+        selectedGenderType.value = genderTypes.firstWhere(
+          (gender) => gender.id == employeeDetails.value?.gender?.id,
+        );
+      }
+      if (employeeDetails.value?.role.id != null) {
+        int roleid = 0;
+        if (role.value == 0) {
+          roleid = 0;
+        } else {
+          roleid = employeeDetails.value?.employeeType.id ?? 0;
+        }
+        selectedRoleType.value = roleTypes.firstWhere(
+          (empoloyee) => empoloyee.id == roleid,
+        );
+      }
+      if (employeeDetails.value?.workType?.id != null) {
+        selectedWorkType.value = workTypes.firstWhere(
+          (workType) => workType.id == employeeDetails.value!.workType!.id,
+        );
+      }
+      if (employeeDetails.value?.manager?.id != null) {
+        selectedManager.value = managers.firstWhere(
+          (manager) => manager.id == employeeDetails.value!.manager!.id,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Failed to load details: ${e.toString()}'.tr);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> pickImage() async {
@@ -309,14 +400,6 @@ class ManagerController extends GetxController {
 
   var permissions = <String, PermissionItem>{}.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadPermissionsFromApi();
-    fetchDropdownData();
-    loadManagers();
-  }
-
   void toggleStatus(PermissionItem item, bool value) {
     item.status = value ? 1 : 0;
     item.children.forEach((_, child) => toggleStatus(child, value));
@@ -396,8 +479,6 @@ class ManagerController extends GetxController {
     }
   }
 
-
-
   Future<void> loadManagers() async {
     try {
       isLoadingManager.value = true;
@@ -409,6 +490,7 @@ class ManagerController extends GetxController {
       isLoadingManager.value = false;
     }
   }
+
   // Submit Form
   Future<void> submitForm() async {
     if (!formKey.currentState!.validate()) return;
@@ -420,6 +502,7 @@ class ManagerController extends GetxController {
       final isEmployee = selectedRoleType.value?.id == 0;
 
       final response = await repository.createEmployeeManager(
+        id: id.value,
         role: selectedRoleType.value,
         name: usernameController.text.trim(),
         phone: mobileController.text.trim(),
@@ -434,7 +517,7 @@ class ManagerController extends GetxController {
         permissions: isEmployee ? null : permissions,
         managerId: isEmployee ? selectedManager.value?.id : null,
         workTypeId: isEmployee ? selectedWorkType.value?.id : null,
-        pincode:  pincodeController.text.trim(),
+        pincode: pincodeController.text.trim(),
         description: isEmployee ? descriptionController.text.trim() : null,
       );
 

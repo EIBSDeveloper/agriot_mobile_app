@@ -111,6 +111,7 @@ class ManagerRepository {
     }
   }*/
   Future<Map<String, dynamic>> createEmployeeManager({
+    int? id,
     required RoleModel? role,
     required String name,
     required String phone,
@@ -132,6 +133,7 @@ class ManagerRepository {
 
     // Single body for both Employee & Manager
     final body = {
+      "id": id,
       "farmer_id": farmerId,
       "role_id": role?.id ?? 0,
       "name": name,

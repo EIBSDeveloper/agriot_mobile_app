@@ -38,7 +38,7 @@ class TaskRepository {
     }
   }
 
-  Future<Map<String, dynamic>> updateTask({
+  Future<Map<String, dynamic>> statusUpdate({
     required int id,
     required int scheduleStatus,
   }) async {
@@ -54,6 +54,30 @@ class TaskRepository {
     }
   }
 
+
+  Future<Map<String, dynamic>> updateTask({
+    required int id,
+    required int myCrop,
+    required DateTime startDate,
+    required String description,
+    required int activityType,
+    required int scheduleStatus,
+  }) async {
+    final farmerId = _appDataController.farmerId.value;
+    try {
+      final response = await _httpService.put('/edit_task/$farmerId', {
+        'id': id,
+        "schedule_activity_type":activityType,
+        'my_crop': myCrop,
+        'start_date': DateFormat('yyyy-MM-dd').format(startDate),
+        'description': description,
+        'schedule_status': scheduleStatus,
+      });
+      return json.decode(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
   Future<List<ActivityModel>> getActivityTypes() async {
     try {
       final response = await _httpService.get('/schedule_activity_types');

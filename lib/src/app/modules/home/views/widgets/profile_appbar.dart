@@ -77,8 +77,8 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
 
               Get.updateLocale(locale);
-              appData.appLanguage(locale);
-              Get.back();
+              appData.appLanguage.value=locale;
+              Get.offAllNamed(Routes.home);
             }
           },
           child: const Column(

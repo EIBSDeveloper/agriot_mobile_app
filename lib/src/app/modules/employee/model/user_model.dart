@@ -43,7 +43,7 @@ class ManagerEmployeeGroup {
   });
 
   factory ManagerEmployeeGroup.fromJson(Map<String, dynamic> json) => ManagerEmployeeGroup(
-      manager: Manager.fromJson(json['manager']),
+      manager: json['manager']!= null ? Manager.fromJson(json['manager']) :Manager(address:"",email:"",employeeTypeName:"" ,id: 0,mobileNo: "",name:"" ),
       employees: (json['employees'] as List)
           .map((e) => Employee.fromJson(e))
           .toList(),

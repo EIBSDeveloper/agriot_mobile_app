@@ -27,7 +27,7 @@ class ManagerEmployeeGroupItem extends StatelessWidget {
         // Manager Item
          if ( !showEmployees)
         UserListItem(user: group.manager.toUserModel(), controller: controller)
-        else  SizedBox(
+        else if( group.manager.name.isNotEmpty) SizedBox(
           child: TitleText( group.manager.name),
         ),
 

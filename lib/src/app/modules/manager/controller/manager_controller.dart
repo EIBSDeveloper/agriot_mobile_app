@@ -38,6 +38,7 @@ class ManagerController extends GetxController {
   final usernameController = TextEditingController();
   final dobcontroller = TextEditingController();
   final dojcontroller = TextEditingController();
+  final salaryController = TextEditingController();
   final mobileController = TextEditingController();
   final alternativemobileController = TextEditingController();
   final emailController = TextEditingController();
@@ -47,18 +48,18 @@ class ManagerController extends GetxController {
   final pincodeController = TextEditingController();
 
   /// Selected values
-  var selectedEmployeeType = Rxn<EmployeeTypeModel>();
-  var selectedGenderType = Rxn<GenderModel>();
-  var selectedRoleType = Rxn<RoleModel>();
-  var selectedWorkType = Rxn<WorkTypeModel>();
-  var selectedManager = Rxn<AssignMangerModel>();
+  var selectedEmployeeType = Rxn<DrapDown>();
+  var selectedGenderType = Rxn<DrapDown>();
+  var selectedRoleType = Rxn<DrapDown>();
+  var selectedWorkType = Rxn<DrapDown>();
+  var selectedManager = Rxn<DrapDown>();
 
   /// Lists from API
-  var employeeTypes = <EmployeeTypeModel>[].obs;
-  var genderTypes = <GenderModel>[].obs;
-  var roleTypes = <RoleModel>[].obs;
-  var workTypes = <WorkTypeModel>[].obs;
-  var managers = <AssignMangerModel>[].obs;
+  var employeeTypes = <DrapDown>[].obs;
+  var genderTypes = <DrapDown>[].obs;
+  var roleTypes = <DrapDown>[].obs;
+  var workTypes = <DrapDown>[].obs;
+  var managers = <DrapDown>[].obs;
   var isLoadingManager = false.obs;
   final formKey = GlobalKey<FormState>();
 
@@ -117,7 +118,11 @@ class ManagerController extends GetxController {
       alternativemobileController.text =
           employeeDetails.value?.alternativeMobile ?? '';
       emailController.text = employeeDetails.value?.email ?? '';
+      salaryController.text = (employeeDetails.value?.salary ?? '').toString();
+      addressController.text = employeeDetails.value?.address ?? '';
       pincodeController.text = employeeDetails.value?.pincode ?? '';
+      locationController.text =
+          "${employeeDetails.value?.latitude},${employeeDetails.value?.latitude}";
       descriptionController.text = employeeDetails.value?.description ?? '';
       if (employeeDetails.value?.employeeType.id != null) {
         selectedEmployeeType.value = employeeTypes.firstWhere(
@@ -134,7 +139,7 @@ class ManagerController extends GetxController {
         if (role.value == 0) {
           roleid = 0;
         } else {
-          roleid = employeeDetails.value?.employeeType.id ?? 0;
+          roleid = employeeDetails.value?.role.id ?? 0;
         }
         selectedRoleType.value = roleTypes.firstWhere(
           (empoloyee) => empoloyee.id == roleid,
@@ -163,6 +168,7 @@ class ManagerController extends GetxController {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 20),
             ListTile(
               leading: const Icon(Icons.camera_alt),
               title: const Text('Camera'),
@@ -173,6 +179,7 @@ class ManagerController extends GetxController {
               title: const Text('Gallery'),
               onTap: () => Get.back(result: ImageSource.gallery),
             ),
+            const SizedBox(height: 20),
           ],
         ),
         backgroundColor: Colors.white,
@@ -219,185 +226,6 @@ class ManagerController extends GetxController {
     emailController.dispose();
   }
 
-  // JSON directly in controller
-  final Map<String, dynamic> rawPermissions = {
-    "Dashboard": {
-      "status": 0,
-      "actions": {
-        "view": {"status": 0},
-      },
-    },
-    "My Farms": {
-      "status": 0,
-      "modules": {
-        "my_land": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-            "view_location": {"status": 0},
-          },
-        },
-        "my_crop": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-            "create_schedule": {"status": 0},
-            "update_schedule": {"status": 0},
-          },
-        },
-        "my_schedule": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-          },
-        },
-        "best_practice_schedule": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-      },
-    },
-    "My Expense": {
-      "status": 0,
-      "modules": {
-        "my_expense": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-            "view_location": {"status": 0},
-          },
-        },
-        "my_vendor": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-            "create_schedule": {"status": 0},
-            "update_schedule": {"status": 0},
-          },
-        },
-      },
-    },
-    "My Sales": {
-      "status": 0,
-      "modules": {
-        "my_sales": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-            "view_location": {"status": 0},
-          },
-        },
-        "my_customer": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "edit": {"status": 0},
-            "view": {"status": 0},
-            "delete": {"status": 0},
-            "create_schedule": {"status": 0},
-            "update_schedule": {"status": 0},
-          },
-        },
-      },
-    },
-    "My Inventory": {
-      "status": 0,
-      "modules": {
-        "fuel": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-        "vehicle": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-        "machinery": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-        "tools": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-        "pesticides": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-        "fertilizers": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-        "seeds": {
-          "status": 0,
-          "actions": {
-            "list": {"status": 0},
-            "add": {"status": 0},
-            "consumption": {"status": 0},
-            "view": {"status": 0},
-          },
-        },
-      },
-    },
-  };
-
   var permissions = <String, PermissionItem>{}.obs;
 
   void toggleStatus(PermissionItem item, bool value) {
@@ -434,7 +262,7 @@ class ManagerController extends GetxController {
       if (empRes.statusCode == 200) {
         final List data = jsonDecode(empRes.body);
         employeeTypes.value = data
-            .map((e) => EmployeeTypeModel.fromJson(e))
+            .map((e) => DrapDown.fromJson(e))
             .toList();
       }
 
@@ -444,7 +272,7 @@ class ManagerController extends GetxController {
       );
       if (genderRes.statusCode == 200) {
         final List data = jsonDecode(genderRes.body);
-        genderTypes.value = data.map((e) => GenderModel.fromJson(e)).toList();
+        genderTypes.value = data.map((e) => DrapDown.fromJson(e)).toList();
       }
 
       /// Fetch roles
@@ -453,11 +281,16 @@ class ManagerController extends GetxController {
       );
       if (roleRes.statusCode == 200) {
         final List data = jsonDecode(roleRes.body);
-        //roleTypes.value = data.map((e) => RoleModel.fromJson(e)).toList();
         roleTypes.value = [
-          RoleModel(id: 0, name: "employee"),
-          ...data.map((e) => RoleModel.fromJson(e)),
+          DrapDown(id: 0, name: "Employee"),
+          ...data.map((e) => DrapDown.fromJson(e)),
         ];
+        if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
+          selectedRoleType.value =
+              roleTypes.first; // first role will be selected
+        }
+      } else {
+        roleTypes.value = [DrapDown(id: 0, name: "Employee")];
         if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
           selectedRoleType.value =
               roleTypes.first; // first role will be selected
@@ -470,7 +303,7 @@ class ManagerController extends GetxController {
       );
       if (worktypeRes.statusCode == 200) {
         final List data = jsonDecode(worktypeRes.body);
-        workTypes.value = data.map((e) => WorkTypeModel.fromJson(e)).toList();
+        workTypes.value = data.map((e) => DrapDown.fromJson(e)).toList();
       }
     } catch (e) {
       print("Error fetching dropdown data: $e");
@@ -504,6 +337,7 @@ class ManagerController extends GetxController {
       final response = await repository.createEmployeeManager(
         id: id.value,
         role: selectedRoleType.value,
+        salary: salaryController.text,
         name: usernameController.text.trim(),
         phone: mobileController.text.trim(),
         email: isEmployee ? null : emailController.text.trim(),

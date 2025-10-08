@@ -67,7 +67,8 @@ class AttendenceController extends GetxController {
         emp = emp.copyWith(
           loginTime: formatted,
           logoutTime: null,
-          totalHour: null,
+          totalHour: null,  
+          isEdited: true,
         );
         loginControllers[index]?.text = formatted;
         logoutControllers[index]?.clear();
@@ -83,6 +84,7 @@ class AttendenceController extends GetxController {
         emp = emp.copyWith(
           logoutTime: formatted,
           totalHour: _calculateWorkingHours(emp.loginTime!, formatted),
+            isEdited: true,
         );
         logoutControllers[index]?.text = formatted;
       }
@@ -109,7 +111,7 @@ class AttendenceController extends GetxController {
   /// Set Paid/Unpaid
   void setStatus(int index, bool isPaid) {
     var emp = employees[index];
-    emp = emp.copyWith(salaryStatus: isPaid);
+    emp = emp.copyWith(salaryStatus: isPaid ,  isEdited: true,);
     employees[index] = emp;
     employees.refresh();
   }

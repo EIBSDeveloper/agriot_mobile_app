@@ -47,6 +47,9 @@ class LandView extends GetView<RegLandController> {
               : (value.length != 6 ? "enter_6_digit_pincode".tr : null),
         ),
         gap,
+        CustomTextField(
+          controller: controller.pinCode, label: 'address'.tr),
+        gap,
         InputCardStyle(
           child: TextFormField(
             controller: controller.locationListController,

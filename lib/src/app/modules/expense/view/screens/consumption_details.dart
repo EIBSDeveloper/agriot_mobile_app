@@ -52,7 +52,7 @@ class ConsumptionDetails extends GetView<CunsumptionDetailsController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  details.inventoryItems!.name,
+                  details.inventoryItems?.name??"",
                   style: Get.textTheme.headlineSmall,
                 ),
               ],

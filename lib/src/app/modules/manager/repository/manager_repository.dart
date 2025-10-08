@@ -23,13 +23,13 @@ class ManagerRepository {
     }
   }
 
-  Future<List<AssignMangerModel>> fetchAssignManager() async {
+  Future<List<DrapDown>> fetchAssignManager() async {
     final userId = appDeta.farmerId;
     final response = await _httpService.get("/manager_by_fermer/$userId");
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body);
-      return data.map((e) => AssignMangerModel.fromJson(e)).toList();
+      return data.map((e) => DrapDown.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load permissions: ${response.statusCode}');
     }
@@ -112,9 +112,10 @@ class ManagerRepository {
   }*/
   Future<Map<String, dynamic>> createEmployeeManager({
     int? id,
-    required RoleModel? role,
+    required DrapDown? role,
     required String name,
     required String phone,
+    String? salary,
     String? email,
     int? employeeTypeId,
     int? genderId,
@@ -137,6 +138,7 @@ class ManagerRepository {
       "farmer_id": farmerId,
       "role_id": role?.id ?? 0,
       "name": name,
+      "salary": salary,
       "phone_number": phone,
       "mobile_no":
           phone, // keep both keys, controller can send empty if not needed

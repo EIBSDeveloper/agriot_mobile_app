@@ -90,7 +90,7 @@ class AddpayoutScreen extends GetView<PayoutController> {
             // Print only edited employees
             for (var emp in editedEmployees) {
               print(
-                "Employee: ${emp.name}, Deduction: ${emp.deduction}, Payout: ${emp.payoutAmount}",
+                "Employee: ${emp.name}, Deduction: ${emp.deductionAdvance}, Payout: ${emp.payoutAmount}",
               );
             }
 

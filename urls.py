@@ -390,6 +390,7 @@ name='get_inventory_items_by_category'),
     path('employees/farmer/<int:farmer_id>/list/', get_employees_by_farmer, name='get_employees_by_farmer'),
 
     path('employees/details/<int:employee_id>/', get_employee_details, name='get_employee_details'),
+    path('employee/payouts/details/<int:employee_id>', get_employee_payout_details, name='get_employee_details'),
     # GET EMPLOYEE DETAILS
     path("managers_with_employees/<int:farmer_id>", get_manager_user_list, name="get_employee_details"),
     # GET mangerEMPLOYEE DETAILS
@@ -425,15 +426,16 @@ name='get_inventory_items_by_category'),
     path("employee_grouped/<int:farmer_id>", get_employee_list_grouped_by_manager, name="employee-list-grouped"),
     path("employee/<int:employee_id>", get_employee_detail, name="employee-detail"),
     path("manager/<int:manager_id>", get_manager_detail, name="manager-detail"),
-    path("employee_advance", add_edit_employee_advance, name="employee_advance"),
-    path("employee_payout", add_edit_employee_payout, name="employee_payout"),
+    path("employee_advance/<int:farmer_id>", add_edit_employee_advance, name="employee_advance"),
+    path("employee_payout/<int:farmer_id>", add_edit_employee_payout, name="employee_payout"),
+    path("employee_payout_list/<int:farmer_id>", bulk_add_employee_payouts, name="bulk_add_employee_payouts"),
     path("farmer/<int:farmer_id>/payouts/", get_employee_payouts_by_farmer, name="employee-payouts-by-farmer"),
     path("farmer/<int:farmer_id>/employee/<int:employee_id>/payouts/", get_employee_payouts_by_farmer, name="employee-payouts-by-farmer-employee"),
 
     # Advances
     
     path('advances_list/<int:farmer_id>', get_employees_advances_list, name='get_employees_by_farmer'),
-    path('mail', myMail, name='mail'),
+
     path("farmer/<int:farmer_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer"),
     path("farmer/<int:farmer_id>/employee/<int:employee_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer-employee"),
 

@@ -8,6 +8,7 @@ import '../../../../widgets/loading.dart';
 import '../../controller/employee_manager_list_controller.dart';
 
 import '../widget/filter_section.dart';
+
 class EmployeeManagerView extends GetView<EmployeeManagerListController> {
   const EmployeeManagerView({super.key});
 
@@ -37,20 +38,16 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
                 }
 
                 return ListView.builder(
-                  itemCount: controller.filteredGroups.length +
+                  itemCount:
+                      controller.filteredGroups.length +
                       (controller.hasMoreData.value ? 1 : 0),
                   itemBuilder: (context, index) {
                     // Load more indicator
                     if (index == controller.filteredGroups.length) {
-                      // if (controller.hasMoreData.value &&
-                      //     !controller.isLoading.value) {
-                      //   controller.loadMoreData();
-                      // }
                       return controller.isLoading.value
                           ? const Padding(
                               padding: EdgeInsets.all(100.0),
-                              child:
-                                  Loading(),
+                              child: Loading(),
                             )
                           : const SizedBox.shrink();
                     }
@@ -59,14 +56,12 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
                     return ManagerEmployeeGroupItem(
                       group: controller.filteredGroups[index],
                       controller: controller,
-                      showEmployees:
-                          controller.selectedRole.value != 'Manager',
+                      showEmployees: controller.selectedRole.value != 'Manager',
                     );
                   },
                 );
               }),
             ),
-        
           ],
         ),
       ),

@@ -344,7 +344,7 @@ class AppPages {
       name: Routes.updateEmployeePayouts,
       page: () => const UpdateEmployeePayoutsView(),
       binding: UpdateEmployeePayoutsBinding(),
-      transition: Transition.cupertino,
+      transition: Transition.rightToLeftWithFade,
     ),
      GetPage(
       name: Routes.updateEmployeeAdvance,

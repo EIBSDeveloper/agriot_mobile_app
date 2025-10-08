@@ -20,12 +20,14 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
       actions: [
         IconButton(
           onPressed: () {
-            var i = !controller.isManager.value ? 0 : controller.employeeDetails.value?.role.id;
+            var i = !controller.isManager.value
+                ? 0
+                : controller.employeeDetails.value?.role.id;
             Get.toNamed(
               Routes.employeeAdd,
               arguments: {
                 "id": controller.employeeDetails.value?.id,
-                "role": i ,
+                "role": i,
               },
             )?.then((result) {
               controller.loadEmployeeDetails();
@@ -106,6 +108,8 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                 // Salary Type
                 DetailRow(
                   label: 'salary_type',
+
+                  isImportant: true,
                   value:
                       controller.employeeDetails.value?.employeeType.name ?? "",
                 ),
@@ -142,7 +146,7 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                 DetailRow(
                   label: 'mobile',
                   value:
-                      "${controller.employeeDetails.value?.mobileNo ?? ""} ${controller.employeeDetails.value?.alternativeMobile ?? ""}",
+                      "${controller.employeeDetails.value?.mobileNo ?? ""} , ${controller.employeeDetails.value?.alternativeMobile ?? ""}",
                 ),
                 const Divider(),
 
@@ -155,11 +159,33 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
 
                 // Salary
                 DetailRow(
-                  label: 'salary',
-                  value:
-                      controller.employeeDetails.value?.employeeType.name ?? "",
-                  isImportant: true,
+                  label: 'Salary Per Hour',
+                  value: (controller.employeeDetails.value?.salary ?? "")
+                      .toString(),
                 ),
+                const Divider(), // Salary
+                DetailRow(
+                  label: 'Advance',
+                  value: (controller.employeeDetails.value?.advance ?? "")
+                      .toString(),
+                  isAddAction: InkWell(
+                    onTap: () {
+                      Get.toNamed(Routes.updateEmployeePayouts);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.add, color: Colors.green.shade700),
+                    ),
+                  ),
+                ),
+
                 const Divider(),
 
                 // Pincode

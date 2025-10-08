@@ -184,10 +184,10 @@ class _LandPickerViewState extends State<LandPickerView> {
     title: "mark_your_land_boundaries".tr,
     content: Image.asset(
       AppImages.landMark,
-      width: 300,
+      width: 350,
       height: 250,
       fit: BoxFit.fill,
-    ),
+    ),radius : 10.0,
     actions: [
       TextButton(
         onPressed: () {

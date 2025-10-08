@@ -9,7 +9,7 @@ class PayoutModel {
   final int paidSalary;
   final int unpaidSalary;
   int? advance;
-  int? deduction;
+  int? deductionAdvance;
   int? payoutAmount;
   bool isEdited; // updated to non-nullable
 
@@ -24,52 +24,49 @@ class PayoutModel {
     required this.paidSalary,
     required this.unpaidSalary,
     this.advance,
-    this.deduction,
+    this.deductionAdvance,
     this.payoutAmount,
     this.isEdited = false, // default false
   });
 
   factory PayoutModel.fromJson(Map<String, dynamic> json) => PayoutModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      role: json['role'] ?? '',
-      salaryType: json['salaryType'] ?? '',
-      workType: json['work_type'] ?? '',
-      image: json['image'],
-      workingDays: json['working_days'] ?? 0,
-      paidSalary: (json['paid_salary'] is double
-          ? (json['paid_salary'] as double).toInt()
-          : json['paid_salary'] ?? 0),
-      unpaidSalary: (json['Unpaid_salary'] is double
-          ? (json['Unpaid_salary'] as double).toInt()
-          : json['Unpaid_salary'] ?? 0),
-      advance: (json['advance'] is double
-          ? (json['advance'] as double).toInt()
-          : json['advance']),
-      deduction: (json['deduction'] is double
-          ? (json['deduction'] as double).toInt()
-          : json['deduction']),
-      payoutAmount: (json['payout_amount'] is double
-          ? (json['payout_amount'] as double).toInt()
-          : json['payout_amount']),
-      isEdited: json['isEdited'] ?? false,
-    );
+    id: json['id'] ?? 0,
+    name: json['name'] ?? '',
+    role: json['role'] ?? '',
+    salaryType: json['salaryType'] ?? '',
+    workType: json['work_type'] ?? '',
+    image: json['image'],
+    workingDays: json['working_days'] ?? 0,
+    paidSalary: (json['paid_salary'] is double
+        ? (json['paid_salary'] as double).toInt()
+        : json['paid_salary'] ?? 0),
+    unpaidSalary: (json['Unpaid_salary'] is double
+        ? (json['Unpaid_salary'] as double).toInt()
+        : json['Unpaid_salary'] ?? 0),
+    advance: (json['advance'] is double
+        ? (json['advance'] as double).toInt()
+        : json['advance']),
+    deductionAdvance: (json['deduction'] is double
+        ? (json['deduction'] as double).toInt()
+        : json['deduction']),
+    payoutAmount: (json['payout_amount'] is double
+        ? (json['payout_amount'] as double).toInt()
+        : json['payout_amount']),
+    isEdited: json['isEdited'] ?? false,
+  );
 
   Map<String, dynamic> toJson() => {
-      'id': id,
-      'name': name,
-      'role': role,
-      'salaryType': salaryType,
-      'work_type': workType,
-      'image': image,
-      'working_days': workingDays,
-      'paid_salary': paidSalary,
-      'Unpaid_salary': unpaidSalary,
-      'advance': advance,
-      'deduction': deduction,
-      'payout_amount': payoutAmount,
-      "isEdited": isEdited,
-    };
+    'employee_id': id,
+    'paid_salary': paidSalary,
+    'unpaid_salary': unpaidSalary,
+    'advance': advance,
+    'deduction_advance': deductionAdvance,
+    'balance_advance': (advance ?? 0) - (deductionAdvance ?? 0),
+    'payout_amount': payoutAmount,
+    'to_pay': payoutAmount,
+    "date": DateTime.now(),
+  };
 
-  static List<PayoutModel> listFromJson(List<dynamic> jsonList) => jsonList.map((json) => PayoutModel.fromJson(json)).toList();
+  static List<PayoutModel> listFromJson(List<dynamic> jsonList) =>
+      jsonList.map((json) => PayoutModel.fromJson(json)).toList();
 }

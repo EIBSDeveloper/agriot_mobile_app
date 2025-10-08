@@ -1,75 +1,65 @@
-class EmployeePayoutsResponse {
-  final bool status;
-  final String message;
-  final EmployeePayoutsData? data;
-
-  EmployeePayoutsResponse({
-    required this.status,
-    required this.message,
-    this.data,
-  });
-
-  factory EmployeePayoutsResponse.fromJson(Map<String, dynamic> json) => EmployeePayoutsResponse(
-      status: json['status'] ?? false,
-      message: json['message'] ?? '',
-      data: json['data'] != null ? EmployeePayoutsData.fromJson(json['data']) : null,
-    );
-}
 
 class EmployeePayoutsData {
-  final String employeeName;
-  final String employeeId;
-  final double advanceAmount;
-  final double balanceAdvance;
-  final String employeeType;
-  final String workType;
+  final int advanceAmount;
 
-  EmployeePayoutsData({
-    required this.employeeName,
-    required this.employeeId,
-    required this.advanceAmount,
-    required this.balanceAdvance,
-    required this.employeeType,
-    required this.workType,
-  });
+  EmployeePayoutsData({required this.advanceAmount});
 
-  factory EmployeePayoutsData.fromJson(Map<String, dynamic> json) => EmployeePayoutsData(
-      employeeName: json['employee_name'] ?? '',
-      employeeId: json['employee_id'] ?? '',
-      advanceAmount: (json['advance_amount'] ?? 0.0).toDouble(),
-      balanceAdvance: (json['balance_advance'] ?? 0.0).toDouble(),
-      employeeType: json['employee_type'] ?? '',
-      workType: json['work_type'] ?? '',
-    );
+  factory EmployeePayoutsData.fromJson(Map<String, dynamic> json) =>
+      EmployeePayoutsData(
+        advanceAmount: json['advance'] ,
+      );
 }
 
 class UpdatePayoutsRequest {
-  final String employeeId;
+  final int? id;
+  final int? employeeId;
+  final int? employeeWorkType;
   final String dateOfPayouts;
+  final String advanceAmount;
+  final String paidSalary;
+  final String balanceAdvance;
+  final String payoutAmount;
+  final String unpaidSalary;
+  final String previousAdvanceAmount;
   final double deductionAdvanceAmount;
   final double payoutsAmount;
   final double? toPay;
   final String? description;
 
   UpdatePayoutsRequest({
+    this.id,
     required this.employeeId,
+    required this.employeeWorkType,
     required this.dateOfPayouts,
     required this.deductionAdvanceAmount,
     required this.payoutsAmount,
+    required this.balanceAdvance,
+    required this.unpaidSalary,
+    required this.payoutAmount,
+    required this.previousAdvanceAmount,
+    required this.paidSalary,
+    required this.advanceAmount,
     this.toPay,
     this.description,
   });
 
   Map<String, dynamic> toJson() => {
-      'employee_id': employeeId,
-      'date_of_payouts': dateOfPayouts,
-      'deduction_advance_amount': deductionAdvanceAmount,
-      'payouts_amount': payoutsAmount,
-      'to_pay': toPay,
-      'description': description,
-    };
+    'id': id,
+    'employee_id': employeeId,
+    'employee_type_id': employeeId,
+    'date_of_payouts': dateOfPayouts,
+    'advance_amount': advanceAmount,
+    'paid_salary': paidSalary,
+    'deduction_advance': deductionAdvanceAmount,
+    'balance_advance': balanceAdvance,
+    'payout_amount': payoutAmount,
+    'unpaid_salary': unpaidSalary,
+    'previous_advance_amount': previousAdvanceAmount,
+    'payouts_amount': payoutsAmount,
+    'to_pay': toPay,
+    'description': description,
+  };
 }
-
 
 class EmployeeAdvanceResponse {
   final bool status;
@@ -82,11 +72,14 @@ class EmployeeAdvanceResponse {
     this.data,
   });
 
-  factory EmployeeAdvanceResponse.fromJson(Map<String, dynamic> json) => EmployeeAdvanceResponse(
-      status: json['status'] ?? false,
-      message: json['message'] ?? '',
-      data: json['data'] != null ? EmployeeAdvanceData.fromJson(json['data']) : null,
-    );
+  factory EmployeeAdvanceResponse.fromJson(Map<String, dynamic> json) =>
+      EmployeeAdvanceResponse(
+        status: json['status'] ?? false,
+        message: json['message'] ?? '',
+        data: json['data'] != null
+            ? EmployeeAdvanceData.fromJson(json['data'])
+            : null,
+      );
 }
 
 class EmployeeAdvanceData {
@@ -104,13 +97,14 @@ class EmployeeAdvanceData {
     required this.totalAdvance,
   });
 
-  factory EmployeeAdvanceData.fromJson(Map<String, dynamic> json) => EmployeeAdvanceData(
-      employeeId: json['employee_id'] ?? '',
-      employeeName: json['employee_name'] ?? '',
-      employeeType: json['employee_type'] ?? '',
-      previousAdvance: (json['previous_advance'] ?? 0.0).toDouble(),
-      totalAdvance: (json['total_advance'] ?? 0.0).toDouble(),
-    );
+  factory EmployeeAdvanceData.fromJson(Map<String, dynamic> json) =>
+      EmployeeAdvanceData(
+        employeeId: json['employee_id'] ?? '',
+        employeeName: json['employee_name'] ?? '',
+        employeeType: json['employee_type'] ?? '',
+        previousAdvance: (json['previous_advance'] ?? 0.0).toDouble(),
+        totalAdvance: (json['total_advance'] ?? 0.0).toDouble(),
+      );
 }
 
 class UpdateAdvanceRequest {
@@ -129,12 +123,12 @@ class UpdateAdvanceRequest {
   });
 
   Map<String, dynamic> toJson() => {
-      'employee_id': employeeId,
-      'employee_type': employeeType,
-      'advance_amount': advanceAmount,
-      'total_advance': totalAdvance,
-      'description': description,
-    };
+    'employee_id': employeeId,
+    'employee_type': employeeType,
+    'advance_amount': advanceAmount,
+    'total_advance': totalAdvance,
+    'description': description,
+  };
 }
 
 class Employee {
@@ -142,17 +136,13 @@ class Employee {
   final String name;
   final String phone;
 
-  Employee({
-    required this.id,
-    required this.name,
-    required this.phone,
-  });
+  Employee({required this.id, required this.name, required this.phone});
 
   String get displayName => '$name - $phone';
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      phone: json['phone'] ?? '',
-    );
+    id: json['id'] ?? '',
+    name: json['name'] ?? '',
+    phone: json['phone'] ?? '',
+  );
 }

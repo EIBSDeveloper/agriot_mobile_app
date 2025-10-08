@@ -85,6 +85,7 @@ class CropView extends GetView<CropController> {
                 readOnly: true,
                 onTap: controller.pickLocation,
               ),
+              const SizedBox(height: 16),
               _buildMeasurementSection(),
 
              

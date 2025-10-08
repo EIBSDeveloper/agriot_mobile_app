@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
+import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/payable/pages/payables_receivables/payables_receivables_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -284,85 +285,73 @@ class VendorPurchasePage extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Date Picker
-                TextField(
-                  controller: dateController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: "date".tr,
-                    labelStyle: const TextStyle(color: Colors.black54),
-                    hintText: "dd_mm_yyyy".tr,
-                    suffixIcon: Icon(
-                      Icons.calendar_today,
-                      color: Get.theme.primaryColor,
+                InputCardStyle(
+                  child: TextField(
+                    controller: dateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "date".tr,
+                      hintText: "dd_mm_yyyy".tr,
+                      suffixIcon: Icon(
+                        Icons.calendar_today,
+                        color: Get.theme.primaryColor,
+                      ),
+                      border: InputBorder.none,
                     ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                  ),
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: Get.context!,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime.now(),
-                      // ✅ no future dates
-                      builder: (context, child) => Theme(
-                        data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
-                            primary: Get.theme.primaryColor,
-                            onPrimary: Colors.white,
-                            onSurface: Colors.black87,
-                          ),
-                          textButtonTheme: TextButtonThemeData(
-                            style: TextButton.styleFrom(
-                              foregroundColor: Get.theme.primaryColor,
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: Get.context!,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime.now(),
+                        builder: (context, child) => Theme(
+                          data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: Get.theme.primaryColor,
+                            ),
+                            textButtonTheme: TextButtonThemeData(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Get.theme.primaryColor,
+                              ),
                             ),
                           ),
+                          child: child!,
                         ),
-                        child: child!,
-                      ),
-                    );
-                    if (pickedDate != null) {
-                      dateController.text =
-                          "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-                    }
-                  },
+                      );
+                      if (pickedDate != null) {
+                        dateController.text =
+                            "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                      }
+                    },
+                  ),
                 ),
 
                 const SizedBox(height: 12),
 
                 // Amount
-                TextField(
-                  controller: amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "payment_amount".tr,
-                    labelStyle: const TextStyle(color: Colors.black54),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                InputCardStyle(
+                  child: TextField(
+                    controller: amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "payment_amount".tr,
+                      border: InputBorder.none,
+                    
                     ),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
                   ),
                 ),
                 const SizedBox(height: 12),
 
                 // Description
-                TextField(
-                  controller: descController,
-                  decoration: InputDecoration(
-                    labelText: "description".tr,
-                    labelStyle: const TextStyle(color: Colors.black54),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                InputCardStyle(
+                  child: TextField(
+                    controller: descController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      labelText: "description".tr,
+                      border: InputBorder.none,
+                     
                     ),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
                   ),
                 ),
                 const SizedBox(height: 20),

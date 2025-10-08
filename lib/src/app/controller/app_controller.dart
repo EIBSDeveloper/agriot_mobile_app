@@ -4,7 +4,7 @@ import 'package:argiot/src/app/modules/auth/model/get_otp.dart';
 import 'package:get/get.dart';
 
 class AppDataController extends GetxController {
-  RxString farmerId = '120'.obs;
+  RxString farmerId = '131'.obs;
   RxBool isManager= false.obs;
   RxString managerID= ''.obs;
   RxString emailId = ''.obs;
@@ -19,5 +19,3 @@ class AppDataController extends GetxController {
   String weatherBaseUrl = 'https://api.openweathermap.org/data/2.5/weather';
   String weatherApiKey = 'f0dd3d4a11a1446a7e29124d1911268b';
 }
-//339
-//369

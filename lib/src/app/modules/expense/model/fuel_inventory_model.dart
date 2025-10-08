@@ -8,24 +8,24 @@ class PurchaseDetailModel {
     final InventoryItems? inventoryItems;
     final dynamic quantityUnit;
     final int? status;
-    final dynamic registerNumber;
-    final dynamic ownerName;
-    final dynamic dateOfRegistration;
-    final dynamic engineNumber;
-    final dynamic chasisNumber;
+    final String? registerNumber;
+    final String? ownerName;
+    final String? dateOfRegistration;
+    final String? engineNumber;
+    final String? chasisNumber;
     final int? runningKilometer;
     final int? averageMileage;
-    final dynamic insurance;
-    final dynamic companyName;
-    final dynamic insuranceNo;
+    final bool? insurance;
+    final String? companyName;
+    final String? insuranceNo;
     final int? insuranceAmount;
-    final dynamic insuranceStartDate;
-    final dynamic insuranceEndDate;
-    final dynamic insuranceRenewalDate;
+    final String? insuranceStartDate;
+    final String? insuranceEndDate;
+    final String? insuranceRenewalDate;
     final int? fuelCapacity;
-    final dynamic warrantyStartDate;
-    final dynamic warrantyEndDate;
-    final dynamic description;
+    final String? warrantyStartDate;
+    final String? warrantyEndDate;
+    final String? description;
     final List<dynamic>? documents;
     final String? quantity;
     final String? unitType;
@@ -129,8 +129,8 @@ class PurchaseDetailModel {
 
 
 class InventoryItems {
-    final int id;
-    final String name;
+    final int? id;
+    final String? name;
 
     InventoryItems({
       required  this.id,

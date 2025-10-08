@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/modules/employee/view/widget/payouts_form_field.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:argiot/src/app/widgets/title_text.dart';
@@ -81,7 +82,7 @@ class UpdateEmployeePayoutsView
           Obx(
             () => InputCardStyle(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: DropdownButtonFormField<EmployeeTypeModel>(
+              child: DropdownButtonFormField<DrapDown>(
                 initialValue: controller.selectedEmployeeType.value,
                 items: controller.employeeTypes
                     .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
@@ -102,17 +103,20 @@ class UpdateEmployeePayoutsView
           Obx(
             () => InputCardStyle(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: DropdownButtonFormField<WorkTypeModel>(
+              child: DropdownButtonFormField<DrapDown>(
                 initialValue: controller.selectedWorkType.value,
                 items: controller.workTypes
                     .map(
-                      (e) => DropdownMenuItem<WorkTypeModel>(
+                      (e) => DropdownMenuItem<DrapDown>(
                         value: e,
                         child: Text(e.name),
                       ),
                     )
                     .toList(),
-                onChanged: (value) => controller.selectedWorkType.value = value,
+                onChanged: (value) {
+                  controller.selectedWorkType.value = value;
+                  controller.getEmployee();
+                },
                 icon: const Icon(Icons.keyboard_arrow_down_rounded),
                 decoration: const InputDecoration(
                   labelText: 'Work Type *',
@@ -123,37 +127,33 @@ class UpdateEmployeePayoutsView
             ),
           ),
           const SizedBox(height: 16),
-          InputCardStyle(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DropdownButtonFormField<String>(
-              // initialValue: controller.selectedRole.value,
-              items: ['Ravi', 'Bala']
-                  .map(
-                    (String role) => DropdownMenuItem<String>(
-                      value: role,
-                      child: Text(role.tr),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  // controller.updateRoleFilter(newValue);
-                }
-              },
-              validator: (value) => value == null ? 'Required field' : null,
-              padding: EdgeInsets.zero,
-              icon: const Icon(Icons.keyboard_arrow_down_rounded),
-              decoration: InputDecoration(
-                labelText: "${'employee'.tr} *",
-                border: InputBorder.none,
+          // Work Type
+          Obx(
+            () => InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: DropdownButtonFormField<DrapDown>(
+                initialValue: controller.selectedEmoployee.value,
+                items: controller.employee
+                    .map(
+                      (e) => DropdownMenuItem<DrapDown>(
+                        value: e,
+                        child: Text(e.name),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  controller.selectedEmoployee.value = value;
+                  controller.loadEmployeeData();
+                },
+                icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                decoration: const InputDecoration(
+                  labelText: 'Employee *',
+                  border: InputBorder.none,
+                ),
+                validator: (value) => value == null ? 'Required field' : null,
               ),
             ),
           ),
-
-          // _buildInfoRow('employee_name'.tr, data?.employeeName??""),
-          // _buildInfoRow('employee_id'.tr, data?.employeeId?),
-          // _buildInfoRow('employee_type'.tr, data?.employeeType?),
-          // _buildInfoRow('work_type'.tr, data?.workType?),
         ],
       ),
     );
@@ -183,15 +183,15 @@ class UpdateEmployeePayoutsView
       TitleText('PayoutType'.tr),
       const SizedBox(height: 16),
       InputCardStyle(
-        child: DropdownButtonFormField<String>(
+        child: DropdownButtonFormField<DrapDown>(
           initialValue: controller.payoutType.value,
-          items: ['Advance', 'Regular Payouts']
+          items: controller.payoutTypes
               .map(
-                (String role) =>
-                    DropdownMenuItem<String>(value: role, child: Text(role.tr)),
+                (e) =>
+                    DropdownMenuItem<DrapDown>(value: e, child: Text(e.name)),
               )
               .toList(),
-          onChanged: (String? newValue) {
+          onChanged: (DrapDown? newValue) {
             if (newValue != null) {
               controller.payoutType(newValue);
             }
@@ -217,7 +217,7 @@ class UpdateEmployeePayoutsView
       ),
 
       Obx(
-        () => controller.payoutType.value == 'Advance'
+        () => controller.payoutType.value!.id ==1 
             ? _buildInfoRow(
                 'Previous Advance'.tr,
                 '₹${controller.employeeData.value?.advanceAmount ?? ""}',
@@ -230,7 +230,7 @@ class UpdateEmployeePayoutsView
 
       // Deduction of Advance Amount
       Obx(
-        () => controller.payoutType.value != 'Advance'
+        () => controller.payoutType.value!.id != 1
             ? PayoutsFormField(
                 label: "${'deduction_advance_amount'.tr} *",
                 value: controller.deductionAdvanceAmount.value,
@@ -242,18 +242,18 @@ class UpdateEmployeePayoutsView
             : const SizedBox.shrink(),
       ),
 
-      Obx(
-        () => controller.payoutType.value != 'Advance'
-            ? _buildInfoRow(
-                'balance_advance'.tr,
-                '₹${controller.employeeData.value?.balanceAdvance ?? ""}',
-              )
-            : const SizedBox.shrink(),
-      ),
+      // Obx(
+      //   () => controller.payoutType.value != 'Advance'
+      //       ? _buildInfoRow(
+      //           'balance_advance'.tr,
+      //           '₹${controller.employeeData.value?.balanceAdvance ?? ""}',
+      //         )
+      //       : const SizedBox.shrink(),
+      // ),
       // const SizedBox(height: 16),
       // Payouts Amount
       Obx(
-        () => controller.payoutType.value == 'Advance'
+        () => controller.payoutType.value!.id ==0
             ? PayoutsFormField(
                 label: "${'advance_amount'.tr} *",
                 value: controller.payoutsAmount.value,
@@ -269,10 +269,18 @@ class UpdateEmployeePayoutsView
                 onChanged: controller.updatePayoutsAmount,
               ),
       ),
+      Obx(
+        () => controller.payoutType.value!.id == 0
+            ? _buildInfoRow(
+                'totel_advance'.tr,
+                '₹${((controller.employeeData.value?.advanceAmount ?? 0) + (int.tryParse(controller.payoutsAmount.value) ?? 0))}',
+              )
+            : const SizedBox(),
+      ),
 
       // To Pay
       Obx(
-        () => controller.payoutType.value != 'Advance'
+        () => controller.payoutType.value!.id != 0
             ? PayoutsFormField(
                 label: "${'to_pay'.tr} *",
                 value: controller.toPay.value,
@@ -298,16 +306,6 @@ class UpdateEmployeePayoutsView
   Widget _buildActionButtons() => Obx(
     () => Row(
       children: [
-        // Expanded(
-        //   child: OutlinedButton(
-        //     onPressed: controller.cancel,
-        //     style: OutlinedButton.styleFrom(
-        //       padding: const EdgeInsets.symmetric(vertical: 16),
-        //     ),
-        //     child: Text('cancel'.tr),
-        //   ),
-        // ),
-        // const SizedBox(width: 16),
         Expanded(
           child: ElevatedButton(
             onPressed: controller.isLoading.value
@@ -327,59 +325,5 @@ class UpdateEmployeePayoutsView
         ),
       ],
     ),
-  );
-}
-
-// Move the PayoutsFormField widget to the same file
-class PayoutsFormField extends StatelessWidget {
-  final String label;
-  final String? value;
-  final String? errorText;
-  final bool isReadOnly;
-  final TextInputType keyboardType;
-  final ValueChanged<String>? onChanged;
-  final VoidCallback? onTap;
-  final int? maxLines;
-  final String? Function(String?)? validator;
-  const PayoutsFormField({
-    super.key,
-    required this.label,
-    this.value,
-    this.errorText,
-    this.isReadOnly = false,
-    this.keyboardType = TextInputType.text,
-    this.onChanged,
-    this.onTap,
-    this.validator,
-    this.maxLines = 1,
-  });
-
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const SizedBox(height: 16),
-      InputCardStyle(
-        padding: const EdgeInsets.all(0),
-        child: TextFormField(
-          controller: TextEditingController(text: value),
-          readOnly: isReadOnly,
-          keyboardType: keyboardType,
-          maxLines: maxLines,
-          validator: validator,
-          decoration: InputDecoration(
-            errorText: errorText?.isEmpty ?? true ? null : errorText,
-            border: InputBorder.none,
-            labelText: label,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
-            ),
-          ),
-          onChanged: onChanged,
-          onTap: onTap,
-        ),
-      ),
-    ],
   );
 }

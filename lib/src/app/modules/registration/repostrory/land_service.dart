@@ -43,13 +43,13 @@ class LandService extends GetxService {
     }
   }
 
-  Future<List<AssignMangerModel>> fetchAssignManager() async {
+  Future<List<DrapDown>> fetchAssignManager() async {
     final userId = appDeta.farmerId;
     final response = await _httpService.get("/manager_by_fermer/$userId");
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body);
-      return data.map((e) => AssignMangerModel.fromJson(e)).toList();
+      return data.map((e) => DrapDown.fromJson(e)).toList();
     } else {
       throw Exception('Failed to load permissions: ${response.statusCode}');
     }

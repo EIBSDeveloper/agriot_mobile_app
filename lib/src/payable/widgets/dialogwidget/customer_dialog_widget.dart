@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
+import '../../../app/widgets/input_card_style.dart';
 import '../../controller/customer_add_controller/customer_add_controller.dart';
 import '../../pages/payables_receivables/payables_receivables_screen.dart';
 
@@ -82,81 +83,76 @@ void showPaymentBottomSheet({
               const SizedBox(height: 12),
 
               // Date picker
-              TextField(
-                controller: dateController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: "date".tr,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  suffixIcon: Icon(
-                    Icons.calendar_today,
-                    color: Get.theme.primaryColor,
+              InputCardStyle(
+                child: TextField(
+                  controller: dateController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: "date".tr,
+                    labelStyle: const TextStyle(color: Colors.black54),
+                    suffixIcon: Icon(
+                      Icons.calendar_today,
+                      color: Get.theme.primaryColor,
+                    ),
+                   
+                    border: InputBorder.none,
                   ),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: Get.context!,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime.now(), // ✅ restrict future dates
-                    builder: (context, child) => Theme(
-                      data: Theme.of(context).copyWith(
-                        colorScheme: ColorScheme.light(
-                          primary: Get.theme.primaryColor,
-                          onPrimary: Colors.white,
-                          onSurface: Colors.black87,
-                        ),
-                        textButtonTheme: TextButtonThemeData(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Get.theme.primaryColor,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: Get.context!,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime.now(), // ✅ restrict future dates
+                      builder: (context, child) => Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: ColorScheme.light(
+                            primary: Get.theme.primaryColor,
+                            onPrimary: Colors.white,
+                            onSurface: Colors.black87,
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Get.theme.primaryColor,
+                            ),
                           ),
                         ),
+                        child: child!,
                       ),
-                      child: child!,
-                    ),
-                  );
-                  if (pickedDate != null) {
-                    dateController.text =
-                        "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-                  }
-                },
+                    );
+                    if (pickedDate != null) {
+                      dateController.text =
+                          "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                    }
+                  },
+                ),
               ),
               const SizedBox(height: 12),
 
               // Amount input
-              TextField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "payment_amount".tr,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(12),
+              InputCardStyle(
+                child: TextField(
+                  controller: amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "payment_amount".tr,
+                    labelStyle: const TextStyle(color: Colors.black54),
+                  
+                    border: InputBorder.none
                   ),
                 ),
               ),
               const SizedBox(height: 12),
 
               // Description input
-              TextField(
-                controller: descController,
-                decoration: InputDecoration(
-                  labelText: "description".tr,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.circular(12),
+              InputCardStyle(
+                child: TextField(
+                  controller: descController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: "description".tr,
+                    labelStyle: const TextStyle(color: Colors.black54),
+                    
+                    border: InputBorder.none,
                   ),
                 ),
               ),

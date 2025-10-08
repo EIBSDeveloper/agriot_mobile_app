@@ -25,8 +25,9 @@ class LandController extends GetxController {
   final landIdController = TextEditingController();
   final pattaNoController = TextEditingController();
 
-  var managers = <AssignMangerModel>[].obs;
+  var managers = <DrapDown>[].obs;
   final pincodeController = TextEditingController();
+  final addressController = TextEditingController();
   final measurementController = TextEditingController();
   final locationListController = TextEditingController();
   final RxList<LatLng?> landCoordinates = <LatLng>[].obs;
@@ -43,7 +44,7 @@ class LandController extends GetxController {
   final Rx<AppDropdownItem?> selectedLandUnit = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedSoilType = Rx<AppDropdownItem?>(null);
   final Rx<AppDropdownItem?> selectedDocType = Rx<AppDropdownItem?>(null);
-  final Rx<AssignMangerModel?> selectedManger = Rx<AssignMangerModel?>(null);
+  final Rx<DrapDown?> selectedManger = Rx<DrapDown?>(null);
 
   // Location
   final RxDouble latitude = 0.0.obs;
@@ -301,6 +302,7 @@ class LandController extends GetxController {
           "soil_type": selectedSoilType.value?.id,
         "manager": selectedManger.value?.id,
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
+        "door_no": addressController.text,
         "pincode": pincodeController.text,
         "l_status": 0,
         "geo_marks": convertLatLngListToMap(landCoordinates),

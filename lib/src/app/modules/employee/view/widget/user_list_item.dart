@@ -19,7 +19,7 @@ class UserListItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Card(
+  Widget build(BuildContext context) =>user.id==0? const SizedBox(): Card(
     elevation: 1,
     margin: EdgeInsets.only(left: isIndented ? 20.0 : 0.0),
     child: InkWell(

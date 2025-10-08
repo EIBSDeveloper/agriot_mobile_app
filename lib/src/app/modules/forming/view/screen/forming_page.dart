@@ -62,7 +62,7 @@ class FormingView extends GetView<FormingController> {
                     () => LandCard(
                       key: ValueKey(
                         land.id,
-                      ), // Important for state preservation
+                      ), 
                       land: land,
                       isExpanded: controller.expandedLandId.value == land.id,
                       onExpand: () => controller.toggleExpandLand(land.id),

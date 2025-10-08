@@ -25,6 +25,8 @@ class RegLandController extends GetxController {
   final landNameController = TextEditingController();
   final pattaNoController = TextEditingController();
   final pinCode = TextEditingController();
+  
+  final addressController = TextEditingController();
   final RxBool newSurveyItems = false.obs;
   final measurementController = TextEditingController();
   final locationListController = TextEditingController();
@@ -188,6 +190,7 @@ class RegLandController extends GetxController {
           "soil_type": selectedSoilType.value?.id,
 
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
+          "door_no": addressController.text,
         "pincode": pinCode.text,
         "geo_marks": convertLatLngListToMap(landCoordinates),
         if (pattaNoController.text.isNotEmpty)

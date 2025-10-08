@@ -51,7 +51,7 @@ class LandViewPage extends GetView<LandController> {
                     child: Obx(
                       () => InputCardStyle(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: DropdownButtonFormField<AssignMangerModel>(
+                        child: DropdownButtonFormField<DrapDown>(
                           initialValue: controller.selectedManger.value,
                           icon: const Icon(Icons.keyboard_arrow_down),
                           items: controller.managers
@@ -116,6 +116,16 @@ class LandViewPage extends GetView<LandController> {
                 validator: (value) =>
                     value?.isEmpty ?? true ? 'Required field' : null,
                 keyboardType: TextInputType.number,
+              ),
+              gap,_buildTextField(
+                controller: controller.addressController,
+                label: 'Address *',
+                // inputFormatters: [
+                //   FilteringTextInputFormatter.digitsOnly,
+                //   LengthLimitingTextInputFormatter(6),
+                // ],
+              
+                // keyboardType: TextInputType.number,
               ),
               gap,
               Row(

@@ -14,7 +14,7 @@ class PayoutCard extends GetView<PayoutController> {
 
     // Calculated payout (recompute when deduction changes)
     int calculatedPayout() {
-      final deduction = pay.deduction ?? 0;
+      final deduction = pay.deductionAdvance ?? 0;
       return (pay.paidSalary - deduction).clamp(0, double.infinity).toInt();
     }
 
@@ -122,59 +122,37 @@ class PayoutCard extends GetView<PayoutController> {
                   /// Deduction field with reactive color
                   Expanded(
                     child: InputCardStyle(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "deduction".tr,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Obx(
-                              () => TextField(
-                                controller:
-                                    controller.deductionControllers[index],
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  hintText: "enter_deduction".tr,
-                                ),
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color:
-                                      controller
-                                          .deductionColors[index]
-                                          ?.value ??
-                                      Colors.black54,
-                                ),
-                                onChanged: (val) {
-                                  final entered = int.tryParse(val.trim()) ?? 0;
-                                  final adv = pay.advance ?? 0;
+                      child: Obx(
+                        () => TextField(
+                          controller: controller.deductionControllers[index],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            labelText: "deduction".tr,
+                          ),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color:
+                                controller.deductionColors[index]?.value ??
+                                Colors.black54,
+                          ),
+                          onChanged: (val) {
+                            final entered = int.tryParse(val.trim()) ?? 0;
+                            final adv = pay.advance ?? 0;
 
-                                  if (entered > adv) {
-                                    controller.deductionColors[index]?.value =
-                                        Colors.red;
-                                  } else {
-                                    controller.deductionColors[index]?.value =
-                                        Colors.black54;
-                                    pay.deduction = entered;
-                                    pay.payoutAmount = pay.paidSalary - entered;
-                                    pay.isEdited = true;
-                                    controller.advancelist.refresh();
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                            if (entered > adv) {
+                              controller.deductionColors[index]?.value =
+                                  Colors.red;
+                            } else {
+                              controller.deductionColors[index]?.value =
+                                  Colors.black54;
+                              pay.deductionAdvance = entered;
+                              pay.payoutAmount = pay.paidSalary - entered;
+                              pay.isEdited = true;
+                              controller.advancelist.refresh();
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -185,36 +163,47 @@ class PayoutCard extends GetView<PayoutController> {
                   /// Payout amount (recomputed directly)
                   Expanded(
                     child: InputCardStyle(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "payout_amount".tr,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              calculatedPayout().toString(),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
+                      child: Obx(
+                        () => TextField(
+                          controller: controller.payoutControllers[index],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            labelText: "payout_amount".tr,
+                          ),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color:
+                                controller.deductionColors[index]?.value ??
+                                Colors.black54,
+                          ),
+                          onChanged: (val) {
+                            final entered = int.tryParse(val.trim()) ?? 0;
+                            final adv = pay.advance ?? 0;
+
+                            if (entered > adv) {
+                              controller.deductionColors[index]?.value =
+                                  Colors.red;
+                            } else {
+                              controller.deductionColors[index]?.value =
+                                  Colors.black54;
+                              pay.deductionAdvance = entered;
+                              pay.payoutAmount = pay.paidSalary - entered;
+                              pay.isEdited = true;
+                              controller.advancelist.refresh();
+                            }
+                          },
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
+            ),
+            Text(
+              calculatedPayout().toString(),
+              style: const TextStyle(fontSize: 14, color: Colors.black54),
             ),
           ],
         ),

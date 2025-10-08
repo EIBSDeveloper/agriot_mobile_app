@@ -149,18 +149,7 @@ class PurchaseItemsScreen extends GetView<InventoryController> {
                     color: Colors.green.shade50,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Row(
-                    children: [
-                      // Text(
-                      // quantity.isNotEmpty?  '($quantity)  ':'',
-                      //   style: TextStyle(
-                      //     color: Colors.green.shade700,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      Icon(Icons.add, color: Colors.green.shade700),
-                    ],
-                  ),
+                  child: Icon(Icons.add, color: Colors.green.shade700),
                 ),
               ),
             ],

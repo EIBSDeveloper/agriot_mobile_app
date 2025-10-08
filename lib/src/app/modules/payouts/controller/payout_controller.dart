@@ -15,6 +15,7 @@ class PayoutController extends GetxController {
 
   // Deduction controllers mapped by index
   final Map<int, TextEditingController> deductionControllers = {};
+  final Map<int, TextEditingController> payoutControllers = {};
   // Map of deduction colors per index
   var deductionColors = <int, Rx<Color>>{}.obs;
 
@@ -30,6 +31,7 @@ class PayoutController extends GetxController {
       hasMore.value = true;
       advancelist.clear(); // clear old list
       deductionControllers.clear(); // clear old controllers
+      payoutControllers.clear(); // clear old controllers
       deductionColors.clear();
     }
 
@@ -54,9 +56,14 @@ class PayoutController extends GetxController {
         for (int idx = 0; idx < advancelist.length; idx++) {
           if (!deductionControllers.containsKey(idx)) {
             deductionControllers[idx] = TextEditingController(
-              text: (advancelist[idx].deduction ?? '').toString(),
+              text: (advancelist[idx].deductionAdvance ?? '').toString(),
             );
             deductionColors[idx] = Colors.black54.obs;
+          }
+          if (!payoutControllers.containsKey(idx)) {
+            payoutControllers[idx] = TextEditingController(
+              text: (advancelist[idx].payoutAmount ?? '').toString(),
+            );
           }
         }
       }

@@ -37,7 +37,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   child: Obx(
                     () => InputCardStyle(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: DropdownButtonFormField<RoleModel>(
+                      child: DropdownButtonFormField<DrapDown>(
                         initialValue: controller.selectedRoleType.value,
                         icon: const Icon(Icons.keyboard_arrow_down),
                         items: controller.roleTypes
@@ -135,6 +135,33 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             ),
 
+            Obx(
+              () => controller.selectedRoleType.value?.id != 0
+                  ? const SizedBox()
+                  : Column(
+                      children: [
+                        gap,
+
+                        // Mobile No
+                        InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: TextFormField(
+                            controller: controller.salaryController,
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter
+                                  .digitsOnly, 
+                            ],
+                           decoration: const InputDecoration(
+                              labelText: 'Per Hour Salary *',
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+            ),
+
             /// Gender Dropdown
             Obx(
               () => controller.selectedRoleType.value?.id != 0
@@ -143,7 +170,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                         gap,
                         InputCardStyle(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: DropdownButtonFormField<GenderModel>(
+                          child: DropdownButtonFormField<DrapDown>(
                             initialValue: controller.selectedGenderType.value,
                             icon: const Icon(Icons.keyboard_arrow_down),
                             items: controller.genderTypes
@@ -246,7 +273,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
             Obx(
               () => InputCardStyle(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: DropdownButtonFormField<EmployeeTypeModel>(
+                child: DropdownButtonFormField<DrapDown>(
                   initialValue: controller.selectedEmployeeType.value,
                   icon: const Icon(Icons.keyboard_arrow_down),
                   items: controller.employeeTypes
@@ -273,12 +300,12 @@ class CreateManagerScreen extends GetView<ManagerController> {
                         gap,
                         InputCardStyle(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: DropdownButtonFormField<WorkTypeModel>(
+                          child: DropdownButtonFormField<DrapDown>(
                             initialValue: controller.selectedWorkType.value,
                             icon: const Icon(Icons.keyboard_arrow_down),
                             items: controller.workTypes
                                 .map(
-                                  (e) => DropdownMenuItem<WorkTypeModel>(
+                                  (e) => DropdownMenuItem<DrapDown>(
                                     value: e,
                                     child: Text(e.name),
                                   ),
@@ -310,7 +337,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                     gap,
                     InputCardStyle(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: DropdownButtonFormField<AssignMangerModel>(
+                      child: DropdownButtonFormField<DrapDown>(
                         initialValue: controller.selectedManager.value,
                         icon: const Icon(Icons.keyboard_arrow_down),
                         items: controller.managers

@@ -80,11 +80,11 @@ Widget payoutCard(PayoutModel pay) => Card(
         /// Profile Image
         pay.image != null
             ? CircleAvatar(
-                radius: 35,
+                radius: 25,
                 backgroundImage: NetworkImage(pay.image!),
               )
             : CircleAvatar(
-                radius: 35,
+                radius: 25,
                 backgroundColor: Get.theme.colorScheme.primary.withAlpha(80),
                 child: Text(
                   pay.name.isNotEmpty ? pay.name[0].toUpperCase() : "?",

@@ -59,7 +59,7 @@ class EmployeeModel {
     "created_day": DateFormat("yyyy-MM-dd").format(DateTime.now()),
     "login_time": loginTime,
     "logout_time": logoutTime,
-    "salary": salary ?? 0.0,
+    "salary": salary != null && salary!.isNotEmpty ? salary : 0.0,
     "salary_per_hour": salaryPerHour ?? 0,
     "salary_status": salaryStatus,
     "isEdited": isEdited,

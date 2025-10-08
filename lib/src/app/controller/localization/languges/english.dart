@@ -35,6 +35,7 @@ class English {
     "finance_graph": "Finance Graph",
     "cancel": "Cancel",
     "save": "Save",
+    "totel_advance": "Totel Advance",
     "receivables": "Receivables",
     "payables": "Payables",
     "humidity_percentage": "Humidity:",

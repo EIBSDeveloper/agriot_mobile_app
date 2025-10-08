@@ -2212,7 +2212,8 @@ def manage_farmer(request, id=None):
                             name="New Farmer",
                             type="Farmer Management",
                             message=notification_message,
-                            is_read=False
+                            is_read=False,   
+                            created_at=timezone.now()
                         )
                         
                         # Send notification email if email exists
@@ -3370,7 +3371,7 @@ def manage_vendor(request, id=None):
         type="Vendor Created",
         message=f"Your Vendor '{vendor.name}' has been Created.",
         created_at=timezone.now(),
-        is_read=False
+        is_read=False,   
     )
 
     return Response(vendor_details, status=status.HTTP_201_CREATED)
@@ -3595,7 +3596,8 @@ def update_vendor(request, id=None):
         type="Vendor Updated",
         message=notification_message,
         created_at=timezone.now(),
-        is_read=False
+        is_read=False,
+           
     )
 
     return Response(vendor_details, status=status.HTTP_200_OK)
@@ -7716,13 +7718,14 @@ def add_expense(request, farmer_id):
 
         if amount != 0 and paidAmount  != 0  and amount != paidAmount and vendor_id:
             if paidAmount > amount:  # Payables
+                new_var = float(paidAmount) - float(amount)
                 outstanding = Outstanding.objects.create(
                     farmer= farmer,
                     vendor = vendor,
                     expense=expense,
                     balance= amount,
                     paid= paidAmount,
-                    to_pay= float(paidAmount) - float(amount),
+                    to_pay= new_var,
                     paid_date=created_day,
                     total_paid=paidAmount,
                     identify=1,
@@ -7791,7 +7794,7 @@ def add_expense(request, farmer_id):
             farmer=farmer,
             name='Expense',
             message= 'Expense added successfully',
-            type='Expence'
+            type='Expence',   created_at=timezone.now()
         )
         if file_data:
             for doc_data in file_data:
@@ -12366,10 +12369,10 @@ def get_otp(request):
             otp_sent = True
 
         OTP_STORAGE[mobile_number or email] = otp_value
-        # if mobile_number:
-        #     send_otp_sms(mobile_number, otp_value)
-        # else:
-        #     send_otp_email(email, otp_value)
+        if mobile_number:
+            send_otp_sms(mobile_number, otp_value)
+        else:
+            send_otp_email(email, otp_value)
 
         return Response({
             "message": "Existing Farmer",
@@ -12419,10 +12422,10 @@ def get_otp(request):
         )
         OTP_STORAGE[mobile_number or email] = otp_value
 
-        # if mobile_number:
-        #     send_otp_sms(mobile_number, otp_value)
-        # else:
-        #     send_otp_email(email, otp_value)
+        if mobile_number:
+            send_otp_sms(mobile_number, otp_value)
+        else:
+            send_otp_email(email, otp_value)
 
     return Response({
         "message": "New Farmer",
@@ -12475,7 +12478,8 @@ def create_default_subscription(farmer):
             farmer=farmer,
             name="New Farmer Created",
             type="Creation",
-            message=f"A new farmer named {farmer.name} has been created.",
+            message=f"A new farmer named {farmer.name} has been created.",   
+            created_at=timezone.now()
         )
         notification.save()
 
@@ -14065,7 +14069,8 @@ def new_task(request):
             name="New Task Created",
             type="Task Management",
             message=notification_message,
-            is_read=False  # Notification is unread by default
+            is_read=False , # Notification is unread by default,
+               created_at=timezone.now()
         )
 
         return Response(schedules, status=status.HTTP_201_CREATED)           
@@ -16527,7 +16532,8 @@ def manage_my_land(request):
         name="Land Added",
         type="Land Management",
         message=notification_message,
-        is_read=False
+        is_read=False,
+         created_at=timezone.now()
     )
 
     # Process survey details
@@ -16821,7 +16827,8 @@ def update_my_schedule(request, id):
         name="Schedule Updated",
         type="Task Management",
         message=notification_message,
-        is_read=False  # Notification is unread by default
+        is_read=False , # Notification is unread by default
+           created_at=timezone.now()
     )
  
     # Serialize and return the updated schedule
@@ -21398,9 +21405,9 @@ def add_pesticides(request, farmer_id):
             type='Pesticide'
         )
 
-    # --- Validate required fields ---
+    # --- Validate required fields --- 
     required_fields = [
-        'date_of_purchase', 'inventory_type', 'inventory_category',
+        'date_of_consumption', 'inventory_type', 'inventory_category',
         'inventory_items',  'quantity', 'purchase_amount', 'paid_amount'
     ]
     missing_fields = [field for field in required_fields if not data.get(field)]
@@ -40471,11 +40478,11 @@ def get_inventory_purchase_list(request, farmer_id, inventory_type_id, inventory
     def format_purchase(purchase):
         result = {
             'id': purchase.id,
-            'date_of_consumption': str(purchase.date_of_consumption or "N/A"),
+            'date_of_consumption': str(purchase.date_of_consumption or ""),
             'purchase_amount': int(purchase.purchase_amount or 0),
             'vendor': {
                 'id': purchase.vendor.id if purchase.vendor else None,
-                'name': purchase.vendor.name if purchase.vendor else "Unknown",
+                'name': purchase.vendor.name if purchase.vendor else "Other vendor",
             }
         }
         if has_quantity:
@@ -40532,7 +40539,7 @@ def get_inventory_consumption_list(request, farmer_id, inventory_type_id, invent
         {
             'id': int(inv.id),
             'quantity': int(inv.quantity_utilized) if inv.quantity_utilized is not None else None,
-            'date_of_consumption': str(inv.date_of_consumption or "N/A"),
+            'date_of_consumption': str(inv.date_of_consumption or ""),
             'unit_type': unit_type,
             'start_kilometer': float(inv.start_kilometer) if inv.start_kilometer is not None else None,
             'end_kilometer': float(inv.end_kilometer) if inv.end_kilometer is not None else None,
@@ -40596,23 +40603,23 @@ def get_inventory_purchase_details(request, farmer_id, inventory_type_id, id):
             "id": item.inventory_items.id if item.inventory_items else None,
             "name": item.inventory_items.get_translated_value("name", language_code) if item.inventory_items else None,
         },
-        "quantity_unit": (item.quantity_unit.get_translated_value("name", language_code) if hasattr(item, 'quantity_unit') and item.quantity_unit else None ),
+        "quantity_unit": item.quantity_unit.name if hasattr(item, 'quantity_unit') and item.quantity_unit else None ,
         "status": item.status if hasattr(item, "status") else None,
         "register_number": item.register_number if hasattr(item, "register_number") and item.register_number else None,
         "owner_name": item.get_translated_value("owner_name", language_code) if hasattr(item, "owner_name") and item.owner_name else None,
         "date_of_registration": str(item.date_of_registration) if hasattr(item, "date_of_registration") and item.date_of_registration else None,
         "engine_number": item.engine_number if hasattr(item, "engine_number") and item.engine_number else None,
         "chasis_number": item.chasis_number if hasattr(item, "chasis_number") and item.chasis_number else None,
-        "running_kilometer": int(item.running_kilometer) if hasattr(item, "running_kilometer") and item.running_kilometer else 0,
-        "average_mileage": int(item.average_mileage) if hasattr(item, "average_mileage") and item.average_mileage else 0,
+        "running_kilometer": int(item.running_kilometer) if hasattr(item, "running_kilometer") and item.running_kilometer else None,
+        "average_mileage": int(item.average_mileage) if hasattr(item, "average_mileage") and item.average_mileage else None,
         "insurance": item.insurance if hasattr(item, "insurance") else None,
         "company_name": item.get_translated_value("company_name", language_code) if hasattr(item, "company_name") and item.company_name else None,
         "insurance_no": item.insurance_no if hasattr(item, "insurance_no") and item.insurance_no else None,
-        "insurance_amount": int(item.insurance_amount) if hasattr(item, "insurance_amount") and item.insurance_amount else 0,
+        "insurance_amount": int(item.insurance_amount) if hasattr(item, "insurance_amount") and item.insurance_amount else None,
         "insurance_start_date": str(item.insurance_start_date) if hasattr(item, "insurance_start_date") and item.insurance_start_date else None,
         "insurance_end_date": str(item.insurance_end_date) if hasattr(item, "insurance_end_date") and item.insurance_end_date else None,
         "insurance_renewal_date": str(item.insurance_renewal_date) if hasattr(item, "insurance_renewal_date") and item.insurance_renewal_date else None,
-        "fuel_capacity": int(item.fuel_capacity) if hasattr(item, "fuel_capacity") and item.fuel_capacity else 0,
+        "fuel_capacity": int(item.fuel_capacity) if hasattr(item, "fuel_capacity") and item.fuel_capacity else None,
         "warranty_start_date": str(item.warranty_start_date) if hasattr(item, "warranty_start_date") and item.warranty_start_date else None,
         "warranty_end_date": str(item.warranty_end_date) if hasattr(item, "warranty_end_date") and item.warranty_end_date else None,
         "description": item.description if item.description else None,
@@ -40649,16 +40656,17 @@ def get_inventory_purchase_details(request, farmer_id, inventory_type_id, id):
 @extend_schema(  operation_id="02_get_inventory_cusumption_details",tags=["Inventory Cusumption"],)
 @api_view(['GET'])
 def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
-    # Validate inventory type early
+    # Map inventory_type_id to ( has_quantity, unit,docModel)
     inventory_map = {
-        1: (False, "", MyVehicleDocuments),
-        2: (False, "hrs", MyMachineryDocuments),
-        3: (False, "hrs", MyToolsDocuments),
-        4: (True, "kg", MyPesticidesDocuments),
-        5: (True, "kg", MyFertilizersDocuments),
-        6: (True, "liter", MyFuelDocuments),
-        7: (True, "kg", MyseedsDocuments),
+        1: ( False, "", MyVehicleDocuments, 'vehicle_id'),  
+        2: ( False, "", MyMachineryDocuments, 'machinary_id'),   
+        3: (False, "", MyToolsDocuments, 'tools_id'),   
+        4: ( True, "kg", MyPesticidesDocuments, 'pest_id'),   
+        5: ( True, "kg", MyFertilizersDocuments, 'fertilizers_id'),  
+        6: ( True, "liter", MyFuelDocuments, 'fuel_id'),
+        7: ( True, "kg", MyseedsDocuments, 'seeds_id'),   
     }
+
 
     inventory_type_data = inventory_map.get(inventory_type_id)
     if not inventory_type_data:
@@ -40667,7 +40675,7 @@ def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    has_quantity, unit_type, DocumentModel = inventory_type_data
+    has_quantity, unit_type, documentModel, documentModelGet = inventory_type_data
 
     # Get inventory object with related fields
     inventory = MyInventory.objects.select_related(
@@ -40686,7 +40694,7 @@ def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
     def safe_translated(obj, attr):
         return obj.get_translated_value(attr, language_code) if obj else None
 
-    response_data = {
+    data = {
         'id': inventory.id,
         'quantity': int(inventory.quantity_utilized) if inventory.quantity_utilized else None,
         'date_of_consumption': str(inventory.date_of_consumption) if inventory.date_of_consumption else None,
@@ -40709,24 +40717,25 @@ def get_inventory_cusumption_details(request, farmer_id, inventory_type_id, id):
     }
 
     # Group documents by file_type
-    documents = DocumentModel.objects.filter(fuel=inventory.fuel_purchase).select_related('file_type')
-    grouped_documents = defaultdict(lambda: {'id': None, 'name': '', 'documents': []})
-
-    for doc in documents:
-        file_type = safe_translated(doc.file_type, "name") or "Unknown"
-        file_type_id = getattr(doc.file_type, 'id', None)
-        document_url = request.build_absolute_uri(f'/SuperAdmin{doc.document.url}') if doc.document else ""
-
-        grouped_documents[file_type]['id'] = file_type_id
-        grouped_documents[file_type]['name'] = file_type
-        grouped_documents[file_type]['documents'].append({
+    machinery_documents = documentModel.objects.filter(**{documentModelGet: inventory.id})
+    for doc in machinery_documents:
+        file_type = doc.file_type.get_translated_value("name", language_code) if doc.file_type else "Unknown"
+        file_type_id = doc.file_type.id if doc.file_type else None
+        document_data = {
             'id': doc.id,
-            'document': document_url,
-        })
+            'document': request.build_absolute_uri(f'/SuperAdmin{doc.document.url}' if doc.document else doc.document.url) if doc.document else "",
+        }
 
-    response_data['documents'] = list(grouped_documents.values())
+        # Group documents by file_type
+        if file_type not in data['documents']:
+            data['documents'][file_type] = {
+                'id': file_type_id,
+                'name': file_type,
+                'documents': []
+            }
+        data['documents'][file_type]['documents'].append(document_data)
 
-    return Response(response_data, status=status.HTTP_200_OK)
+    return Response(data, status=status.HTTP_200_OK)
 
 @extend_schema( parameters=[OpenApiParameter(name="page", type=int, location=OpenApiParameter.QUERY),],tags=["Customer Outstanding"])
 @api_view(['GET'])
@@ -41272,7 +41281,7 @@ def get_manager_user_detail(request, manager_id):
 
 @extend_schema(
     operation_id="02_employee_types",
-    tags=["Employee"],
+    tags=["Dropdown"],
 )
 @api_view(['GET'])
 def get_employee_types(request):
@@ -41295,7 +41304,7 @@ def get_employee_types(request):
 
 @extend_schema(
     operation_id="02_manageUser_role",
-    tags=["Employee"],
+    tags=["Dropdown"],
 )
 @api_view(['GET'])
 def get_manager_roals(request):
@@ -41313,7 +41322,7 @@ def get_manager_roals(request):
     ]
     return Response(data, status=status.HTTP_200_OK)
 
-@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@extend_schema(operation_id="02_genders",tags=["Dropdown"],)
 @api_view(['GET'])
 def get_genders(request):
     lang = request.GET.get('lang', 'en')  
@@ -41330,7 +41339,7 @@ def get_genders(request):
     ]
     return Response(data, status=status.HTTP_200_OK)
 
-@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@extend_schema(operation_id="02_genders",tags=["Dropdown"],)
 @api_view(['GET'])
 def get_employe_wotk_type(request):
     lang = request.GET.get('lang', 'en')  
@@ -41347,7 +41356,7 @@ def get_employe_wotk_type(request):
     ]
     return Response(data, status=status.HTTP_200_OK)
 
-@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@extend_schema(operation_id="02_genders",tags=["Dropdown"],)
 @api_view(['GET'])
 def get_manager_by_fermer(request,farmer_id):
     manager = ManagerUser.objects.filter(farmer=farmer_id,status=0).only("id", "name")
@@ -41362,19 +41371,48 @@ def get_manager_by_fermer(request,farmer_id):
     ]
     return Response(data, status=status.HTTP_200_OK)
 
-@extend_schema(operation_id="02_genders",tags=["Genders"],)
+@extend_schema(
+    operation_id="02_employee",
+    tags=["Dropdown"],
+    parameters=[
+        OpenApiParameter(name='employee_type', description="Filter by employee type ID", type=int, required=False),
+        OpenApiParameter(name='work_type', description="Filter by work type ID", type=int, required=False),
+    ],
+)
 @api_view(['GET'])
-def get_employee_by_fermer(request,farmer_id):
-    manager = Employee.objects.filter(farmer=farmer_id,status=0).only("id", "name","advance")
-    if not manager.exists():
+def get_employee_by_fermer(request, farmer_id):
+    # Base queryset
+    employees = Employee.objects.filter(farmer=farmer_id, status=0).only("id", "name", "advance")
+
+    # Query parameters
+    employee_type = request.query_params.get('employee_type')
+    work_type = request.query_params.get('work_type')
+
+    # Apply filters if provided
+    if employee_type:
+        employees = employees.filter(employee_type_id=employee_type)
+    if work_type:
+        employees = employees.filter(work_type_id=work_type)
+
+    # Handle empty result
+    if not employees.exists():
         return Response(
-            {"error": "Employee not found", "message": "No Employee found."},
-            status=status.HTTP_404_NOT_FOUND )
+            {"error": "Employee not found", "message": "No employees found for the given filters."},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Serialize response
     data = [
-        {"id": e.id, "name": e.name,"advance": e.advance}
-        for e in manager
+        {
+            "id": e.id,
+            "name": e.name,
+            "advance": e.advance,
+            "salary": e.salary,
+        }
+        for e in employees
     ]
     return Response(data, status=status.HTTP_200_OK)
+
 
 @api_view(['GET'])
 def get_permissions_list(request):
@@ -41630,6 +41668,7 @@ def create_or_update_employee_or_manager(request):
                 employee.longitude = data.get("longitude", employee.longitude)
                 employee.door_no = data.get("address", employee.door_no)
                 employee.pincode = data.get("pincode", employee.pincode)
+                employee.salary = data.get("salary", employee.salary)
                 employee.description = data.get("description", employee.description)
                 employee.status = data.get("status", employee.status)
                 employee.save()
@@ -41646,6 +41685,7 @@ def create_or_update_employee_or_manager(request):
                     employee_type_id=data.get("employee_type"),
                     locations=data.get("locations"),
                     latitude=data.get("latitude"),
+                    salary=data.get("salary"),
                     longitude=data.get("longitude"),
                     door_no=data.get("address"),
                     pincode=data.get("pincode"),
@@ -41969,30 +42009,28 @@ def get_sales_list(request, farmer_id, time_period):
 
     return Response(list(page_obj.object_list), status=status.HTTP_200_OK)
 
-
+@api_view(["GET"])
 @extend_schema(
-     parameters=[
+    parameters=[
         OpenApiParameter(name='page', description="Page number", type=int, required=False),
         OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
         OpenApiParameter(name='search_param', description="Search Param", type=str, required=False),
-        OpenApiParameter(name='Manager_param', description="Manager ID", type=int, required=False),
+        OpenApiParameter(name='manager_id', description="Manager ID", type=int, required=False),  # fixed name mismatch
     ]
 )
-@api_view(["GET"])
-def get_employee_list_grouped_by_manager(request,farmer_id):
+def get_employee_list_grouped_by_manager(request, farmer_id):
     """
-    Get Employee List grouped by Manager with pagination, search, and manager filter.
+    Get Employee List grouped by Manager, plus unassigned employees.
     """
     try:
         page = int(request.GET.get("page", 1))
         page_size = int(request.GET.get("page_size", 10))
-        search = request.GET.get("search", "").strip()
+        search = request.GET.get("search_param", "").strip()
         manager_id = request.GET.get("manager_id")
 
-        # Managers base queryset
-        managers_qs = ManagerUser.objects.filter(farmer= farmer_id).only("id", "name", "mobile_no", "email","address")
+        # Managers filtered by farmer
+        managers_qs = ManagerUser.objects.filter(farmer=farmer_id).only("id", "name", "mobile_no", "email", "address")
 
-        # Search filter (manager-level)
         if search:
             managers_qs = managers_qs.filter(
                 Q(name__icontains=search) |
@@ -42001,14 +42039,12 @@ def get_employee_list_grouped_by_manager(request,farmer_id):
                 Q(employee_set__mobile_no__icontains=search)
             ).distinct()
 
-        # Filter by specific manager
         if manager_id:
             managers_qs = managers_qs.filter(id=manager_id)
 
-        # Prefetch only needed employee fields
         managers_qs = managers_qs.prefetch_related(
             Prefetch("employee_set", queryset=Employee.objects.only(
-                "id", "name", "mobile_no", "employee_type_id", "work_type_id", "status","door_no"
+                "id", "name", "mobile_no", "employee_type_id", "work_type_id", "status", "door_no"
             ))
         )
 
@@ -42016,12 +42052,32 @@ def get_employee_list_grouped_by_manager(request,farmer_id):
         page_obj = paginator.get_page(page)
 
         result = []
+
         for manager in page_obj.object_list:
             employees = EmployeeSerializer(manager.employee_set.all(), many=True).data
             result.append({
                 "manager": ManagerSerializer(manager).data,
                 "employees": employees
             })
+
+        # Add employees with no manager
+        unassigned_employees_qs = Employee.objects.filter(
+            farmer=farmer_id,
+            manager__isnull=True
+        ).only("id", "name", "mobile_no", "employee_type_id", "work_type_id", "status", "door_no")
+
+        if search:
+            unassigned_employees_qs = unassigned_employees_qs.filter(
+                Q(name__icontains=search) |
+                Q(mobile_no__icontains=search)
+            )
+
+        unassigned_employees = EmployeeSerializer(unassigned_employees_qs, many=True).data
+
+        result.append({
+            "manager": None,
+            "employees": unassigned_employees
+        })
 
         return Response(result, status=status.HTTP_200_OK)
 
@@ -42129,7 +42185,7 @@ def get_manager_detail(request, manager_id):
 
 
 @api_view(["POST"])
-def add_edit_employee_advance(request):
+def add_edit_employee_advance(request,farmer_id):
     """
     Add or Edit Employee Advance
     - If `id` present -> update
@@ -42138,7 +42194,7 @@ def add_edit_employee_advance(request):
     try:
         data = request.data
         advance_id = data.get("id")
-        farmer_id = data.get("farmer_id")
+
         employee_id = data.get("employee_id")
         emp_type_id = data.get("employee_type_id")
 
@@ -42151,10 +42207,7 @@ def add_edit_employee_advance(request):
             advance.advance_amount = data.get("advance_amount", advance.advance_amount)
             advance.previous_advance_amount = data.get("previous_advance_amount", advance.previous_advance_amount)
             advance.description = data.get("description", advance.description)
-            advance.created_day = data.get("created_day", advance.created_day)
-            advance.status = data.get("status", advance.status)
             advance.updated_at = timezone.now()
-            advance.updated_by_id = data.get("updated_by")
             advance.save()
             return Response({"message": "Employee advance updated", "id": advance.id}, status=status.HTTP_200_OK)
 
@@ -42166,19 +42219,19 @@ def add_edit_employee_advance(request):
                 advance_amount=data.get("advance_amount", 0),
                 previous_advance_amount=data.get("previous_advance_amount", 0),
                 description=data.get("description"),
-                created_day=data.get("created_day"),
-                status=data.get("status", 1),
                 created_at=timezone.now(),
-                created_by_id=data.get("created_by")
             )
-            return Response({"message": "Employee advance created", "id": advance.id}, status=status.HTTP_201_CREATED)
+            employee.advance =data.get("advance_amount", 0)
+            employee.save()
+
+            return Response({"message": "Employee advance created", "id": employee.id}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])
-def add_edit_employee_payout(request):
+def add_edit_employee_payout(request,farmer_id):
     """
     Add or Edit Employee Payouts
     - If `id` present -> update
@@ -42187,7 +42240,6 @@ def add_edit_employee_payout(request):
     try:
         data = request.data
         payout_id = data.get("id")
-        farmer_id = data.get("farmer_id")
         employee_id = data.get("employee_id")
 
         farmer = Farmer.objects.filter(id=farmer_id).first()
@@ -42203,10 +42255,7 @@ def add_edit_employee_payout(request):
             payout.payout_amount = data.get("payout_amount", payout.payout_amount)
             payout.topay = data.get("topay", payout.topay)
             payout.description = data.get("description", payout.description)
-            payout.created_day = data.get("created_day", payout.created_day)
-            payout.status = data.get("status", payout.status)
-            payout.updated_at = timezone.now()
-            payout.updated_by_id = data.get("updated_by")
+            payout.updated_at = data.get("date")
             payout.save()
             return Response({"message": "Employee payout updated", "id": payout.id}, status=status.HTTP_200_OK)
 
@@ -42222,15 +42271,91 @@ def add_edit_employee_payout(request):
                 payout_amount=data.get("payout_amount", 0),
                 topay=data.get("topay", 0),
                 description=data.get("description"),
-                created_day=data.get("created_day"),
-                status=data.get("status", 1),
-                created_at=timezone.now(),
-                created_by_id=data.get("created_by")
+                created_at=data.get("date"),
             )
             return Response({"message": "Employee payout created", "id": payout.id}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+from datetime import datetime
+from django.utils.dateparse import parse_date
+
+@api_view(["POST"])
+def bulk_add_employee_payouts(request,farmer_id):
+    """
+    Bulk Add or Update Employee Payouts using update_or_create
+    """
+    try:
+        payouts_data = request.data
+
+        farmer = Farmer.objects.filter(id=farmer_id).first()
+        if not farmer:
+            return Response({"error": "Invalid farmer_id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        created = []
+        updated = []
+
+        for payout_data in payouts_data:
+            employee_id = payout_data.get("employee_id")
+            employee = Employee.objects.filter(id=employee_id).first()
+            if not employee:
+                continue 
+
+            # Parse date
+            payout_date = payout_data.get("date")
+            if not payout_date:
+                continue  
+            try:
+                today = parse_date(payout_date)
+                if not today:
+                    today = datetime.strptime(payout_date, "%Y-%m-%d").date()
+            except Exception:
+                continue 
+
+            # Extract values with defaults
+            paid_salary = payout_data.get("paid_salary", 0)
+            unpaid_salary = payout_data.get("unpaid_salary", 0)
+            advance = payout_data.get("advance_amount", 0)
+            deduction_advance = payout_data.get("deduction_advance", 0)
+            balance_advance = payout_data.get("balance_advance", 0)
+            payout_amount = payout_data.get("payout_amount", 0)
+            topay = payout_data.get("topay", 0)
+            description = payout_data.get("description", "")
+            date = payout_data.get("date", datetime.now())
+
+            # Update or create
+            payout, was_created = EmployeePayouts.objects.update_or_create(
+                farmer=farmer,
+                employee=employee,
+                created_day=today,
+                defaults={
+                    'paid_salary': paid_salary,
+                    'unpaid_salary': unpaid_salary,
+                    'advance_amount': advance,
+                    'deduction_advance': deduction_advance,
+                    'balance_advance': balance_advance,
+                    'payout_amount': payout_amount,
+                    'topay': topay,
+                    'description': description,
+                    'created_at':date
+                }
+            )
+
+            if was_created:
+                created.append(payout.id)
+            else:
+                updated.append(payout.id)
+
+        return Response({
+            "message": "Bulk employee payouts processed",
+            "created_ids": created,
+            "updated_ids": updated
+        }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 # -------------------- Employee Payouts --------------------
@@ -42515,17 +42640,30 @@ def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
 
 
 
-@extend_schema(operation_id="mail",tags=["mail"],)
-@api_view(['Get'])
-def myMail(request,):
-    try:
-        send_welcome_email('bala@gmail.com', "namefarmer", 'bala@gmail.com', "9608080510")
 
-    except Exception as e:
-        return Response("response_data11", status=200)
-    
-    return Response("response_data", status=200)
+@extend_schema(
+    parameters=[
+        OpenApiParameter(name="employee_id", type=int, location=OpenApiParameter.PATH),
+    ],
+    responses={200: dict},
+    tags=["Employee Management"]
+)
+@api_view(['GET'])
+def get_employee_payout_details(request, employee_id):
+    employee = get_object_or_404(Employee, id=employee_id)
+    data = {
+        "id": employee.id,
+        "name": employee.name,
+        "mobile_no": employee.mobile_no,
+        "employee_type": employee.employee_type.name if employee.employee_type else None,
+        "work_type": employee.work_type.name if employee.work_type else None,
+        "salary": int(employee.salary) if employee.salary else 0,
+        "advance": int(employee.advance) if employee.advance else 0,
+        "topay": int(employee.topay) if employee.topay else 0, 
+        "status": employee.status,
+    }
 
+    return Response(data, status=status.HTTP_200_OK)
 
 
 

@@ -2,11 +2,9 @@ import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/attendence/model/attendencemodel.dart';
 import 'package:argiot/src/app/modules/attendence/repository/attendence_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import '../../../service/utils/pop_messages.dart';
 
 final AppDataController appDeta = Get.put(AppDataController());
 

@@ -2,7 +2,6 @@ import 'package:argiot/src/app/modules/attendence/controller/attendence_controll
 import 'package:argiot/src/app/modules/attendence/repository/attendence_repository.dart';
 import 'package:get/get.dart';
 
-import '../controller/attendence_add_controller.dart';
 
 class AttendenceBinding extends Bindings {
   @override

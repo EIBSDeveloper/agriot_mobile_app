@@ -1,7 +1,6 @@
 import 'package:argiot/src/app/modules/employee/view/widget/payouts_form_field.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
-import 'package:argiot/src/app/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

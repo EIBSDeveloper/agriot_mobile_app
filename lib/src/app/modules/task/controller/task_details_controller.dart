@@ -1,7 +1,4 @@
-// lib/app/modules/task/models/task_model.dart
-
 import 'package:argiot/src/app/modules/task/model/activity_model.dart';
-import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/modules/task/model/task_details.dart';
 import 'package:argiot/src/app/modules/task/repostory/task_repository.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
@@ -21,35 +18,30 @@ class TaskDetailsController extends GetxController {
   final RxString errorMessage = ''.obs;
   int taskId = 0;
   final formKey = GlobalKey<FormState>();
-  final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;
   final Rx<ActivityModel> selectedActivityType = ActivityModel(
     id: 0,
     name: '',
   ).obs;
 
   final RxList<ActivityModel> activity = <ActivityModel>[].obs;
-  final RxList<CropModel> crop = <CropModel>[].obs;
   final Rx<DateTime> scheduleDate = DateTime.now().obs;
   final RxString description = ''.obs;
   final RxBool isLoadingEdit = false.obs;
 
   Rx<TaskTypes> selectedValue = TaskTypes.waiting.obs;
-final statusList = TaskTypes.values.whereMap(
-  (task) => task == TaskTypes.all
-      ? null
-      : TaskTypesDropdownItem(task: task, name: getTaskName(task)),
-).toList();
-
+  final statusList = TaskTypes.values
+      .whereMap(
+        (task) => task == TaskTypes.all
+            ? null
+            : TaskTypesDropdownItem(task: task, name: getTaskName(task)),
+      )
+      .toList();
 
   @override
   void onInit() {
     super.onInit();
     taskId = Get.arguments['taskId'];
     fetchTaskDetails();
-  }
-
-  void changeCrop(CropModel crop) {
-    selectedCropType.value = crop;
   }
 
   void changeActivity(ActivityModel activity) {
@@ -69,15 +61,6 @@ final statusList = TaskTypes.values.whereMap(
 
       final activityList = await _taskRepository.getActivityTypes();
       activity.assignAll(activityList);
-
-      final cropList = await _taskRepository.getCropList();
-      crop.assignAll(cropList);
-      if (cropList.isNotEmpty) {
-        selectedCropType.value = cropList.firstWhere(
-          (e) => e.id == fetchedTask.myCrop.id,
-          orElse: () => cropList.first,
-        );
-      }
 
       if (activityList.isNotEmpty) {
         selectedActivityType.value = activityList.firstWhere(
@@ -108,7 +91,7 @@ final statusList = TaskTypes.values.whereMap(
     try {
       isLoading(true);
       await _taskRepository.addComment(taskId, comment);
-      await fetchTaskDetails(); // Refresh task details
+      await fetchTaskDetails();
     } catch (e) {
       errorMessage(e.toString());
     } finally {
@@ -123,12 +106,9 @@ final statusList = TaskTypes.values.whereMap(
       isLoading(true);
       await _taskRepository.markTaskCompleted(
         taskId,
-        task.value!.myCrop.id,
-        task.value!.startDate,
-        task.value!.description,
         selectedValue.value,
       );
-      await fetchTaskDetails(); // Refresh task details
+      await fetchTaskDetails();
     } catch (e) {
       errorMessage(e.toString());
     } finally {
@@ -139,10 +119,6 @@ final statusList = TaskTypes.values.whereMap(
   void prepareEditFields() {
     final task = this.task.value;
     if (task != null) {
-      selectedCropType.value = CropModel(
-        id: task.myCrop.id,
-        name: task.myCrop.name,
-      );
       selectedActivityType.value = ActivityModel(
         id: task.scheduleActivityType.id,
         name: task.scheduleActivityType.name,
@@ -152,7 +128,6 @@ final statusList = TaskTypes.values.whereMap(
     }
   }
 
-
   Future<void> updateTask(int taskId) async {
     if (!formKey.currentState!.validate()) return;
 
@@ -160,9 +135,9 @@ final statusList = TaskTypes.values.whereMap(
       isLoadingEdit(true);
       final response = await _taskRepository.updateTask(
         id: taskId,
-        myCrop: selectedCropType.value.id,
+
         startDate: scheduleDate.value,
-        activityType:selectedActivityType.value.id ,
+        activityType: selectedActivityType.value.id,
         description: description.value,
         scheduleStatus: getTaskId(task.value?.status ?? TaskTypes.completed),
       );

@@ -61,10 +61,20 @@ class KycView extends GetView<KycController> {
               ),
             ],
           ),
-          gap,
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              gap,
+              _buildTextField(
+                controller: controller.locationController,
+                label: '${'location_coordinates'.tr} *',
+                validator: (value) =>
+                    value!.isEmpty ? 'required_field'.tr : null,
+                readOnly: true,
+                onTap: controller.pickLocation,
+              ),
+              gap,
               _buildTextField(
                 controller: controller.pincodeController,
                 label: '${'pincode'.tr} *',
@@ -78,15 +88,6 @@ class KycView extends GetView<KycController> {
                 keyboardType: TextInputType.number,
               ),
 
-              gap,
-              _buildTextField(
-                controller: controller.locationController,
-                label: '${'location_coordinates'.tr} *',
-                validator: (value) =>
-                    value!.isEmpty ? 'required_field'.tr : null,
-                readOnly: true,
-                onTap: controller.pickLocation,
-              ),
               gap,
               _buildTextField(
                 controller: controller.doorNoController,

@@ -42,10 +42,8 @@ class TaskRepository {
     required int id,
     required int scheduleStatus,
   }) async {
-   
     try {
       final response = await _httpService.post('/update_schedule_status/$id/', {
-      
         'schedule_status': scheduleStatus,
       });
       return json.decode(response.body);
@@ -54,10 +52,8 @@ class TaskRepository {
     }
   }
 
-
   Future<Map<String, dynamic>> updateTask({
     required int id,
-    required int myCrop,
     required DateTime startDate,
     required String description,
     required int activityType,
@@ -67,8 +63,7 @@ class TaskRepository {
     try {
       final response = await _httpService.put('/edit_task/$farmerId', {
         'id': id,
-        "schedule_activity_type":activityType,
-        'my_crop': myCrop,
+        "schedule_activity_type": activityType,
         'start_date': DateFormat('yyyy-MM-dd').format(startDate),
         'description': description,
         'schedule_status': scheduleStatus,
@@ -78,6 +73,7 @@ class TaskRepository {
       rethrow;
     }
   }
+
   Future<List<ActivityModel>> getActivityTypes() async {
     try {
       final response = await _httpService.get('/schedule_activity_types');
@@ -145,11 +141,6 @@ class TaskRepository {
     await _httpService.post('/new_task/', taskRequest.toJson());
   }
 
-  Future<void> editTask(Map<String, dynamic> taskRequest) async {
-    final farmerId = _appDataController.farmerId;
-    await _httpService.put('/edit_task/$farmerId', jsonEncode(taskRequest));
-  }
-
   Future<void> deleteTask(int taskId) async {
     final farmerId = _appDataController.farmerId;
     await _httpService.post('/deactivate-my-schedule/$farmerId/', {
@@ -181,28 +172,10 @@ class TaskRepository {
     }
   }
 
-  Future<void> markTaskCompleted(
-    int taskId,
-    int cropId,
-    String startDate,
-    String description,
-    TaskTypes scheduleStatus,
-  ) async {
-    final farmerId = _appDataController.farmerId;
+  Future<void> markTaskCompleted(int taskId, TaskTypes scheduleStatus) async {
     try {
-      final inputFormat = DateFormat('dd-MM-yyyy');
-      final dateTime = inputFormat.parse(startDate);
-
-      final outputFormat = DateFormat('yyyy-MM-dd');
-      final formattedDate = outputFormat.format(dateTime);
-
-      await _httpService.put('/edit_task/$farmerId', {
-        'id': taskId,
-        'my_crop': cropId,
-        'start_date': formattedDate,
-        'description': description,
+      await _httpService.put('/update_schedule_status/$taskId', {
         'schedule_status': getTaskId(scheduleStatus),
-        'schedule_choice': 0,
       });
     } catch (e) {
       rethrow;

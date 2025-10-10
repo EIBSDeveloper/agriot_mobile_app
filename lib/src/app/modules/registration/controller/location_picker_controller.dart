@@ -1,10 +1,9 @@
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geocoding/geocoding.dart' as geolocator;
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../service/utils/utils.dart';
 
 class LocationPickerController extends GetxController {
   final Rx<LatLng?> selectedLocation = Rx<LatLng?>(null);
@@ -17,7 +16,13 @@ class LocationPickerController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getCurrentLocation();
+    final argument = Get.arguments;
+    double? longitude = argument?["longitude"];
+    double? latitude = argument?["latitude"];
+    if (longitude != null && latitude != null) {
+      selectedLocation.value = LatLng(latitude, longitude);
+    }
+    loadMap();
   }
 
   @override
@@ -27,6 +32,20 @@ class LocationPickerController extends GetxController {
   }
 
   Future<void> getCurrentLocation() async {
+    try {
+      isLoading(true);
+      Position position = await Geolocator.getCurrentPosition();
+      var latLng = LatLng(position.latitude, position.longitude);
+      cameraPosition.value = CameraPosition(target: latLng, zoom: 15);
+      selectedLocation.value = latLng;
+    } catch (e) {
+      showError('Error');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> loadMap() async {
     try {
       isLoading(true);
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -45,14 +64,18 @@ class LocationPickerController extends GetxController {
       if (permission == LocationPermission.deniedForever) {
         throw Exception('Location permissions are permanently denied');
       }
-
-      Position position = await Geolocator.getCurrentPosition();
-      cameraPosition.value = CameraPosition(
-        target: LatLng(position.latitude, position.longitude),
-        zoom: 15,
-      );
-    } catch (e) {
-      showError('Error');
+      if (selectedLocation.value != null) {
+        cameraPosition.value = CameraPosition(
+          target: LatLng(
+            selectedLocation.value!.latitude,
+            selectedLocation.value!.longitude,
+          ),
+          zoom: 15,
+        );
+        getAddress(selectedLocation.value!);
+      } else {
+        getCurrentLocation();
+      }
     } finally {
       isLoading(false);
     }
@@ -60,22 +83,16 @@ class LocationPickerController extends GetxController {
 
   void onMapTap(LatLng location) {
     selectedLocation.value = location;
-    getAddressFromLatLng(location);
+    getAddress(location);
   }
 
-  Future<void> getAddressFromLatLng(LatLng latLng) async {
-    try {
-      List<Placemark> placemarks = await geolocator.placemarkFromCoordinates(
-        latLng.latitude,
-        latLng.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
-        address.value = '${place.street}, ${place.locality}, ${place.country}';
-      }
-    } catch (e) {
-      address.value = 'Coordinates: ${latLng.latitude}, ${latLng.longitude}';
-    }
+  Future<void> getAddress(LatLng latLng) async {
+    Map addressFromLatLng = await getAddressFromLatLng(
+      latitude: latLng.latitude,
+      longitude: latLng.longitude,
+    );
+    address.value = addressFromLatLng['address'] ?? '';
+    // pincodeController.text = addressFromLatLng['pincode'] ?? '';
   }
 
   void confirmSelection() {

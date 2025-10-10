@@ -101,7 +101,7 @@ class ProfileEditController extends GetxController {
 
   void _populateForm(ProfileModel profile) {
     // Basic info
-    imagePath.value= profile.imgUrl??'';
+    imagePath.value = profile.imgUrl ?? '';
     nameController.text = profile.name;
     emailController.text = profile.email;
     companyController.text = profile.companyName ?? '';
@@ -110,7 +110,11 @@ class ProfileEditController extends GetxController {
     // Address fields
     doorNoController.text = profile.doorNo;
     pincodeController.text = profile.pincode.toString();
-    locationController.text = profile.location.toString();
+    locationController.text = profile.latitude != null
+        ? "${profile.latitude},${profile.longitude}"
+        : "";
+         longitude.value=profile.longitude??0;
+         latitude.value=profile.latitude??0;
   }
 
   Future<void> pickLocation() async {
@@ -118,11 +122,18 @@ class ProfileEditController extends GetxController {
       final location = await Get.to(
         const LocationPickerView(),
         binding: LocationViewerBinding(),
+        arguments: {"latitude": latitude.value, "longitude": longitude.value},
       );
       if (location != null) {
         latitude.value = location['latitude'];
         longitude.value = location['longitude'];
         locationController.text = '${latitude.value}, ${longitude.value}';
+        Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location['latitude'],
+          longitude: location['longitude'],
+        );
+        doorNoController.text = addressFromLatLng['address'] ?? '';
+        pincodeController.text = addressFromLatLng['pincode'] ?? '';
       }
     } catch (e) {
       showError('Failed to pick location');

@@ -15,28 +15,34 @@ class LandPickerController extends GetxController {
   var zoom = false.obs;
   var croppolyiline = <LatLng>[].obs;
   var polylinePoints = <LatLng>[].obs;
-
+  Rx<MapType> mapType = MapType.normal.obs;
   GoogleMapController? mapController;
 
   Future<void> getCurrentLocation() async {
     isLoading.value = true;
 
+    LatLng pos;
+
     if (landPolylin.isNotEmpty || croppolyiline.isNotEmpty) {
       if (croppolyiline.isNotEmpty) {
         polylinePoints.value = croppolyiline;
       }
-      LatLng pos = zoom.value ? croppolyiline.first : landPolylin.first;
-      cameraPosition.value = CameraPosition(target: pos, zoom: 15);
-      cameraPosition.value = CameraPosition(target: pos, zoom: 17);
+      pos = zoom.value ? croppolyiline.first : landPolylin.first;
     } else {
       Position position = await Geolocator.getCurrentPosition();
-      cameraPosition.value = CameraPosition(
-        target: LatLng(position.latitude, position.longitude),
-        zoom: 15,
-      );
-      LatLng pos = LatLng(position.latitude, position.longitude);
-      cameraPosition.value = CameraPosition(target: pos, zoom: 17);
+      pos = LatLng(position.latitude, position.longitude);
     }
+
+    // Move camera using controller
+    if (mapController != null) {
+      mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(CameraPosition(target: pos, zoom: 17)),
+      );
+    }
+
+    // Update the observable if needed
+    cameraPosition.value = CameraPosition(target: pos, zoom: 17);
+
     isLoading.value = false;
   }
 
@@ -73,6 +79,10 @@ class LandPickerController extends GetxController {
       }
     }
     return (intersectCount % 2) == 1; // odd = inside, even = outside
+  }
+
+  void changeMapType(MapType type) {
+    mapType.value = type;
   }
 
   bool _rayCastIntersect(LatLng point, LatLng vertA, LatLng vertB) {

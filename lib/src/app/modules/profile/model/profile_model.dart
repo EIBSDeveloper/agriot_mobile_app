@@ -22,6 +22,8 @@ class ProfileModel {
   final String? taxNo;     
   final String address;
   final String? location;
+  final double? longitude;
+  final double? latitude;
   final String? imgUrl;     
   final List<Subscription> subscriptions;
 
@@ -43,6 +45,8 @@ class ProfileModel {
     required this.doorNo,
     required this.pincode,
     required this.location,
+    required this.longitude,
+    required this.latitude,
     this.description,
     this.companyName,
     this.taxNo,
@@ -67,13 +71,15 @@ class ProfileModel {
       villageId: json['village_id'] ?? 0,
       villageName: json['village_name'] ?? '',
       location: json['locations'] ?? '',
+      latitude: json['latitude'] ,
+      longitude: json['longitude'] ,
       doorNo: json['door_no'] ?? '',
       pincode: json['pincode'] ?? 0,
-      description: json['description'], // can be null
-      companyName: json['company_name'], // can be null
-      taxNo: json['tax_no'],             // can be null
+      description: json['description'],
+      companyName: json['company_name'],
+      taxNo: json['tax_no'],            
       address: json['address'] ?? '',
-      imgUrl: json['img_url'],           // can be null or empty
+      imgUrl: json['img_url'],           
       subscriptions: List<Subscription>.from(
         (json['subscriptions'] ?? []).map((x) => Subscription.fromJson(x))
       ),

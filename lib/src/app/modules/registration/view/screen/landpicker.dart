@@ -11,15 +11,7 @@ class LocationPickerView extends GetView<LocationPickerController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(
-      title: 'select_location'.tr,
-      // actions: [
-      //   IconButton(
-      //     icon: const Icon(Icons.my_location),
-      //     onPressed: controller.getCurrentLocation,
-      //   ),
-      // ],
-    ),
+    appBar: CustomAppBar(title: 'select_location'.tr),
     body: Stack(
       children: [
         Obx(() {
@@ -47,15 +39,17 @@ class LocationPickerView extends GetView<LocationPickerController> {
         }),
         // keep overlays (buttons, cards) outside so they don't rebuild Map
         Positioned(
-          bottom: 20,
+          bottom: 10,
           left: 20,
-          right: 20,
+          right: 50,
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Obx(() => Text(controller.address.value,
+                  style: const TextStyle(fontWeight: FontWeight.w800))),
                   const SizedBox(height: 8),
                   SizedBox(
                     width: double.infinity,

@@ -59,3 +59,4 @@ class MapFloatActionButton extends GetView<LandMapViewController> {
     ],
   );
 }
+

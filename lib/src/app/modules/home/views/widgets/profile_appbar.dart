@@ -26,12 +26,15 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: showLanguageDialog,
         icon: Icon(Icons.translate, color: Get.theme.primaryColor),
       ),
-     Obx(()=> controller.isShowProfile.value? IconButton(
-        onPressed: () {
-          Get.toNamed(Routes.notification);
-        },
-        icon: NotificationIconButton(),
-      ):const SizedBox()
+      Obx(
+        () => controller.isShowProfile.value
+            ? IconButton(
+                onPressed: () {
+                  Get.toNamed(Routes.notification);
+                },
+                icon: NotificationIconButton(),
+              )
+            : const SizedBox(),
       ),
 
       Obx(
@@ -78,7 +81,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
 
               Get.updateLocale(locale);
-              appData.appLanguage.value=locale;
+              appData.appLanguage.value = locale;
               Get.offAllNamed(Routes.home);
             }
           },

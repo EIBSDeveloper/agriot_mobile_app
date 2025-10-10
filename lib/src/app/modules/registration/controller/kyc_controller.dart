@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
+import '../../../service/utils/utils.dart';
 import '../repostrory/address_service.dart';
 import '../view/screen/landpicker.dart';
 import 'resgister_controller.dart';
 
 class KycController extends GetxController {
-
   // Form controllers
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -40,7 +40,7 @@ class KycController extends GetxController {
 
   Future<void> loadData() async {
     AppDataController appData = Get.put(AppDataController());
-    isEmailLogin.value =appData.emailId.value.isNotEmpty;
+    isEmailLogin.value = appData.emailId.value.isNotEmpty;
     emailController.text = appData.emailId.value;
     nameController.text = appData.username.value;
   }
@@ -66,8 +66,6 @@ class KycController extends GetxController {
       );
       if (response.isNotEmpty) {
         showSuccess('KYC submitted successfully');
-
-        // Navigate to next screen
         ResgisterController resgisterController = Get.find();
         resgisterController.moveNextPage();
       } else {
@@ -90,6 +88,12 @@ class KycController extends GetxController {
         latitude.value = location['latitude'];
         longitude.value = location['longitude'];
         locationController.text = '${latitude.value}, ${longitude.value}';
+        Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location['latitude'],
+          longitude: location['longitude'],
+        );
+        doorNoController.text = addressFromLatLng['address'] ?? '';
+        pincodeController.text = addressFromLatLng['pincode'] ?? '';
       }
     } catch (e) {
       showError('Failed to pick location');

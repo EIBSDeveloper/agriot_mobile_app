@@ -159,3 +159,30 @@ Alert message is not displayed
 Unable to Pay  
 
 If document is selected – error page displays in red Color a s null 
+
+
+Task 10-10-2025
+
+1.Employee and Vendor profile image update - 10- 00- 12:00  - ✅ Complete
+2.Task Monthly Recurring functionality -12:00- 2:30 🔄 In Progress
+3.Localization key add  -2:30- 4:30  - ✅ Complete
+4.Bug Fixing - 4:30 - 6:00❌ Not Yet Started 
+ Crop flow
+ Land   flow
+ Schedule flow
+
+Task 11-10-2025
+
+1.Automatic get Address on -10- 00- 1:00   
+      Kyc and profile edit page  
+      Land add and edit page
+      Employee and manager add and edit page
+      Vendor  add and edit page 
+3. Manager user privileges 1:00 - 3:30
+    Inventory purchase and  consumption
+    Employee List and add page 
+    My Sales 
+2.Bug Fixing - 3:30 - 6:00
+    Subscription (payment issues)
+    Crop flow
+    Profile   

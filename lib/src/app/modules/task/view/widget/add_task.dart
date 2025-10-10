@@ -12,9 +12,9 @@ import '../../../../widgets/loading.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class AddTask extends GetView<TaskController> {
-  final bool isEditing;
+
   final int taskId;
-  const AddTask({super.key, this.isEditing = false, this.taskId = 0});
+  const AddTask({super.key,  this.taskId = 0});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -31,7 +31,7 @@ class AddTask extends GetView<TaskController> {
           children: [
             const ButtomSheetScrollButton(),
             Text(
-              isEditing ? 'edit_task'.tr : 'add_new_task'.tr,
+              'add_new_task'.tr,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -84,7 +84,7 @@ class AddTask extends GetView<TaskController> {
                 ),
               ),
             ),
-            if (!isEditing)
+      
               Column(
                 children: [
                   const SizedBox(height: 8),
@@ -149,8 +149,8 @@ class AddTask extends GetView<TaskController> {
                           ),
 
                         // End date picker
-                        Obx(
-                          () => Column(
+                        if (controller.recurrenceType.value != 2)
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               InputCardStyle(
@@ -192,7 +192,6 @@ class AddTask extends GetView<TaskController> {
                                   : const SizedBox(),
                             ],
                           ),
-                        ),
                       ],
                     );
                   }),
@@ -228,15 +227,12 @@ class AddTask extends GetView<TaskController> {
                             return;
                           }
                         }
-                        if (isEditing) {
-                          controller.editTask(taskId);
-                        } else {
-                          controller.addTask();
-                        }
+                  controller.addTask();
+               
                       },
                 child: controller.isLoading.value
                     ? const Loading(size: 50)
-                    : Text(isEditing ? 'update_task'.tr : 'add_task'.tr),
+                    : Text( 'add_task'.tr),
               ),
             ),
           ],

@@ -131,6 +131,14 @@ class ProfileEditView extends GetView<ProfileEditController> {
             style: Get.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
+          ),  const SizedBox(height: 12),
+          _buildTextField(
+            controller: controller.locationController,
+            label: '${'location_coordinates'.tr} *',
+            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+            readOnly: true,
+            maxLines: 1,
+            onTap: controller.pickLocation,
           ),
           const SizedBox(height: 12),
           _buildTextField(
@@ -144,15 +152,7 @@ class ProfileEditView extends GetView<ProfileEditController> {
                 value?.isEmpty ?? true ? 'required_field'.tr : null,
             keyboardType: TextInputType.number,
           ),
-          const SizedBox(height: 12),
-          _buildTextField(
-            controller: controller.locationController,
-            label: '${'location_coordinates'.tr} *',
-            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-            readOnly: true,
-            maxLines: 1,
-            onTap: controller.pickLocation,
-          ),
+        
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.doorNoController,

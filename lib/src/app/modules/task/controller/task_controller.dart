@@ -53,7 +53,7 @@ class TaskController extends GetxController {
 
   // Task view related
   final Rx<TaskResponse?> taskResponse = Rx<TaskResponse?>(null);
-  final Rx<TaskTypes> selectedFilter =  TaskTypes.all.obs;
+  final Rx<TaskTypes> selectedFilter = TaskTypes.all.obs;
   final RxBool cisLoading = false.obs;
   final RxString errorMessage = ''.obs;
   final Rx<DateTime> focusedDay = DateTime.now().obs;
@@ -116,11 +116,10 @@ class TaskController extends GetxController {
   }
 
   Future<void> taskList() async {
-     try {
-      
+    try {
       isLoading(true);
       taskGroups.clear();
-    
+
       final tasks = await _repository.getTaskList(
         landId: selectedLand.value.id,
         month: selectedMonth.value,
@@ -165,31 +164,6 @@ class TaskController extends GetxController {
     }
   }
 
-  Future<void> editTask(int taskId, {int status = 0}) async {
-    if (!formKey.currentState!.validate()) return;
-
-    try {
-      isLoading(true);
-      final taskRequest = {
-        "id": taskId,
-        "my_crop": selectedCropType.value.id,
-        "start_date": scheduleDate.value,
-        "schedule": description.value,
-        "schedule_status": status,
-        "schedule_choice": isRecurring.value ? recurrenceType.value : 1,
-      };
-
-      await _repository.editTask(taskRequest);
-      await loadTasks();
-      Get.back();
-      _showSuccess('Task updated successfully');
-    } catch (e) {
-      _showError('Failed to update task: ${e.toString()}');
-    } finally {
-      isLoading(false);
-    }
-  }
-
   Future<void> deleteTask(int taskId) async {
     try {
       isLoading(true);
@@ -224,10 +198,12 @@ class TaskController extends GetxController {
       isLoading(false);
     }
   }
+
   void showAddTaskBottomSheet() {
     resetForm();
     Get.bottomSheet(const AddTask(), isScrollControlled: true);
   }
+
   _initializeTodayTasks(TaskResponse response) {
     if (response.events.isNotEmpty) {
       final todayEvents = response.events
@@ -318,22 +294,26 @@ class TaskController extends GetxController {
 
   List<Task> _applyFilter(List<Task> tasks) {
     switch (selectedFilter.value) {
-      case  TaskTypes.completed:
-        return tasks.where((task) => task.status ==  TaskTypes.completed).toList();
-      case  TaskTypes.waiting:
-        return tasks.where((task) => task.status ==  TaskTypes.waiting).toList();
-      case  TaskTypes.inProgress:
-        return tasks.where((task) => task.status ==  TaskTypes.inProgress).toList();
-      case  TaskTypes.pending:
-        return tasks.where((task) => task.status ==  TaskTypes.pending).toList();
-      case   TaskTypes.cancelled:
-        return tasks.where((task) => task.status ==  TaskTypes.cancelled).toList();
+      case TaskTypes.completed:
+        return tasks
+            .where((task) => task.status == TaskTypes.completed)
+            .toList();
+      case TaskTypes.waiting:
+        return tasks.where((task) => task.status == TaskTypes.waiting).toList();
+      case TaskTypes.inProgress:
+        return tasks
+            .where((task) => task.status == TaskTypes.inProgress)
+            .toList();
+      case TaskTypes.pending:
+        return tasks.where((task) => task.status == TaskTypes.pending).toList();
+      case TaskTypes.cancelled:
+        return tasks
+            .where((task) => task.status == TaskTypes.cancelled)
+            .toList();
       default:
         return tasks;
     }
   }
-
-
 
   int getTotalTaskCount() {
     if (taskResponse.value == null) return 0;

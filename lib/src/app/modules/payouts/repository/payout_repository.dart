@@ -34,4 +34,30 @@ class PayoutRepository {
       return [];
     }
   }
+
+  //Fetch Employees from API
+  Future<List<PayoutModel>> fetchAdvanceListOnlyPaied({
+    int page = 1,
+    String search = '',
+  }) async {
+    final farmerId = appDeta.farmerId;
+
+    try {
+      String key = "&onlyUpdated=True";
+      final response = await _httpService.get(
+        "/advances_list/$farmerId?page=$page$key&search=$search",
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return (data as List).map((e) => PayoutModel.fromJson(e)).toList();
+      } else {
+        debugPrint("❌ Error fetching payouts: ${response.body}");
+        return [];
+      }
+    } catch (e) {
+      debugPrint("⚠️ Exception fetching payouts: $e");
+      return [];
+    }
+  }
 }

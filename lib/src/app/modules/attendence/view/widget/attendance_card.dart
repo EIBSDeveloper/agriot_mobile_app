@@ -3,9 +3,11 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../controller/attendence_add_controller.dart';
 
 
-class AttendanceCard extends GetView<AttendenceController> {
+
+class AttendanceCard extends GetView<AttendenceAddController> {
   final int index;
 
   const AttendanceCard({super.key, required this.index});

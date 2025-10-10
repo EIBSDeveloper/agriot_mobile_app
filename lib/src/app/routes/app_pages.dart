@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/auth/view/screens/walkthrough_view.dart';
 import 'package:argiot/src/app/modules/expense/binding/fuel_inventory_binding.dart';
 import 'package:argiot/src/app/modules/expense/view/screens/purchase_details.dart';
 import 'package:argiot/src/app/modules/map_view/bindings/land_map_view_binding.dart';
+import 'package:argiot/src/app/modules/payouts/bindings/payout_add_binding.dart';
 import 'package:argiot/src/app/modules/profile/views/screens/profile_edit_view.dart';
 import 'package:argiot/src/app/modules/task/controller/schedule_binding.dart';
 import 'package:argiot/src/app/modules/task/view/screens/schedule_list_page.dart';
@@ -36,6 +37,7 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_c
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';
 
+import '../modules/attendence/bindings/attendence_add_binding.dart';
 import '../modules/attendence/bindings/attendence_binding.dart';
 import '../modules/attendence/view/screens/add_attendence_screen.dart';
 import '../modules/attendence/view/screens/attendence_list_screen.dart';
@@ -362,7 +364,7 @@ class AppPages {
     GetPage(
       name: Routes.addAttendence,
       page: () =>  AddAttendenceScreen(),
-      binding: AttendenceBinding(),
+      binding: AttendenceAddBinding(),
     ),
 
     GetPage(
@@ -373,7 +375,7 @@ class AppPages {
        GetPage(
       name: Routes.addPayout,
       page: () => AddpayoutScreen(),
-      binding: PayoutBinding(),
+      binding: PayoutAddBinding(),
     ),
 
     GetPage(

@@ -13,13 +13,7 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
   const EmployeeManagerView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Initialize controller if not already
-    if (!Get.isRegistered<EmployeeManagerListController>()) {
-      Get.put(EmployeeManagerListController());
-    }
-
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: CustomAppBar(title: 'employee_manager'.tr),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -75,5 +69,4 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
         child: const Icon(Icons.add),
       ),
     );
-  }
 }

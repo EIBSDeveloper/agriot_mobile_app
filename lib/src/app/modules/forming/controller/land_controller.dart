@@ -252,6 +252,15 @@ class LandController extends GetxController {
         longitude.value = location[0][1];
         geoMarks.value = location;
         locationListController.text = location.toString();
+        Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location[0][0],
+          longitude: location[0][1],
+        );
+        addressController.text = addressFromLatLng['address'] ?? '';
+        pincodeController.text = addressFromLatLng['pincode'] ?? '';
+        measurementController.text = calculatePolygonAreaAcre(
+          points: landCoordinates,
+        ).toString();
       }
     } catch (e) {
       showError('Failed to pick location');

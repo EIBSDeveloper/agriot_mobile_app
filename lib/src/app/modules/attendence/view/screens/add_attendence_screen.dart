@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/loading.dart';
+import '../../controller/attendence_add_controller.dart';
 
-class AddAttendenceScreen extends GetView<AttendenceController> {
+class AddAttendenceScreen extends GetView<AttendenceAddController> {
   final ScrollController scrollController = ScrollController();
 
   AddAttendenceScreen({super.key}) {
@@ -96,9 +97,8 @@ class AddAttendenceScreen extends GetView<AttendenceController> {
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () async {
-            await controller.addAttendance(employees: controller.employees);
+            await controller.addAttendance();
             Get.back();
-            //Get.toNamed(Routes.attendencelistscreen);
           },
           child: const Text('Submit'),
         ),

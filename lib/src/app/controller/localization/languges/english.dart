@@ -102,6 +102,7 @@ class English {
     "pincode": "Pincode",
     "gst_number": "GST Number",
     "tax_number": "Tax Number",
+    "add_advance": "Add Advance",
     "opening_balance": "Total Outstanding",
     "photo": "Photo",
     "upload_photo": "Upload Photo",

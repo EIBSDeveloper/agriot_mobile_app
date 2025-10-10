@@ -14,7 +14,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../service/utils/utils.dart';
 import '../view/widgets/crop_details_bottom_sheet.dart';
-// ======================= CONTROLLER =======================
 
 class LandMapViewController extends GetxController {
   // Variables
@@ -198,7 +197,7 @@ class LandMapViewController extends GetxController {
         Marker(
           markerId: MarkerId("crop_${crop.cropId}"),
           position: center,
-          draggable  :true,
+          draggable: true,
           icon: icon,
           infoWindow: InfoWindow(
             title: crop.cropName ?? "Crop",
@@ -222,7 +221,6 @@ class LandMapViewController extends GetxController {
       );
       landMapDetails.value = result;
 
-      // Assign colors to crops
       if (result.crops != null) {
         _assignCropColors(result.crops!);
       }
@@ -321,8 +319,9 @@ class LandMapViewController extends GetxController {
                 landMapDetails.value!.crops!.length.toString(),
               ),
 
-            _buildDetailRow('Manager Name:', 'Ravi'),
-            _buildDetailRow('Totel employees:', '3'),
+            _buildDetailRow('Manager Name:',landMapDetails.value?.manager??"" ),
+            _buildDetailRow('Solit Type:',landMapDetails.value?.solitType??"" ),
+            // _buildDetailRow('Totel employees:', '3'),
 
             const Divider(height: 1),
             const SizedBox(height: 8),
@@ -378,15 +377,15 @@ class LandMapViewController extends GetxController {
   );
 
   void zoomCrop() {
-    if (landMapDetails.value?.crops == null) {
-      updateCameraToPolygon(landpolyline);
-      return;
-    }
-
-    final crop = landMapDetails.value!.crops!.firstWhere(
-      (c) => c.cropId == selectedCrop.value?.id,
-      orElse: () => CropMapData(),
-    );
+    final crop = cropId.value != 0
+        ? landMapDetails.value!.crops!.firstWhere(
+            (c) => c.cropId == cropId.value,
+            orElse: () => CropMapData(),
+          )
+        : landMapDetails.value!.crops!.firstWhere(
+            (c) => c.cropId == selectedCrop.value?.id,
+            orElse: () => CropMapData(),
+          );
     if (crop.geoMarks?.isNotEmpty == true) {
       final poly = crop.geoMarks!
           .map((e) => LatLng(e[0].toDouble(), e[1].toDouble()))

@@ -8,7 +8,6 @@ import '../view/screen/landpicker.dart';
 import 'resgister_controller.dart';
 
 class KycController extends GetxController {
-  // final AppDataController appData = AppDataController();
 
   // Form controllers
   final nameController = TextEditingController();

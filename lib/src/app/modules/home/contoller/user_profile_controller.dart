@@ -9,13 +9,13 @@ class UserProfileController extends GetxController {
   // final UserProfileRepository _repository = Get.put(UserProfileRepository());
   final Rx<UserProfile?> userProfile = Rx<UserProfile?>(null);
   final RxBool isLoading = false.obs;
-  final RxBool isshowProfile = false.obs;
+  final RxBool isShowProfile = false.obs;
   
-final AppDataController appData = AppDataController();
+final AppDataController appData = Get.find();
   @override
   void onInit() {
     super.onInit();
-    isshowProfile.value = !appData.isManager.value;
+    isShowProfile.value = !appData.isManager.value;
     fetchUserProfile();
   }
 

@@ -33,17 +33,7 @@ class ManagerEmployeeGroupItem extends StatelessWidget {
 
         // Employees under this manager
         if (showEmployees && group.employees.isNotEmpty) ...[
-          // const Divider(height: 1),
-          // Padding(
-          //   padding: const EdgeInsets.only(left: 16.0, top: 8.0),
-          //   child: Text(
-          //     'Employees (${group.employees.length})',
-          //     style: Get.textTheme.titleSmall?.copyWith(
-          //       fontWeight: FontWeight.bold,
-          //       color: Get.theme.primaryColor,
-          //     ),
-          //   ),
-          // ),
+         
           ...group.employees.map(
             (employee) => Padding(
               padding: const EdgeInsets.only(left: 10,top: 8),

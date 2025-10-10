@@ -23,6 +23,20 @@ class EmployeeDetailsRepository extends GetxController {
       rethrow;
     }
   }
+   Future<Map<String, dynamic>> statusUpdate({
+    required int id,
+    required int scheduleStatus,
+  }) async {
+   
+    try {
+      final response = await _httpService.post('/employees/status/$id/', {
+        'status': scheduleStatus,
+      });
+      return json.decode(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<EmployeeDetailsModel> getManagerDetails(int detailID) async {
     try {

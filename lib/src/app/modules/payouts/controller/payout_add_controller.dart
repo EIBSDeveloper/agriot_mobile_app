@@ -3,7 +3,7 @@ import 'package:argiot/src/app/modules/payouts/repository/payout_repository.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PayoutController extends GetxController {
+class PayoutAddController extends GetxController {
   final PayoutRepository repository = Get.find();
   TextEditingController searchController = TextEditingController();
   RxString searchQuery = ''.obs;
@@ -39,7 +39,7 @@ class PayoutController extends GetxController {
 
     isLoading.value = true;
     try {
-      final fetched = await repository.fetchAdvanceListOnlyPaied(
+      final fetched = await repository.fetchAdvanceList(
         page: page.value,
         search: searchQuery.value, // pass search query
       );

@@ -5,6 +5,7 @@ class UserModel {
   final String number;
   final String address;
   final String profile;
+  final int? status;
 
   UserModel({
     required this.id,
@@ -13,6 +14,7 @@ class UserModel {
     required this.number,
     required this.address,
     required this.profile,
+     this.status,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -22,6 +24,7 @@ class UserModel {
       number: json['number']?.toString() ?? '',
       address: json['address'] ?? '',
       profile: json['profile'] ?? '',
+      status: json['status'],
     );
 
   Map<String, dynamic> toJson() => {
@@ -87,6 +90,7 @@ class Manager {
     );
 }
 
+
 class Employee {
   final int id;
   final String name;
@@ -105,21 +109,38 @@ class Employee {
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      mobileNo: (json['mobile_no'] ?? '').toString(),
-      employeeType: json['employee_type_name'],
-      workType: json['work_type_name'],
-      status: json['status'] ?? 0,
-    );
+        id: json['id'] ?? 0,
+        name: json['name'] ?? '',
+        mobileNo: (json['mobile_no'] ?? '').toString(),
+        employeeType: json['employee_type_name'],
+        workType: json['work_type_name'],
+        status: json['status'] ?? 0,
+      );
 
-  // Convert to UserModel for compatibility
+ Employee copyWith({
+  int? id,
+  String? name,
+  String? mobileNo,
+  String? employeeType,
+  String? workType,
+  int? status,
+}) => Employee(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    mobileNo: mobileNo ?? this.mobileNo,
+    employeeType: employeeType ?? this.employeeType,
+    workType: workType ?? this.workType,
+    status: status ?? this.status,
+  );
+
+
   UserModel toUserModel() => UserModel(
-      id: id,
-      name: name,
-      role: 'Employee',
-      number: mobileNo,
-      address:workType??'',
-      profile: '',
-    );
+        id: id,
+        name: name,
+        role: 'Employee',
+        number: mobileNo,
+        address: workType ?? '',
+        profile: '',
+        status: status
+      );
 }

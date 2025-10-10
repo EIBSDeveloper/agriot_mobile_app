@@ -113,10 +113,32 @@ class EmployeeManagerListController extends GetxController {
     
     return allUsers;
   }
+void updateEmployeeStatus(int employeeId, int newStatus) {
+  final updatedGroups = groupedData.map((group) {
+    final updatedEmployees = group.employees.map((employee) {
+      if (employee.id == employeeId) {
+        return employee.copyWith(status: newStatus);
+      }
+      return employee;
+    }).toList();
+
+    return ManagerEmployeeGroup(
+      manager: group.manager,
+      employees: updatedEmployees,
+    );
+  }).toList();
+
+  groupedData.value = updatedGroups;
+  _applyFilters(); // refresh UI with updated data
+}
 
   void initiateCall(String phoneNumber) {
     Fluttertoast.showToast(msg: 'Calling $phoneNumber');
     // You can use url_launcher here
+  }
+
+  Future<void> statusUpdate({required int id ,bool status=false}) async {
+     await _repository.statusUpdate(id: id, scheduleStatus: status?0:1);
   }
 
   @override

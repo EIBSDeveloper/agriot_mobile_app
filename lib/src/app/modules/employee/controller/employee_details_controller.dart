@@ -48,7 +48,9 @@ class EmployeeDetailsController extends GetxController {
     }
   }
 
-
+ Future<void> statusUpdate({required int id ,bool status=false}) async {
+     await _repository.statusUpdate(id: id, scheduleStatus: status?0:1);
+  }
   
 
   @override

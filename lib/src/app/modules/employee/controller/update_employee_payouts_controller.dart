@@ -4,7 +4,6 @@ import 'package:argiot/src/app/modules/employee/model/model.dart';
 import 'package:argiot/src/app/modules/employee/repository/update_employee_payouts_repository.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../controller/app_controller.dart';

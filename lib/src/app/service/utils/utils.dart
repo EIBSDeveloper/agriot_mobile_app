@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:geocoding/geocoding.dart';
 import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../controller/app_controller.dart';
@@ -135,7 +136,7 @@ void handleGuidelineTap(Guideline guideline) {
   } else if (guideline.mediaType == 'document' && guideline.document != null) {
     Get.toNamed(
       Routes.docViewer,
-      arguments: "${appData.imageBaseUrl.value}${guideline.document}",
+      arguments: "${guideline.document}",
     ); // Open document viewer
   } else {
     showError('Unable to open guideline content');
@@ -280,6 +281,7 @@ extension GenderTypeExtension on GenderType {
     switch (this) {
       case GenderType.male:
         return 1;
+
       case GenderType.female:
         return 2;
       case GenderType.transgender:
@@ -289,15 +291,17 @@ extension GenderTypeExtension on GenderType {
 }
 
 /// Calculate polygon area in square feet from LatLng points
-double calculatePolygonAreaSqFt(List<LatLng> points) {
+/// import 'dart:math';
+
+double calculatePolygonAreaAcre({required List<LatLng?> points}) {
   if (points.length < 3) return 0.0;
 
-  const earthRadiusMeters = 6371000.0; // Earth radius in meters
+  const earthRadiusMeters = 6371000.0; // Earth's radius in meters
   double area = 0.0;
 
   for (int i = 0; i < points.length; i++) {
-    LatLng p1 = points[i];
-    LatLng p2 = points[(i + 1) % points.length];
+    LatLng p1 = points[i]!;
+    LatLng p2 = points[(i + 1) % points.length]!;
 
     double lat1 = p1.latitude * pi / 180;
     double lon1 = p1.longitude * pi / 180;
@@ -309,14 +313,48 @@ double calculatePolygonAreaSqFt(List<LatLng> points) {
 
   area = area * earthRadiusMeters * earthRadiusMeters / 2.0;
 
-  // Absolute value (in case polygon points are reversed)
   double areaMeters = area.abs();
 
-  // Convert meters² → feet²  (1 m² = 10.7639 ft²)
-  return areaMeters * 10.7639;
+  // ✅ Convert m² → acres
+  // 1 acre = 4046.8564224 m²
+  double areaAcres = areaMeters / 4046.8564224;
+
+  return double.parse(areaAcres.toStringAsFixed(2));
 }
+
 
 // void showLandArea() {
 //   double areaSqFt = calculatePolygonAreaSqFt(landpolyline);
 //   print("Land Area: ${areaSqFt.toStringAsFixed(2)} sq.ft");
 // }
+
+
+Future<Map<String, String?>> getAddressFromLatLng({required double latitude, required double longitude}) async {
+  try {
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+
+    if (placemarks.isNotEmpty) {
+      final place = placemarks.first;
+
+      final address =
+          '${place.name ?? ''}, ${place.street ?? ''}, ${place.locality ?? ''}, ${place.subAdministrativeArea ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}';
+      final pincode = place.postalCode;
+
+      return {
+        'address': address,
+        'pincode': pincode,
+      };
+    } else {
+      return {
+        'address': null,
+        'pincode': null,
+      };
+    }
+  } catch (e) {
+    print('Error getting address: $e');
+    return {
+      'address': null,
+      'pincode': null,
+    };
+  }
+}

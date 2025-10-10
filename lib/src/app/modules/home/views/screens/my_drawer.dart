@@ -47,7 +47,7 @@ class AppDrawer extends StatelessWidget {
         ),
         _buildDrawerItem(
           icon: Icons.payments,
-          label: "Employee Payouts",
+          label: "add_advance".tr,
           onTap: () {
             Get.back();
             Get.toNamed(Routes.updateEmployeePayouts);

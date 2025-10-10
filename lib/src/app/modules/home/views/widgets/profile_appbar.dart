@@ -26,15 +26,16 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: showLanguageDialog,
         icon: Icon(Icons.translate, color: Get.theme.primaryColor),
       ),
-      IconButton(
+     Obx(()=> controller.isShowProfile.value? IconButton(
         onPressed: () {
           Get.toNamed(Routes.notification);
         },
         icon: NotificationIconButton(),
+      ):const SizedBox()
       ),
 
       Obx(
-        () => controller.isshowProfile.value
+        () => controller.isShowProfile.value
             ? IconButton(
                 onPressed: () {
                   Get.toNamed(Routes.profile);

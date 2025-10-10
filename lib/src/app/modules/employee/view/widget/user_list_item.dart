@@ -5,8 +5,7 @@ import '../../../../routes/app_routes.dart';
 import '../../controller/employee_manager_list_controller.dart';
 import '../../model/user_model.dart';
 
-// Add indentation option to your existing UserListItem
-class UserListItem extends StatelessWidget {
+class UserListItem extends StatefulWidget {
   final UserModel user;
   final EmployeeManagerListController controller;
   final bool isIndented;
@@ -19,40 +18,103 @@ class UserListItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) =>user.id==0? const SizedBox(): Card(
-    elevation: 1,
-    margin: EdgeInsets.only(left: isIndented ? 20.0 : 0.0),
-    child: InkWell(
-      onTap: () {
-        Get.toNamed(
-          Routes.employeeDetails,
-          arguments: {
-            'employeeId': user.id,
-            'isManager': user.role == "Employee" ? false : true,
-          },
-        );
-      },
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Get.theme.primaryColor,
-          child: Text(
-            user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
-            style: const TextStyle(color: Colors.white),
+  State<UserListItem> createState() => _UserListItemState();
+}
+
+class _UserListItemState extends State<UserListItem> {
+  bool _isSwitchedOn = false;
+  @override
+  void initState() {
+    super.initState(); // Always call super.initState() first
+    setState(() {
+      _isSwitchedOn = widget.user.status != null
+          ? widget.user.status == 0
+                ? true
+                : false
+          : false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.user.id == 0
+      ? const SizedBox()
+      : Card(
+          elevation: 1,
+          margin: EdgeInsets.only(left: widget.isIndented ? 20.0 : 0.0),
+          child: InkWell(
+            onTap: () {
+              Get.toNamed(
+                Routes.employeeDetails,
+                arguments: {
+                  'employeeId': widget.user.id,
+                  'isManager': widget.user.role == "Employee" ? false : true,
+                },
+              );
+            },
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Get.theme.primaryColor,
+                child: Text(
+                  widget.user.name.isNotEmpty
+                      ? widget.user.name[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+              title: Text(widget.user.name),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Text(user.role),
+                  Text(widget.user.address.toString()),
+                  if (widget.user.status != null)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 36,
+                          height: 20,
+                          child: Transform.scale(
+                            scale: 0.7,
+                            alignment: Alignment.center,
+                            child: Switch.adaptive(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              value: _isSwitchedOn,
+                              onChanged: (bool newValue) {
+                                setState(() {
+                                  _isSwitchedOn = newValue;
+                                });
+                                widget.controller.statusUpdate(
+                                  id: widget.user.id,
+                                  status: newValue
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _isSwitchedOn ? "Active" : "Inactive",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: _isSwitchedOn
+                                ? Get.theme.primaryColor
+                                : Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.phone),
+                onPressed: () => widget.controller.initiateCall(
+                  widget.user.number.toString(),
+                ),
+              ),
+            ),
           ),
-        ),
-        title: Text(user.name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text(user.role), 
-          Text(user.address.toString())
-          ],
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.phone),
-          onPressed: () => controller.initiateCall(user.number.toString()),
-        ),
-      ),
-    ),
-  );
+        );
 }

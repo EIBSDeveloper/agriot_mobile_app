@@ -15,7 +15,7 @@ import '../repository/auth_repository.dart';
 class AuthController extends GetxController {
   final AuthRepository _authRepository = Get.find();
   final StorageService _storageService = Get.put(StorageService());
-
+  final AppDataController appData = Get.find();
   final RxBool isLoading = false.obs;
   final RxString mobileNumber = ''.obs;
   final RxString otp = ''.obs;
@@ -50,7 +50,6 @@ class AuthController extends GetxController {
       );
 
       if (response.user != null) {
-        AppDataController appData = Get.put(AppDataController());
         appData.loginState.value = response;
         tempOtp.value = (response.otp ?? '').toString();
 
@@ -99,7 +98,6 @@ class AuthController extends GetxController {
         );
 
         if (response.userId != null) {
-          AppDataController appData = Get.put(AppDataController());
           appData.loginState.value = response;
           appData.emailId.value = user.email ?? '';
           appData.username.value = user.displayName ?? '';
@@ -167,7 +165,7 @@ class AuthController extends GetxController {
     appData.managerID.value = (data.managerID ?? '').toString();
     await _storageService.saveUserData(data);
     Future.delayed(const Duration(milliseconds: 500), () async {
-      await _storageService.updateUser();
+      await _storageService.updateUser(data: data);
       GetOtp? loginState = appData.loginState.value;
       if (!(loginState!.details ?? true)) {
         Get.offAllNamed(Routes.register, arguments: 0);

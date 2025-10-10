@@ -1,9 +1,10 @@
-import 'package:argiot/src/app/modules/payouts/controller/payout_controller.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PayoutCard extends GetView<PayoutController> {
+import '../../controller/payout_add_controller.dart';
+
+class PayoutCard extends GetView<PayoutAddController> {
   final int index;
 
   const PayoutCard({super.key, required this.index});

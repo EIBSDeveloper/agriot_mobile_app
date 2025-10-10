@@ -87,6 +87,49 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                           color: Get.theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
+                      if (controller.employeeDetails.value!.status != null)
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              width: 36,
+                              height: 20,
+                              child: Transform.scale(
+                                scale: 0.7,
+                                alignment: Alignment.center,
+                                child: Switch.adaptive(
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  value:
+                                      controller.employeeDetails.value!.status!,
+                                  onChanged: (bool newValue) {
+                                    final employee =
+                                        controller.employeeDetails.value;
+                                    if (employee != null) {
+                                      controller.employeeDetails.value =
+                                          employee.copyWith(status: newValue);
+                                          
+                                    }
+                                     controller.statusUpdate(id: controller.employeeDetails.value!.id,status: newValue);
+                                  },
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              controller.employeeDetails.value!.status!
+                                  ? "Active"
+                                  : "Inactive",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: controller.employeeDetails.value!.status!
+                                    ? Get.theme.primaryColor
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                   const SizedBox(height: 10),

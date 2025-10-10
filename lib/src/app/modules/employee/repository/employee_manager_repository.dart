@@ -37,6 +37,22 @@ class EmployeeManagerRepository extends GetxController {
     }
   }
 
+
+  Future<Map<String, dynamic>> statusUpdate({
+    required int id,
+    required int scheduleStatus,
+  }) async {
+   
+    try {
+      final response = await _httpService.post('/employees/status/$id/', {
+        'status': scheduleStatus,
+      });
+      return json.decode(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // Keep old methods for backward compatibility if needed
   Future<List<UserModel>> getEmployees({
     int page = 1,

@@ -36,7 +36,9 @@ class StorageService extends GetxService {
     appData.farmerId.value =
         data?.farmerID.toString() ?? _box.read('userId').toString();
     var read = _box.read('isManager');
-    appData.isManager.value = data?.isManager ?? read??false;
+    var isManager2 = data?.isManager;
+    var val = isManager2 ?? read??false;
+    appData.isManager.value = val;
     appData.managerID.value =
         (data?.managerID?.toString()) ??
         _box.read('managerID')?.toString() ??

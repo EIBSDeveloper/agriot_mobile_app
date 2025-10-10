@@ -1,13 +1,13 @@
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/modules/payouts/controller/payout_controller.dart';
 import 'package:argiot/src/app/modules/payouts/view/widget/payout_card.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/loading.dart';
+import '../../controller/payout_add_controller.dart';
 
-class AddpayoutScreen extends GetView<PayoutController> {
+class AddpayoutScreen extends GetView<PayoutAddController> {
   final ScrollController scrollController = ScrollController();
 
   AddpayoutScreen({super.key}) {

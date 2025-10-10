@@ -28,7 +28,7 @@ class UpdateEmployeePayoutsView
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'update_employee_payouts'.tr),
+    appBar: CustomAppBar(title: 'add_advance'.tr),
     body: Obx(() {
       if (controller.isLoading.value && controller.employeeData.value == null) {
         return const Loading();
@@ -61,7 +61,7 @@ class UpdateEmployeePayoutsView
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildEmployeeInfo(),
-        const SizedBox(height: 24),
+        // const SizedBox(height: 24),
         _buildPayoutsForm(context),
         const SizedBox(height: 32),
         _buildActionButtons(),
@@ -76,8 +76,8 @@ class UpdateEmployeePayoutsView
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TitleText('employee_info'.tr),
-          const SizedBox(height: 16),
+          // TitleText('employee_info'.tr),
+          // const SizedBox(height: 16),
           // Role Dropdown
           Obx(
             () => InputCardStyle(
@@ -180,31 +180,31 @@ class UpdateEmployeePayoutsView
   Widget _buildPayoutsForm(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      TitleText('PayoutType'.tr),
-      const SizedBox(height: 16),
-      InputCardStyle(
-        child: DropdownButtonFormField<DrapDown>(
-          initialValue: controller.payoutType.value,
-          items: controller.payoutTypes
-              .map(
-                (e) =>
-                    DropdownMenuItem<DrapDown>(value: e, child: Text(e.name)),
-              )
-              .toList(),
-          onChanged: (DrapDown? newValue) {
-            if (newValue != null) {
-              controller.payoutType(newValue);
-            }
-          },
-          validator: (value) => value == null ? 'Required field' : null,
-          padding: EdgeInsets.zero,
-          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-          decoration: InputDecoration(
-            labelText: 'Payouts Type'.tr,
-            border: InputBorder.none,
-          ),
-        ),
-      ),
+      // TitleText('PayoutType'.tr),
+      // const SizedBox(height: 16),
+      // InputCardStyle(
+      //   child: DropdownButtonFormField<DrapDown>(
+      //     initialValue: controller.payoutType.value,
+      //     items: controller.payoutTypes
+      //         .map(
+      //           (e) =>
+      //               DropdownMenuItem<DrapDown>(value: e, child: Text(e.name)),
+      //         )
+      //         .toList(),
+      //     onChanged: (DrapDown? newValue) {
+      //       if (newValue != null) {
+      //         controller.payoutType(newValue);
+      //       }
+      //     },
+      //     validator: (value) => value == null ? 'Required field' : null,
+      //     padding: EdgeInsets.zero,
+      //     icon: const Icon(Icons.keyboard_arrow_down_rounded),
+      //     decoration: InputDecoration(
+      //       labelText: 'Payouts Type'.tr,
+      //       border: InputBorder.none,
+      //     ),
+      //   ),
+      // ),
 
       // Date of Payouts
       PayoutsFormField(
@@ -320,7 +320,7 @@ class UpdateEmployeePayoutsView
                     width: 20,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text('update_payouts'.tr),
+                : Text('add_advance'.tr),
           ),
         ),
       ],

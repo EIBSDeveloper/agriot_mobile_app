@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import '../../controller/app_controller.dart';
 import '../../routes/app_routes.dart';
 
-AppDataController appData = Get.find();
+
 
 void showError(final String message) {
  

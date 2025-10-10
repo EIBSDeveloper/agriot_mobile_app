@@ -41,7 +41,6 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
     floatingActionButton: FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
       onPressed: () {
-        Get.back();
         Get.toNamed(Routes.addVendorCustomer);
       },
       child: const Icon(Icons.add),

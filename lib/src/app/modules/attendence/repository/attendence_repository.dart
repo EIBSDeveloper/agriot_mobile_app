@@ -15,12 +15,14 @@ class AttendanceRepository {
     required String date,
     int page = 1,
     String search = '',
+    bool? onlyUpdated
   }) async {
     final farmerId = appDeta.farmerId;
 
+      String key = onlyUpdated != null && onlyUpdated== true ?"&onlyUpdated=True":'';
     try {
       final response = await _httpService.get(
-        "/attendance_list?date=$date&farmer_id=$farmerId&page=$page&search=$search",
+        "/attendance_list?date=$date&farmer_id=$farmerId&page=$page$key&search=$search",
       );
 
       if (response.statusCode == 200) {

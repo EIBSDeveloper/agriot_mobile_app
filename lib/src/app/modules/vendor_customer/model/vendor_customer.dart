@@ -9,16 +9,6 @@ class VendorCustomer {
   final String mobileNo;
   final String? email;
   final String? doorNo;
-  final int? countryId;
-  final String? country;
-  final int? stateId;
-  final String? state;
-  final int? cityId;
-  final String? city;
-  final int? talukId;
-  final String? taluk;
-  final int? villageId;
-  final String? village;
   final String? gstNo;
   final String? taxNo;
   final int? postCode;
@@ -43,16 +33,6 @@ class VendorCustomer {
     required this.mobileNo,
     this.email,
     this.doorNo,
-    this.countryId,
-    this.country,
-    this.stateId,
-    this.state,
-    this.cityId,
-    this.city,
-    this.talukId,
-    this.taluk,
-    this.villageId,
-    this.village,
     this.gstNo,
     this.taxNo,
     this.postCode,
@@ -80,16 +60,6 @@ class VendorCustomer {
       mobileNo: json['mobile_no'].toString(),
       email: json['email'],
       doorNo: json['door_no'],
-      countryId: json['country_id'],
-      country: json['country'],
-      stateId: json['state_id'],
-      state: json['state'],
-      cityId: json['city_id'],
-      city: json['city'],
-      talukId: json['taluk_id'],
-      taluk: json['taluk'],
-      villageId: json['village_id'],
-      village: json['village'],
       gstNo: json['gst_no'] ?? json['gst_number'],
       taxNo: json['tax_no'] ?? json['tax_number'],
       postCode: json['post_code'] ?? json['pincode'],

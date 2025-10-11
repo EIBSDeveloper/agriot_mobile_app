@@ -120,7 +120,7 @@ class LandViewPage extends GetView<LandController> {
               ),
               gap,_buildTextField(
                 controller: controller.addressController,
-                label: 'Address *',minLines: 3
+                label: 'Address',minLines: 3
                 // inputFormatters: [
                 //   FilteringTextInputFormatter.digitsOnly,
                 //   LengthLimitingTextInputFormatter(6),

@@ -34,6 +34,32 @@ class LandView extends GetView<RegLandController> {
           label: 'patta_number'.tr,
         ),
         gap,
+        SearchableDropdown<AppDropdownItem>(
+          label: 'soil_type'.tr,
+          items: controller.soilTypes,
+          selectedItem: controller.selectedSoilType.value,
+          onChanged: (value) => controller.selectedSoilType.value = value,
+          displayItem: (value) => value.name.toString(),
+        ),
+        gap,
+        InputCardStyle(
+          child: TextFormField(
+            controller: controller.locationListController,
+            decoration: InputDecoration(
+              labelText: '${'location_coordinates'.tr} *',
+              border: InputBorder.none,
+              isDense: true,
+              suffixIcon: Icon(
+                Icons.location_on,
+                color: Get.theme.primaryColor,
+              ),
+            ),
+            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
+            readOnly: true,
+            onTap: controller.listpickLocation,
+          ),
+        ),
+        gap,
         CustomTextField(
           controller: controller.pinCode,
           label: '${'pincode'.tr} *',
@@ -48,22 +74,10 @@ class LandView extends GetView<RegLandController> {
         ),
         gap,
         CustomTextField(
-          controller: controller.pinCode, label: 'address'.tr),
-        gap,
-        InputCardStyle(
-          child: TextFormField(
-            controller: controller.locationListController,
-            decoration: InputDecoration(
-              labelText: '${'location_coordinates'.tr} *',
-              border: InputBorder.none,
-              isDense: true,
-              suffixIcon:  Icon(Icons.location_on ,color: Get.theme.primaryColor,),
-            ),
-            validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-            readOnly: true,
-            onTap: controller.listpickLocation,
-          ),
+          controller: controller.addressController,
+          label: 'address'.tr,
         ),
+
         gap,
         Row(
           children: [
@@ -98,33 +112,7 @@ class LandView extends GetView<RegLandController> {
             ),
           ],
         ),
-        gap,
-        SearchableDropdown<AppDropdownItem>(
-          label: 'soil_type'.tr,
-          items: controller.soilTypes,
-          selectedItem: controller.selectedSoilType.value,
-          onChanged: (value) => controller.selectedSoilType.value = value,
-          displayItem: (value) => value.name.toString(),
-        ),
 
-        gap,
-        // _buildCountryDropdown(),
-        // gap,
-        // _buildStateDropdown(),
-        // gap,
-        // _buildCityDropdown(),
-        // gap,
-        // _buildTalukDropdown(),
-        // gap,
-        // _buildVillageDropdown(),
-        // gap,
-        // CustomTextField(
-        //   controller: controller.locationController,
-        //   label: 'location_coordinates'.tr + ' *',
-        //   validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
-        //   readOnly: true,
-        //   onTap: controller.pickLocation,
-        // ),
         gap,
         _buildSurveyDetailsSection(),
         gap,
@@ -220,6 +208,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool readOnly;
   final VoidCallback? onTap;
+  final int? maxLines;
   final Function(String)? onChanged;
   const CustomTextField({
     super.key,
@@ -231,6 +220,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.readOnly = false,
     this.onTap,
+    this.maxLines,
   });
 
   @override
@@ -245,6 +235,7 @@ class CustomTextField extends StatelessWidget {
         suffixIcon: readOnly ? const Icon(Icons.location_on) : null,
       ),
       validator: validator,
+      maxLines: maxLines,
       inputFormatters: inputFormatters,
       keyboardType: keyboardType,
       readOnly: readOnly,

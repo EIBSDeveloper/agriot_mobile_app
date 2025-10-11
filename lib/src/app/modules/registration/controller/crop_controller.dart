@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
+import '../../../service/utils/utils.dart';
 import '../../near_me/model/models.dart';
 import '../model/crop_model.dart';
 import '../model/dropdown_item.dart';
@@ -136,7 +137,10 @@ class RegCropController extends GetxController {
         cropCoordinates.value = parseLatLngListFromString(
           location ?? [],
         ).toList();
-      }
+      }     
+        measurementController.text = calculatePolygonAreaAcre(
+          points: landCoordinates,
+        ).toString();
     } catch (e) {
       showError('Failed to pick location');
     }

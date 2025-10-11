@@ -159,16 +159,6 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
 
   Widget _buildActionButtons(VendorCustomer item) => Row(
     children: [
-      // Expanded(
-      //   child: ElevatedButton.icon(
-      //     onPressed: () =>,
-      //     icon: const Icon(Icons.call),
-      //     label: Text('call'.tr),
-      //     style: ElevatedButton.styleFrom(
-      //       padding: const EdgeInsets.symmetric(vertical: 16),
-      //     ),
-      //   ),
-      // ),
       const SizedBox(width: 16),
       Expanded(
         child: OutlinedButton.icon(
@@ -189,8 +179,7 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
     controller.nameController.text = item.name;
     controller.mobileController.text = item.mobileNo;
     controller.emailController.text = item.email ?? '';
-    controller.shopNameController.text =
-        item.shopName ?? item.businessName ?? '';
+    controller.shopNameController.text = item.shopName ?? item.businessName ?? '';
     controller.doorNoController.text = item.doorNo ?? '';
     controller.pincodeController.text = item.postCode?.toString() ?? '';
     controller.gstNoController.text = item.gstNo ?? '';

@@ -52,15 +52,15 @@ class CropView extends GetView<RegCropController> {
           }
           return const SizedBox();
         }),
-        const SizedBox(height: 16),
-        _buildMeasurementSection(),
+     
         _buildTextField(
           controller: controller.locationController,
           label: '${'location_coordinates'.tr} *',
           validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
           readOnly: true,
           onTap: controller.pickLocation,
-        ),
+        ),   const SizedBox(height: 16),
+        _buildMeasurementSection(),
         const SizedBox(height: 32),
         _buildSubmitButton(),
       ],

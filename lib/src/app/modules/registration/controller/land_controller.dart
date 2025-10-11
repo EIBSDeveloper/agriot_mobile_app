@@ -73,6 +73,9 @@ class RegLandController extends GetxController {
       isLoadingLandUnits(true);
       final result = await _landService.getLandUnits();
       landUnits.assignAll(result);
+      if(landUnits.isNotEmpty){
+        selectedLandUnit.value= landUnits.first;
+      }
     } finally {
       isLoadingLandUnits(false);
     }
@@ -140,11 +143,14 @@ class RegLandController extends GetxController {
 
         locationListController.text = location.toString();
            Map addressFromLatLng = await getAddressFromLatLng(
-          latitude: location['latitude'],
-          longitude: location['longitude'],
+          latitude: location[0][0],
+          longitude: location[0][1],
         );
-        // doorNoController.text = addressFromLatLng['address'] ?? '';
-        // pincodeController.text = addressFromLatLng['pincode'] ?? '';
+        addressController.text = addressFromLatLng['address'] ?? '';
+        pinCode.text = addressFromLatLng['pincode'] ?? '';
+        measurementController.text = calculatePolygonAreaAcre(
+          points: landCoordinates,
+        ).toString();
       }
       update();
     } catch (e) {

@@ -103,6 +103,7 @@ from rest_framework import serializers
 from collections import OrderedDict
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils.dateparse import parse_date
 
 logger = logging.getLogger('api')
 import logging
@@ -10202,7 +10203,7 @@ def add_sales_with_deductions(request, farmer_id):
         sale.total_sales_amount = float(sale.sales_amount) - total_deductions
         sale.save()
 
-        # ✅ Now create Outstanding after final values
+        # Now create Outstanding after final values
         paid = float(sale.amount_paid or 0)
         total = float(sale.total_sales_amount or 0)
 
@@ -10420,14 +10421,14 @@ def update_sales_with_deductions(request, farmer_id, sale_id):
         except AreaUnit.DoesNotExist:
             return Response({"error": f"My Sale Unit with id {sale_unit_id} not found."}, status=status.HTTP_404_NOT_FOUND)
 
-    # ✅ Update sales date
+    #  Update sales date
     if "dates_of_sales" in data and data["dates_of_sales"]:
         try:
             sale.dates_of_sales = datetime.strptime(data["dates_of_sales"], "%d-%m-%Y").date()
         except ValueError:
             return Response({"error": "Invalid date format. Use YYYY-MM-DD."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # ✅ Update description
+    # Update description
     if "description" in data:
         sale.description = data["description"]
 
@@ -13868,9 +13869,9 @@ def new_task(request):
          
         try:
             start_date = datetime.strptime(start_date, '%d-%m-%Y').date()
-            end_date = datetime.strptime(end_date, '%d-%m-%Y').date() if end_date else None
+            end_date = datetime.strptime(end_date, '%y-%m-%Y').date() if end_date else None
         except ValueError:
-            return Response({'error': 'Invalid date format, use YYYY-MM-DD'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid date format, use DD-MM-YYYY'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Ensure that end_date is only compared to start_date if it's not None
         if end_date and end_date < start_date:
@@ -39616,7 +39617,6 @@ def crop_view(request, farmer_id, land_id, crop_id):
 
     data = {
         'id': crop.id,
-        'farmer': get_related(crop.farmer),
         'crop_type': get_related(crop.crop_type),
         'crop': get_related(crop.crop),
         'crop_image': request.build_absolute_uri(f'/assets{crop.crop.img.url}') if crop.crop and crop.crop and crop.crop.img else "", 
@@ -39624,23 +39624,11 @@ def crop_view(request, farmer_id, land_id, crop_id):
         'plantation_date': crop.plantation_date.isoformat() if crop.plantation_date else None,
         'land': get_related(crop.land),
         'soil_type': get_related(crop.soil_type),
-        'taluk': get_related(crop.taluk),
-        'village': get_related(crop.village),
         'measurement_value': crop.measurement_value,
         'measurement_unit': get_related(crop.measurement_unit),
         'description': crop.description,
-        'status': crop.status,
-        'created_at': crop.created_at.isoformat() if crop.created_at else None,
-        'created_by': get_related(crop.created_by),
-        'updated_at': crop.updated_at.isoformat() if crop.updated_at else None,
-        'updated_by': get_related(crop.updated_by),
         'geo_marks': crop.geo_marks,
-        'expense': crop.expense,
-        'sales': crop.sales,
         'crop_status': crop.crop_status,
-        'translate_json': crop.translate_json,
-
-        # Add survey details here using the existing serializer:
         'survey_details': MyLandSurveyDetailsSerializer(crop.survey_details.all(), many=True).data,
     }
 
@@ -41889,7 +41877,7 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
             grouped_data[date_str] = []
         grouped_data[date_str].append(record)
 
-    # ✅ Helper function to parse date safely
+
     def parse_date(date_str):
         for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y", "%Y/%m/%d"):
             try:
@@ -41898,14 +41886,13 @@ def get_both_expense_sales_list(request, farmer_id, time_period):
                 continue
         return timezone.now()
 
-    # ✅ Sort latest first
     grouped_list = sorted(
         [{"date": date, "records": records} for date, records in grouped_data.items()],
         key=lambda x: parse_date(x["date"]),
         reverse=True
     )
 
-    # ✅ Pagination
+
     page = int(request.GET.get("page", 1))
     page_size = int(request.GET.get("page_size", 10))
     paginator = Paginator(grouped_list, page_size)
@@ -42153,9 +42140,6 @@ def get_employee_list_grouped_by_manager(request, farmer_id):
 @extend_schema(operation_id="get_employee_detail",tags=["Vendors Outstanding"],)
 @api_view(["GET"])
 def get_employee_detail(request, employee_id):
-    """
-    Get Employee detail by ID without serializer
-    """
     try:
         employee = get_object_or_404(Employee.objects.select_related('employee_type','work_type',), id=employee_id)
         data = {
@@ -42193,9 +42177,6 @@ def get_employee_detail(request, employee_id):
 @extend_schema(operation_id="get_manager_detail",tags=["Vendors Outstanding"],)
 @api_view(["GET"])
 def get_manager_detail(request, manager_id):
-    """
-    Get Manager detail by ID without serializer
-    """
     try:
         manager = get_object_or_404(ManagerUser, id=manager_id)
         # Fetch manager employees
@@ -42249,13 +42230,22 @@ def get_manager_detail(request, manager_id):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@extend_schema(operation_id="get_manager_permissions",tags=["Employee"],)
+@api_view(["GET"])
+def get_manager_permissions(request, manager_id):
+    try:
+        manager = get_object_or_404(ManagerUser, id=manager_id)
+      
+        data = permissions_to_input_format(manager.permissions)
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@extend_schema(operation_id="employee_advance",tags=["Employee"],)
 @api_view(["POST"])
 def add_edit_employee_advance(request,farmer_id):
-    """
-    Add or Edit Employee Advance
-    - If `id` present -> update
-    - Else -> create new advance record
-    """
     try:
         data = request.data
         advance_id = data.get("id")
@@ -42294,14 +42284,9 @@ def add_edit_employee_advance(request,farmer_id):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+@extend_schema(operation_id="add_employee_payout",tags=["Employee"],)
 @api_view(["POST"])
 def add_edit_employee_payout(request,farmer_id):
-    """
-    Add or Edit Employee Payouts
-    - If `id` present -> update
-    - Else -> create new payout record
-    """
     try:
         data = request.data
         payout_id = data.get("id")
@@ -42343,8 +42328,6 @@ def add_edit_employee_payout(request,farmer_id):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-from datetime import datetime
-from django.utils.dateparse import parse_date
 
 @api_view(["POST"])
 def bulk_add_employee_payouts(request,farmer_id):

@@ -13870,6 +13870,7 @@ def new_task(request):
         try:
             start_date = datetime.strptime(start_date, '%d-%m-%Y').date()
             end_date = datetime.strptime(end_date, '%y-%m-%Y').date() if end_date else None
+            
         except ValueError:
             return Response({'error': 'Invalid date format, use DD-MM-YYYY'}, status=status.HTTP_400_BAD_REQUEST)
 

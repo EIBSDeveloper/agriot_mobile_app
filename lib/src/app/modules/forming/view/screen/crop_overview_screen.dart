@@ -49,7 +49,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const CustomAppBar(title: 'Crop Details', showBackButton: true),
+    appBar: const CustomAppBar(title: 'Crop Details', actions: []),
     body: RefreshIndicator(
       onRefresh: () async {
         loadData();
@@ -69,16 +69,11 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Crop Info Section
               _buildCropInfoSection(),
-              // const SizedBox(height: 10),
-              // Statistics Section
               _buildStatisticsSection(overview),
               const SizedBox(height: 10),
-              // Guidelines Section
               _buildGuidelinesSection(overview),
               const SizedBox(height: 10),
-              // Tasks Section
               _buildTasksSection(overview),
             ],
           ),
@@ -105,7 +100,6 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           Column(
             children: [
               _buildCropDetailsSection(crop),
-
               _buildSurveyDetailsSection(crop),
             ],
           ),
@@ -130,16 +124,18 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                   backgroundImage: details!.imageUrl!.isNotEmpty
                       ? CachedNetworkImageProvider(details.imageUrl!)
                       : null,
-                  child: details.imageUrl!.isEmpty
-                      ? const Icon(Icons.agriculture, size: 30)
-                      : null,
                 ),
                 const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TitleText(
-                      '${details.crop!.name} (Day - ${controller.getDaysSincePlantation(details.plantationDate)})',
+                    Row(
+                      children: [
+                        TitleText(
+                          details.crop!.name,
+                        ),
+                        Text("  ${controller.getDaysSincePlantation(details.plantationDate)} - days ",style: const TextStyle(fontSize: 12),)
+                      ],
                     ),
                     InkWell(
                       onTap: () {
@@ -238,7 +234,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           _buildDetailRow('Harvest Frequency', details.harvestingType!.name),
           _buildDetailRow(
             'Plantation Date',
-            DateFormat('dd/MM/yyyy').format(details.plantationDate!),
+            DateFormat('dd-MM-yyyy').format(details.plantationDate!),
           ),
           _buildDetailRow(
             'Measurement',
@@ -277,27 +273,20 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
 
         child: ExpansionTile(
-          title: Text('Survey Details (${details.surveyDetails!.length})'),
+          title: TitleText('Survey Details (${details.surveyDetails!.length})'),
           children: [
-            DataTable(
-              columns: [
-                const DataColumn(label: Text('Survey No')),
-                const DataColumn(label: Text('Area')),
-              ],
-              rows: details.surveyDetails!
-                  .map(
-                    (survey) => DataRow(
-                      cells: [
-                        DataCell(Text(survey.surveyNo!)),
-                        DataCell(
-                          Text(
-                            '${survey.measurementValue} ${survey.measurementUnit}',
-                          ),
-                        ),
-                      ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  ...details.surveyDetails!.map(
+                    (survey) => _buildDetailRow(
+                      survey.surveyNo!,
+                      '${survey.measurementValue} ${survey.measurementUnit}',
                     ),
-                  )
-                  .toList(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -591,7 +580,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           },
           eventLoader: (day) => controller.getEventsForDay(day),
           calendarBuilders: CalendarBuilders(
-            markerBuilder: (context, date,List<Event> events) {
+            markerBuilder: (context, date, List<Event> events) {
               if (events.isEmpty) return const SizedBox.shrink();
 
               return Positioned(

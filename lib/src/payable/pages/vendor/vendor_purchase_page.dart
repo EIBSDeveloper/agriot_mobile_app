@@ -45,9 +45,9 @@ class VendorPurchasePage extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: isPayable ? 'vendor_payables'.tr : 'vendor_receivables'.tr
+        title: isPayable ? 'vendor_payables'.tr : 'vendor_receivables'.tr,
       ),
- 
+
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Loading();
@@ -149,7 +149,7 @@ class VendorPurchasePage extends StatelessWidget {
     VendorAddController controller, {
     required int vendorId,
   }) => Card(
-    margin: const EdgeInsets.symmetric(vertical: 6,),
+    margin: const EdgeInsets.symmetric(vertical: 6),
     elevation: 1,
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -182,9 +182,7 @@ class VendorPurchasePage extends StatelessWidget {
                 if (!isPayable)
                   Text(
                     "${'received'.tr}: ₹${expense.receivedAmount}",
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(fontSize: 14),
                   ),
               ],
             ),
@@ -237,6 +235,7 @@ class VendorPurchasePage extends StatelessWidget {
     required int fuelPurchaseId,
     required String type,
   }) {
+    final formKey = GlobalKey<FormState>();
     final dateController = TextEditingController();
     final amountController = TextEditingController();
     final descController = TextEditingController();
@@ -268,206 +267,241 @@ class VendorPurchasePage extends StatelessWidget {
             ],
           ),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Title
-                Text(
-                  isPayable
-                      ? "add_vendor_payable".tr
-                      : "add_vendor_receivable".tr,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Date Picker
-                InputCardStyle(
-                  child: TextField(
-                    controller: dateController,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      labelText: "date".tr,
-                      hintText: "dd_mm_yyyy".tr,
-                      suffixIcon: Icon(
-                        Icons.calendar_today,
-                        color: Get.theme.primaryColor,
-                      ),
-                      border: InputBorder.none,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Title
+                  Text(
+                    isPayable
+                        ? "add_vendor_payable".tr
+                        : "add_vendor_receivable".tr,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: Get.context!,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime.now(),
-                        builder: (context, child) => Theme(
-                          data: Theme.of(context).copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary: Get.theme.primaryColor,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Date Picker (Mandatory)
+                  InputCardStyle(
+                    child: TextFormField(
+                      controller: dateController,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        label: RichText(
+                          text: const TextSpan(
+                            text: "Date",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 16,
                             ),
-                            textButtonTheme: TextButtonThemeData(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Get.theme.primaryColor,
+                            children: [
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
+                        hintText: "dd_mm_yyyy",
+                        suffixIcon: Icon(
+                          Icons.calendar_today,
+                          color: Get.theme.primaryColor,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please select a date";
+                        }
+                        return null;
+                      },
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: Get.context!,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime.now(),
+                          builder: (context, child) => Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: Get.theme.primaryColor,
+                              ),
+                              textButtonTheme: TextButtonThemeData(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Get.theme.primaryColor,
+                                ),
                               ),
                             ),
+                            child: child!,
                           ),
-                          child: child!,
-                        ),
-                      );
-                      if (pickedDate != null) {
-                        dateController.text =
-                            "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
-                      }
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Amount
-                InputCardStyle(
-                  child: TextField(
-                    controller: amountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "payment_amount".tr,
-                      border: InputBorder.none,
-                    
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Description
-                InputCardStyle(
-                  child: TextField(
-                    controller: descController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: "description".tr,
-                      border: InputBorder.none,
-                     
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                _buildDocumentsSection(controller),
-
-                // Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final date = dateController.text;
-                      final amount =
-                          double.tryParse(amountController.text) ?? 0;
-
-                      if (date.isEmpty ||
-                          amount == 0 ||
-                          controller.documentItems.isEmpty) {
-                        Fluttertoast.showToast(
-                          msg: "${"error".tr}: ${"all_fields_required".tr}",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 14.0,
                         );
-                        return;
-                      }
+                        if (pickedDate != null) {
+                          dateController.text =
+                              "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
 
-                      final desc = descController.text;
+                  // Amount (Mandatory)
+                  InputCardStyle(
+                    child: TextFormField(
+                      controller: amountController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        label: RichText(
+                          text: const TextSpan(
+                            text: "Payment Amount",
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 16,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: " *",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter payment amount";
+                        }
+                        final parsed = double.tryParse(value);
+                        if (parsed == null || parsed <= 0) {
+                          return "Enter a valid amount";
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
 
-                      try {
-                        if (isPayable) {
-                          await controller.addVendorPayable(
-                            vendorId: vendorId,
-                            fuelPurchaseId: fuelPurchaseId,
-                            date: date,
-                            amount: amount,
-                            type: type,
-                            description: desc,
-                          );
+                  // Description (Optional)
+                  InputCardStyle(
+                    child: TextFormField(
+                      controller: descController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: "Description (Optional)",
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(color: Colors.black54),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
 
-                          Get.back(); // Close sheet
+                  // Documents (Optional)
+                  _buildDocumentsSection(controller),
 
+                  const SizedBox(height: 20),
+
+                  // Submit Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (!formKey.currentState!.validate()) return;
+
+                        final date = dateController.text;
+                        final amount =
+                            double.tryParse(amountController.text) ?? 0;
+                        final desc = descController.text;
+
+                        try {
+                          if (isPayable) {
+                            await controller.addVendorPayable(
+                              vendorId: vendorId,
+                              fuelPurchaseId: fuelPurchaseId,
+                              date: date,
+                              amount: amount,
+                              type: type,
+                              description: desc,
+                            );
+
+                            Get.back();
+
+                            Fluttertoast.showToast(
+                              msg: "Payment successfully",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Get.theme.primaryColor,
+                              textColor: Colors.white,
+                              fontSize: 14.0,
+                            );
+
+                            Get.to(
+                              () => const PayablesReceivablesPage(
+                                initialTab: 1,
+                                initialsubtab: 0,
+                              ),
+                            );
+                          } else {
+                            await controller.addVendorReceivable(
+                              vendorId: vendorId,
+                              fuelPurchaseId: fuelPurchaseId,
+                              date: date,
+                              amount: amount,
+                              type: type,
+                              description: desc,
+                            );
+
+                            Get.back();
+
+                            Fluttertoast.showToast(
+                              msg: "Payment successfully",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Get.theme.primaryColor,
+                              textColor: Colors.white,
+                              fontSize: 14.0,
+                            );
+
+                            Get.to(
+                              () => const PayablesReceivablesPage(
+                                initialTab: 1,
+                                initialsubtab: 1,
+                              ),
+                            );
+                          }
+                        } catch (e) {
                           Fluttertoast.showToast(
-                            msg: "Payment successfully",
+                            msg: e.toString(),
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Get.theme.primaryColor,
+                            backgroundColor: Colors.red,
                             textColor: Colors.white,
                             fontSize: 14.0,
-                          );
-
-                          Get.to(
-                            () => const PayablesReceivablesPage(
-                              initialTab: 1,
-                              initialsubtab: 0,
-                            ),
-                          );
-                        } else {
-                          await controller.addVendorReceivable(
-                            vendorId: vendorId,
-                            fuelPurchaseId: fuelPurchaseId,
-                            date: date,
-                            amount: amount,
-                            type: type,
-                            description: desc,
-                          );
-
-                          Get.back();
-
-                          Fluttertoast.showToast(
-                            msg: "Payment successfully",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Get.theme.primaryColor,
-                            textColor: Colors.white,
-                            fontSize: 14.0,
-                          );
-
-                          Get.to(
-                            () => const PayablesReceivablesPage(
-                              initialTab: 1,
-                              initialsubtab: 1,
-                            ),
                           );
                         }
-                      } catch (e) {
-                        Fluttertoast.showToast(
-                          msg: e.toString(),
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 14.0,
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Get.theme.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Get.theme.primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      "submit".tr,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        "Submit",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -483,7 +517,7 @@ class VendorPurchasePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'Documents',
+            'Documents (Optional)',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Card(
@@ -516,14 +550,10 @@ class VendorPurchasePage extends StatelessWidget {
               const SizedBox(height: 5),
               Row(
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        "${index + 1}, ${controller.documentItems[index].newFileType!}",
-                      ),
-                      const Icon(Icons.attach_file),
-                    ],
+                  Text(
+                    "${index + 1}. ${controller.documentItems[index].newFileType!}",
                   ),
+                  const Icon(Icons.attach_file),
                   const Spacer(),
                   IconButton(
                     onPressed: () {
@@ -534,7 +564,6 @@ class VendorPurchasePage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 5),
               const Divider(),
             ],
           ),

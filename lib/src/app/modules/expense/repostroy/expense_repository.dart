@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/controller/app_controller.dart';
-import 'package:argiot/src/app/modules/expense/model/file_type.dart';
 import 'package:argiot/src/app/modules/expense/model/total_expense.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/http/http_service.dart';
@@ -120,17 +119,7 @@ class ExpenseRepository {
     }
   }
 
-  Future<List<FileType>> getFileTypes() async {
-    try {
-      final response = await _httpService.get('/document_categories');
-      return List<FileType>.from(
-        json.decode(response.body)['data'].map((x) => FileType.fromJson(x)),
-      );
-    } catch (e) {
-      throw Exception('Failed to load file types: $e');
-    }
-  }
-
+ 
   Future addExpense({
     int? myCrop,
     required int amount,

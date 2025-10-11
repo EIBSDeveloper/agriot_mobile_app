@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
 import 'package:argiot/src/app/modules/vendor_customer/controller/vendor_customer_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -73,7 +76,7 @@ class AddVendorCustomerView extends StatelessWidget {
   Widget _buildBasicInfoSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('basic_info'.tr, style: Get.textTheme.titleSmall),
+      _buildImagePicker(),
       const SizedBox(height: 8),
       InputCardStyle(
         child: DropdownButtonFormField<String>(
@@ -145,7 +148,7 @@ class AddVendorCustomerView extends StatelessWidget {
         child: TextFormField(
           controller: controller.shopNameController,
           decoration: InputDecoration(
-            labelText: "${'business_name'.tr} *",
+            labelText: 'business_name'.tr,
             border: InputBorder.none,
           ),
         ),
@@ -158,8 +161,7 @@ class AddVendorCustomerView extends StatelessWidget {
   Widget _buildLocationSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('location_info'.tr, style: Get.textTheme.titleSmall),
-      const SizedBox(height: 8),
+    
       InputCardStyle(
         child: TextField(
           controller: controller.doorNoController,
@@ -214,8 +216,6 @@ class AddVendorCustomerView extends StatelessWidget {
   Widget _buildFinancialSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text('financial_info'.tr, style: Get.textTheme.titleSmall),
-      const SizedBox(height: 8),
       InputCardStyle(
         child: TextFormField(
           controller: controller.gstNoController,
@@ -255,6 +255,46 @@ class AddVendorCustomerView extends StatelessWidget {
       child: controller.isSubmitting.value
           ? const CircularProgressIndicator(color: Colors.white)
           : Text('submit'.tr, style: const TextStyle(color: Colors.white)),
+    ),
+  );
+   Widget _buildImagePicker() => Center(
+    child: InkWell(
+        onTap: controller.pickImage,
+      child: Stack(
+        children: [
+          Obx(() {
+            if (controller.imagePath.isNotEmpty) {
+              return CircleAvatar(
+                radius: 50,
+                backgroundImage: controller.imagePath.startsWith('http')
+                    ? CachedNetworkImageProvider(controller.imagePath.value)
+                    : FileImage(File(controller.imagePath.value))
+                          as ImageProvider,
+              );
+            }
+            return const CircleAvatar(
+              radius: 50,
+              child: Icon(Icons.person, size: 40),
+            );
+          }),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Get.theme.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.camera_alt,
+                size: 20,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../../service/utils/utils.dart';
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
@@ -16,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) => AppBar(
-      title: Text(title),
+      title: Text(capitalizeFirstLetter(title)),
       // centerTitle: true,
       actions: actions,
       leading:  IconButton(

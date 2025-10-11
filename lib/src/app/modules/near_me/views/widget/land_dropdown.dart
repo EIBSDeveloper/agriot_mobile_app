@@ -5,6 +5,8 @@ import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../service/utils/utils.dart';
+
 class LandDropdown extends StatelessWidget {
   final List<Land> lands;
   final Land selectedLand;
@@ -28,7 +30,7 @@ class LandDropdown extends StatelessWidget {
       items: lands
           .map(
             (Land land) =>
-                DropdownMenuItem<Land>(value: land, child: Text(land.name)),
+                DropdownMenuItem<Land>(value: land, child: Text(capitalizeFirstLetter(land.name))),
           )
           .toList(),
       icon: const Icon(Icons.keyboard_arrow_down_rounded),

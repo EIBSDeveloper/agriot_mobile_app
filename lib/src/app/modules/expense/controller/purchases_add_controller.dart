@@ -33,7 +33,6 @@ class PurchasesAddController extends GetxController {
   final RxList<AddDocumentModel> documentItems = <AddDocumentModel>[].obs;
 
   final RxString purchaseAmount = ''.obs;
-  // final RxString paidAmount = ''.obs;
   final RxString litre = ''.obs;
   final RxString description = ''.obs;
   final RxList<String> documents = <String>[].obs;
@@ -61,8 +60,8 @@ class PurchasesAddController extends GetxController {
   // Observables
   final showInsuranceDetails = false.obs;
   final serviceFrequencyUnit = 'KM'.obs;
-  var vendorList = <Customer>[].obs;
-  var selectedVendor = Rx<int?>(null);
+  final RxList<Customer> vendorList = <Customer>[].obs;
+  final Rx<int?> selectedVendor = Rx<int?>(null);
   // Validation observables
 
   final formKey = GlobalKey<FormState>();
@@ -122,12 +121,12 @@ class PurchasesAddController extends GetxController {
   Future<void> fetchVendorList() async {
     try {
       final response = await _repository.getVendorList();
-      vendorList.assignAll([
-        Customer(id: 0,name: "Other vendor"),
-        ...response]);
-        selectedVendor.value = vendorList.first.id;
+      vendorList.assignAll([...response]);
+      selectedVendor.value = vendorList.first.id;
     } catch (e) {
       showError('Failed to fetch customers: $e');
+    } finally {
+      vendorList.insert(0, Customer(id: 0, name: "Other vendor"));
     }
   }
 
@@ -230,7 +229,7 @@ class PurchasesAddController extends GetxController {
     try {
       final fuelEntry = FuelEntryModel(
         dateOfConsumption: selectedDate.value,
-        vendor:  selectedVendor.value ==0 ?null:selectedVendor.value,
+        vendor: selectedVendor.value == 0 ? null : selectedVendor.value,
         inventoryType: selectedInventoryType.value!,
         inventoryCategory: selectedInventoryType.value!,
         inventoryItems: selectedInventoryItem.value!,
@@ -276,7 +275,7 @@ class PurchasesAddController extends GetxController {
     try {
       final machinery = Machinery(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value ==0 ?null:selectedVendor.value,
+        vendor: selectedVendor.value == 0 ? null : selectedVendor.value,
         inventoryType:
             selectedInventoryType.value!, // Map to your actual values
         inventoryCategory: selectedInventoryType.value!,
@@ -329,7 +328,7 @@ class PurchasesAddController extends GetxController {
       final vehicle = VehicleModel(
         farmerId: appData.farmerId.value,
         dateOfConsumption: DateTime.parse(selectedDate.value),
-        vendor:  selectedVendor.value ==0 ?null:selectedVendor.value,
+        vendor: selectedVendor.value == 0 ? null : selectedVendor.value,
         inventoryType: selectedInventoryType.value!, // Assuming default value
         inventoryCategory: selectedInventoryType.value ?? 0,
         inventoryItems: selectedInventoryItem.value ?? 0,
@@ -428,7 +427,7 @@ class PurchasesAddController extends GetxController {
     try {
       final fertilizer = FertilizerModel(
         dateOfConsumption: selectedDate.value,
-        vendor: selectedVendor.value ==0 ?null:selectedVendor.value,
+        vendor: selectedVendor.value == 0 ? null : selectedVendor.value,
         inventoryType: selectedInventoryType.value!,
         inventoryCategory: selectedInventoryType.value!,
 
@@ -449,7 +448,7 @@ class PurchasesAddController extends GetxController {
         Get.back(result: true);
 
         Get.toNamed(
-            Routes.consumptionPurchaseList,
+          Routes.consumptionPurchaseList,
           arguments: {
             "id": selectedInventoryType.value,
             'tab': 1,
@@ -514,7 +513,7 @@ class PurchasesAddController extends GetxController {
 
   Widget buildPurchaseAmountField() => Obx(
     () => InputCardStyle(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextFormField(
         validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
         decoration: InputDecoration(
@@ -569,7 +568,7 @@ class PurchasesAddController extends GetxController {
     () => Column(
       children: [
         InputCardStyle(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: InkWell(
             onTap: () => selectDate1(),
             child: InputDecorator(
@@ -605,7 +604,7 @@ class PurchasesAddController extends GetxController {
 
   Widget buildInventoryItemDropdown() => Obx(
     () => InputCardStyle(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DropdownButtonFormField<int>(
         validator: (value) => value == null ? 'required_field'.tr : null,
         decoration: InputDecoration(
@@ -635,8 +634,7 @@ class PurchasesAddController extends GetxController {
           () => InputCardStyle(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: DropdownButtonFormField<int>(
-              // validator: (value) => value == null ? 'required_field'.tr : null,
-              decoration:  InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'vendor'.tr,
                 border: InputBorder.none,
               ),
@@ -662,7 +660,7 @@ class PurchasesAddController extends GetxController {
           color: Colors.white,
           onPressed: () {
             Get.toNamed(
-               Routes.addVendorCustomer,
+              Routes.addVendorCustomer,
               arguments: {"type": 'vendor'},
             )?.then((result) {
               fetchVendorList();

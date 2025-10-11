@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 import '../../controller/employee_manager_list_controller.dart';
 import '../../model/user_model.dart';
 
@@ -61,7 +62,7 @@ class _UserListItemState extends State<UserListItem> {
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
-              title: Text(widget.user.name),
+              title: Text(capitalizeFirstLetter(widget.user.name)),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,7 +88,7 @@ class _UserListItemState extends State<UserListItem> {
                                 });
                                 widget.controller.statusUpdate(
                                   id: widget.user.id,
-                                  status: newValue
+                                  status: newValue,
                                 );
                               },
                             ),
@@ -109,10 +110,10 @@ class _UserListItemState extends State<UserListItem> {
                 ],
               ),
               trailing: IconButton(
-                icon: const Icon(Icons.phone),
-                onPressed: () => widget.controller.initiateCall(
-                  widget.user.number.toString(),
-                ),
+                onPressed: () {
+                  makePhoneCall(widget.user.number);
+                },
+                icon: Icon(Icons.call, color: Get.theme.primaryColor),
               ),
             ),
           ),

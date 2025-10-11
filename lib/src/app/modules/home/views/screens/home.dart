@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/home/views/screens/my_drawer.dart';
+import 'package:argiot/src/app/widgets/svg_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../contoller/bottombar_contoller.dart';
@@ -45,7 +46,7 @@ class Home extends GetView<BottomBarContoller> {
                 child: Container(
                   height: 60,
 
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(15),
 
                   decoration: BoxDecoration(
                     color: isSelected
@@ -56,7 +57,8 @@ class Home extends GetView<BottomBarContoller> {
                       topRight: Radius.circular(10),
                     ),
                   ),
-                  child: Image.asset(
+                  child: SvgIcons(
+
                     controller.icons[index],
                     color: isSelected ? Colors.white : Get.theme.primaryColor,
                   ),

@@ -65,7 +65,7 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
     elevation: 1,
     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     child: ListTile(
-      title: Text(item.name, style: Get.textTheme.titleMedium),
+      title: Text(capitalizeFirstLetter(item.name), style: Get.textTheme.titleMedium),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

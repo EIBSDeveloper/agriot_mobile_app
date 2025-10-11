@@ -8,21 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../../core/app_images.dart';
 import '../../../../widgets/loading.dart';
 
-LatLng calculateCenter(List<LatLng> points) {
-  if (points.isEmpty) {
-    throw ArgumentError('Points list cannot be empty');
-  }
 
-  double sumLat = 0;
-  double sumLng = 0;
-
-  for (var point in points) {
-    sumLat += point.latitude;
-    sumLng += point.longitude;
-  }
-
-  return LatLng(sumLat / points.length, sumLng / points.length);
-}
 
 class LandPickerView extends StatefulWidget {
   const LandPickerView({super.key});

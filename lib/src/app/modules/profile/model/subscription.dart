@@ -30,11 +30,11 @@ class Subscription {
   });
 
   factory Subscription.fromJson(Map<String, dynamic> json) => Subscription(
-      packageName: json['package_name'] ?? '',
-      packageDuration: json['package_duration'] ?? '',
+      packageName: json['package_name'] ?? '-',
+      packageDuration: json['package_duration'] ?? 'days',
       packageValidity: json['package_validity'] ?? 0,
-      startDate: json['startdate'] ?? '',
-      endDate: json['enddate'] ?? '',
+      startDate: json['startdate'] ?? '-',
+      endDate: json['enddate'] ?? '-',
       remainingDays: json['remainingdays'] ?? 0,
       renewal: json['renewal'] ?? false,
       status: json['status'] ?? 0,

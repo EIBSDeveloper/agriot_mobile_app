@@ -191,7 +191,7 @@ class ProfileView extends GetView<ProfileController> {
             const SizedBox(height: 8),
             _buildSubscriptionDetailRow(
               'validity'.tr,
-              '${subscription.packageValidity} ${subscription.packageDuration}',
+              '${subscription.packageValidity} - ${subscription.packageDuration}',
             ),
             _buildSubscriptionDetailRow(
               'start_date'.tr,

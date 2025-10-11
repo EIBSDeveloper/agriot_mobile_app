@@ -1,6 +1,4 @@
-// import 'package:argiot/src/app/modules/forming/model/crop.dart';
 
-// Add these new model classes for grouped records
 class GroupedExpenseRecord {
   final String date;
   final List<ExpenseRecord> records;

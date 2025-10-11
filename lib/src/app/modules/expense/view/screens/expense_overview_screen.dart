@@ -2,13 +2,13 @@ import 'package:argiot/src/app/modules/expense/controller/expense_controller.dar
 import 'package:argiot/src/app/modules/expense/model/expense.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../routes/app_routes.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../../widgets/toggle_bar.dart';
+
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
 
@@ -26,7 +26,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleText("Expenses and sales".tr),
+              TitleText("Expenses and Sales".tr),
               const SizedBox(height: 10),
               _buildSummarySection(),
               const SizedBox(height: 10),
@@ -115,23 +115,25 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
       itemCount: groupedItems.length,
       itemBuilder: (context, index) {
         final groupedRecord = groupedItems[index];
-        
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Date header
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+              padding: const EdgeInsets.symmetric( vertical: 8),
               child: Text(
-                _formatDisplayDate(groupedRecord.date),
-                style: Get.textTheme.titleMedium?.copyWith(
+                groupedRecord.date,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Get.theme.primaryColor,
+                  fontSize: 16,
                 ),
               ),
             ),
             // Records for this date
-            ...groupedRecord.records.map((record) => _buildTransactionItem(record)),
+            ...groupedRecord.records.map(
+              (record) => _buildTransactionItem(record),
+            ),
           ],
         );
       },
@@ -139,62 +141,48 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
   }
 
   Widget _buildTransactionItem(ExpenseRecord record) => Card(
-      elevation: 1,
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  record.item.name,
-                  style: Get.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+    elevation: 1,
+    margin: const EdgeInsets.symmetric(vertical: 4),
+    child: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                record.item.name,
+                style: Get.textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  '₹${record.amount.toStringAsFixed(2)}',
-                  style: Get.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Get.theme.primaryColor,
-                  ),
+              ),
+              Text(
+                '₹${record.amount.toStringAsFixed(2)}',
+                style: Get.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Get.theme.primaryColor,
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          if (record.vendor?.name != null)
+            Text('${record.vendor!.name}', style: Get.textTheme.bodySmall),
+          if (record.quantity != null && record.quantity!.isNotEmpty)
+            Text(
+              'Quantity: ${record.quantity}',
+              style: Get.textTheme.bodySmall,
             ),
-            const SizedBox(height: 4),
-            if (record.vendor?.name !=null)
-              Text(
-                '${record.vendor!.name}',
-                style: Get.textTheme.bodySmall,
-              ),
-            if (record.quantity != null && record.quantity!.isNotEmpty)
-              Text(
-                'Quantity: ${record.quantity}',
-                style: Get.textTheme.bodySmall,
-              ),
-            if (record.description.isNotEmpty)
-              Text(
-                record.description,
-                style: Get.textTheme.bodySmall,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-          ],
-        ),
+          if (record.description.isNotEmpty)
+            Text(
+              record.description,
+              style: Get.textTheme.bodySmall,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+        ],
       ),
-    );
-
-  String _formatDisplayDate(String dateString) {
-    try {
-      final inputFormat = DateFormat("dd-MM-yyyy");
-      final outputFormat = DateFormat("MMM dd, yyyy");
-      final date = inputFormat.parse(dateString);
-      return outputFormat.format(date);
-    } catch (e) {
-      return dateString; // Return original if parsing fails
-    }
-  }
+    ),
+  );
 }

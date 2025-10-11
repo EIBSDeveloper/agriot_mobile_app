@@ -328,7 +328,7 @@ class LandMapViewController extends GetxController {
             // if (controller.cropDetails.value!.tasks.isNotEmpty)
             const TitleText("Today Status "),
 
-            _buildDetailRow('working employees:', '2'),
+            _buildDetailRow('working employees:', ''),
             const SizedBox(height: 8),
             // _buildDetailRow('Number of employees', ''),
             const SizedBox(height: 50),

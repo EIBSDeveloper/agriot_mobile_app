@@ -53,11 +53,10 @@ class ConsumptionList extends StatelessWidget {
               arguments: {"id": record.id, 'type': type},
             );
           },
-          child: Card(
+          child: Card(elevation: 1,
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child:  Container(
               padding: const EdgeInsets.all(12.0),
-         constraints: BoxConstraints(minHeight:    100<   Get.size.height*0.05?Get.size.height*0.05:100, ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

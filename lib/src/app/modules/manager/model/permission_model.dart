@@ -46,14 +46,7 @@ class PermissionItem {
     );
   }
 
-  // ✅ Convert PermissionItem to JSON (recursive)
-  /*  Map<String, dynamic> toJson() {
-    return {
-      "status": status,
-      if (children.isNotEmpty)
-        "children": children.map((key, value) => MapEntry(key, value.toJson())),
-    };
-  }*/
+
   /// Convert PermissionItem to flat JSON for API
   Map<String, dynamic> toFlatJson() {
     if (children.isEmpty) {

@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 
 import '../../../app/modules/document/document.dart';
 import '../../../app/service/utils/enums.dart';
-import '../../../app/service/utils/utils.dart';
 import '../../repository/customer_add_repository/customer_add_repository.dart';
 
 class CustomerAddController extends GetxController {
@@ -96,7 +95,7 @@ class CustomerAddController extends GetxController {
     Get.to(
       const AddDocumentView(),
       binding: DocumentBinding(),
-      arguments: {"id": getDocTypeId(DocTypes.payouts)},
+      arguments: {"type": DocTypes.payouts},
     )?.then((result) {
       if (result != null && result is AddDocumentModel) {
         documentItems.add(result);

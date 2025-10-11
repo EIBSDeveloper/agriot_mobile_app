@@ -1,6 +1,5 @@
 import 'package:argiot/src/app/modules/expense/model/document_category.dart';
 import 'package:argiot/src/app/modules/expense/model/customer.dart';
-import 'package:argiot/src/app/modules/expense/model/farmer.dart';
 import 'package:argiot/src/app/modules/forming/model/crop.dart';
 import 'package:argiot/src/app/modules/sales/model/deduction.dart';
 import 'package:argiot/src/app/modules/sales/model/unit.dart';
@@ -8,7 +7,7 @@ import 'package:argiot/src/app/modules/sales/model/unit.dart';
 
 class SalesDetailResponse {
   final int salesId;
-  final Farmer farmer;
+ 
   final String datesOfSales;
   final Crop myCrop;
   final Customer myCustomer;
@@ -29,7 +28,6 @@ class SalesDetailResponse {
 
   SalesDetailResponse({
     required this.salesId,
-    required this.farmer,
     required this.datesOfSales,
     required this.myCrop,
     required this.myCustomer,
@@ -51,7 +49,6 @@ class SalesDetailResponse {
 
   factory SalesDetailResponse.fromJson(Map<String, dynamic> json) => SalesDetailResponse(
       salesId: json['sales_id'],
-      farmer: Farmer.fromJson(json['farmer']),
       datesOfSales: json['dates_of_sales'],
       myCrop: Crop.fromJson(json['my_crop']),
       myCustomer: Customer.fromJson(json['my_customer']),

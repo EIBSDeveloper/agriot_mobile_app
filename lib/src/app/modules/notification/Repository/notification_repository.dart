@@ -55,30 +55,6 @@ class NotificationRepository {
     }
   }
 
-  Future<NotificationItem?> getNotificationById(int notificationId) async {
-    final userId = _appDataController.farmerId;
-
-    try {
-      final response = await _httpService.get(
-        '/farmer_notifications_get/$userId/$notificationId',
-      );
-
-      print('Notification response: ${response.body}');
-
-      final Map<String, dynamic> jsonMap = json.decode(response.body);
-
-      // If API returns a single notification object
-      if (jsonMap.isNotEmpty) {
-        return NotificationItem.fromJson(jsonMap);
-      }
-
-      return null;
-    } catch (e) {
-      print('Error fetching notification: $e');
-      throw Exception('Failed to load notification: ${e.toString()}');
-    }
-  }
-
   Future<NotificationCount> getNotificationCount() async {
     final userId = _appDataController.farmerId;
     try {
@@ -96,19 +72,14 @@ class NotificationRepository {
   }
 
   // Mark notification as read
-  Future<bool> markAsRead(int notificationId) async {
+  Future readll() async {
     final userId = _appDataController.farmerId;
 
     try {
-      final response = await _httpService.post(
-        '/farmer_notification_update/$userId/$notificationId',
+      await _httpService.post(
+        '/notification_read_all/$userId',
         {}, // empty body if API doesn't require
       );
-
-      final Map<String, dynamic> jsonMap = json.decode(response.body);
-
-      // Assuming API returns {"success": true} or similar
-      return jsonMap['success'] ?? true;
     } catch (e) {
       print('Error marking notification as read: $e');
       return false;

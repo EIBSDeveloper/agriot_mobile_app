@@ -3,7 +3,6 @@ import 'package:argiot/src/app/modules/dashboad/model/land_v_s_crop_model.dart';
 import 'package:argiot/src/app/modules/dashboad/model/market_price.dart';
 import 'package:argiot/src/app/modules/dashboad/model/payment_summary.dart';
 import 'package:argiot/src/app/modules/dashboad/model/weather_data.dart';
-import 'package:argiot/src/app/modules/dashboad/view/widgets/widget_settings.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -34,7 +33,6 @@ class DashboardController extends GetxController {
 
   final RxList<MarketPrice> marketPrices = <MarketPrice>[].obs;
 
-  var marketError = "".obs;
   final Rx<PaymentSummary?> paymentSummary = Rx<PaymentSummary?>(null);
   final Rx<WidgetConfig> widgetConfig = WidgetConfig(
     weatherAndPayments: true,
@@ -50,10 +48,6 @@ class DashboardController extends GetxController {
     fetchLands();
   }
 
-  void showWidgetSettings() {
-    Get.bottomSheet(const WidgetSettings());
-  }
-
   Future<void> fetchLands() async {
     try {
       isLoading(true);
@@ -65,19 +59,6 @@ class DashboardController extends GetxController {
         userLimit.loadUsage();
       }
     } catch (w) {
-      isLoading(false);
-    }
-  }
-
-  Future<void> deleteTask(int taskId) async {
-    try {
-      isLoading(true);
-      await _repository.deleteTask(taskId);
-      showSuccess('Task deleted successfully');
-      // await loadTasks();
-    } catch (e) {
-      showError('Failed to delete task');
-    } finally {
       isLoading(false);
     }
   }
@@ -169,13 +150,15 @@ class DashboardController extends GetxController {
     paymentSummary.value = await _repository.getPaymentSummary();
   }
 
+
+
   Future<void> updateWidgetConfiguration(WidgetConfig newConfig) async {
     try {
       isLoading.value = true;
       final success = await _repository.updateWidgetConfig(newConfig);
       if (success) {
         widgetConfig.value = newConfig;
-        await loadInitialData(); // Reload data based on new config
+        await loadInitialData();
       }
     } catch (e) {
       showError('Failed to update widget configuration');

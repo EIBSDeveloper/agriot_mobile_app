@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../../widgets/loading.dart';
 import '../../../../widgets/my_network_image.dart';
 import '../../controller/employee_details_controller.dart';
@@ -75,7 +76,7 @@ class EmployeeDetailsView extends GetView<EmployeeDetailsController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        controller.employeeDetails.value!.name,
+                     capitalizeFirstLetter(   controller.employeeDetails.value!.name),
                         style: Get.theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

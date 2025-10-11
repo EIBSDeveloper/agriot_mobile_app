@@ -137,6 +137,11 @@ class LandDetailView extends GetView<LandDetailController> {
       ),
 
       _buildDetailRow(
+        'Address',
+        controller.landDetails.value?.doorNo ?? "",
+      ),
+
+      _buildDetailRow(
         'Patta No',
         controller.landDetails.value?.pattaNumber ??"",
       ),
@@ -160,16 +165,15 @@ class LandDetailView extends GetView<LandDetailController> {
 
         // SizedBox(height: 8),
         ...surveys.asMap().entries.map<Widget>((entry) {
-          int index = entry.key;
           var survey = entry.value;
           return Padding(
             padding: const EdgeInsets.only(bottom: 8, left: 20),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                backgroundColor: Get.theme.primaryColor.withAlpha(180),
-                child: Text('${index + 1}'), // showing 1-based index
-              ),
+              // leading: CircleAvatar(
+              //   backgroundColor: Get.theme.primaryColor.withAlpha(180),
+              //   child: Text('${index + 1}'), // showing 1-based index
+              // ),
               title: Text(
                 'Survey No: ${survey['survey_no']}',
                 style: Get.theme.textTheme.bodyMedium!.copyWith(
@@ -193,7 +197,7 @@ class LandDetailView extends GetView<LandDetailController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Documents', style: Get.textTheme.titleMedium),
+        const TitleText('Documents',color: Colors.black,),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,

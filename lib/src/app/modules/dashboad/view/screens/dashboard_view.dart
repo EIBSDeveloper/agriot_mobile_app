@@ -16,6 +16,7 @@ import '../../../home/contoller/bottombar_contoller.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
 import '../../../task/view/widget/task_card.dart';
 import '../../controller/dashboard_controller.dart';
+import '../widgets/widget_settings.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -94,7 +95,7 @@ class DashboardView extends GetView<DashboardController> {
         color: Get.theme.primaryColor,
         iconSize: 40,
         icon: const Icon(Icons.widgets),
-        onPressed: () => controller.showWidgetSettings(),
+        onPressed: () => Get.bottomSheet(const WidgetSettings()),
       ),
     ],
   );
@@ -350,44 +351,41 @@ class DashboardView extends GetView<DashboardController> {
                           child: Column(
                             children: [
                               Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: _buildExpenssItem(
-                                          'sales : ',
-                                          controller
-                                              .financeData
-                                              .value!
-                                              .totalSales,
-                                          Colors.green,
-                                          () {
-                                            Get.toNamed(Routes.sales);
-                                          },
-                                        ),
-                                      ),
-                                      const Divider(),
-                                      Expanded(
-                                        child: _buildExpenssItem(
-                                          'expenses : ',
-                                          controller
-                                              .financeData
-                                              .value!
-                                              .totalExpenses,
-                                          Colors.red,
-                                          () {
-                                            BottomBarContoller bconteroller =
-                                                Get.find();
-                                            bconteroller.selectedIndex.value =
-                                                2;
-                                            bconteroller.pageController
-                                                .jumpToPage(2);
-                                          },
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                    ],
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: _buildExpenssItem(
+                                      'sales : ',
+                                      controller.financeData.value!.totalSales,
+                                      Colors.green,
+                                      () {
+                                        Get.toNamed(Routes.sales);
+                                      },
+                                    ),
                                   ),
+                                  const Divider(),
+                                  Expanded(
+                                    child: _buildExpenssItem(
+                                      'expenses : ',
+                                      controller
+                                          .financeData
+                                          .value!
+                                          .totalExpenses,
+                                      Colors.red,
+                                      () {
+                                        BottomBarContoller bconteroller =
+                                            Get.find();
+                                        bconteroller.selectedIndex.value = 2;
+                                        bconteroller.pageController.jumpToPage(
+                                          2,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -397,18 +395,21 @@ class DashboardView extends GetView<DashboardController> {
                                                 .value
                                                 ?.totalExpenses !=
                                             0 ||
-                                        controller.financeData.value?.totalSales !=
+                                        controller
+                                                .financeData
+                                                .value
+                                                ?.totalSales !=
                                             0))
                                       Expanded(
                                         flex: 2,
                                         child: SizedBox(
                                           height: 200,
-                                          child:FinanceLineChart(financeData: controller.financeData.value!),
+                                          child: FinanceLineChart(
+                                            financeData:
+                                                controller.financeData.value!,
+                                          ),
                                         ),
                                       ),
-                                 
-                                 
-                                 
                                   ] else ...[
                                     Center(child: Text('no_finance_data'.tr)),
                                   ],
@@ -418,13 +419,11 @@ class DashboardView extends GetView<DashboardController> {
                           ),
                         ),
                 ),
-
               ],
             ),
           ],
         )
       : const SizedBox();
-
 
   Widget _buildGuidelinesCard() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,14 +511,6 @@ class DashboardView extends GetView<DashboardController> {
         Obx(() {
           if (controller.isLoading.value) {
             return const Loading();
-          }
-
-          if (controller.marketError.isNotEmpty) {
-            return Center(
-              child: Text(
-                "${'error_message'.tr} ${controller.marketError.value}",
-              ),
-            );
           }
 
           if (controller.marketPrices.isEmpty) {

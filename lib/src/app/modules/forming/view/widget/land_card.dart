@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/utils.dart';
 import '../../model/land.dart';
 import 'crop_card.dart';
 
@@ -45,7 +46,7 @@ class LandCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              land.name,
+                              capitalizeFirstLetter(land.name),
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

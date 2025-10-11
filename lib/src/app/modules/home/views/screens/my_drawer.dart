@@ -89,10 +89,10 @@ class AppDrawer extends StatelessWidget {
         //     Get.toNamed(Routes.sales);
         //   },
         // ),
-        const Divider(),
+        // const Divider(),
         _buildDrawerItem(
           icon: Icons.store,
-          label: "Markets",
+          label: "Near me",
           onTap: () {
             Get.back();
             Get.toNamed(Routes.nearMe);

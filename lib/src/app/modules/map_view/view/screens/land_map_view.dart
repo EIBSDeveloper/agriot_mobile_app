@@ -8,6 +8,7 @@ import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../service/utils/utils.dart';
 import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/loading.dart';
 
@@ -85,7 +86,7 @@ class LandMapView extends GetView<LandMapViewController> {
         initialValue: controller.selectedLand.value,
         items: controller.lands
             .map(
-              (land) => DropdownMenuItem(value: land, child: Text(land.name)),
+              (land) => DropdownMenuItem(value: land, child: Text(capitalizeFirstLetter(land.name))),
             )
             .toList(),
         onChanged: controller.selectLand,

@@ -2,7 +2,6 @@ import 'package:argiot/src/app/modules/expense/model/expense.dart';
 import 'package:argiot/src/app/modules/expense/model/chart.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/expense_repository.dart';
 import 'package:argiot/src/app/modules/expense/model/expense_summary.dart';
-import 'package:argiot/src/app/modules/expense/model/file_type.dart';
 import 'package:argiot/src/app/modules/task/model/crop_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../model/customer.dart';
+
 class ExpenseController extends GetxController {
   final ExpenseRepository _repository = Get.find<ExpenseRepository>();
   final farmerId = 1; // This should come from auth or previous screen
@@ -18,17 +18,14 @@ class ExpenseController extends GetxController {
   final totalExpense = 0.0.obs;
   final selectedPeriod = 'month'.obs;
   final expenseSummary = <ExpenseSummary>[].obs;
-  
+
   // New grouped records
   final allGroupedRecords = <GroupedExpenseRecord>[].obs;
   final expenseGroupedRecords = <GroupedExpenseRecord>[].obs;
   final salesGroupedRecords = <GroupedExpenseRecord>[].obs;
-  
-  // Keep old lists for backward compatibility
-  // final expenses = <ExpenseAndSales>[].obs;
-  // final sales = <ExpenseAndSales>[].obs;
-  
-  final selectedTab = 0.obs; // 0: All, 1: Expenses, 2: Sales
+
+
+  final selectedTab = 0.obs; 
 
   // For add expense screen
   final isPurchase = false.obs;
@@ -38,40 +35,29 @@ class ExpenseController extends GetxController {
   final RxInt paidamonut = 0.obs;
   final description = ''.obs;
   final RxList<CropModel> crop = <CropModel>[].obs;
-  final fileTypes = <FileType>[].obs;
+
   final isLoading = false.obs;
   var selectedVendor = Rx<int?>(null);
   var cardexpenses = <Chart>[].obs;
   var vendorList = <Customer>[].obs;
   var cardtotalExpenses = 0.0.obs;
 
-  // ✅ Color list moved here
-  final List<Color> colorList = [
-    const Color(0xFF558B2F), // Wages - green
-    const Color(0xFF8D6E63), // Transportation - brown
-    const Color(0xFFFFCA28), // Petrol - yellow
-    const Color(0xFF9CCC65), // Tools - light green
-    const Color(0xFFEF6C00), // Others - orange
-  ];
-
   @override
   void onInit() {
     super.onInit();
     loadExpenseData();
     fetchVendorList();
-    loadFileTypes();
   }
 
   Future<void> loadExpenseData() async {
     try {
       isLoading(true);
-        await _loadGroupedData();
+      await _loadGroupedData();
       final total = await _repository.getTotalExpense(selectedPeriod.value);
       totalExpense(total.expenseAmount);
       await fetchCrop();
 
       // Load data based on selected tab
-    
 
       cardexpenses.clear();
       final summary = await _repository.getExpenseSummary(selectedPeriod.value);
@@ -91,7 +77,9 @@ class ExpenseController extends GetxController {
     try {
       switch (selectedTab.value) {
         case 0: // All
-          final data = await _repository.getBothExpensesAndSales(selectedPeriod.value);
+          final data = await _repository.getBothExpensesAndSales(
+            selectedPeriod.value,
+          );
           allGroupedRecords.assignAll(data);
           break;
         case 1: // Expenses
@@ -123,15 +111,6 @@ class ExpenseController extends GetxController {
       vendorList.assignAll(response);
     } catch (e) {
       showError('Failed to fetch customers: $e');
-    }
-  }
-
-  Future<void> loadFileTypes() async {
-    try {
-      final types = await _repository.getFileTypes();
-      fileTypes.assignAll(types);
-    } catch (e) {
-      showError('Failed to load file types');
     }
   }
 

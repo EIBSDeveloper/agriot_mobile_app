@@ -20,7 +20,10 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
             height: 40,
             child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
           )
-        : null,
+        : SizedBox(
+            height: 40,
+            child: Image.asset(AppImages.logo, fit: BoxFit.fitHeight),
+          ),
     actions: [
       IconButton(
         onPressed: showLanguageDialog,
@@ -89,8 +92,8 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               RadioListTile<String>(title: Text('English'), value: 'en'),
-              RadioListTile<String>(title: Text('Tamil'), value: 'ta'),
-              RadioListTile<String>(title: Text('Hindi'), value: 'hi'),
+              RadioListTile<String>(title: Text('தமிழ்'), value: 'ta'),
+              RadioListTile<String>(title: Text('हिंदी'), value: 'hi'),
             ],
           ),
         ),

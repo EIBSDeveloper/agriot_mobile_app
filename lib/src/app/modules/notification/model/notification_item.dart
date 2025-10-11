@@ -17,14 +17,15 @@ class NotificationItem {
     this.isRead = false,
   });
 
-  factory NotificationItem.fromJson(Map<String, dynamic> json) => NotificationItem(
-      id: json['notification_id'] ?? 0,
-      name: json['name'] ?? '',
-      type: json['type'] ?? '',
-      message: json['message'] ?? '',
-      createdAt: json['created_at'] ?? '',
-      isRead: json['is_read'] ?? false,
-    );
+  factory NotificationItem.fromJson(Map<String, dynamic> json) =>
+      NotificationItem(
+        id: json['notification_id'] ?? 0,
+        name: json['name'] ?? '',
+        type: json['type'] ?? '',
+        message: json['message'] ?? '',
+        createdAt: json['created_at'] ?? '',
+        isRead: json['is_read'] ?? false,
+      );
 
   String get formattedTime {
     try {

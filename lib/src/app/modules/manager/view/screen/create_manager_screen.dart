@@ -363,7 +363,25 @@ class CreateManagerScreen extends GetView<ManagerController> {
               } else {
                 return const SizedBox();
               }
-            }),
+            }),     gap,
+
+            // Location URL
+            InputCardStyle(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TextFormField(
+                controller: controller.locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Location *',
+                  border: InputBorder.none,
+                ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
+                readOnly: true,
+                onTap: controller.pickLocation,
+              ),
+            ),
+
             // //pincode
             gap,
             InputCardStyle(
@@ -384,25 +402,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             ),
 
-            gap,
-
-            // Location URL
-            InputCardStyle(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextFormField(
-                controller: controller.locationController,
-                decoration: const InputDecoration(
-                  labelText: 'Location *',
-                  border: InputBorder.none,
-                ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Required field'
-                    : null,
-                readOnly: true,
-                onTap: controller.pickLocation,
-              ),
-            ),
-
+       
             gap,
 
             // Address
@@ -482,28 +482,28 @@ class CreateManagerScreen extends GetView<ManagerController> {
   );
 
   Widget _buildImagePicker() => Center(
-    child: Stack(
-      children: [
-        Obx(() {
-          if (controller.imagePath.isNotEmpty) {
-            return CircleAvatar(
+    child: InkWell(
+        onTap: controller.pickImage,
+      child: Stack(
+        children: [
+          Obx(() {
+            if (controller.imagePath.isNotEmpty) {
+              return CircleAvatar(
+                radius: 50,
+                backgroundImage: controller.imagePath.startsWith('http')
+                    ? CachedNetworkImageProvider(controller.imagePath.value)
+                    : FileImage(File(controller.imagePath.value))
+                          as ImageProvider,
+              );
+            }
+            return const CircleAvatar(
               radius: 50,
-              backgroundImage: controller.imagePath.startsWith('http')
-                  ? CachedNetworkImageProvider(controller.imagePath.value)
-                  : FileImage(File(controller.imagePath.value))
-                        as ImageProvider,
+              child: Icon(Icons.person, size: 40),
             );
-          }
-          return const CircleAvatar(
-            radius: 50,
-            child: Icon(Icons.person, size: 40),
-          );
-        }),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: GestureDetector(
-            onTap: controller.pickImage,
+          }),
+          Positioned(
+            bottom: 0,
+            right: 0,
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
@@ -517,16 +517,18 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 
-  Widget _buildPermissionItem(
-    PermissionItem item,
-    ManagerController controller,
-  ) => GetBuilder<ManagerController>(
-    builder: (_) => ExpansionTile(
+Widget _buildPermissionItem(
+  PermissionItem item,
+  ManagerController controller,
+) => GetBuilder<ManagerController>(
+  builder: (_) => Theme(
+    data: Theme.of(Get.context!).copyWith(dividerColor: Colors.transparent),
+    child: ExpansionTile(
       title: Row(
         children: [
           Checkbox(
@@ -545,5 +547,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
           )
           .toList(),
     ),
-  );
+  ),
+);
+
 }

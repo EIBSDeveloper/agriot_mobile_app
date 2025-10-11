@@ -66,7 +66,9 @@ class SubscriptionPlansScreen extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Obx(
           () => ElevatedButton(
-            onPressed: controller.selectedPackage.value != null
+            onPressed:
+                (controller.selectedPackage.value != null &&
+                    controller.selectedPackage.value!.amount != 0)
                 ? () => Get.toNamed(Routes.subscriptionPayment)
                 : null,
             child: Text('proceed_to_payment'.tr),
@@ -115,7 +117,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '${package.formattedPrice} • ${package.durationText}',
+                  '${package.formattedPrice} / ${package.durationText}',
                   style: Get.textTheme.titleMedium?.copyWith(
                     color: isSelected ? Get.theme.colorScheme.onPrimary : null,
                   ),
@@ -152,7 +154,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
       _buildFeatureItem(
         'manager'.tr,
         package.employeeCount,
-        package.isAttendance,
+        package.employeeCount > 0,
         textColor,
       ),
     ];

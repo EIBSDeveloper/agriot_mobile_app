@@ -1,4 +1,6 @@
-import 'package:argiot/src/app/modules/task/model/named_item.dart';
+
+
+import '../../task/model/named_item.dart';
 
 class Customer extends NamedItem {
   @override

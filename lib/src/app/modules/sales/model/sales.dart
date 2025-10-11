@@ -1,6 +1,5 @@
-import 'package:argiot/src/app/modules/expense/model/customer.dart';
-import 'package:argiot/src/app/modules/expense/model/farmer.dart';
-import 'package:argiot/src/app/modules/sales/model/unit.dart';
+import '../../expense/model/customer.dart';
+import 'unit.dart';
 
 class Sales {
   final int salesId;
@@ -14,7 +13,6 @@ class Sales {
   final double totalSalesAmount;
   final String description;
   final int status;
-  final Farmer farmer;
   final Customer myCustomer;
   final String createdAt;
   final String updatedAt;
@@ -31,7 +29,7 @@ class Sales {
     required this.totalSalesAmount,
     required this.description,
     required this.status,
-    required this.farmer,
+
     required this.myCustomer,
     required this.createdAt,
     required this.updatedAt,
@@ -49,7 +47,6 @@ class Sales {
       totalSalesAmount: json['total_sales_amount']?.toDouble() ?? 0.0,
       description: json['description'],
       status: json['status'],
-      farmer: Farmer.fromJson(json['farmer']),
       myCustomer: Customer.fromJson(json['my_customer']),
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],

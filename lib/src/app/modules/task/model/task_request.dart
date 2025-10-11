@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class TaskRequest {
   final String farmerId;
   final int myCrop;
@@ -22,14 +24,15 @@ class TaskRequest {
   });
 
   Map<String, dynamic> toJson() {
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
     var map = {
       'farmer': farmerId,
       'my_crop': myCrop,
       'schedule_activity_type': scheduleActivityType,
-      'start_date': startDate.toIso8601String().split('T')[0],
+      'start_date': formatter.format(startDate),
       'end_date': endDate != null
-          ? endDate?.toIso8601String().split('T')[0]
-          : startDate.toIso8601String().split('T')[0],
+          ? formatter.format(endDate!)
+          : formatter.format(startDate),
       'schedule_choice': scheduleChoice,
       if (scheduleWeekly != null) 'schedule_weekly': scheduleWeekly,
       'schedule_status': scheduleStatus,

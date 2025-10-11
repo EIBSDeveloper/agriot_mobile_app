@@ -46,6 +46,7 @@ dependencies:
   url_launcher: ^6.3.2
   home_widget: ^0.8.0
   mime: ^2.0.0
+  flutter_svg: ^2.2.1
 
 dev_dependencies:
   flutter_test:
@@ -60,4 +61,5 @@ flutter:
   assets:
     - assets/image/
     - assets/icon/
+    - assets/icon/svg/
 

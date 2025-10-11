@@ -57,11 +57,11 @@ class PurchaseList extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Container(
               padding: const EdgeInsets.all(12.0),
-              constraints: BoxConstraints(
-                minHeight: 100 < Get.size.height * 0.05
-                    ? Get.size.height * 0.05
-                    : 100,
-              ),
+              // constraints: BoxConstraints(
+              //   minHeight: 100 < Get.size.height * 0.05
+              //       ? Get.size.height * 0.05
+              //       : 100,
+              // ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

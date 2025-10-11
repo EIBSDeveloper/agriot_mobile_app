@@ -27,11 +27,12 @@ class Task {
     var status2 = status != null ? getTaskStatus(status) : null;
     DateTime? taskDate;
     try {
-      taskDate = DateFormat("dd/MM/yyyy").parse(json["created_at"]);
+       taskDate = DateFormat("dd-MM-yyyy").parse(json["created_at"]);
+      
       // ignore: empty_catches
     } catch (e) {
       try {
-        taskDate = DateFormat("dd-MM-yyyy").parse(json["created_at"]);
+       taskDate = DateFormat("dd/MM/yyyy").parse(json["created_at"]);
         // ignore: empty_catches
       } catch (e) {}
     }

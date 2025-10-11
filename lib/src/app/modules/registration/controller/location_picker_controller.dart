@@ -38,6 +38,7 @@ class LocationPickerController extends GetxController {
       var latLng = LatLng(position.latitude, position.longitude);
       cameraPosition.value = CameraPosition(target: latLng, zoom: 15);
       selectedLocation.value = latLng;
+       getAddress(selectedLocation.value!);
     } catch (e) {
       showError('Error');
     } finally {
@@ -74,7 +75,7 @@ class LocationPickerController extends GetxController {
         );
         getAddress(selectedLocation.value!);
       } else {
-        getCurrentLocation();
+      await  getCurrentLocation();
       }
     } finally {
       isLoading(false);
@@ -92,7 +93,6 @@ class LocationPickerController extends GetxController {
       longitude: latLng.longitude,
     );
     address.value = addressFromLatLng['address'] ?? '';
-    // pincodeController.text = addressFromLatLng['pincode'] ?? '';
   }
 
   void confirmSelection() {

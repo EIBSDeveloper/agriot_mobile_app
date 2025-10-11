@@ -1,11 +1,10 @@
-import 'package:argiot/src/app/modules/expense/model/farmer.dart';
+
 import 'package:argiot/src/app/modules/expense/model/vendor.dart';
 
 import 'inventory_item.dart';
 
 class Purchase {
   final int id;
-  final Farmer farmer;
   final String dateOfConsumption;
   final Vendor vendor;
   final InventoryItem inventorytype;
@@ -16,7 +15,6 @@ class Purchase {
 
   Purchase({
     required this.id,
-    required this.farmer,
     required this.dateOfConsumption,
     required this.vendor,
     required this.inventorytype,
@@ -29,7 +27,6 @@ class Purchase {
 
   factory Purchase.fromJson(Map<String, dynamic> json) => Purchase(
     id: json['id'],
-    farmer: Farmer.fromJson(json['farmer']),
     dateOfConsumption: json['date_of_consumption'],
     vendor: Vendor.fromJson(json['vendor']),
     inventorytype: InventoryItem.fromJson(json['inventory_type']),

@@ -139,6 +139,12 @@ class RegLandController extends GetxController {
         longitude.value = location[0][1];
 
         locationListController.text = location.toString();
+           Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location['latitude'],
+          longitude: location['longitude'],
+        );
+        // doorNoController.text = addressFromLatLng['address'] ?? '';
+        // pincodeController.text = addressFromLatLng['pincode'] ?? '';
       }
       update();
     } catch (e) {

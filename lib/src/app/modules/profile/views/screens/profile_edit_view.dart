@@ -43,30 +43,29 @@ class ProfileEditView extends GetView<ProfileEditController> {
     }),
   );
 
-  Widget _buildImagePicker() => Center(
-    child: Stack(
-      children: [
-        Obx(() {
-          if (controller.imagePath.isNotEmpty) {
-            var startsWith = controller.imagePath.startsWith('http');
-            return CircleAvatar(
+ Widget _buildImagePicker() => Center(
+    child: InkWell(
+        onTap: controller.pickImage,
+      child: Stack(
+        children: [
+          Obx(() {
+            if (controller.imagePath.isNotEmpty) {
+              return CircleAvatar(
+                radius: 50,
+                backgroundImage: controller.imagePath.startsWith('http')
+                    ? CachedNetworkImageProvider(controller.imagePath.value)
+                    : FileImage(File(controller.imagePath.value))
+                          as ImageProvider,
+              );
+            }
+            return const CircleAvatar(
               radius: 50,
-              backgroundImage: startsWith
-                  ? CachedNetworkImageProvider(controller.imagePath.value)
-                  : FileImage(File(controller.imagePath.value))
-                        as ImageProvider,
+              child: Icon(Icons.person, size: 40),
             );
-          }
-          return const CircleAvatar(
-            radius: 50,
-            child: Icon(Icons.person, size: 40),
-          );
-        }),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: GestureDetector(
-            onTap: controller.pickImage,
+          }),
+          Positioned(
+            bottom: 0,
+            right: 0,
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
@@ -80,8 +79,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 

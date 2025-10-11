@@ -46,7 +46,7 @@ class SurveyDetail {
     farmer: json["farmer"],
     myLand: json["MyLand"],
     surveyNo: json["survey_no"],
-    measurementValue: json["survey_measurement_value"].toString(),
+    measurementValue:(int.tryParse(json["survey_measurement_value"]) ??0).toString(),
     measurementUnit: json["survey_measurement_unit"],
   );
 

@@ -57,7 +57,7 @@ class LandView extends GetView<RegLandController> {
               labelText: '${'location_coordinates'.tr} *',
               border: InputBorder.none,
               isDense: true,
-              suffixIcon: const Icon(Icons.location_on),
+              suffixIcon:  Icon(Icons.location_on ,color: Get.theme.primaryColor,),
             ),
             validator: (value) => value!.isEmpty ? 'required_field'.tr : null,
             readOnly: true,

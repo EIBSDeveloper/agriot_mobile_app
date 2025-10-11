@@ -122,7 +122,6 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       final task = controller.task.value;
       if (task == null) return const SizedBox.shrink();
 
-      // 🔹 Local date logic again for FAB visibility
       DateTime taskDate = DateFormat("dd-MM-yyyy").parse(task.startDate);
       final taskDate1 = DateTime(taskDate.year, taskDate.month, taskDate.day);
       final today = DateTime.now();

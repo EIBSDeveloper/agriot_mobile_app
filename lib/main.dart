@@ -4,12 +4,13 @@ import 'package:argiot/src/app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-
+//https://www.flaticon.com/free-icon-font/
 Future<void> main() async {
   ExpenseIsolate.initialize();
   WidgetsFlutterBinding.ensureInitialized();
 
   // if (Platform.isAndroid) {
+
   //   AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   // }
   await GetStorage.init();

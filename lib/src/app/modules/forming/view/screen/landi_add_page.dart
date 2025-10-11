@@ -99,6 +99,7 @@ class LandViewPage extends GetView<LandController> {
 
               gap,
               _buildTextField(
+                minLines: 1,
                 controller: controller.locationListController,
                 label: 'Location Coordinates *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
@@ -119,7 +120,7 @@ class LandViewPage extends GetView<LandController> {
               ),
               gap,_buildTextField(
                 controller: controller.addressController,
-                label: 'Address *',
+                label: 'Address *',minLines: 3
                 // inputFormatters: [
                 //   FilteringTextInputFormatter.digitsOnly,
                 //   LengthLimitingTextInputFormatter(6),
@@ -252,11 +253,13 @@ class LandViewPage extends GetView<LandController> {
     List<TextInputFormatter>? inputFormatters,
     TextInputType? keyboardType,
     bool readOnly = false,
+    int? minLines,
     VoidCallback? onTap,
   }) => InputCardStyle(
     child: TextFormField(
       controller: controller,
       inputFormatters: inputFormatters,
+      maxLines: minLines,
       decoration: InputDecoration(
         labelText: label,
         border: InputBorder.none,

@@ -21,9 +21,10 @@ AppDataController appData = Get.find();
 UserLimitController limitController = Get.put(UserLimitController());
 
 double kelvinToCelsius(final double kelvin) => kelvin - 273.15;
-
-String generateGoogleMapsUrl(double latitude, double longitude) =>
-    "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
+ String generateGoogleMapsUrl(double latitude, double longitude) =>
+    "https://www.google.com/maps?q=$latitude,$longitude&z=15";
+// String generateGoogleMapsUrl(double latitude, double longitude) =>
+//     "https://www.google.com/maps/place/Madurai,+Tamil+Nadu/@$latitude,$longitude";
 
 String capitalizeFirstLetter(final String input) =>
     input.isEmpty ? input : input[0].toUpperCase() + input.substring(1);

@@ -1,4 +1,5 @@
 import 'package:argiot/src/app/modules/document/model/add_document_model.dart';
+import 'package:argiot/src/app/modules/expense/model/document.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:flutter/material.dart' hide State;
 import 'package:get/get.dart';
@@ -75,6 +76,8 @@ class LandController extends GetxController {
     pattaNumber: '',
     status: 0,
     lStatus: 0,
+    pincode: '',
+    address: "",
     surveyDetails: [],
     documents: [],
   ).obs;
@@ -139,7 +142,8 @@ class LandController extends GetxController {
     locationListController.text = landDetail.value.geoMarks.toString();
     // Set location data
     latitude.value = landDetail.value.latitude;
-    pincodeController.text = "0";
+    pincodeController.text = landDetail.value.pincode ?? "";
+    addressController.text = landDetail.value.address ?? "";
     longitude.value = landDetail.value.longitude;
     selectedLandUnit.value = AppDropdownItem(
       id: landDetail.value.measurementUnit.id,
@@ -168,6 +172,10 @@ class LandController extends GetxController {
           ),
         ),
       );
+    }
+
+    for (var document in landDetail.value.documents) {
+      // documentItems.add(AddDocumentModel(fileType: document.));
     }
   }
 
@@ -258,9 +266,9 @@ class LandController extends GetxController {
         );
         addressController.text = addressFromLatLng['address'] ?? '';
         pincodeController.text = addressFromLatLng['pincode'] ?? '';
-        measurementController.text = calculatePolygonAreaAcre(
-          points: landCoordinates,
-        ).toString();
+        // measurementController.text = calculatePolygonAreaAcre(
+        //   points: landCoordinates,
+        // ).toString();
       }
     } catch (e) {
       showError('Failed to pick location');

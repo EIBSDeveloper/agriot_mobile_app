@@ -13,9 +13,12 @@ class LandMapViewRepository {
 
   Future<List<ScheduleLand>> fetchLandsAndCrops() async {
     final farmerId = appDeta.farmerId;
+    final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+    String manager = isManager ? "?manager_id=$managerId" : "";
     try {
       final response = await _httpService.get(
-        '/land-and-crop-details/$farmerId',
+        '/land-and-crop-details/$farmerId$manager',
       );
 
       if (response.statusCode == 200) {
@@ -57,9 +60,12 @@ class LandMapViewRepository {
 
   Future<LandMapData> fetchLandsAndCropMap(int landId) async {
     final farmerId = appDeta.farmerId;
+        final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+   String manager = isManager?"?manager_id=$managerId":"";
     try {
       final response = await _httpService.get(
-        '/lands/geo-marks/$farmerId/$landId',
+        '/lands/geo-marks/$farmerId/$landId$manager',
       );
 
       if (response.statusCode == 200) {

@@ -14,7 +14,7 @@ import '../model/profile_model.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository _profileRepository = Get.find();
-  final AppDataController appData = Get.find();
+  final AppDataController appDeta = Get.find();
   final Rx<ProfileModel?> profile = Rx<ProfileModel?>(null);
   final RxBool isLoading = false.obs;
   final RxBool isSubmitting = false.obs;
@@ -34,11 +34,12 @@ class ProfileController extends GetxController {
 
       signOutFromGoogle();
       await GetStorage().erase();
-      appData.farmerId.value = '';
-      appData.username.value = '';
-      appData.emailId.value = '';
-      appData.isManager.value = false;
-      appData.managerID.value = '';
+      appDeta.farmerId.value = '';
+      appDeta.username.value = '';
+      appDeta.emailId.value = '';
+      appDeta.isManager.value = false;
+      appDeta.managerID.value = '';
+      appDeta.permission.value = null;
       Get.offAllNamed(Routes.login);
     } catch (e) {
       showError('Failed to logout');
@@ -111,7 +112,7 @@ class ProfileController extends GetxController {
 
   //     if (response) {
   //       fetchProfile();
-        
+
   //       showSuccess('Profile updated successfully');
   //     }
   //   } catch (e) {

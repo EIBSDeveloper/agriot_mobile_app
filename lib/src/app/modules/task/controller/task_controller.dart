@@ -37,7 +37,7 @@ class TaskController extends GetxController {
   final RxBool isList = true.obs;
   final RxBool isLoading = false.obs;
 
-  final RxInt selectedMonth = 0.obs;
+  final RxInt monthOfTask = 0.obs;
 
   // Form fields
   final Rx<DateTime> scheduleDate = DateTime.now().obs;
@@ -59,11 +59,36 @@ class TaskController extends GetxController {
   final Rx<DateTime> focusedDay = DateTime.now().obs;
   final Rx<DateTime> selectedDay = DateTime.now().obs;
   final Rx<CalendarFormat> calendarFormat = CalendarFormat.month.obs;
+  
+ // For month/day selection
+final selectedMonth = RxnInt();
+final selectedDayOfMonth = RxnInt();
+
+
+  RxList<int> selectedMonths = <int>[].obs;
+  RxList<int> selectedDaysInMonth = <int>[].obs;
+
+  final List<Map<String, dynamic>> months = [
+    {"id": 1, "name": "January"},
+    {"id": 2, "name": "February"},
+    {"id": 3, "name": "March"},
+    {"id": 4, "name": "April"},
+    {"id": 5, "name": "May"},
+    {"id": 6, "name": "June"},
+    {"id": 7, "name": "July"},
+    {"id": 8, "name": "August"},
+    {"id": 9, "name": "September"},
+    {"id": 10, "name": "October"},
+    {"id": 11, "name": "November"},
+    {"id": 12, "name": "December"},
+  ];
+
+  final List<int> days = List.generate(31, (index) => index + 1);
 
   @override
   void onInit() {
     super.onInit();
-    selectedMonth.value = DateTime.now().month;
+    monthOfTask.value = DateTime.now().month;
     fetchLands();
   }
 
@@ -122,7 +147,7 @@ class TaskController extends GetxController {
 
       final tasks = await _repository.getTaskList(
         landId: selectedLand.value.id,
-        month: selectedMonth.value,
+        month: monthOfTask.value,
       );
       taskGroups.assignAll(tasks);
       errorMessage.value = '';
@@ -148,8 +173,15 @@ class TaskController extends GetxController {
         scheduleChoice: isRecurring.value ? recurrenceType.value : 0,
         scheduleWeekly: isRecurring.value && recurrenceType.value == 1
             ? selectedDays
+            : null, 
+            
+            scheduleMonthly: isRecurring.value && recurrenceType.value == 2
+            ? selectedMonths
             : null,
-        scheduleStatus: 1,
+             scheduleDays: isRecurring.value && recurrenceType.value == 2
+            ? selectedDaysInMonth
+            : null,
+
         schedule: description.value,
       );
 
@@ -186,7 +218,7 @@ class TaskController extends GetxController {
 
       final response = await _repository.fetchTasks(
         landId: landId,
-        month: selectedMonth.value,
+        month: monthOfTask.value,
       );
 
       taskResponse(response);
@@ -340,7 +372,7 @@ class TaskController extends GetxController {
   }
 
   void refreshData({int? month}) {
-    selectedMonth.value = month ?? selectedMonth.value;
+    monthOfTask.value = month ?? monthOfTask.value;
     loadTasks();
   }
 

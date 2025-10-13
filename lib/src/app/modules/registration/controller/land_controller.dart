@@ -148,9 +148,9 @@ class RegLandController extends GetxController {
         );
         addressController.text = addressFromLatLng['address'] ?? '';
         pinCode.text = addressFromLatLng['pincode'] ?? '';
-        measurementController.text = calculatePolygonAreaAcre(
-          points: landCoordinates,
-        ).toString();
+        // measurementController.text = calculatePolygonAreaAcre(
+        //   points: landCoordinates,
+        // ).toString();
       }
       update();
     } catch (e) {
@@ -208,7 +208,7 @@ class RegLandController extends GetxController {
         if (pattaNoController.text.isNotEmpty)
           "patta_number": pattaNoController.text.trim(),
         "description": '',
-        if (newSurveyItems.value && landId.value == 0) ...surveyDetails,
+        if (landId.value == 0) ...surveyDetails,
         if (landId.value != 0) "surveyDetails": surveyDetails,
         "document": documentItemsList,
       };

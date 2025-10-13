@@ -252,7 +252,7 @@ class UpdateEmployeePayoutsView
       // const SizedBox(height: 16),
       // Payouts Amount
       Obx(
-        () => controller.payoutType.value!.id ==0
+        () => controller.payoutType.value!.id ==1
             ? PayoutsFormField(
                 label: "${'advance_amount'.tr} *",
                 value: controller.payoutsAmount.value,
@@ -269,7 +269,7 @@ class UpdateEmployeePayoutsView
               ),
       ),
       Obx(
-        () => controller.payoutType.value!.id == 0
+        () => controller.payoutType.value!.id == 1
             ? _buildInfoRow(
                 'totel_advance'.tr,
                 '₹${((controller.employeeData.value?.advanceAmount ?? 0) + (int.tryParse(controller.payoutsAmount.value) ?? 0))}',
@@ -279,7 +279,7 @@ class UpdateEmployeePayoutsView
 
       // To Pay
       Obx(
-        () => controller.payoutType.value!.id != 0
+        () => controller.payoutType.value!.id != 1
             ? PayoutsFormField(
                 label: "${'to_pay'.tr} *",
                 value: controller.toPay.value,

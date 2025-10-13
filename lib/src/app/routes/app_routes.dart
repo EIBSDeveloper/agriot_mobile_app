@@ -84,7 +84,7 @@ abstract class Routes {
 
   static const String addAttendence = '/addAttendence';
   static const String attendencelistscreen = '/Attendencelistscreen';
-
+static const bot = '/smart_farm';
 
   static const addDocument = '/addDocument';
   static const fuelConsumption = '/fuel-consumption';

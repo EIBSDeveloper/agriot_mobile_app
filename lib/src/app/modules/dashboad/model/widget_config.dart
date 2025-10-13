@@ -23,7 +23,7 @@ class WidgetConfig {
     guidelines: json['guidelines'] ?? true,
   );
    Map<String, dynamic> toJson() => {
-    'weather_date & receivables_payables': weatherAndPayments,
+    'weather_date': weatherAndPayments,
     'expenses_sales': expensesSales,
     'near_by_market_price': marketPrice,
     'schedulr_task': scheduleTask,

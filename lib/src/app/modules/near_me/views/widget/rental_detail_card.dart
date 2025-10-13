@@ -25,7 +25,7 @@ class RentalDetailCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'vendor'.trParams({'name': detail.vendorName}),
+            "${'vendor'.tr} ${detail.vendorName}",
             style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 8),
@@ -56,7 +56,7 @@ class RentalDetailCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'reg_no'.trParams({'number': detail.registerNumber}),
+            "${'reg_no'.tr} ${detail.registerNumber}",
             style: const TextStyle(color: Colors.grey),
           ),
         ],

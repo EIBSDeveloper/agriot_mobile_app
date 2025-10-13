@@ -12,14 +12,14 @@ import '../../../service/http/http_service.dart';
 class SalesRepository {
   final HttpService _httpService = Get.find();
 
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   // Add this class for multipart file handling
 
   Future<SalesListResponse> getSalesList({
     required int cropId,
     required String type,
   }) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.post(
         '/get_sales_by_crop/$farmerId/',
@@ -32,10 +32,13 @@ class SalesRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
+        final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+   String manager = isManager?"?manager_id=$managerId":"";
     try {
       final response = await _httpService.get(
-        '/land-and-crop-details/$farmerId',
+        '/land-and-crop-details/$farmerId$manager',
       );
       final lands = json.decode(response.body)['lands'] as List;
 
@@ -55,7 +58,7 @@ class SalesRepository {
   static SalesListResponse _parseSalesList(String response) => SalesListResponse.fromJson(jsonDecode(response));
 
   Future<SalesDetailResponse> getSalesDetails({required int salesId}) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.post('/get_sales_details/$farmerId', {
         'sales_id': salesId,
@@ -101,7 +104,7 @@ class SalesRepository {
   }
 
   Future<bool> deleteSales({required int salesId}) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       await _httpService.post('/deactivate_my_sale/$farmerId', {'id': salesId});
       return true;

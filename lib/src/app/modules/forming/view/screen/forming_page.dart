@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../core/app_icons.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/pop_messages.dart';
+import '../../../../service/utils/utils.dart';
 import '../../../../widgets/loading.dart';
+import '../../../subscription/model/package_usage.dart';
 import '../../controller/forming_controller.dart';
 import '../widget/land_card.dart';
 
@@ -80,20 +83,20 @@ class FormingView extends GetView<FormingController> {
       );
     }),
 
-    floatingActionButton: FloatingActionButton(
+    floatingActionButton:  (controller.appDeta.permission.value?.land?.add != 0)? FloatingActionButton(
       backgroundColor: Get.theme.primaryColor,
       onPressed: () async {
-        // PackageUsage? package = await findLimit();
+        PackageUsage? package = await findLimit();
 
-        // if (package!.landBalance > 0) {
+        if (package!.landBalance > 0) {
         Get.toNamed(Routes.addLand)?.then((result) {
           controller.fetchLands();
         });
-        // } else {
-        //   showDefaultGetXDialog("Land");
-        // }
+        } else {
+          showDefaultGetXDialog("Land");
+        }
       },
       child: const Icon(Icons.add),
-    ),
+    ):const SizedBox(),
   );
 }

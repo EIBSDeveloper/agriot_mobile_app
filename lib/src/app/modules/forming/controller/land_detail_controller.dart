@@ -2,12 +2,13 @@ import 'package:argiot/src/app/modules/forming/model/land_model.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
 
+import '../../../controller/app_controller.dart';
 import '../../../routes/app_routes.dart';
 import '../repostroy/forming_repository.dart';
 
 class LandDetailController extends GetxController {
   final FormingRepository _repository = FormingRepository();
-
+  final AppDataController appDeta = Get.put(AppDataController());
   final Rx<LandModel?> landDetails =  Rx<LandModel?>(null);
   final RxBool isLoading = true.obs;
   final RxInt landId = 0.obs;

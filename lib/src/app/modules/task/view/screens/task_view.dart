@@ -132,10 +132,12 @@ class TaskView extends GetView<TaskController> {
             ),
           ),
           Obx(
-            () => EmptyLandCard(
-              view: (!controller.isLoading.value && controller.lands.isEmpty),
-              refresh: controller.fetchLands,
-            ),
+            () => (!controller.isLoading.value && controller.lands.isEmpty)?Expanded(
+              child: EmptyLandCard(
+                view: (!controller.isLoading.value && controller.lands.isEmpty),
+                refresh: controller.fetchLands,
+              ),
+            ):const SizedBox(),
           ),
 
           Obx(() {
@@ -341,9 +343,8 @@ class TaskView extends GetView<TaskController> {
         child: Padding(
           padding: const EdgeInsets.only(top: 100),
           child: Text(
-            'no_tasks_for_date'.trParams({
-              'date': DateFormat('d MMMM y').format(selectedDate),
-            }),
+            "${'no_tasks_for_date'.tr} ${DateFormat('d MMMM y').format(selectedDate)}"
+           
           ),
         ),
       );

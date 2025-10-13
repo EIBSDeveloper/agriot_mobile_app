@@ -157,6 +157,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           ),
         ),
       ),
+      // if (appDeta.permission.value?.crop?.list != 0)
       Positioned(
         top: 5,
         right: 5,

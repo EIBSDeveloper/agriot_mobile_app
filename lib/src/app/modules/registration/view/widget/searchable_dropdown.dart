@@ -197,9 +197,8 @@ class __SearchBottomSheetState<T> extends State<_SearchBottomSheet<T>> {
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        labelText: 'search_label'.trParams({
-                          'label': widget.label,
-                        }),
+                        labelText: "${'search_label'.tr} ${widget.label}"
+                        ,
                         prefixIcon: const Icon(Icons.search),
                         border: InputBorder.none,
                       ),

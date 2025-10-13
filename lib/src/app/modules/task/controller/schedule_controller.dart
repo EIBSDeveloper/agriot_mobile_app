@@ -93,7 +93,6 @@ class ScheduleController extends GetxController {
         scheduleWeekly: isRecurring.value && recurrenceType.value == 1
             ? selectedDays
             : null,
-        scheduleStatus: 1,
         schedule: description.value,
       );
 

@@ -1,5 +1,5 @@
 bool isValidMobile(String input) {
-  final mobileRegex = RegExp(r'^\d{10}$');
+  final mobileRegex = RegExp(r'^\d{10,15}$');
   return mobileRegex.hasMatch(input);
 }
 

@@ -8,7 +8,7 @@ import '../../../service/http/http_service.dart';
 
 class EmployeeManagerRepository extends GetxController {
   final HttpService _httpService = Get.find<HttpService>();
-  final AppDataController appData = Get.find();
+  final AppDataController appDeta = Get.find();
 
   Future<List<ManagerEmployeeGroup>> getGroupedEmployees({
     int page = 1,
@@ -16,17 +16,21 @@ class EmployeeManagerRepository extends GetxController {
     int? managerParam,
   }) async {
     try {
-      final farmerId = appData.farmerId.value;
+      final farmerId = appDeta.farmerId.value;
 
       // Build query parameters
 
-      var search = searchQuery.isNotEmpty ? 'search_param$searchQuery' : '';
-      var manager = managerParam != null
-          ? '& Manager_param= $managerParam'
-          : '';
-
+      var search = searchQuery.isNotEmpty ? 'search=$searchQuery' : '';
+      // var manager = managerParam != null
+      //     ? '& Manager_param= $managerParam'
+      //     : '';
+      final isManager = appDeta.isManager.value;
+      final managerId = managerParam ?? appDeta.managerID.value;
+      String manager = isManager || managerParam != null
+          ? "&manager_id=$managerId"
+          : "";
       final response = await _httpService.get(
-        "/employee_grouped/$farmerId?page: $page$search$manager",
+        "/employee_grouped/$farmerId?page=$page$search$manager",
       );
 
       final data = json.decode(response.body) as List;
@@ -37,12 +41,10 @@ class EmployeeManagerRepository extends GetxController {
     }
   }
 
-
   Future<Map<String, dynamic>> statusUpdate({
     required int id,
     required int scheduleStatus,
   }) async {
-   
     try {
       final response = await _httpService.post('/employees/status/$id/', {
         'status': scheduleStatus,

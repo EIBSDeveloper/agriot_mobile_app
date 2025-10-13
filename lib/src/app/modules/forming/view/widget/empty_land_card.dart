@@ -1,16 +1,17 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/core/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmptyLandCard extends StatelessWidget {
-  const EmptyLandCard({super.key, required this.refresh, this.view = false});
-
+   EmptyLandCard({super.key, required this.refresh, this.view = false});
+final AppDataController appData = Get.find();
   final void Function()? refresh;
   final bool view;
 
   @override
-  Widget build(BuildContext context) => view
+  Widget build(BuildContext context) => view && !appData.isManager.value
       ? Padding(
           padding: EdgeInsets.only(top: Get.size.height * 0.1),
           child: Center(

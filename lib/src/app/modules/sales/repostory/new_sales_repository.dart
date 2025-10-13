@@ -14,10 +14,10 @@ import 'package:get/get.dart';
 class NewSalesRepository {
   final HttpService _httpService = Get.find<HttpService>();
 
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   Future<SalesListResponse> getSalesByCrop(int cropId, String type) async {
     try {
-      final farmerId = _appDataController.farmerId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.post(
         '/get_sales_by_crop/$farmerId/',
         {'crop_id': cropId, 'type': type},
@@ -29,10 +29,13 @@ class NewSalesRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
+        final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+   String manager = isManager?"?manager_id=$managerId":"";
     try {
       final response = await _httpService.get(
-        '/land-and-crop-details/$farmerId',
+        '/land-and-crop-details/$farmerId$manager',
       );
       final lands = json.decode(response.body)['lands'] as List;
 
@@ -65,7 +68,7 @@ class NewSalesRepository {
   }
 
   Future<SalesDetail> getSalesDetails(int salesId) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.post(
         '/get_sales_details/$farmerId/',
@@ -78,7 +81,7 @@ class NewSalesRepository {
   }
 
   Future<Map<String, dynamic>> addSales(SalesRequest request) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.post(
         '/add_sales_with_deductions/$farmerId',
@@ -94,7 +97,7 @@ class NewSalesRepository {
     int salesId,
     SalesRequest request,
   ) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.put(
         '/update_sales_with_deductions/$farmerId/$salesId/',
@@ -108,7 +111,7 @@ class NewSalesRepository {
 
   Future<Map<String, dynamic>> deleteSales(int salesId) async {
     try {
-      final farmerId = _appDataController.farmerId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.post(
         '/deactivate_my_sale/$farmerId/',
         {'id': salesId},
@@ -143,7 +146,7 @@ class NewSalesRepository {
 
   Future<List<Customer>> getCustomerList() async {
     try {
-      final farmerId = _appDataController.farmerId;
+      final farmerId = appDeta.farmerId;
       final response = await _httpService.get('/get_customer_list/$farmerId');
       var decode = json.decode(response.body);
       var map = decode

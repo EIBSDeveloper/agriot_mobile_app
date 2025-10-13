@@ -43,11 +43,11 @@ class AuthController extends GetxController {
         isEmail.value!,
       );
 
-      showNotification(
-        title: "APF",
-        body: "Your Login OTP is:${response.otp} ",
-        payload: {},
-      );
+      // showNotification(
+      //   title: "APF",
+      //   body: "Your Login OTP is:${response.otp} ",
+      //   payload: {},
+      // );
 
       if (response.user != null) {
         appData.loginState.value = response;

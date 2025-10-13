@@ -11,7 +11,7 @@ class Home extends GetView<BottomBarContoller> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar:  ProfileAppBar(),
-    drawer: const AppDrawer(),
+    drawer:  AppDrawer(),
     body: SafeArea(
       
       child: PageView.builder(

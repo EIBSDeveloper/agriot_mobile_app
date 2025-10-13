@@ -43,9 +43,9 @@ class ProfileEditView extends GetView<ProfileEditController> {
     }),
   );
 
- Widget _buildImagePicker() => Center(
+  Widget _buildImagePicker() => Center(
     child: InkWell(
-        onTap: controller.pickImage,
+      onTap: controller.pickImage,
       child: Stack(
         children: [
           Obx(() {
@@ -130,7 +130,8 @@ class ProfileEditView extends GetView<ProfileEditController> {
             style: Get.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
-          ),  const SizedBox(height: 12),
+          ),
+          const SizedBox(height: 12),
           _buildTextField(
             controller: controller.locationController,
             label: '${'location_coordinates'.tr} *',
@@ -143,15 +144,23 @@ class ProfileEditView extends GetView<ProfileEditController> {
           _buildTextField(
             controller: controller.pincodeController,
             label: '${'pincode'.tr} *',
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(6),
-            ],
-            validator: (value) =>
-                value?.isEmpty ?? true ? 'required_field'.tr : null,
+            // inputFormatters: [
+            //   FilteringTextInputFormatter.digitsOnly,
+            //   LengthLimitingTextInputFormatter(6),
+            // ],
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Required field';
+              }
+              if (value.length > 11) {
+                return 'Please enter a valid Pincode'.tr;
+              }
+
+              return null;
+            },
             keyboardType: TextInputType.number,
           ),
-        
+
           const SizedBox(height: 12),
           _buildTextField(
             controller: controller.doorNoController,

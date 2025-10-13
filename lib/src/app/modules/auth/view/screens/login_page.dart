@@ -121,7 +121,8 @@ class _LoginPageState extends State<LoginPage>
                                       ),
                                       child: TextFormField(
                                         decoration: const InputDecoration(
-                                          labelText: 'Mobile Number OR Email',
+                                          // labelText: 'Mobile Number OR Email',
+                                          labelText: 'Mobile Number',
                                           border: InputBorder.none,
                                         ),
                                         controller: mobileNumber,
@@ -150,24 +151,24 @@ class _LoginPageState extends State<LoginPage>
                                       ),
                                     ),
                                     const SizedBox(height: 60),
-                                    Obx(() {
-                                      if (controller.isLoading.value) {
-                                        return LoadingAnimationWidget.waveDots(
-                                          color: Get.theme.primaryColor,
-                                          size: 100,
-                                        );
-                                      }
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 40,
-                                        ),
-                                        child: GoogleSignInButton(
-                                          onPressed: () async {
-                                            controller.signInWithGoogle();
-                                          },
-                                        ),
-                                      );
-                                    }),
+                                    // Obx(() {
+                                    //   if (controller.isLoading.value) {
+                                    //     return LoadingAnimationWidget.waveDots(
+                                    //       color: Get.theme.primaryColor,
+                                    //       size: 100,
+                                    //     );
+                                    //   }
+                                    //   return Padding(
+                                    //     padding: const EdgeInsets.symmetric(
+                                    //       horizontal: 40,
+                                    //     ),
+                                    //     child: GoogleSignInButton(
+                                    //       onPressed: () async {
+                                    //         controller.signInWithGoogle();
+                                    //       },
+                                    //     ),
+                                    //   );
+                                    // }),
 
                                     const SizedBox(),
                                   ],

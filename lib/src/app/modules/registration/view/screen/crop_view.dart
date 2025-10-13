@@ -52,7 +52,7 @@ class CropView extends GetView<RegCropController> {
           }
           return const SizedBox();
         }),
-     
+        const SizedBox(height: 16),
         _buildTextField(
           controller: controller.locationController,
           label: '${'location_coordinates'.tr} *',

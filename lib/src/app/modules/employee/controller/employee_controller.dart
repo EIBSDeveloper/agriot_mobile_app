@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../service/utils/pop_messages.dart';
+import '../../../service/utils/utils.dart';
 
 class EmployeeController extends GetxController {
   final nameController = TextEditingController();
@@ -108,6 +109,12 @@ class EmployeeController extends GetxController {
         latitude.value = location['latitude'];
         longitude.value = location['longitude'];
         locationController.text = '${latitude.value}, ${longitude.value}';
+         Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location['latitude'],
+          longitude: location['longitude'],
+        );
+        addressController.text = addressFromLatLng['address'] ?? '';
+        pincodeController.text = addressFromLatLng['pincode'] ?? '';
       }
     } catch (e) {
       showError('Failed to pick location');

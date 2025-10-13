@@ -23,6 +23,7 @@ class SubscriptionPlansScreen extends StatelessWidget {
         }
 
         if (controller.errorMessage.value.isNotEmpty) {
+          controller.loadData();
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

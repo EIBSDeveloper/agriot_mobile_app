@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../bindings/app_binding.dart';
+import '../../../service/utils/utils.dart';
+import '../../registration/view/screen/landpicker.dart';
 
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();
@@ -24,6 +27,7 @@ class VendorCustomerController extends GetxController {
   final emailController = TextEditingController();
   final shopNameController = TextEditingController();
   final doorNoController = TextEditingController();
+  final locationController = TextEditingController();
   final pincodeController = TextEditingController();
   final gstNoController = TextEditingController();
   final taxNoController = TextEditingController();
@@ -32,11 +36,15 @@ class VendorCustomerController extends GetxController {
   RxBool isCredit = true.obs;
   final RxString selectedType = 'customer'.obs;
   final RxString? selectedInventoryType = ''.obs;
+
+  final RxDouble latitude = 0.0.obs;
+  final RxDouble longitude = 0.0.obs;
+
+  // Image handling
   final RxString imagePath = ''.obs;
-  final RxString imageBase64 = ''.obs;
+  final RxString base64Image = ''.obs;
 
   // Location dropdowns
-
 
   // Loading states
   final markets = <Market>[].obs;
@@ -105,6 +113,27 @@ class VendorCustomerController extends GetxController {
 
   ////inventory end
   //Market
+  Future<void> pickLocation() async {
+    try {
+      final location = await Get.to(
+        const LocationPickerView(),
+        binding: LocationViewerBinding(),
+      );
+      if (location != null) {
+        latitude.value = location['latitude'];
+        longitude.value = location['longitude'];
+        locationController.text = '${latitude.value}, ${longitude.value}';
+        Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location['latitude'],
+          longitude: location['longitude'],
+        );
+        doorNoController.text = addressFromLatLng['address'] ?? '';
+        pincodeController.text = addressFromLatLng['pincode'] ?? '';
+      }
+    } catch (e) {
+      showError('Failed to pick location');
+    }
+  }
 
   Future<void> loadMarkets() async {
     try {
@@ -185,6 +214,7 @@ class VendorCustomerController extends GetxController {
       final formData = VendorCustomerFormData(
         id: id,
         type: selectedType.value,
+        image: base64Image.value,
         customerName: selectedType.value == 'customer'
             ? nameController.text
             : null,
@@ -198,6 +228,8 @@ class VendorCustomerController extends GetxController {
         doorNo: doorNoController.text,
         gstNo: gstNoController.text,
         taxNo: taxNoController.text,
+        latitude: latitude.value,
+        longitude: longitude.value,
         postCode: int.tryParse(pincodeController.text) ?? 0,
         isCredit: isCredit.value,
         openingBalance: double.tryParse(openingBalanceController.text) ?? 0,
@@ -250,10 +282,12 @@ class VendorCustomerController extends GetxController {
     pincodeController.clear();
     gstNoController.clear();
     taxNoController.clear();
+    locationController.clear();
+    doorNoController.clear();
+    pincodeController.clear();
     openingBalanceController.clear();
     descriptionController.clear();
     imagePath.value = '';
-    imageBase64.value = '';
   }
 
   // @override

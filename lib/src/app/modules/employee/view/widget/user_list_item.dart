@@ -67,7 +67,7 @@ class _UserListItemState extends State<UserListItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Text(user.role),
-                  Text(widget.user.address.toString()),
+                  Text(widget.user.address.toString(),maxLines: 1,overflow: TextOverflow.ellipsis,),
                   if (widget.user.status != null)
                     Row(
                       mainAxisSize: MainAxisSize.min,

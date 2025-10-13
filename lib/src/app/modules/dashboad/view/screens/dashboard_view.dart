@@ -22,62 +22,73 @@ class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
 
   @override
-  Widget build(BuildContext context) => Obx(() {
-    if (controller.isLoading.value) {
-      return const Loading();
-    }
+  Widget build(BuildContext context) => Scaffold(
+    body: Obx(() {
+      if (controller.isLoading.value) {
+        return const Loading();
+      }
 
-    return RefreshIndicator(
-      onRefresh: () => controller.fetchLands(),
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Land selection dropdown
-            _buildLandDropdown(),
-            const SizedBox(height: 5),
-            Obx(
-              () => EmptyLandCard(
-                view: controller.lands.isEmpty,
-                refresh: controller.fetchLands,
+      return RefreshIndicator(
+        onRefresh: () => controller.fetchLands(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Land selection dropdown
+              _buildLandDropdown(),
+              const SizedBox(height: 5),
+              Obx(
+                () => EmptyLandCard(
+                  view: controller.lands.isEmpty,
+                  refresh: controller.fetchLands,
+                ),
               ),
-            ),
-            // Widgets based on configuration
-            if (controller.lands.isNotEmpty &&
-                controller.widgetConfig.value.weatherAndPayments) ...[
-              _buildWeatherAndPaymentsCard(),
-              const SizedBox(height: 16),
-            ],
+              // Widgets based on configuration
+              if (controller.lands.isNotEmpty &&
+                  controller.widgetConfig.value.weatherAndPayments) ...[
+                _buildWeatherAndPaymentsCard(),
+                const SizedBox(height: 16),
+              ],
 
-            if (controller.lands.isNotEmpty &&
-                controller.widgetConfig.value.expensesSales) ...[
-              _buildFinanceGraphCard(),
-              const SizedBox(height: 16),
-            ],
+              if (controller.lands.isNotEmpty &&
+                  controller.widgetConfig.value.expensesSales) ...[
+                _buildFinanceGraphCard(),
+                const SizedBox(height: 16),
+              ],
 
-            if (controller.lands.isNotEmpty &&
-                controller.widgetConfig.value.guidelines!) ...[
-              _buildGuidelinesCard(),
-              const SizedBox(height: 16),
-            ],
+              if (controller.lands.isNotEmpty &&
+                  controller.widgetConfig.value.guidelines!) ...[
+                _buildGuidelinesCard(),
+                const SizedBox(height: 16),
+              ],
 
-            if (controller.lands.isNotEmpty &&
-                controller.widgetConfig.value.marketPrice) ...[
-              _buildMarketPricesCard(),
-              const SizedBox(height: 16),
-            ],
+              if (controller.lands.isNotEmpty &&
+                  controller.widgetConfig.value.marketPrice) ...[
+                _buildMarketPricesCard(),
+                const SizedBox(height: 16),
+              ],
 
-            if (controller.lands.isNotEmpty &&
-                controller.widgetConfig.value.scheduleTask) ...[
-              _buildTasksCard(),
-              const SizedBox(height: 16),
+              if (controller.lands.isNotEmpty &&
+                  controller.widgetConfig.value.scheduleTask) ...[
+                _buildTasksCard(),
+                const SizedBox(height: 16),
+              ],
             ],
-          ],
+          ),
         ),
-      ),
-    );
-  });
+      );
+    }),
+
+    // floatingActionButton: FloatingActionButton(
+    //   heroTag: 'chatButton',
+    //   onPressed: () {
+    //     Get.toNamed(Routes.bot);
+    //   },
+    //   backgroundColor: Get.theme.colorScheme.primary,
+    //   child: const SvgIcons(AppIcons.bot, color: Colors.white),
+    // ),
+  );
 
   Widget _buildLandDropdown() => Row(
     children: [
@@ -436,6 +447,7 @@ class DashboardView extends GetView<DashboardController> {
             onTap: () {
               Get.toNamed(Routes.guidelines);
             },
+
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: FittedBox(

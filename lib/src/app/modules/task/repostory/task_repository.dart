@@ -16,10 +16,13 @@ import '../../near_me/model/models.dart';
 
 class TaskRepository {
   final HttpService _httpService = Get.put(HttpService());
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   Future<LandList> getLands() async {
-    final userId = _appDataController.farmerId;
-    final response = await _httpService.get('/lands/$userId');
+    final userId = appDeta.farmerId;
+        final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+   String manager = isManager?"?manager_id=$managerId":"";
+    final response = await _httpService.get('/lands/$userId$manager');
     return LandList.fromJson(json.decode(response.body));
   }
 
@@ -27,7 +30,7 @@ class TaskRepository {
     required String landId,
     required int month,
   }) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/task_year_list/$farmerId?land_id=$landId&month=$month',
@@ -59,7 +62,7 @@ class TaskRepository {
     required int activityType,
     required int scheduleStatus,
   }) async {
-    final farmerId = _appDataController.farmerId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.put('/edit_task/$farmerId', {
         'id': id,
@@ -85,10 +88,13 @@ class TaskRepository {
   }
 
   Future<List<CropModel>> getCropList() async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
+        final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+   String manager = isManager?"?manager_id=$managerId":"";
     try {
       final response = await _httpService.get(
-        '/land-and-crop-details/$farmerId',
+        '/land-and-crop-details/$farmerId$manager',
       );
       final lands = json.decode(response.body)['lands'] as List;
 
@@ -130,7 +136,7 @@ class TaskRepository {
 
     // If no cache or force refresh, fetch from network
     final response = await _httpService.get(
-      '/get_task_list/${_appDataController.farmerId}?land_id=$landId&month=$monthName',
+      '/get_task_list/${appDeta.farmerId}?land_id=$landId&month=$monthName',
     );
 
     final List<dynamic> jsonData = json.decode(response.body);
@@ -142,14 +148,14 @@ class TaskRepository {
   }
 
   Future<void> deleteTask(int taskId) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     await _httpService.post('/deactivate-my-schedule/$farmerId/', {
       'id': taskId,
     });
   }
 
   Future<TaskDetails> getTaskDetails(int taskId) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       final response = await _httpService.get(
         '/get_schedule_details/$farmerId/?id=$taskId',
@@ -161,7 +167,7 @@ class TaskRepository {
   }
 
   Future<void> addComment(int taskId, String comment) async {
-    final farmerId = _appDataController.farmerId;
+    final farmerId = appDeta.farmerId;
     try {
       await _httpService.put('/add_comments/$farmerId', {
         'id': taskId,

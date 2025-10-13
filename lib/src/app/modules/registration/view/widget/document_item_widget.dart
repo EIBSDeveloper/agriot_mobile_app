@@ -36,7 +36,7 @@ class DocumentItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'document_number'.trParams({'number': '${index + 1}'}),
+                "${'document_number'.tr} ${index + 1}",
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               IconButton(

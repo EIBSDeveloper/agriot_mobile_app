@@ -15,7 +15,10 @@ class FormingRepository {
   final AppDataController appDeta = Get.put(AppDataController());
   Future<List<Land>> getLandsWithCrops() async {
     final userId = appDeta.farmerId;
-    final response = await _httpService.get('/land-and-crop-details/$userId');
+    final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+   String manager = isManager?"?manager_id=$managerId":"";
+    final response = await _httpService.get('/land-and-crop-details/$userId$manager');
     final jsonData = json.decode(response.body);
     return List<Land>.from(jsonData['lands'].map((x) => Land.fromJson(x)));
   }

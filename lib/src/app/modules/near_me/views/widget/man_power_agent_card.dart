@@ -61,9 +61,7 @@ class ManPowerAgentCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                'workers_count'.trParams({
-                  'count': agent.workersCount.toString(),
-                }),
+                "${'workers_count'.tr} ${agent.workersCount.toString()}",
               ),
             ),
         ],

@@ -29,6 +29,7 @@ class EmployeeManagerListController extends GetxController {
       currentPage.value = 1;
       await loadGroupedData(reset: true);
     } catch (e) {
+      
       Fluttertoast.showToast(msg: 'Failed to load data: ${e.toString()}');
     } finally {
       isLoading.value = false;
@@ -88,10 +89,8 @@ class EmployeeManagerListController extends GetxController {
     if (selectedRole.value == 'All') {
       filteredGroups.value = List.from(groupedData);
     } else if (selectedRole.value == 'Manager') {
-      // Show all managers (even those with no employees)
       filteredGroups.value = List.from(groupedData);
     } else if (selectedRole.value == 'Employee') {
-      // Show only groups that have employees
       filteredGroups.value = groupedData
           .where((group) => group.employees.isNotEmpty)
           .toList();

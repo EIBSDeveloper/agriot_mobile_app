@@ -78,13 +78,20 @@ class KycView extends GetView<KycController> {
               _buildTextField(
                 controller: controller.pincodeController,
                 label: '${'pincode'.tr} *',
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
-                validator: (value) => (value!.isEmpty)
-                    ? ('required_field'.tr)
-                    : (value.length != 6 ? "enter_6_digit_pincode".tr : null),
+                // inputFormatters: [
+                //   FilteringTextInputFormatter.digitsOnly,
+                //   LengthLimitingTextInputFormatter(6),
+                // ],
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Required field';
+                  }
+                  if (value.length > 11) {
+                    return 'Please enter a valid Pincode'.tr;
+                  }
+
+                  return null;
+                },
                 keyboardType: TextInputType.number,
               ),
 

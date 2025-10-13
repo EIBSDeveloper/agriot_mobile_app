@@ -122,7 +122,8 @@ class ConsumptionController extends GetxController {
     if (inventoryItem.value != null) {
       inventoryType.value = null;
       inventoryItem.value = null;
-    }  getItemQuantity();
+    }
+    getItemQuantity();
   }
 
   void setQuantity(String value) {
@@ -170,9 +171,12 @@ class ConsumptionController extends GetxController {
 
   Future<void> getCropList() async {
     final farmerId = _appDataController.farmerId.value;
+    final isManager = _appDataController.isManager.value;
+    final managerId = _appDataController.managerID.value;
+    String manager = isManager ? "?manager_id=$managerId" : "";
     try {
       final response = await Get.find<HttpService>().get(
-        '/land-and-crop-details/$farmerId',
+        '/land-and-crop-details/$farmerId$manager',
       );
       final lands = json.decode(response.body)['lands'] as List;
 

@@ -56,8 +56,8 @@ void showPaymentBottomSheet({
                 Center(
                   child: Text(
                     isPayable
-                        ? "add_payable".trParams({"name": customerName})
-                        : "add_receivable".trParams({"name": customerName}),
+                        ? "${"add_payable".tr} $customerName"
+                        : "${"add_receivable".tr} $customerName",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -71,12 +71,8 @@ void showPaymentBottomSheet({
                 Center(
                   child: Text(
                     isPayable
-                        ? "current_payable".trParams({
-                            "amount": currentAmount.toStringAsFixed(2),
-                          })
-                        : "current_receivable".trParams({
-                            "amount": currentAmount.toStringAsFixed(2),
-                          }),
+                        ? "${"current_payable".tr} ${currentAmount.toStringAsFixed(2)}"
+                        : "${"current_receivable".tr} ${currentAmount.toStringAsFixed(2)}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: isPayable ? Colors.red : Colors.green,
@@ -279,7 +275,7 @@ Widget _buildDocumentsSection(CustomerAddController controller) => Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          'Documents (Optional)',
+          'Documents',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Card(

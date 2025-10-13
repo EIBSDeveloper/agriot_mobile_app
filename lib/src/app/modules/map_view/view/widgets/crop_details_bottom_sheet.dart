@@ -168,10 +168,10 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          "humidity_percentage".trParams({
-                            'percentage': controller.weatherData.value!.humidity
-                                .toString(),
-                          }),
+                          "${"humidity_percentage".tr} ${controller.weatherData.value!.humidity
+                                .toString()}"
+                          
+                    
                         ),
                       ),
                     ],

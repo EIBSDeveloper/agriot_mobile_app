@@ -63,14 +63,21 @@ class LandView extends GetView<RegLandController> {
         CustomTextField(
           controller: controller.pinCode,
           label: '${'pincode'.tr} *',
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(6),
-          ],
+          // inputFormatters: [
+          //   FilteringTextInputFormatter.digitsOnly,
+          //   LengthLimitingTextInputFormatter(6),
+          // ],
           keyboardType: TextInputType.number,
-          validator: (value) => (value!.isEmpty)
-              ? ('required_field'.tr)
-              : (value.length != 6 ? "enter_6_digit_pincode".tr : null),
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Required field';
+            }
+            if (value.length > 11) {
+              return 'Please enter a valid Pincode'.tr;
+            }
+
+            return null;
+          },
         ),
         gap,
         CustomTextField(

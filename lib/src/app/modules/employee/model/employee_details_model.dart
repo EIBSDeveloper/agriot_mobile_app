@@ -27,6 +27,7 @@ class EmployeeDetailsModel {
   final bool? status;
   final String description;
   final List<Employee> employees;
+  final Map<String, dynamic>? permissions;
 
   EmployeeDetailsModel({
     required this.id,
@@ -53,6 +54,7 @@ class EmployeeDetailsModel {
     this.userName,
     this.password,
     required this.employees,
+     this.permissions,
   });
 
   factory EmployeeDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -84,6 +86,7 @@ class EmployeeDetailsModel {
         description: json['description'] ?? '',
         userName: json['user_name'],
         password: json['password'],
+        permissions:  json['permissions'],
         employees:
             (json['employees'] as List<dynamic>?)
                 ?.map((e) => Employee.fromJson(e))

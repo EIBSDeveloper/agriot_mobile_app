@@ -37,6 +37,8 @@ import 'package:argiot/src/app/modules/vendor_customer/view/screens/add_vendor_c
 import 'package:argiot/src/app/modules/vendor_customer/view/screens/vendor_customer_details_view.dart';
 import 'package:get/get.dart';
 
+import '../../agri_bot.dart';
+import '../../smart_farm_binding.dart';
 import '../modules/attendence/bindings/attendence_add_binding.dart';
 import '../modules/attendence/bindings/attendence_binding.dart';
 import '../modules/attendence/view/screens/add_attendence_screen.dart';
@@ -382,6 +384,11 @@ class AppPages {
       name: Routes.payoutlistscreen,
       page: () => const Payoutlistscreen(),
       binding: PayoutBinding(),
+    ),
+      GetPage(
+      name: Routes.bot,
+      page: () => const SmartFarmView(),
+      binding: SmartFarmBinding(),
     ),
     // GetPage(
     //   name: '/inventory/:type/:id',

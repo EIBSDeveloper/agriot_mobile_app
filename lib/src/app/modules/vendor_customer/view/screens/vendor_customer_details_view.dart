@@ -178,6 +178,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
     controller.selectedType.value = item.type;
     controller.nameController.text = item.name;
     controller.mobileController.text = item.mobileNo;
+    controller.doorNoController.text = item.doorNo??"";
+    controller.pincodeController.text = item.pincode??"";
     controller.emailController.text = item.email ?? '';
     controller.shopNameController.text = item.shopName ?? item.businessName ?? '';
     controller.doorNoController.text = item.doorNo ?? '';

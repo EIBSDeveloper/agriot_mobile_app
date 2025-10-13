@@ -28,9 +28,12 @@ class ExpenseRepository {
 
   Future<List<CropModel>> getCropList() async {
     final farmerId = appDeta.farmerId;
+    final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+    String manager = isManager ? "?manager_id=$managerId" : "";
     try {
       final response = await _httpService.get(
-        '/land-and-crop-details/$farmerId',
+        '/land-and-crop-details/$farmerId$manager',
       );
       final lands = json.decode(response.body)['lands'] as List;
 
@@ -47,12 +50,13 @@ class ExpenseRepository {
   }
 
   // Updated method for all expenses and sales
-  Future<List<GroupedExpenseRecord>> getBothExpensesAndSales(String timePeriod) async {
+  Future<List<GroupedExpenseRecord>> getBothExpensesAndSales(
+    String timePeriod,
+  ) async {
     final farmerId = appDeta.farmerId.value;
     try {
       final response = await _httpService.get(
         '/both_expense_sales_list/$farmerId/$timePeriod',
-      
       );
       final List<dynamic> data = json.decode(response.body);
       return data.map((json) => GroupedExpenseRecord.fromJson(json)).toList();
@@ -67,7 +71,6 @@ class ExpenseRepository {
     try {
       final response = await _httpService.get(
         '/myexpenses_list/$farmerId/$timePeriod',
-       
       );
       final List<dynamic> data = json.decode(response.body);
       return data.map((json) => GroupedExpenseRecord.fromJson(json)).toList();
@@ -119,14 +122,13 @@ class ExpenseRepository {
     }
   }
 
- 
   Future addExpense({
     int? myCrop,
     required int amount,
     required String createdDay,
     int? vendor,
     int? paidamonut,
-    String? description, 
+    String? description,
     List<Map<String, dynamic>>? documents,
   }) async {
     final farmerId = appDeta.farmerId;

@@ -115,6 +115,7 @@ class ManagerRepository {
     required DrapDown? role,
     required String name,
     required String phone,
+    String? profile,
     String? salary,
     String? email,
     int? employeeTypeId,
@@ -138,6 +139,7 @@ class ManagerRepository {
       "farmer_id": farmerId,
       "role_id": role?.id ?? 0,
       "name": name,
+      "img": profile,
       "salary": salary,
       "phone_number": phone,
       "mobile_no":

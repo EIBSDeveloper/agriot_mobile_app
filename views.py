@@ -3341,6 +3341,9 @@ def manage_vendor(request, id=None):
         opening_balance=data.get('opening_balance', 0),
         vendor_image=request.data.get('img'),
         description=data.get('description', ''),
+        latitude=data.get('latitude', 0),
+        longitude=data.get('longitude', 0),
+     
         status=0,
         created_at=timezone.now(),
         created_by=farmer.farmer_user,
@@ -5304,13 +5307,13 @@ def get_task_list_for_year(request, id):
             response_data[task_date]['waiting'] += 1
 
     # Parse dates and prepare the final events list
-    events = [{"Date": datetime.strptime(date, '%d-%m-%Y').strftime('%Y, %m, %d'), "count": data['task_count']} 
+    events = [{"Date": datetime.strptime(date, '%Y-%m-%d').strftime('%Y, %m, %d'), "count": data['task_count']} 
               for date, data in response_data.items()]
 
     response_data = {
-        "completed_task": [datetime.strptime(date, '%d-%m-%Y').strftime('%Y, %m, %d') 
+        "completed_task": [datetime.strptime(date, '%Y-%m-%d').strftime('%Y, %m, %d') 
                            for date, data in response_data.items() if data['completed'] > 0],
-        "waiting_task": [datetime.strptime(date, '%d-%m-%Y').strftime('%Y, %m, %d') 
+        "waiting_task": [datetime.strptime(date, '%Y-%m-%d').strftime('%Y, %m, %d') 
                          for date, data in response_data.items() if data['waiting'] > 0],
         "events": events
     }
@@ -8244,6 +8247,8 @@ def get_vendor(request, farmer_id):
             'pincode': vendor.pincode or "",
             'gst_number': vendor.gst_number or "",
             'tax_number': vendor.tax_number or "",
+            'longitude': vendor.longitude or 0,
+            'latitude': vendor.latitude or 0,
             'credit': '+' if vendor.credit else '-',
             'opening_balance': vendor.opening_balance or 0,
             'vendor_image': request.build_absolute_uri(f'/SuperAdmin{vendor.vendor_image.url}') if vendor.vendor_image else "",
@@ -9089,6 +9094,8 @@ def get_customer_list(request, farmer_id):
             'post_code': customer.post_code,
             'gst_no': customer.gst_no,
             'tax_no': customer.tax_no,
+            'longitude': customer.longitude,
+            'latitude': customer.latitude,
             'is_credit': customer.is_credit,
             'opening_balance': customer.opening_balance,
             # 'customer_img': customer.customer_img.url if customer.customer_img else "",  
@@ -12244,7 +12251,7 @@ def get_otp(request):
                 return Response({"detail": "Mobile number must start with 9, 8, 7, or 6."}, status=status.HTTP_400_BAD_REQUEST)
             if len(mobile_number) > 10:
                 return Response({"detail": "Mobile number exceeds maximum length of 10 characters."}, status=status.HTTP_400_BAD_REQUEST)
-        existing_farmer = Farmer.objects.filter(Q(phone=mobile_number) & (Q(status=0) | Q(status=7))).first()
+        existing_farmer = Farmer.objects.filter(Q(phone=mobile_number) & (Q(status=0) | Q(status=7)| Q(status=1))).first()
         if existing_farmer is None:
             manager = ManagerUser.objects.filter(Q(mobile_no=mobile_number) & (Q(status=0))).select_related('farmer').first()
             if manager:
@@ -12254,7 +12261,7 @@ def get_otp(request):
     # Validate email if provided
     if email and not existing_farmer:
         email = email.strip().lower()
-        existing_farmer = Farmer.objects.filter(Q(email=email) & (Q(status=0) | Q(status=7))).first()
+        existing_farmer = Farmer.objects.filter(Q(email=email) & (Q(status=0) | Q(status=7)| Q(status=1))).first()
         if existing_farmer is None:
             manager = ManagerUser.objects.filter(Q(email=email) ).select_related('farmer').first()
             if manager:
@@ -12610,7 +12617,14 @@ def delete_my_land(request, id):
 @api_view(['GET'])
 def get_farmer_lands(request, farmer_id): 
     # Retrieve lands for the given farmer_id with status 0
-    lands = MyLand.objects.filter(farmer_id=farmer_id, status=0).values('id', 'name')
+    manager_id =request.GET.get("manager_id")
+   
+    lands = None
+    
+    if manager_id:
+        lands = MyLand.objects.filter(farmer_id=farmer_id, status=0,manager_id=manager_id).values('id', 'name')
+    else:
+        lands = MyLand.objects.filter(farmer_id=farmer_id, status=0,).values('id', 'name')
 
     # If no lands are found, return an error message
     if not lands:
@@ -13511,8 +13525,10 @@ def get_task_list_for_month(request, id):
 
     for task in task_serializer.data:
         task_date_raw = task.get('start_date')
+        date =None
         try:
-            task_date = datetime.strptime(task_date_raw, '%d-%m-%Y').date() if isinstance(task_date_raw, str) else task_date_raw
+            task_date = datetime.strptime(task_date_raw, '%Y-%m-%d').date() if isinstance(task_date_raw, str) else task_date_raw
+            # date = datetime.strptime(task_date_raw, '%d-%m-%Y').date() if isinstance(task_date_raw, str) else task_date_raw
         except Exception:
             continue  # skip invalid dates
 
@@ -13531,7 +13547,7 @@ def get_task_list_for_month(request, id):
             "description": task.get('schedule'),
            
             "crop_name":  task.get('my_crop'),
-            "created_at":task_date,
+            "created_at":date,
             "status_id": status_info["id"],
             "status": localized_status_name
         })
@@ -13541,7 +13557,7 @@ def get_task_list_for_month(request, id):
     completed, waiting, cancelled, pending, in_progress, events = [], [], [], [], [], []
 
     for date, data in sorted(response_by_date.items()):
-        date_str = date.strftime('%d-%m-%Y')
+        date_str = date.strftime('%Y-%m-%d')
 
         events.append({
             "Date": date_str,
@@ -13854,7 +13870,7 @@ def new_task(request):
         schedule_weekly_ids = request.data.get('schedule_weekly', [])
         schedule_monthly_ids = request.data.get('schedule_monthly', [])
         schedule_year_ids = request.data.get('schedule_year', [])
-        schedule_status_id = request.data.get('schedule_status')
+        schedule_status_id = request.data.get('schedule_status',1)
         schedule = request.data.get('schedule')
         comment = request.data.get('comment')
 
@@ -13869,13 +13885,13 @@ def new_task(request):
          
         try:
             start_date = datetime.strptime(start_date, '%d-%m-%Y').date()
-            end_date = datetime.strptime(end_date, '%y-%m-%Y').date() if end_date else None
+            end_date = datetime.strptime(end_date, '%d-%m-%Y').date() if end_date else None
             
         except ValueError:
             return Response({'error': 'Invalid date format, use DD-MM-YYYY'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Ensure that end_date is only compared to start_date if it's not None
-        if end_date and end_date < start_date:
+        if schedule_choice != 2 and end_date and end_date < start_date:
             return Response({'error': 'End date cannot be before start date'}, status=status.HTTP_400_BAD_REQUEST)
  
         farmer = get_object_or_404(Farmer, id=farmer_id)
@@ -16439,7 +16455,10 @@ def manage_my_land(request):
     measurement_unit = request.data.get('measurement_unit')
     soil_type = request.data.get('soil_type')
     door_no = request.data.get('door_no')   
+    pincode = request.data.get('pincode')   
     manager = request.data.get('manager')   
+    latitude = request.data.get('latitude')   
+    longitude = request.data.get('longitude')   
     locations = request.data.get('locations')  # URL containing coordinates
     patta_number = request.data.get('patta_number')
     description = request.data.get('description')
@@ -16449,16 +16468,16 @@ def manage_my_land(request):
     latitude = None
     longitude = None
 
-    if locations:
-        try:
-            # Example URL format with '@lat,long'
-            match = re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', locations)
-            if match:
-                latitude = float(match.group(1))
-                longitude = float(match.group(2))
-        except Exception:
-            latitude = None
-            longitude = None
+    # if locations:
+    #     try:
+    #         # Example URL format with '@lat,long'
+    #         match = re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', locations)
+    #         if match:
+    #             latitude = float(match.group(1))
+    #             longitude = float(match.group(2))
+    #     except Exception:
+    #         latitude = None
+    #         longitude = None
 
     # Validation errors
     errors = {}
@@ -16470,10 +16489,7 @@ def manage_my_land(request):
         errors['measurement_value'] = 'This field is required.'
     if not measurement_unit:
         errors['measurement_unit'] = 'This field is required.'
-    if latitude is None:
-        errors['latitude'] = 'Latitude could not be determined from locations URL.'
-    if longitude is None:
-        errors['longitude'] = 'Longitude could not be determined from locations URL.'
+
 
     # geo_marks format validation
     if geo_marks:
@@ -16522,7 +16538,7 @@ def manage_my_land(request):
         measurement_unit=measurement_unit_obj,
         soil_type=soil_type_obj,
         # Removed country, state, city, taluk, village fields
-        door_no=door_no,
+        door_no=door_no, pincode=pincode,
         locations=locations,
         manager=manager_obj,
         latitude=latitude,
@@ -18585,15 +18601,15 @@ def update_my_land(request, farmer_id):
     latitude = request.data.get('latitude')
     longitude = request.data.get('longitude')
 
-    if locations:
-        try:
-            match = re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', locations)
-            if match:
-                latitude = float(match.group(1))
-                longitude = float(match.group(2))
-        except Exception:
-            # Ignore extraction failure; fallback to given latitude/longitude if any
-            pass
+    # if locations:
+    #     try:
+    #         match = re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', locations)
+    #         if match:
+    #             latitude = float(match.group(1))
+    #             longitude = float(match.group(2))
+    #     except Exception:
+    #         # Ignore extraction failure; fallback to given latitude/longitude if any
+    #         pass
 
     if latitude is not None:
         my_land.latitude = latitude
@@ -18649,6 +18665,7 @@ def update_my_land(request, farmer_id):
     my_land.patta_number = request.data.get('patta_number', my_land.patta_number)
     my_land.description = description if description is not None else my_land.description
     my_land.l_status = request.data.get('l_status', my_land.l_status)
+    my_land.pincode = request.data.get('pincode', my_land.pincode)
 
     my_land.updated_at = timezone.now()
     my_land.updated_by = farmer_obj.farmer_user if farmer_obj.farmer_user else farmer_obj.sub_admin_user
@@ -22843,8 +22860,15 @@ def farmer_land_and_crop_details(request, farmer_id):
         language_code = 'en'  # Fallback to 'en' if no preference is found
 
     try:
-        # Retrieve all lands associated with the farmer
-        lands = MyLand.objects.filter(farmer_id=farmer_id, status=0)
+        manager_id =request.GET.get("manager_id")
+   
+        lands = None
+        
+        if manager_id:
+            lands = MyLand.objects.filter(farmer_id=farmer_id, status=0,manager_id=manager_id)
+        else:
+            lands = MyLand.objects.filter(farmer_id=farmer_id, status=0,)
+
         
         # Manually structure the response data
         land_data = []
@@ -23123,6 +23147,7 @@ def farmer_land_and_crop_details(request, farmer_id):
 
 @api_view(['GET'])
 def full_land_details(request, farmer_id):
+    
     try:
         user_language_pref = UserLanguagePreference.objects.get(user=farmer_id)
         language_code = user_language_pref.language_code if user_language_pref.language_code else 'en'  # Fallback to 'en' if no language code
@@ -23207,26 +23232,26 @@ def full_land_details(request, farmer_id):
 
             # Fetch schedules for each crop
             schedules = []
-            for schedule in MySchedule.objects.filter(my_crop=crop, status=0):  # Filter schedules by status
-                schedules.append({
-                    "id": schedule.id,
-                    "schedule_activity_type": {
-                        "id": schedule.schedule_activity_type.id if schedule.schedule_activity_type else None,
-                        "name": schedule.schedule_activity_type.get_translated_value("name", language_code) if schedule.schedule_activity_type and language_code == 'ta' else (schedule.schedule_activity_type.name if schedule.schedule_activity_type else None),
-                    },
-                    "start_date": schedule.start_date,
-                    "end_date": schedule.end_date,
-                    "schedule_status": {
-                        "id": schedule.schedule_status.id if schedule.schedule_status else None,
-                        "name": schedule.schedule_status.get_translated_value("name", language_code) if schedule.schedule_status and language_code == 'ta' else (schedule.schedule_status.name if schedule.schedule_status else None),
-                    },
-                    "schedule": schedule.get_translated_value("schedule", language_code) if schedule.schedule and language_code == 'ta' else schedule.schedule,
-                    "comment": schedule.get_translated_value("comment", language_code) if schedule.comment and language_code == 'ta' else schedule.comment,
-                    "schedule_choice": schedule.schedule_choice,
-                    "schedule_weekly": [weekly.id for weekly in schedule.schedule_weekly.all()],
-                    "schedule_monthly": [monthly.id for monthly in schedule.schedule_monthly.all()],
-                    "schedule_year": [year.id for year in schedule.schedule_year.all()],
-                })
+            # for schedule in MySchedule.objects.filter(my_crop=crop, status=0):  # Filter schedules by status
+            #     schedules.append({
+            #         "id": schedule.id,
+            #         "schedule_activity_type": {
+            #             "id": schedule.schedule_activity_type.id if schedule.schedule_activity_type else None,
+            #             "name": schedule.schedule_activity_type.get_translated_value("name", language_code) if schedule.schedule_activity_type and language_code == 'ta' else (schedule.schedule_activity_type.name if schedule.schedule_activity_type else None),
+            #         },
+            #         "start_date": schedule.start_date,
+            #         "end_date": schedule.end_date,
+            #         "schedule_status": {
+            #             "id": schedule.schedule_status.id if schedule.schedule_status else None,
+            #             "name": schedule.schedule_status.get_translated_value("name", language_code) if schedule.schedule_status and language_code == 'ta' else (schedule.schedule_status.name if schedule.schedule_status else None),
+            #         },
+            #         "schedule": schedule.get_translated_value("schedule", language_code) if schedule.schedule and language_code == 'ta' else schedule.schedule,
+            #         "comment": schedule.get_translated_value("comment", language_code) if schedule.comment and language_code == 'ta' else schedule.comment,
+            #         "schedule_choice": schedule.schedule_choice,
+            #         "schedule_weekly": [weekly.id for weekly in schedule.schedule_weekly.all()],
+            #         "schedule_monthly": [monthly.id for monthly in schedule.schedule_monthly.all()],
+            #         "schedule_year": [year.id for year in schedule.schedule_year.all()],
+            #     })
 
             crop_details.append({
                 "id": crop.id,
@@ -31552,7 +31577,7 @@ def dashboard_task_list(request, farmer_id):
 
     try:
         # Query MySchedule model for the last 5 entries based on the farmer_id and order by created_at
-        schedules = MySchedule.objects.filter(farmer_id=farmer_id).order_by('-created_at')[:5]
+        schedules = MySchedule.objects.filter(farmer_id=farmer_id ,status=0).order_by('-created_at')[:5]
         
         # Prepare the response data with the 'my_land' IDs, crop details, and schedule details
         schedule_data = []
@@ -39585,6 +39610,8 @@ def land_view(request, farmer_id, land_id):
         'patta_number': land.patta_number,
         'description': land.description,
         'code': land.code,
+        'pincode': land.pincode,
+        'address': land.door_no,
         'status': land.status,
         'l_status': land.l_status,
         'created_at': land.created_at.isoformat() if land.created_at else None,
@@ -42067,7 +42094,7 @@ def get_sales_list(request, farmer_id, time_period):
     parameters=[
         OpenApiParameter(name='page', description="Page number", type=int, required=False),
         OpenApiParameter(name='page_size', description="Number of items per page", type=int, required=False),
-        OpenApiParameter(name='search_param', description="Search Param", type=str, required=False),
+        OpenApiParameter(name='search', description="Search", type=str, required=False),
         OpenApiParameter(name='manager_id', description="Manager ID", type=int, required=False),  # fixed name mismatch
     ]
 )
@@ -42078,7 +42105,7 @@ def get_employee_list_grouped_by_manager(request, farmer_id):
     try:
         page = int(request.GET.get("page", 1))
         page_size = int(request.GET.get("page_size", 10))
-        search = request.GET.get("search_param", "").strip()
+        search = request.GET.get("search", "").strip()
         manager_id = request.GET.get("manager_id")
 
         # Managers filtered by farmer
@@ -42211,8 +42238,8 @@ def get_manager_detail(request, manager_id):
                 "name": manager.employee_type.name
             },
             "gender":{
-                "id": manager.gender.id,
-                "name": manager.gender.gender 
+                "id": manager.gender.id if manager.gender else None,
+                "name": manager.gender.gender  if manager.gender else None
             },
             "dob": manager.date_of_birth,
             "doj": manager.date_of_join,
@@ -42220,9 +42247,9 @@ def get_manager_detail(request, manager_id):
             "pincode": manager.pincode,
             "latitude": manager.latitude,
             "longitude": manager.longitude,
-            "permissions": manager.permissions,
             "description": manager.description,
-            "employees": employees
+            "employees": employees,
+            "permissions": permissions_to_input_format(manager.permissions)
         }
 
         return Response(data, status=status.HTTP_200_OK)

@@ -96,7 +96,7 @@ class MarketCard extends StatelessWidget {
         //   Align(
         //     alignment: Alignment.centerRight,
         //     child: Text(
-        //       'more_products'.trParams({'count': (market.products.length - 3).toString()}),
+        //       "${'more_products'.tr} ",
         //       style: TextStyle(color: Colors.grey),
         //     ),
         //   ),

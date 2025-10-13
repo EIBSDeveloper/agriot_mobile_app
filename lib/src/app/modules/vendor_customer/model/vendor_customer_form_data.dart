@@ -14,8 +14,10 @@ class VendorCustomerFormData {
   double openingBalance;
   String? description;
   List<int>? marketIds;
+double? latitude;
+  double? longitude;
   List<int>? inventoryTypeIds;
-  String? imageBase64;
+  String? image;
   String type;
 
   VendorCustomerFormData({
@@ -35,7 +37,9 @@ class VendorCustomerFormData {
     this.description,
     this.marketIds,
     this.inventoryTypeIds,
-    this.imageBase64,
+    this.latitude,
+    this.longitude,
+    this.image,
     required this.type,
   });
 
@@ -49,7 +53,10 @@ class VendorCustomerFormData {
       if (type == 'vendor' || type == 'both') 'business_name': businessName,
       'mobile_no': mobileNo,
       'email': email,
+      'img': image,
       'door_no': doorNo,
+      'longitude': longitude,
+      'latitude': latitude,
       'gst_no': gstNo,
       'tax_no': taxNo,
       if (type == 'customer' || type == 'both') 'post_code': postCode,

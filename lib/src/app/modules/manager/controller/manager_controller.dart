@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 import '../../../service/utils/pop_messages.dart';
+import '../../../service/utils/utils.dart';
 import '../../employee/model/employee_details_model.dart';
 import '../../employee/repository/employee_details_repository.dart';
 import '../repository/manager_repository.dart';
@@ -155,6 +156,11 @@ class ManagerController extends GetxController {
           (manager) => manager.id == employeeDetails.value!.manager!.id,
         );
       }
+      if (employeeDetails.value?.permissions != null&&employeeDetails.value?.permissions != {}) {
+        permissions.value = (employeeDetails.value?.permissions ?? {}).map(
+          (key, value) => MapEntry(key, PermissionItem.fromApi(key, value)),
+        );
+      }
     } catch (e) {
       Fluttertoast.showToast(msg: 'Failed to load details: ${e.toString()}'.tr);
     } finally {
@@ -209,6 +215,12 @@ class ManagerController extends GetxController {
         latitude.value = location['latitude'];
         longitude.value = location['longitude'];
         locationController.text = '${latitude.value}, ${longitude.value}';
+        Map addressFromLatLng = await getAddressFromLatLng(
+          latitude: location['latitude'],
+          longitude: location['longitude'],
+        );
+        addressController.text = addressFromLatLng['address'] ?? '';
+        pincodeController.text = addressFromLatLng['pincode'] ?? '';
       }
     } catch (e) {
       showError('Failed to pick location');
@@ -261,9 +273,7 @@ class ManagerController extends GetxController {
       );
       if (empRes.statusCode == 200) {
         final List data = jsonDecode(empRes.body);
-        employeeTypes.value = data
-            .map((e) => DrapDown.fromJson(e))
-            .toList();
+        employeeTypes.value = data.map((e) => DrapDown.fromJson(e)).toList();
       }
 
       /// Fetch genders
@@ -337,6 +347,7 @@ class ManagerController extends GetxController {
       final response = await repository.createEmployeeManager(
         id: id.value,
         role: selectedRoleType.value,
+        profile: base64Image.value,
         salary: salaryController.text,
         name: usernameController.text.trim(),
         phone: mobileController.text.trim(),

@@ -94,6 +94,7 @@ class LandDetailView extends GetView<LandDetailController> {
           _buildDocumentsSection(),
           const SizedBox(height: 8),
           // Crops
+          if (controller.appDeta.permission.value?.crop?.list != 0)
           _buildCropsSection(),
 
           // Documents

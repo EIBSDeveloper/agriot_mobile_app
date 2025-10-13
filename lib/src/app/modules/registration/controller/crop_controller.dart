@@ -138,9 +138,9 @@ class RegCropController extends GetxController {
           location ?? [],
         ).toList();
       }     
-        measurementController.text = calculatePolygonAreaAcre(
-          points: landCoordinates,
-        ).toString();
+        // measurementController.text = calculatePolygonAreaAcre(
+        //   points: landCoordinates,
+        // ).toString();
     } catch (e) {
       showError('Failed to pick location');
     }

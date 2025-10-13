@@ -44,49 +44,52 @@ class LandViewPage extends GetView<LandController> {
                 label: 'Patta Number',
                 // validator: (value) => value!.isEmpty ? 'Required field' : null,
               ),
-              gap,
-              Row(
-                children: [
-                  Expanded(
-                    child: Obx(
-                      () => InputCardStyle(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: DropdownButtonFormField<DrapDown>(
-                          initialValue: controller.selectedManger.value,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: controller.managers
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(e.name),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (value) =>
-                              controller.selectedManger.value = value,
-                          decoration: const InputDecoration(
-                            labelText: 'Assign Manager',
-                            border: InputBorder.none,
+
+              if (!controller.appDeta.isManager.value) ...[
+                gap,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () => InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: DropdownButtonFormField<DrapDown>(
+                            initialValue: controller.selectedManger.value,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            items: controller.managers
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Text(e.name),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) =>
+                                controller.selectedManger.value = value,
+                            decoration: const InputDecoration(
+                              labelText: 'Assign Manager',
+                              border: InputBorder.none,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Card(
-                    color: Get.theme.primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        Get.toNamed(Routes.employeeAdd)?.then((result) {
-                          controller.loadManagers();
-                        });
-                      },
-                      tooltip: 'Add Manager Detail',
+                    Card(
+                      color: Get.theme.primaryColor,
+                      child: IconButton(
+                        color: Colors.white,
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          Get.toNamed(Routes.employeeAdd)?.then((result) {
+                            controller.loadManagers();
+                          });
+                        },
+                        tooltip: 'Add Manager Detail',
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
               gap,
               SearchableDropdown<AppDropdownItem>(
                 label: 'Soil Type ',
@@ -111,22 +114,26 @@ class LandViewPage extends GetView<LandController> {
                 controller: controller.pincodeController,
                 label: 'Pincode *',
                 inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
+                  // FilteringTextInputFormatter.digitsOnly,
+                  // LengthLimitingTextInputFormatter(6),
                 ],
-                validator: (value) =>
-                    value?.isEmpty ?? true ? 'Required field' : null,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Required field';
+                  }
+                  if (value.length > 11) {
+                    return 'Please enter a valid Pincode'.tr;
+                  }
+
+                  return null;
+                },
                 keyboardType: TextInputType.number,
               ),
-              gap,_buildTextField(
+              gap,
+              _buildTextField(
                 controller: controller.addressController,
-                label: 'Address',minLines: 3
-                // inputFormatters: [
-                //   FilteringTextInputFormatter.digitsOnly,
-                //   LengthLimitingTextInputFormatter(6),
-                // ],
-              
-                // keyboardType: TextInputType.number,
+                label: 'Address',
+                minLines: 3,
               ),
               gap,
               Row(

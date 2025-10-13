@@ -13,203 +13,203 @@ class CreateEmployeeScreen extends GetView<EmployeeController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: const CustomAppBar(title: 'Create Employee'),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Form(
-          key: controller.formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
+    appBar: const CustomAppBar(title: 'Create Employee'),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(10),
+      child: Form(
+        key: controller.formKey,
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
 
-              // Employee Photo
-              _buildImagePicker(),
-              const SizedBox(height: 16),
+            // Employee Photo
+            _buildImagePicker(),
+            const SizedBox(height: 16),
 
-              //Employee name
-              InputCardStyle(
-                child: TextFormField(
-                  controller: controller.nameController,
+            //Employee name
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Employee Name *',
+                  hintText: 'Enter Employee Name',
+                  border: InputBorder.none,
+                ),
+                validator: (value) =>
+                    value == null || value.isEmpty ? 'Required field' : null,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Mobile No
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.mobileController,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly, // only digits
+                  // LengthLimitingTextInputFormatter(10), // max 6 digits
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Mobile No',
+                  hintText: 'Enter Mobile No',
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Employee Type
+            Obx(
+              () => InputCardStyle(
+                child: DropdownButtonFormField<String>(
+                  initialValue: controller.selectedEmployeeType.value,
+                  items: controller.employeeTypes
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (value) =>
+                      controller.selectedEmployeeType.value = value,
                   decoration: const InputDecoration(
-                    labelText: 'Employee Name *',
-                    hintText: 'Enter Employee Name',
+                    labelText: 'Employee Type *',
                     border: InputBorder.none,
                   ),
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Required field' : null,
+                  validator: (value) => value == null ? 'Required field' : null,
                 ),
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 16),
 
-              // Mobile No
-              InputCardStyle(
-                child: TextFormField(
-                  controller: controller.mobileController,
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly, // only digits
-                    LengthLimitingTextInputFormatter(10), // max 6 digits
-                  ],
+            // Work Type
+            Obx(
+              () => InputCardStyle(
+                child: DropdownButtonFormField<String>(
+                  initialValue: controller.selectedWorkType.value,
+                  items: controller.workTypes
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (value) =>
+                      controller.selectedWorkType.value = value,
                   decoration: const InputDecoration(
-                    labelText: 'Mobile No',
-                    hintText: 'Enter Mobile No',
+                    labelText: 'Work Type *',
                     border: InputBorder.none,
                   ),
+                  validator: (value) => value == null ? 'Required field' : null,
                 ),
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 16),
 
-              // Employee Type
-              Obx(
-                () => InputCardStyle(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: controller.selectedEmployeeType.value,
-                    items: controller.employeeTypes
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                    onChanged: (value) =>
-                        controller.selectedEmployeeType.value = value,
-                    decoration: const InputDecoration(
-                      labelText: 'Employee Type *',
-                      border: InputBorder.none,
-                    ),
-                    validator: (value) =>
-                        value == null ? 'Required field' : null,
-                  ),
+            // Location URL
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Location Coordinates *',
+                  hintText: 'Location Coordinates',
+                  border: InputBorder.none,
                 ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
+                readOnly: true,
+                onTap: controller.pickLocation,
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 16),
 
-              // Work Type
-              Obx(
-                () => InputCardStyle(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: controller.selectedWorkType.value,
-                    items: controller.workTypes
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                    onChanged: (value) =>
-                        controller.selectedWorkType.value = value,
-                    decoration: const InputDecoration(
-                      labelText: 'Work Type *',
-                      border: InputBorder.none,
-                    ),
-                    validator: (value) =>
-                        value == null ? 'Required field' : null,
-                  ),
+            // Address
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Address *',
+                  hintText: 'Enter Address',
+                  border: InputBorder.none,
                 ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 16),
 
-              // Location URL
-              InputCardStyle(
-                child: TextFormField(
-                  controller: controller.locationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Location Coordinates *',
-                    hintText: 'Location Coordinates',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Required field'
-                      : null,
-                  readOnly: true,
-                  onTap: controller.pickLocation,
+            // Pincode
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.pincodeController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  // FilteringTextInputFormatter.digitsOnly, // only digits
+                  // LengthLimitingTextInputFormatter(6), // max 6 digits
+                ],
+                decoration: const InputDecoration(
+                  labelText: 'Pincode *',
+                  hintText: 'Enter Pincode',
+                  border: InputBorder.none,
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // Address
-              InputCardStyle(
-                child: TextFormField(
-                  controller: controller.addressController,
-                  decoration: const InputDecoration(
-                    labelText: 'Address *',
-                    hintText: 'Enter Address',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Required field'
-                      : null,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Pincode
-              InputCardStyle(
-                child: TextFormField(
-                  controller: controller.pincodeController,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly, // only digits
-                    LengthLimitingTextInputFormatter(6), // max 6 digits
-                  ],
-                  decoration: const InputDecoration(
-                    labelText: 'Pincode *',
-                    hintText: 'Enter Pincode',
-                    border: InputBorder.none,
-                  ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Required field';
+                validator: (value) {
+                  if (value == null ||
+                      value.trim().isEmpty 
+                      ) {
+                    return 'Required field';
+                  }
+                     if (value.length > 11) {
+                      return 'Please enter a valid Pincode'.tr;
                     }
-                    if (value.trim().length != 6) {
-                      return 'Pincode must be 6 digits';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
 
-              // Assign Manager
-              Obx(
-                () => InputCardStyle(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: controller.selectedManager.value,
-                    items: controller.managers
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                    onChanged: (value) =>
-                        controller.selectedManager.value = value,
-                    decoration: const InputDecoration(
-                      labelText: 'Assign Manager *',
-                      border: InputBorder.none,
-                    ),
-                    validator: (value) =>
-                        value == null ? 'Required field' : null,
-                  ),
-                ),
+                  return null;
+                },
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 16),
 
-              // Description
-              InputCardStyle(
-                child: TextFormField(
-                  controller: controller.descriptionController,
-                  maxLines: 3,
+            // Assign Manager
+            Obx(
+              () => InputCardStyle(
+                child: DropdownButtonFormField<String>(
+                  initialValue: controller.selectedManager.value,
+                  items: controller.managers
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (value) =>
+                      controller.selectedManager.value = value,
                   decoration: const InputDecoration(
-                    labelText: 'Description',
-                    hintText: 'Enter Description',
+                    labelText: 'Assign Manager *',
                     border: InputBorder.none,
                   ),
+                  validator: (value) => value == null ? 'Required field' : null,
                 ),
               ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 16),
 
-              // Submit Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: controller.submitForm,
-                  child: const Text('Submit'),
+            // Description
+            InputCardStyle(
+              child: TextFormField(
+                controller: controller.descriptionController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  hintText: 'Enter Description',
+                  border: InputBorder.none,
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+
+            // Submit Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: controller.submitForm,
+                child: const Text('Submit'),
+              ),
+            ),
+          ],
         ),
       ),
-    );
+    ),
+  );
 
   Widget _buildImagePicker() => Center(
     child: Stack(

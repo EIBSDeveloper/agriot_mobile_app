@@ -251,7 +251,7 @@ class WorkersListScreen extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Colors.grey[100],
     appBar: CustomAppBar(
-      title: 'workers_agent'.trParams({'agent': agent.name}),
+      title: "${'workers_agent'.tr} ${agent.name}",
       showBackButton: true,
     ),
     body: Column(

@@ -5,6 +5,7 @@ class AppIcons {
   static const String myCrop = "assets/icon/myCrop.png";
   static const String expense = "assets/icon/expense.png";
   static const String task = "assets/icon/task.png";
+  static const String icon = "assets/icon/icon.png";
   static const String map = "assets/icon/map.png";
   static const String landMark = "assets/image/land_mark.jpg";
     // AppIcons.homeSvg,
@@ -26,6 +27,7 @@ class AppIcons {
   // static const String bookUser = "assets/icon/svg/book-user.svg";
   // static const String boxCheck = "assets/icon/svg/box-check.svg";
   static const String calculatorMoney = "assets/icon/svg/calculator-money.svg";
+  static const String bot = "assets/icon/svg/chatbot-speech-bubble.svg";
   // static const String calendarDay = "assets/icon/svg/calendar-day.svg";
   // static const String calendarLinesPen = "assets/icon/svg/calendar-lines-pen.svg";
   // static const String camera = "assets/icon/svg/camera.svg";

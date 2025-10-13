@@ -46,7 +46,7 @@ class SurveyDetail {
     farmer: json["farmer"],
     myLand: json["MyLand"],
     surveyNo: json["survey_no"],
-    measurementValue:(int.tryParse(json["survey_measurement_value"]) ??0).toString(),
+    measurementValue:(int.tryParse(json["survey_measurement_value"].toString()) ??0).toString(),
     measurementUnit: json["survey_measurement_unit"],
   );
 
@@ -74,7 +74,9 @@ class LandDetail {
   final List geoMarks;
   final String pattaNumber;
   final String? description;
-  final String? code;
+
+  final String? pincode;
+  final String? address;
   final int status;
   final int lStatus;
   final List<SurveyDetail> surveyDetails;
@@ -94,7 +96,9 @@ class LandDetail {
     required this.geoMarks,
     required this.pattaNumber,
     this.description,
-    this.code,
+    this.pincode,
+    this.address,
+
     required this.status,
     required this.lStatus,
     required this.surveyDetails,
@@ -115,7 +119,9 @@ class LandDetail {
       geoMarks: json['geo_marks'] ?? [],
       pattaNumber: json['patta_number'] ?? '',
       description: json['description'],
-      code: json['code'],
+      pincode: json['pincode'].toString(),
+      address: json['address'],
+
       status: json['status'] ?? 0,
       lStatus: json['l_status'] ?? 0,
       surveyDetails:

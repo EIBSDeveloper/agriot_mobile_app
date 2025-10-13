@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../controller/app_controller.dart';
 import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/utils.dart';
 import '../../model/land.dart';
@@ -12,7 +13,7 @@ class LandCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback refresh;
 
-  const LandCard({
+  LandCard({
     super.key,
     required this.land,
     required this.isExpanded,
@@ -20,7 +21,7 @@ class LandCard extends StatelessWidget {
     required this.onTap,
     required this.refresh,
   });
-
+  final AppDataController appDeta = Get.put(AppDataController());
   @override
   Widget build(BuildContext context) => AnimatedContainer(
     duration: const Duration(milliseconds: 300),
@@ -38,7 +39,6 @@ class LandCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
                 children: [
-                  // Left side: Name and count
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,21 +111,22 @@ class LandCard extends StatelessWidget {
                   //   ],
                   // ),
                   const SizedBox(height: 8),
-                  ...land.crops.map(
-                    (crop) => InkWell(
-                      onTap: () {
-                        Get.toNamed(
-                          Routes.cropOverview,
-                          arguments: {'landId': land.id, 'cropId': crop.id},
-                        )?.then((result) {
-                          if (result ?? false) {
-                            refresh.call();
-                          }
-                        });
-                      },
-                      child: CropCard(crop: crop),
+                  if (appDeta.permission.value?.crop?.list != 0)
+                    ...land.crops.map(
+                      (crop) => InkWell(
+                        onTap: () {
+                          Get.toNamed(
+                            Routes.cropOverview,
+                            arguments: {'landId': land.id, 'cropId': crop.id},
+                          )?.then((result) {
+                            if (result ?? false) {
+                              refresh.call();
+                            }
+                          });
+                        },
+                        child: CropCard(crop: crop),
+                      ),
                     ),
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

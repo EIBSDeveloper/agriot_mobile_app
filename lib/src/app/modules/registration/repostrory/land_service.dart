@@ -15,7 +15,10 @@ class LandService extends GetxService {
   final AppDataController appDeta = Get.put(AppDataController());
   Future<LandList> getLands() async {
     final userId = appDeta.farmerId;
-    final response = await _httpService.get('/lands/$userId');
+    final isManager = appDeta.isManager.value;
+    final managerId = appDeta.managerID.value;
+    String manager = isManager ? "?manager_id=$managerId" : "";
+    final response = await _httpService.get('/lands/$userId$manager');
     return LandList.fromJson(json.decode(response.body));
   }
 

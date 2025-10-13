@@ -8,7 +8,8 @@ class TaskRequest {
   final DateTime? endDate;
   final int scheduleChoice;
   final List<int>? scheduleWeekly;
-  final int scheduleStatus;
+  final List<int>? scheduleMonthly;
+  final List<int>? scheduleDays;
   final String schedule;
 
   TaskRequest({
@@ -19,7 +20,8 @@ class TaskRequest {
     this.endDate,
     required this.scheduleChoice,
     this.scheduleWeekly,
-    required this.scheduleStatus,
+    this.scheduleMonthly,
+    this.scheduleDays,
     required this.schedule,
   });
 
@@ -35,8 +37,10 @@ class TaskRequest {
           : formatter.format(startDate),
       'schedule_choice': scheduleChoice,
       if (scheduleWeekly != null) 'schedule_weekly': scheduleWeekly,
-      'schedule_status': scheduleStatus,
+
       "schedule": schedule,
+      "schedule_monthly": scheduleMonthly,
+      "schedule_year": scheduleDays,
     };
     return map;
   }

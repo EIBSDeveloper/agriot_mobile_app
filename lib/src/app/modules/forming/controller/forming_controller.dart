@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:get/get.dart';
 
 import '../../../routes/app_routes.dart';
@@ -6,6 +7,8 @@ import '../repostroy/forming_repository.dart';
 
 class FormingController extends GetxController {
   final FormingRepository _repository = FormingRepository();
+  final AppDataController appDeta = Get.find();
+
   final RxList<Land> lands = <Land>[].obs;
   final RxBool isLoading = true.obs;
   final RxString error = ''.obs;

@@ -46,7 +46,6 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
                           : const SizedBox.shrink();
                     }
 
-                    // final group = ;
                     return ManagerEmployeeGroupItem(
                       group: controller.filteredGroups[index],
                       controller: controller,

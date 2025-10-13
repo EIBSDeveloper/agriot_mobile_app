@@ -12,9 +12,8 @@ import '../../../../widgets/loading.dart';
 import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class AddTask extends GetView<TaskController> {
-
   final int taskId;
-  const AddTask({super.key,  this.taskId = 0});
+  const AddTask({super.key, this.taskId = 0});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -43,6 +42,7 @@ class AddTask extends GetView<TaskController> {
                 selectedItem: controller.selectedCropType.value,
                 onChanged: (land) => controller.changeCrop(land!),
                 label: "${'crop'.tr} *",
+                
                 // disable: isEditing,
               ),
             ),
@@ -84,119 +84,226 @@ class AddTask extends GetView<TaskController> {
                 ),
               ),
             ),
-      
-              Column(
-                children: [
-                  const SizedBox(height: 8),
-                  Obx(
-                    () => CheckboxListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        'recurring_task'.tr,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      value: controller.isRecurring.value,
-                      onChanged: (value) =>
-                          controller.isRecurring.value = value ?? false,
+
+            Column(
+              children: [
+                const SizedBox(height: 8),
+                Obx(
+                  () => CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      'recurring_task'.tr,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    value: controller.isRecurring.value,
+                    onChanged: (value) =>
+                        controller.isRecurring.value = value ?? false,
                   ),
+                ),
 
-                  Obx(() {
-                    if (!controller.isRecurring.value) {
-                      return const SizedBox();
-                    }
+                Obx(() {
+                  if (!controller.isRecurring.value) {
+                    return const SizedBox();
+                  }
 
-                    return Column(
-                      children: [
-                        const SizedBox(height: 8),
-                        ToggleBar(
-                          onTap: (index) {
-                            controller.recurrenceType.value = index;
-                          },
-                          activePageIndex: controller.recurrenceType.value,
-                          buttonsList: ["daily".tr, "weekly".tr, "monthly".tr],
+                  return Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      ToggleBar(
+                        onTap: (index) {
+                          controller.recurrenceType.value = index;
+                        },
+                        activePageIndex: controller.recurrenceType.value,
+                        buttonsList: ["daily".tr, "weekly".tr, "monthly".tr],
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Weekly day selector
+                      if (controller.recurrenceType.value == 1)
+                        Wrap(
+                          spacing: 8,
+                          children: List.generate(7, (index) {
+                            final day = [
+                              'mon'.tr,
+                              'tue'.tr,
+                              'wed'.tr,
+                              'thu'.tr,
+                              'fri'.tr,
+                              'sat'.tr,
+                              'sun'.tr,
+                            ][index];
+                            return FilterChip(
+                              label: Text(day),
+                              selected: controller.selectedDays.contains(
+                                index + 1,
+                              ),
+                              onSelected: (selected) {
+                                if (selected) {
+                                  controller.selectedDays.add(index + 1);
+                                } else {
+                                  controller.selectedDays.remove(index + 1);
+                                }
+                              },
+                            );
+                          }),
                         ),
-                        const SizedBox(height: 8),
 
-                        // Weekly day selector
-                        if (controller.recurrenceType.value == 1)
-                          Wrap(
-                            spacing: 8,
-                            children: List.generate(7, (index) {
-                              final day = [
-                                'mon'.tr,
-                                'tue'.tr,
-                                'wed'.tr,
-                                'thu'.tr,
-                                'fri'.tr,
-                                'sat'.tr,
-                                'sun'.tr,
-                              ][index];
-                              return FilterChip(
-                                label: Text(day),
-                                selected: controller.selectedDays.contains(
-                                  index + 1,
+                      // End date picker
+                      if (controller.recurrenceType.value != 2)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            InputCardStyle(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
+                              child: ListTile(
+                                title: Text("${'schedule_end_date'.tr} *"),
+                                contentPadding: EdgeInsets.zero,
+                                subtitle: Text(
+                                  controller.scheduleEndDate.value == null
+                                      ? 'not_selected'.tr
+                                      : '${controller.scheduleEndDate.value!.day}/${controller.scheduleEndDate.value!.month}/${controller.scheduleEndDate.value!.year}',
                                 ),
-                                onSelected: (selected) {
-                                  if (selected) {
-                                    controller.selectedDays.add(index + 1);
-                                  } else {
-                                    controller.selectedDays.remove(index + 1);
+                                trailing: const Icon(Icons.calendar_today),
+                                onTap: () async {
+                                  final date = await showDatePicker(
+                                    context: Get.context!,
+                                    initialDate: controller.scheduleDate.value
+                                        .add(const Duration(days: 7)),
+                                    firstDate: controller.scheduleDate.value,
+                                    lastDate: DateTime.now().add(
+                                      const Duration(days: 365 * 2),
+                                    ),
+                                  );
+                                  if (date != null) {
+                                    controller.scheduleEndDate.value = date;
+                                    controller.endDate.value = true;
                                   }
                                 },
-                              );
-                            }),
-                          ),
-
-                        // End date picker
-                        if (controller.recurrenceType.value != 2)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              InputCardStyle(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                ),
-                                child: ListTile(
-                                  title: Text("${'schedule_end_date'.tr} *"),
-                                  contentPadding: EdgeInsets.zero,
-                                  subtitle: Text(
-                                    controller.scheduleEndDate.value == null
-                                        ? 'not_selected'.tr
-                                        : '${controller.scheduleEndDate.value!.day}/${controller.scheduleEndDate.value!.month}/${controller.scheduleEndDate.value!.year}',
-                                  ),
-                                  trailing: const Icon(Icons.calendar_today),
-                                  onTap: () async {
-                                    final date = await showDatePicker(
-                                      context: Get.context!,
-                                      initialDate: controller.scheduleDate.value
-                                          .add(const Duration(days: 7)),
-                                      firstDate: controller.scheduleDate.value,
-                                      lastDate: DateTime.now().add(
-                                        const Duration(days: 365 * 2),
-                                      ),
-                                    );
-                                    if (date != null) {
-                                      controller.scheduleEndDate.value = date;
-                                      controller.endDate.value = true;
-                                    }
-                                  },
-                                ),
                               ),
+                            ),
 
-                              (!controller.endDate.value)
-                                  ? Text(
-                                      "please_add_end_date".tr,
-                                      style: const TextStyle(color: Colors.red),
-                                    )
-                                  : const SizedBox(),
-                            ],
+                            (!controller.endDate.value)
+                                ? Text(
+                                    "please_add_end_date".tr,
+                                    style: const TextStyle(color: Colors.red),
+                                  )
+                                : const SizedBox(),
+                          ],
+                        )
+                      else ...[
+                        // Month Selector
+                        const SizedBox(height: 8),
+                        InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Obx(
+                            () => DropdownButtonFormField<int>(
+                              initialValue: controller.selectedMonth.value,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                labelText: 'Select month *',
+                              ),
+                              items: controller.months
+                                  .map(
+                                    (month) => DropdownMenuItem<int>(
+                                      value: month["id"],
+                                      child: Text(month["name"]),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                controller.selectedMonth.value = value!;
+                                if (!controller.selectedMonths.contains(
+                                  value,
+                                )) {
+                                  controller.selectedMonths.add(value);
+                                }
+                              },
+                            ),
                           ),
+                        ),
+
+                        // Show selected months
+                        Obx(
+                          () => controller.selectedMonths.isEmpty
+                              ? const SizedBox()
+                              : Wrap(
+                                  spacing: 6,
+                                  children: controller.selectedMonths
+                                      .map(
+                                        (m) => Chip(
+                                          label: Text(
+                                            controller.months.firstWhere(
+                                              (element) => element["id"] == m,
+                                            )["name"],
+                                          ),
+                                          onDeleted: () => controller
+                                              .selectedMonths
+                                              .remove(m),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                        ),
+                        // Day Selector
+                        const SizedBox(height: 8),
+                        InputCardStyle(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Obx(
+                            () => DropdownButtonFormField<int>(
+                              initialValue: controller.selectedDayOfMonth.value,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+
+                                labelText: 'Select day *',
+                              ),
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: controller.days
+                                  .map(
+                                    (day) => DropdownMenuItem<int>(
+                                      value: day,
+                                      child: Text(day.toString()),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) {
+                                controller.selectedDayOfMonth.value = value!;
+                                if (!controller.selectedDaysInMonth.contains(
+                                  value,
+                                )) {
+                                  controller.selectedDaysInMonth.add(value);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // Show selected days
+                        Obx(
+                          () => controller.selectedDaysInMonth.isEmpty
+                              ? const SizedBox()
+                              : Wrap(
+                                  spacing: 6,
+                                  children: controller.selectedDaysInMonth
+                                      .map(
+                                        (d) => Chip(
+                                          label: Text("Day $d"),
+                                          onDeleted: () => controller
+                                              .selectedDaysInMonth
+                                              .remove(d),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                        ),
                       ],
-                    );
-                  }),
-                ],
-              ),
+                    ],
+                  );
+                }),
+              ],
+            ),
             const SizedBox(height: 8),
 
             // Description
@@ -218,7 +325,8 @@ class AddTask extends GetView<TaskController> {
                 onPressed: controller.isLoading.value
                     ? null
                     : () {
-                        if (controller.isRecurring.value) {
+                        if (controller.isRecurring.value &&
+                            controller.recurrenceType.value != 2) {
                           controller.endDate.value =
                               (controller.scheduleEndDate.value == null)
                               ? false
@@ -227,12 +335,11 @@ class AddTask extends GetView<TaskController> {
                             return;
                           }
                         }
-                  controller.addTask();
-               
+                        controller.addTask();
                       },
                 child: controller.isLoading.value
                     ? const Loading(size: 50)
-                    : Text( 'add_task'.tr),
+                    : Text('add_task'.tr),
               ),
             ),
           ],

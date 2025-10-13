@@ -6,18 +6,28 @@ import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/widgets/input_card_style.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class AddVendorCustomerView extends StatelessWidget {
+class AddVendorCustomerView extends StatefulWidget {
+  const AddVendorCustomerView({super.key});
+
+  @override
+  State<AddVendorCustomerView> createState() => _AddVendorCustomerViewState();
+}
+
+class _AddVendorCustomerViewState extends State<AddVendorCustomerView> {
   final VendorCustomerController controller = Get.put(
     VendorCustomerController(),
   );
-  AddVendorCustomerView({super.key});
+  @override
+  void dispose() {
+    controller.clearForm();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: CustomAppBar(title: 'add_contact'.tr),
+    appBar: CustomAppBar(title: 'add_contact'.tr, actions: []),
     body: SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Form(
@@ -48,7 +58,8 @@ class AddVendorCustomerView extends StatelessWidget {
         InputCardStyle(
           child: DropdownButtonFormField<Market>(
             isExpanded: true,
-
+            validator: (value) =>
+                value?.name.isEmpty ?? true ? 'required_field'.tr : null,
             icon: const Icon(Icons.keyboard_arrow_down),
             initialValue: controller.selectedMarket.value,
             decoration: InputDecoration(
@@ -76,7 +87,7 @@ class AddVendorCustomerView extends StatelessWidget {
   Widget _buildBasicInfoSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _buildImagePicker(),
+      // _buildImagePicker(),
       const SizedBox(height: 8),
       InputCardStyle(
         child: DropdownButtonFormField<String>(
@@ -161,7 +172,23 @@ class AddVendorCustomerView extends StatelessWidget {
   Widget _buildLocationSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-    
+      // Location URL
+      InputCardStyle(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: TextFormField(
+          controller: controller.locationController,
+          decoration: const InputDecoration(
+            labelText: 'Location *',
+            border: InputBorder.none,
+          ),
+          validator: (value) => value == null || value.trim().isEmpty
+              ? 'required_field'.tr
+              : null,
+          readOnly: true,
+          onTap: controller.pickLocation,
+        ),
+      ),
+      const SizedBox(height: 12),
       InputCardStyle(
         child: TextField(
           controller: controller.doorNoController,
@@ -177,17 +204,22 @@ class AddVendorCustomerView extends StatelessWidget {
         child: TextFormField(
           controller: controller.pincodeController,
           decoration: InputDecoration(
-            labelText: "${'pincode'.tr}*",
+            labelText: "${'pincode'.tr} *",
             border: InputBorder.none,
           ),
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(6),
-          ],
+          // inputFormatters: [
+          //   FilteringTextInputFormatter.digitsOnly,
+          //   LengthLimitingTextInputFormatter(6),
+          // ],
           keyboardType: TextInputType.number,
           validator: (value) {
-            if (value?.isEmpty ?? true) return 'required_field'.tr;
-            if (value!.length != 6) return 'pincode_length'.tr;
+            if (value == null || value.trim().isEmpty) {
+              return 'required_field'.tr;
+            }
+            if (value.length > 11) {
+              return 'Please enter a valid Pincode'.tr;
+            }
+
             return null;
           },
         ),
@@ -257,9 +289,10 @@ class AddVendorCustomerView extends StatelessWidget {
           : Text('submit'.tr, style: const TextStyle(color: Colors.white)),
     ),
   );
-   Widget _buildImagePicker() => Center(
+
+  Widget _buildImagePicker() => Center(
     child: InkWell(
-        onTap: controller.pickImage,
+      onTap: controller.pickImage,
       child: Stack(
         children: [
           Obx(() {

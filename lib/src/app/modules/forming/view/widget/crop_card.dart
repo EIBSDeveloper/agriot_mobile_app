@@ -135,9 +135,11 @@ class CropCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),
+          ), 
         ],
       ),
     ),
   );
+
+  
 }

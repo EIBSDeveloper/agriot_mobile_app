@@ -35,7 +35,8 @@ class SurveyItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'survey_detail_number'.trParams({'number': '${index + 1}'}),
+                "${'survey_detail_number'.tr} ${index + 1}"
+                ,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               IconButton(

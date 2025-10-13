@@ -142,14 +142,18 @@ class CropController extends GetxController {
   }
 
   Future<void> _loadCrops() async {
+    selectedCrop.value = null;
     if (selectedCropType.value == null) return;
     isLoadingCrops(true);
     crops.assignAll(await _cropService.getCrops(selectedCropType.value!.id));
     if (parameterCrop.value != null) {
-      selectedCrop.value = crops.firstWhere((e) => parameterCrop.value!.id == e.id);
+      selectedCrop.value = crops.firstWhere(
+        (e) => parameterCrop.value!.id == e.id,
+      );
     } else {
       selectedCrop.value = null;
     }
+    parameterCrop.value= null;
     isLoadingCrops(false);
   }
 
@@ -211,10 +215,10 @@ class CropController extends GetxController {
         cropCoordinates.value = parseLatLngListFromString(
           location ?? [],
         ).toList();
-          
-        measurementController.text = calculatePolygonAreaAcre(
-          points: landCoordinates,
-        ).toString();
+
+        // measurementController.text = calculatePolygonAreaAcre(
+        //   points: landCoordinates,
+        // ).toString();
       }
     } catch (e) {
       showError('Failed to pick location');
@@ -249,7 +253,7 @@ class CropController extends GetxController {
         "plantation_date": formattedDate,
         "land": selectedLand.value.id,
         if (selectedSurveys.isNotEmpty)
-          "survey_details": [...selectedSurveys.map((e)=> e.id)],
+          "survey_details": [...selectedSurveys.map((e) => e.id)],
         "status": 0,
         "description": descriptionController.text.trim(),
         "measurement_value": measurementController.text.trim(),

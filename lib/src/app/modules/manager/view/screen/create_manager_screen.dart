@@ -125,7 +125,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly, // only digits
-                  LengthLimitingTextInputFormatter(10), // max 6 digits
+                  // LengthLimitingTextInputFormatter(10), // max 6 digits
                 ],
                 validator: (value) => value == null ? 'Required field' : null,
                 decoration: const InputDecoration(
@@ -149,10 +149,9 @@ class CreateManagerScreen extends GetView<ManagerController> {
                             controller: controller.salaryController,
                             keyboardType: TextInputType.phone,
                             inputFormatters: [
-                              FilteringTextInputFormatter
-                                  .digitsOnly, 
+                              FilteringTextInputFormatter.digitsOnly,
                             ],
-                           decoration: const InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Per Hour Salary *',
                               border: InputBorder.none,
                             ),
@@ -363,7 +362,8 @@ class CreateManagerScreen extends GetView<ManagerController> {
               } else {
                 return const SizedBox();
               }
-            }),     gap,
+            }),
+            gap,
 
             // Location URL
             InputCardStyle(
@@ -388,21 +388,27 @@ class CreateManagerScreen extends GetView<ManagerController> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextFormField(
                 controller: controller.pincodeController,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
-                ],
+                // inputFormatters: [
+                //   FilteringTextInputFormatter.digitsOnly,
+                //   LengthLimitingTextInputFormatter(6),
+                // ],
                 decoration: const InputDecoration(
                   labelText: 'Pincode *',
                   border: InputBorder.none,
                 ),
-                validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Required field'
-                    : null,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Required field';
+                  }
+                  if (value.length > 11) {
+                    return 'Please enter a valid Pincode'.tr;
+                  }
+
+                  return null;
+                },
               ),
             ),
 
-       
             gap,
 
             // Address
@@ -483,7 +489,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
 
   Widget _buildImagePicker() => Center(
     child: InkWell(
-        onTap: controller.pickImage,
+      onTap: controller.pickImage,
       child: Stack(
         children: [
           Obx(() {
@@ -522,32 +528,31 @@ class CreateManagerScreen extends GetView<ManagerController> {
     ),
   );
 
-Widget _buildPermissionItem(
-  PermissionItem item,
-  ManagerController controller,
-) => GetBuilder<ManagerController>(
-  builder: (_) => Theme(
-    data: Theme.of(Get.context!).copyWith(dividerColor: Colors.transparent),
-    child: ExpansionTile(
-      title: Row(
-        children: [
-          Checkbox(
-            value: item.status == 1,
-            onChanged: (val) => controller.toggleStatus(item, val ?? false),
-          ),
-          Text(item.name),
-        ],
-      ),
-      children: item.children.values
-          .map(
-            (child) => Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: _buildPermissionItem(child, controller),
+  Widget _buildPermissionItem(
+    PermissionItem item,
+    ManagerController controller,
+  ) => GetBuilder<ManagerController>(
+    builder: (_) => Theme(
+      data: Theme.of(Get.context!).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Row(
+          children: [
+            Checkbox(
+              value: item.status == 1,
+              onChanged: (val) => controller.toggleStatus(item, val ?? false),
             ),
-          )
-          .toList(),
+            Text(item.name),
+          ],
+        ),
+        children: item.children.values
+            .map(
+              (child) => Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: _buildPermissionItem(child, controller),
+              ),
+            )
+            .toList(),
+      ),
     ),
-  ),
-);
-
+  );
 }

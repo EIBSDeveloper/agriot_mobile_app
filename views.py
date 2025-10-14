@@ -2147,6 +2147,8 @@ def manage_farmer(request, id=None):
 
             # Other fields
             farmer.phone = data.get('phone', farmer.phone)
+            farmer.longitude = data.get('longitude', farmer.longitude)
+            farmer.latitude = data.get('latitude', farmer.latitude)
             farmer.email = data.get('email', farmer.email)
             farmer.pincode = data.get('pincode', farmer.pincode)
             farmer.tax_no = data.get('tax_no', farmer.tax_no)
@@ -2156,18 +2158,18 @@ def manage_farmer(request, id=None):
             locations_input = data.get('locations', farmer.locations)
             farmer.locations = locations_input
             mylogger.info("locations data loaded")
-            if locations_input and 'google.com/maps' in locations_input:
-                try:
-                    import re
-                    match = re.search(r'@([-.\d]+),([-.\d]+)', locations_input)
-                    if match:
-                        farmer.latitude = float(match.group(1))
-                        farmer.longitude = float(match.group(2))
-                except Exception as e:
-                    print(f"Error parsing coordinates from URL: {e}")
-            else:
-                farmer.latitude = data.get('latitude', farmer.latitude)
-                farmer.longitude = data.get('longitude', farmer.longitude)
+            # if locations_input and 'google.com/maps' in locations_input:
+            #     try:
+            #         import re
+            #         match = re.search(r'@([-.\d]+),([-.\d]+)', locations_input)
+            #         if match:
+            #             farmer.latitude = float(match.group(1))
+            #             farmer.longitude = float(match.group(2))
+            #     except Exception as e:
+            #         print(f"Error parsing coordinates from URL: {e}")
+            # else:
+            #     farmer.latitude = data.get('latitude', farmer.latitude)
+            #     farmer.longitude = data.get('longitude', farmer.longitude)
             # Image handling
             if 'img' in data:
                 img_data = data['img']
@@ -3193,16 +3195,6 @@ def list_customers(request,id):
                 "mobile_no": customer.mobile_no,
                 "email": customer.email,
                 "door_no": customer.door_no,
-                "country_id": customer.country.id if customer.country else None,
-                "country": customer.country.name if customer.country else None,
-                "state_id": customer.state.id if customer.state else None,
-                "state": customer.state.name if customer.state else None,
-                "city_id": customer.city.id if customer.city else None,
-                "city": customer.city.name if customer.city else None,
-                "taluk_id": customer.taluk.id if customer.taluk else None,
-                "taluk": customer.taluk.name if customer.taluk else None,
-                "village_id": customer.village.id if customer.village else None,
-                "village": customer.village.name if customer.village else None,
                 "gst_no": customer.gst_no,
                 "tax_no": customer.tax_no,
                 "post_code": customer.post_code,
@@ -3234,16 +3226,6 @@ def customer_details(request, id):
                 "mobile_no": customer.mobile_no,
                 "email": customer.email,
                 "door_no": customer.door_no,
-                "country_id": customer.country.id if customer.country else None,
-                "country": customer.country.name if customer.country else None,
-                "state_id": customer.state.id if customer.state else None,
-                "state": customer.state.name if customer.state else None,
-                "city_id": customer.city.id if customer.city else None,
-                "city": customer.city.name if customer.city else None,
-                "taluk_id": customer.taluk.id if customer.taluk else None,
-                "taluk": customer.taluk.name if customer.taluk else None,
-                "village_id": customer.village.id if customer.village else None,
-                "village": customer.village.name if customer.village else None,
                 "gst_no": customer.gst_no,
                 "tax_no": customer.tax_no,
                 "post_code": customer.post_code,
@@ -3341,6 +3323,7 @@ def manage_vendor(request, id=None):
         opening_balance=data.get('opening_balance', 0),
         vendor_image=request.data.get('img'),
         description=data.get('description', ''),
+        locations=data.get('locations', ""),
         latitude=data.get('latitude', 0),
         longitude=data.get('longitude', 0),
      
@@ -3455,7 +3438,7 @@ def update_vendor(request, id=None):
                 print(f"Error in translation for field {field}")
 
     # Validate required fields (optional: you can adjust as needed)
-    required_fields = ['name', 'inventory_type', 'email', 'mobile_no', 'pincode']
+    required_fields = ['name', 'email', 'mobile_no', 'pincode']
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return Response({"detail": f"Missing fields: {', '.join(missing_fields)}"}, status=status.HTTP_400_BAD_REQUEST)
@@ -3541,6 +3524,9 @@ def update_vendor(request, id=None):
 
     # Update vendor fields
     vendor.name = data.get('name', vendor.name)
+    vendor.latitude = data.get('latitude', vendor.latitude)
+    vendor.longitude = data.get('longitude', vendor.longitude)
+    vendor.locations = data.get('locations', vendor.locations)
     vendor.business_name = data.get('business_name', vendor.business_name)
     vendor.email = data.get('email', vendor.email)
     vendor.mobile_no = data.get('mobile_no', vendor.mobile_no)
@@ -4096,6 +4082,9 @@ def update_customer(request, id=None):
     customer.shop_name = data.get('shop_name', customer.shop_name)
     customer.mobile_no = data.get('mobile_no', customer.mobile_no)
     customer.email = data.get('email', customer.email)
+    customer.latitude = data.get('latitude', customer.latitude)
+    customer.longitude = data.get('longitude', customer.longitude)
+    customer.locations = data.get('locations', customer.locations)
     customer.door_no = data.get('door_no', customer.door_no)
     customer.post_code = data.get('post_code', customer.post_code)
     customer.gst_no = data.get('gst_no', customer.gst_no)
@@ -4132,11 +4121,6 @@ def update_customer(request, id=None):
         'mobile_no': customer.mobile_no,
         'email': customer.email,
         'door_no': customer.door_no,
-        'country': customer.country.name if customer.country else "",
-        'state': customer.state.name if customer.state else "",
-        'city': customer.city.name if customer.city else "",
-        'taluk': customer.taluk.name if customer.taluk else "",
-        'village': customer.village.name if customer.village else "",
         'post_code': customer.post_code,
         'gst_no': customer.gst_no,
         'tax_no': customer.tax_no,
@@ -13526,11 +13510,26 @@ def get_task_list_for_month(request, id):
     for task in task_serializer.data:
         task_date_raw = task.get('start_date')
         date =None
+        task_date = None
         try:
-            task_date = datetime.strptime(task_date_raw, '%Y-%m-%d').date() if isinstance(task_date_raw, str) else task_date_raw
-            # date = datetime.strptime(task_date_raw, '%d-%m-%Y').date() if isinstance(task_date_raw, str) else task_date_raw
-        except Exception:
-            continue  # skip invalid dates
+            if isinstance(task_date_raw, str):
+                # Try parsing as YYYY-MM-DD first
+                try:
+                    parsed_date = datetime.strptime(task_date_raw, '%Y-%m-%d')
+                except ValueError:
+                    # If it fails, try DD-MM-YYYY
+                    parsed_date = datetime.strptime(task_date_raw, '%d-%m-%Y')
+            else:
+                parsed_date = task_date_raw  # already a datetime/date object
+
+            # Format both ways
+            task_date = datetime.strptime(task_date_raw, '%Y-%m-%d').date() if isinstance(task_date_raw, str) else task_date_raw  # e.g., 2025-10-08
+            date = parsed_date.strftime('%d-%m-%Y')       # e.g., 08-10-2025
+
+        except Exception as e:
+            print(f"Error parsing date: {task_date_raw} - {e}")
+            continue
+
 
         schedule_status = task.get('schedule_status')
         status_info = status_map.get(schedule_status)
@@ -39743,10 +39742,24 @@ def get_task_calender_list_for_month_and_crop(request, farmer_id):
 
     for task in task_serializer.data:
         task_date_raw = task.get('start_date')
+        date =None
+        task_date = None
         try:
-            task_date = datetime.strptime(task_date_raw, '%d-%m-%Y').date() if isinstance(task_date_raw, str) else task_date_raw
-        except Exception:
-            continue  # skip invalid dates
+            if isinstance(task_date_raw, str):
+                try:
+                    parsed_date = datetime.strptime(task_date_raw, '%Y-%m-%d')
+                except ValueError:
+                    parsed_date = datetime.strptime(task_date_raw, '%d-%m-%Y')
+            else:
+                parsed_date = task_date_raw  # already a datetime/date object
+
+            # Format both ways
+            task_date = datetime.strptime(task_date_raw, '%Y-%m-%d').date() if isinstance(task_date_raw, str) else task_date_raw  # e.g., 2025-10-08
+            date = parsed_date.strftime('%d-%m-%Y')       # e.g., 08-10-2025
+
+        except Exception as e:
+            print(f"Error parsing date: {task_date_raw} - {e}")
+            continue
 
         schedule_status = task.get('schedule_status')
         status_info = status_map.get(schedule_status)
@@ -39758,7 +39771,7 @@ def get_task_calender_list_for_month_and_crop(request, farmer_id):
         response_by_date[task_date]["task_count"] += 1
         response_by_date[task_date]["tasks"].append({
             "task_id": task.get('id'),
-            "date": task_date,
+            "created_at": date,
             "activity_type_name": task.get('schedule_activity_type'),
             "description": task.get('schedule'),
             "status_id": status_info["id"],
@@ -41358,10 +41371,10 @@ def get_employee_types(request):
     tags=["Dropdown"],
 )
 @api_view(['GET'])
-def get_manager_roals(request):
+def get_manager_roals(request,farmer_id):
     lang = request.GET.get('lang', 'en')  
 
-    manager_types = ManageUserRole.objects.filter(status=0).only("id", "name")
+    manager_types = ManagerUserRole.objects.filter(status=0,farmer_id=farmer_id).only("id", "name")
     if not manager_types.exists():
         return Response(
             {"error": "EmployeeType not found", "message": "No Employee Type found."},
@@ -42566,7 +42579,7 @@ def get_employees_advances_list(request,farmer_id):
     tags=["Vendor Purchase Payables"]
 )
 @api_view(['POST'])
-def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
+def add_vendor_outstanding(request, farmer_id, vendor_id):
     try:
         farmer = get_object_or_404(Farmer, id=farmer_id)
 
@@ -42611,7 +42624,8 @@ def vendor_purchase_Payables_outstanding(request, farmer_id, vendor_id):
                 "detail": "Account is already closed. No outstanding balance left to pay."
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        original_balance = Decimal(getattr(expense, expense.paid_amount))
+        original_balance = expense.paid_amount
+
 
         if last_outstanding:
             previous_to_pay = last_outstanding.to_pay
@@ -42754,6 +42768,37 @@ def get_employee_payout_details(request, employee_id):
     return Response(data, status=status.HTTP_200_OK)
 
 
+@api_view(["POST"])
+def add_edit_manager_user_role(request,farmer_id):
+    """
+    Add or Edit ManagerUserRole
+    - If "id" present in request, update existing record
+    - Else, create a new ManagerUserRole
+    """
+    try:
+        data = request.data
+        role_id = data.get("id")
+
+        farmer = Farmer.objects.filter(id=farmer_id).first() if farmer_id else None
+
+        if role_id:  # --- Update
+            role_obj = get_object_or_404(ManagerUserRole, id=role_id)
+            role_obj.name = data.get("name", role_obj.name),
+
+            role_obj.save()
+            return Response({"message": "ManagerUserRole updated", "id": role_obj.id}, status=status.HTTP_200_OK)
+
+        else:  # --- Create
+            role_obj = ManagerUserRole.objects.create(
+                name=data.get("name"),
+                created_by=farmer.farmer_user,
+                status=0,
+                farmer=farmer,
+            )
+            return Response({"message": "ManagerUserRole created", "id": role_obj.id}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 

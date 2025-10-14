@@ -414,7 +414,7 @@ name='get_inventory_items_by_category'),
     ),
 
     path('both_expense_sales_list/<int:farmer_id>/<str:time_period>', get_both_expense_sales_list, name='both_expense_sales_list'),
-    path('manager_roals', get_manager_roals, name='get_manager_roals'),    
+    path('manager_roals/<int:farmer_id>', get_manager_roals, name='get_manager_roals'),    
     path('manager_by_fermer/<int:farmer_id>', get_manager_by_fermer, name='get_manager_by_fermer'),
     path('employee_by_fermer/<int:farmer_id>', get_employee_by_fermer, name='get_employee_by_fermer'),
     path('genders', get_genders, name='get_genders'),
@@ -438,7 +438,8 @@ name='get_inventory_items_by_category'),
     path('advances_list/<int:farmer_id>', get_employees_advances_list, name='get_employees_by_farmer'),
     path("farmer/<int:farmer_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer"),
     path("farmer/<int:farmer_id>/employee/<int:employee_id>/advances/", get_employee_advances_by_farmer, name="employee-advances-by-farmer-employee"),
-
+ path('add_vendor_outstanding/<int:farmer_id>/<int:vendor_id>/',add_vendor_outstanding, name='vendor_purchase_Payables_outstanding'),
+ path("role_add/<int:farmer_id>", add_edit_manager_user_role, name="manager-user-role-add-edit"),
 
 ]
 

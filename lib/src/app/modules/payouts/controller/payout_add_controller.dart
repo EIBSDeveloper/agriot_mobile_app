@@ -3,6 +3,8 @@ import 'package:argiot/src/app/modules/payouts/repository/payout_repository.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../service/utils/pop_messages.dart';
+
 class PayoutAddController extends GetxController {
   final PayoutRepository repository = Get.find();
   TextEditingController searchController = TextEditingController();
@@ -80,5 +82,22 @@ class PayoutAddController extends GetxController {
   void onSearchChanged(String query) {
     searchQuery.value = query.toLowerCase();
     loadadvancelist(reset: true);
+  }
+
+  Future<void> addPayouts() async {
+    final employeeList = advancelist
+        .where((e) => e.isEdited == true)
+        .map((e) => e.toJson())
+        .toList(); // call toJson()
+
+    bool success = await repository.addPayouts(employees: employeeList);
+
+    if (success) {
+      Get.back();
+      showSuccess('Attendence Added successfully');
+      await loadadvancelist(); // refresh list
+    } else {
+      showError('Failed to submit');
+    }
   }
 }

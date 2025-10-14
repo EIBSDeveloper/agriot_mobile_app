@@ -55,13 +55,13 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                       ),
                       InkWell(
                         onTap: () {
-                          Get.toNamed(
-                            Routes.cropOverview,
-                            arguments: {
-                              'landId': controller.selectedLand.value!.id,
-                              'cropId': crop.cropId,
-                            },
-                          );
+                          // Get.toNamed(
+                          //   Routes.cropOverview,
+                          //   arguments: {
+                          //     'landId': controller.selectedLand.value!.id,
+                          //     'cropId': crop.cropId,
+                          //   },
+                          // );
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(

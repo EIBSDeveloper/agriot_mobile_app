@@ -64,7 +64,7 @@ class PayoutModel {
     'balance_advance': (advance ?? 0) - (deductionAdvance ?? 0),
     'payout_amount': payoutAmount,
     'to_pay': payoutAmount,
-    "date": DateTime.now(),
+    "date": DateTime.now().toString(),
   };
 
   static List<PayoutModel> listFromJson(List<dynamic> jsonList) =>

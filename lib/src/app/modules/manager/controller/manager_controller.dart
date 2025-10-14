@@ -63,6 +63,7 @@ class ManagerController extends GetxController {
   var managers = <DrapDown>[].obs;
   var isLoadingManager = false.obs;
   final formKey = GlobalKey<FormState>();
+  final RoleformKey = GlobalKey<FormState>();
 
   final RxDouble latitude = 0.0.obs;
   final RxDouble longitude = 0.0.obs;
@@ -70,6 +71,8 @@ class ManagerController extends GetxController {
   // Image handling
   final RxString imagePath = ''.obs;
   final RxString base64Image = ''.obs;
+
+  final RxString newRole = ''.obs;
 
   @override
   void onInit() {
@@ -156,7 +159,8 @@ class ManagerController extends GetxController {
           (manager) => manager.id == employeeDetails.value!.manager!.id,
         );
       }
-      if (employeeDetails.value?.permissions != null&&employeeDetails.value?.permissions != {}) {
+      if (employeeDetails.value?.permissions != null &&
+          employeeDetails.value?.permissions != {}) {
         permissions.value = (employeeDetails.value?.permissions ?? {}).map(
           (key, value) => MapEntry(key, PermissionItem.fromApi(key, value)),
         );
@@ -286,26 +290,7 @@ class ManagerController extends GetxController {
       }
 
       /// Fetch roles
-      final roleRes = await http.get(
-        Uri.parse("${appDeta.baseUrl.value}/manager_roals"),
-      );
-      if (roleRes.statusCode == 200) {
-        final List data = jsonDecode(roleRes.body);
-        roleTypes.value = [
-          DrapDown(id: 0, name: "Employee"),
-          ...data.map((e) => DrapDown.fromJson(e)),
-        ];
-        if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
-          selectedRoleType.value =
-              roleTypes.first; // first role will be selected
-        }
-      } else {
-        roleTypes.value = [DrapDown(id: 0, name: "Employee")];
-        if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
-          selectedRoleType.value =
-              roleTypes.first; // first role will be selected
-        }
-      }
+      await getRole();
 
       //fetch worktypes
       final worktypeRes = await http.get(
@@ -322,6 +307,32 @@ class ManagerController extends GetxController {
     }
   }
 
+  Future<void> getRole() async {
+    selectedRoleType.value = null;
+
+    AppDataController appData = Get.find();
+
+    /// Fetch roles
+    final roleRes = await http.get(
+      Uri.parse("${appDeta.baseUrl.value}/manager_roals/${appData.farmerId}"),
+    );
+    if (roleRes.statusCode == 200) {
+      final List data = jsonDecode(roleRes.body);
+      roleTypes.value = [
+        DrapDown(id: 0, name: "Employee"),
+        ...data.map((e) => DrapDown.fromJson(e)),
+      ];
+      if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
+        selectedRoleType.value = roleTypes.first; // first role will be selected
+      }
+    } else {
+      roleTypes.value = [DrapDown(id: 0, name: "Employee")];
+      if (selectedRoleType.value == null && roleTypes.isNotEmpty) {
+        selectedRoleType.value = roleTypes.first; // first role will be selected
+      }
+    }
+  }
+
   Future<void> loadManagers() async {
     try {
       isLoadingManager.value = true;
@@ -332,6 +343,15 @@ class ManagerController extends GetxController {
     } finally {
       isLoadingManager.value = false;
     }
+  }
+
+  Future<void> addRole() async {
+    try {
+      await repository.addRole(role: newRole.value);
+      getRole();
+    } catch (e) {
+      print('Error fetching managers: $e');
+    } finally {}
   }
 
   // Submit Form

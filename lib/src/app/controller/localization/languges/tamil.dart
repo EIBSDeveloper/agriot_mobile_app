@@ -110,7 +110,7 @@ class Tamil {
 
     "inventory_type": "சரக்கு வகை",
     "required_field": "கட்டாயமான புலம்",
-    "inventory_category": "சரக்கு வகைபாடு",
+
     "inventory_item": "சரக்கு பொருள்",
     "quantity": "அளவு",
     "usage_hours": "பயன்பாடு மணிநேரங்கள்",

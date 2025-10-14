@@ -662,14 +662,12 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
       );
     }
 
-    return Column(
+      return Column(
       children: [
         ...tasks.map(
           (task) => TaskCard(
+            key: ValueKey('${task.id}_${controller.selectedDay.value}'),
             task: task,
-            refresh: () {
-              controller.loadTasks();
-            },
           ),
         ),
       ],

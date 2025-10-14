@@ -94,8 +94,8 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
       const SizedBox(height: 8),
       if (item.businessName != null)
         _buildDetailRow('business_name'.tr, item.businessName!),
-      if (item.inventoryType != null)
-        _buildDetailRow('inventory_type'.tr, item.inventoryType!),
+      // if (item.inventoryType != null)
+      //   _buildDetailRow('inventory_type'.tr, item.inventoryType!),
       const Divider(),
     ],
   );
@@ -178,10 +178,14 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
     controller.selectedType.value = item.type;
     controller.nameController.text = item.name;
     controller.mobileController.text = item.mobileNo;
-    controller.doorNoController.text = item.doorNo??"";
-    controller.pincodeController.text = item.pincode??"";
+    controller.doorNoController.text = item.doorNo ?? "";
+    controller.pincodeController.text = item.pincode ?? "";
     controller.emailController.text = item.email ?? '';
-    controller.shopNameController.text = item.shopName ?? item.businessName ?? '';
+    controller.locationController.text = item.latitude != null
+        ? "${item.latitude},${item.longitude}"
+        : '';
+    controller.shopNameController.text =
+        item.shopName ?? item.businessName ?? '';
     controller.doorNoController.text = item.doorNo ?? '';
     controller.pincodeController.text = item.postCode?.toString() ?? '';
     controller.gstNoController.text = item.gstNo ?? '';

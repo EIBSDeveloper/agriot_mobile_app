@@ -51,7 +51,8 @@ class CropView extends GetView<CropController> {
               _buildHarvestFrequencyDropdown(),
               const SizedBox(height: 16),
               _buildPlantationDateField(context),
-              const SizedBox(height: 16),
+          //     if( controller.parameterLandID.value==0)
+          //  ... [  const SizedBox(height: 16),
               const Text(
                 'Land Details',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -77,6 +78,7 @@ class CropView extends GetView<CropController> {
                 }
                 return const SizedBox();
               }),
+              // ],
               const SizedBox(height: 16),
                _buildTextField(
                 controller: controller.locationController,

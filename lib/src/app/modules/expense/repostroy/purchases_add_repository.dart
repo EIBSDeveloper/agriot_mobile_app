@@ -88,28 +88,6 @@ class PurchasesAddRepository {
     }
   }
 
-  // Future<List<InventoryCategoryModel>> fetchInventoryCategories(
-  //   int inventoryTypeId,
-  // ) async {
-  //   try {
-  //     final response = await _httpService.get(
-  //       '/get_inventory_category/$inventoryTypeId',
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       final List<dynamic> data = json.decode(response.body);
-  //       return data
-  //           .map((json) => InventoryCategoryModel.fromJson(json))
-  //           .toList();
-  //     } else {
-  //       return [];
-  //     }
-  //   } catch (e) {
-  //     showError('Failed to fetch inventory categories');
-  //     return [];
-  //   }
-  // }
-
   Future<List<InventoryItemModel>> fetchInventoryItems(
     int inventoryCategoryId,
   ) async {

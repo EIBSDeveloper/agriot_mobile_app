@@ -93,7 +93,7 @@ class AddpayoutScreen extends GetView<PayoutAddController> {
                 "Employee: ${emp.name}, Deduction: ${emp.deductionAdvance}, Payout: ${emp.payoutAmount}",
               );
             }
-
+            await controller.addPayouts();
             // Here you can call your API with editedEmployees
           },
           child: Text('submit'.tr),

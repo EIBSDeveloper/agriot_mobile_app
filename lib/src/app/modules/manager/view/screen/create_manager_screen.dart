@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../../widgets/loading.dart';
+import '../../../dashboad/view/widgets/buttom_sheet_scroll_button.dart';
 
 class CreateManagerScreen extends GetView<ManagerController> {
   const CreateManagerScreen({super.key});
@@ -31,49 +32,51 @@ class CreateManagerScreen extends GetView<ManagerController> {
             gap,
 
             /// Role Dropdown
-            Row(
-              children: [
-                Expanded(
-                  child: Obx(
-                    () => InputCardStyle(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: DropdownButtonFormField<DrapDown>(
-                        initialValue: controller.selectedRoleType.value,
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        items: controller.roleTypes
-                            .map(
-                              (r) => DropdownMenuItem(
-                                value: r,
-                                child: Text(r.name),
+            Obx(
+              () => controller.id.value == 0
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: InputCardStyle(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: DropdownButtonFormField<DrapDown>(
+                              initialValue: controller.selectedRoleType.value,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: controller.roleTypes
+                                  .map(
+                                    (r) => DropdownMenuItem(
+                                      value: r,
+                                      child: Text(r.name),
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: (value) =>
+                                  controller.selectedRoleType.value = value,
+                              decoration: const InputDecoration(
+                                labelText: 'Select Role *',
+                                border: InputBorder.none,
                               ),
-                            )
-                            .toList(),
-                        onChanged: (value) =>
-                            controller.selectedRoleType.value = value,
-                        decoration: const InputDecoration(
-                          labelText: 'Select Role *',
-                          border: InputBorder.none,
+                              validator: (value) =>
+                                  value == null ? 'Required field' : null,
+                            ),
+                          ),
                         ),
-                        validator: (value) =>
-                            value == null ? 'Required field' : null,
-                      ),
-                    ),
-                  ),
-                ),
-                Card(
-                  color: Get.theme.primaryColor,
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      // Get.toNamed(Routes.employeeAdd)?.then((result) {
-                      //   controller.loadManagers();
-                      // });
-                    },
-                    tooltip: 'Add Survey Detail',
-                  ),
-                ),
-              ],
+                        Card(
+                          color: Get.theme.primaryColor,
+                          child: IconButton(
+                            color: Colors.white,
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              Get.bottomSheet(
+                                const AddRole(key: ValueKey("NewRole")),
+                              );
+                            },
+                            tooltip: 'Add Survey Detail',
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ),
 
             gap,
@@ -127,7 +130,9 @@ class CreateManagerScreen extends GetView<ManagerController> {
                   FilteringTextInputFormatter.digitsOnly, // only digits
                   // LengthLimitingTextInputFormatter(10), // max 6 digits
                 ],
-                validator: (value) => value == null ? 'Required field' : null,
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Required field'
+                    : null,
                 decoration: const InputDecoration(
                   labelText: 'Mobile No *',
                   border: InputBorder.none,
@@ -151,6 +156,10 @@ class CreateManagerScreen extends GetView<ManagerController> {
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                             ],
+                            validator: (value) =>
+                                value == null || value.trim().isEmpty
+                                ? 'Required field'
+                                : null,
                             decoration: const InputDecoration(
                               labelText: 'Per Hour Salary *',
                               border: InputBorder.none,
@@ -552,6 +561,67 @@ class CreateManagerScreen extends GetView<ManagerController> {
               ),
             )
             .toList(),
+      ),
+    ),
+  );
+}
+
+class AddRole extends GetView<ManagerController> {
+  final int taskId;
+  const AddRole({super.key, this.taskId = 0});
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Get.theme.scaffoldBackgroundColor,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    child: Form(
+      key: controller.RoleformKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const ButtomSheetScrollButton(),
+          Text(
+            'add_new_role'.tr,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+
+          // Description
+          InputCardStyle(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: "${'role_name'.tr} *",
+                border: InputBorder.none,
+              ),
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? 'Required field'
+                  : null,
+              onChanged: (value) => controller.newRole.value = value,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+          Obx(
+            () => ElevatedButton(
+              onPressed: controller.isLoading.value
+                  ? null
+                  : () {
+                      if (!controller.RoleformKey.currentState!.validate()) {
+                        return;
+                      }
+                      controller.addRole();
+                    },
+              child: controller.isLoading.value
+                  ? const Loading(size: 50)
+                  : Text('add'.tr),
+            ),
+          ),
+          const SizedBox(height: 30),
+        ],
       ),
     ),
   );

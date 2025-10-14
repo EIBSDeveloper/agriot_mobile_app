@@ -27,7 +27,7 @@ class FuelEntryModel {
     'date_of_consumption': dateOfConsumption,
     'vendor': vendor,
     'inventory_type': inventoryType,
-    'inventory_category': inventoryCategory,
+
     'inventory_items': inventoryItems,
     'quantity': quantity,
     'purchase_amount': purchaseAmount,

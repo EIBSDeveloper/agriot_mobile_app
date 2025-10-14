@@ -180,7 +180,7 @@ class TaskRepository {
 
   Future<void> markTaskCompleted(int taskId, TaskTypes scheduleStatus) async {
     try {
-      await _httpService.post('/update_schedule_status/$taskId', {
+      await _httpService.post('/update_schedule_status/$taskId/', {
         'schedule_status': getTaskId(scheduleStatus),
       });
     } catch (e) {

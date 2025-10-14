@@ -23,24 +23,13 @@ class VendorAddRepository {
     required List documentItems,
   }) async {
     final url = Uri.parse(
-      "$baseUrl/vendor_purchase_Payables_outstanding/$farmerId/$vendorId/",
+      "$baseUrl/add_vendor_outstanding/$farmerId/$vendorId/",
     );
 
     final body = {
       "action": "create_pay",
       "date": date,
-      "purchase_type": type.toLowerCase(),
-      if (type.toLowerCase() == "fuel") "fuel_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "pesticides")
-        "pesticide_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "seed") "seed_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "vehicle")
-        "vehicle_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "fertilizer")
-        "fertilizer_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "machinery")
-        "machinery_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "tools") "tool_purchase_id": fuelPurchaseId,
+    "expense_id":fuelPurchaseId,
       "payment_amount": paymentAmount, // send as number
       "description": description,
       "documents": documentItems.map((e) {
@@ -81,24 +70,14 @@ class VendorAddRepository {
     required List documentItems,
   }) async {
     final url = Uri.parse(
-      "$baseUrl/pay_purchase_outstanding/$farmerId/$vendorId/",
+      "$baseUrl/add_vendor_outstanding/$farmerId/$vendorId/",
     );
 
     final body = {
       "action": "create_receive",
       "date": date,
       "purchase_type": type.toLowerCase(),
-      if (type.toLowerCase() == "fuel") "fuel_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "pesticides")
-        "pesticide_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "seed") "seed_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "vehicle")
-        "vehicle_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "fertilizer")
-        "fertilizer_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "machinery")
-        "machinery_purchase_id": fuelPurchaseId,
-      if (type.toLowerCase() == "tools") "tool_purchase_id": fuelPurchaseId,
+     "expense_id":fuelPurchaseId,
       "payment_amount": paymentAmount, // send as number
       "description": description,
       //"documents": documentItems,

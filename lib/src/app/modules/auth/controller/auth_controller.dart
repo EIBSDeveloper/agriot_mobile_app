@@ -9,7 +9,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../../../routes/app_routes.dart';
 import '../../../controller/app_controller.dart';
 import '../../../controller/storage_service.dart';
-import '../../../service/utils/local_notifications.dart';
 import '../repository/auth_repository.dart';
 
 class AuthController extends GetxController {
@@ -56,6 +55,7 @@ class AuthController extends GetxController {
         Get.toNamed(Routes.otp);
         showSuccess("OTP sent to your mobile");
       } else {
+         showError("Failed to send OTP");
         throw Exception(response.message ?? 'Failed to send OTP');
       }
     } catch (e) {

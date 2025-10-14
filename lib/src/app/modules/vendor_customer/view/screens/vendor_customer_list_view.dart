@@ -73,13 +73,15 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
             Text(item.shopName!),
           if (item.businessName != null && item.businessName != '')
             Text(item.businessName!),
+          if (item.doorNo != null && item.doorNo != '')
+            Text(item.doorNo!,maxLines: 1,),
           if (item.market != null && item.market != '') Text(item.market!),
-          if (item.inventoryType != null)
-            Text(
-              item.inventoryType!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+          // if (item.inventoryType != null)
+          //   Text(
+          //     item.inventoryType!,
+          //     maxLines: 1,
+          //     overflow: TextOverflow.ellipsis,
+          //   ),
         ],
       ),
       trailing: IconButton(

@@ -2,7 +2,6 @@ class FertilizerModel {
   final String dateOfConsumption;
   final int? vendor;
   final int inventoryType;
-  final int inventoryCategory;
   final int inventoryItems;
   final String quantity;
   final int quantityUnit;
@@ -15,7 +14,6 @@ class FertilizerModel {
     required this.dateOfConsumption,
     required this.vendor,
     required this.inventoryType,
-    required this.inventoryCategory,
     required this.inventoryItems,
     required this.quantity,
     required this.quantityUnit,
@@ -29,7 +27,7 @@ class FertilizerModel {
       'date_of_consumption': dateOfConsumption,
       'vendor': vendor,
       'inventory_type': inventoryType,
-      'inventory_category': inventoryCategory,
+
       'inventory_items': inventoryItems,
       'quantity': quantity,
       'quantity_unit': quantityUnit,

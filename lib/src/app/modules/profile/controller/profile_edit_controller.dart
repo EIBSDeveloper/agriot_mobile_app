@@ -170,6 +170,8 @@ class ProfileEditController extends GetxController {
         "company_name": companyController.text.trim(),
         "tax_no": taxNoController.text.trim(),
         "locations": generateGoogleMapsUrl(latitude.value, longitude.value),
+        "longitude": longitude.value,
+        "latitude": latitude.value, 
         if (base64Image.isNotEmpty) "img": "data:image/png;base64,$base64Image",
       });
 

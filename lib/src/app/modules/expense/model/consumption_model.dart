@@ -25,7 +25,7 @@ class FuelConsumptionModel {
     'date_of_consumption': dateOfConsumption,
     'crop': crop,
     'inventory_type': inventoryType,
-    'inventory_category': inventoryCategory,
+ 
     'inventory_items': inventoryItems,
     'description': description,
     'farmer': farmer,

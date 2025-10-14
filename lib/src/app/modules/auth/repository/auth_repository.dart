@@ -14,17 +14,23 @@ class AuthRepository {
     bool value, {
     isGoogleLogin = false,
   }) async {
-    var body = {
-      if (!value) 'mobile_number': mobileNumber,
-      if (value) 'email': mobileNumber,
-      'name': 'user',
-      if (value) "google_login": isGoogleLogin,
-    };
-    final response = await _httpService.post('/get_otp', body);
+      dynamic  response ;
+    try {
+      var body = {
+        if (!value) 'mobile_number': mobileNumber,
+        if (value) 'email': mobileNumber,
+        'name': 'user',
+        if (value) "google_login": isGoogleLogin,
+      };
+      final response = await _httpService.post('/get_otp', body);
 
-    var jsonDecode2 = jsonDecode(response.body);
+      var jsonDecode2 = jsonDecode(response.body);
 
-    return GetOtp.fromJson(jsonDecode2);
+      return GetOtp.fromJson(jsonDecode2);
+    } catch (e) {
+      //
+      throw Exception(response?.body["details"]??"This Farmer is Inactive.");
+    }
   }
 
   Future verifyOtp(String mobileNumber, String otp, bool value) async {

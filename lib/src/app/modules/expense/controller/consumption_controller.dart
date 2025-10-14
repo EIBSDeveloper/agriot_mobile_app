@@ -228,7 +228,7 @@ class ConsumptionController extends GetxController {
         )[0],
         if (selectedCropType.value.id != 0) "crop": selectedCropType.value.id,
         "inventory_type": selectedInventoryType.value.toString(),
-        // "inventory_category": selectedInventoryType.value,
+
         "inventory_items": selectedInventoryItem.value,
         "description": description.value,
         "farmer": farmerId,

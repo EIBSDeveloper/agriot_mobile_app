@@ -132,12 +132,15 @@ class TaskView extends GetView<TaskController> {
             ),
           ),
           Obx(
-            () => (!controller.isLoading.value && controller.lands.isEmpty)?Expanded(
-              child: EmptyLandCard(
-                view: (!controller.isLoading.value && controller.lands.isEmpty),
-                refresh: controller.fetchLands,
-              ),
-            ):const SizedBox(),
+            () => (!controller.isLoading.value && controller.lands.isEmpty)
+                ? EmptyLandCard(
+                  padding: EdgeInsets.all(0),
+                  view:
+                      (!controller.isLoading.value &&
+                      controller.lands.isEmpty),
+                  refresh: controller.fetchLands,
+                )
+                : const SizedBox(),
           ),
 
           Obx(() {
@@ -343,13 +346,21 @@ class TaskView extends GetView<TaskController> {
         child: Padding(
           padding: const EdgeInsets.only(top: 100),
           child: Text(
-            "${'no_tasks_for_date'.tr} ${DateFormat('d MMMM y').format(selectedDate)}"
-           
+            "${'no_tasks_for_date'.tr} ${DateFormat('d MMMM y').format(selectedDate)}",
           ),
         ),
       );
     }
 
-    return Column(children: [...tasks.map((task) => TaskCard(task: task))]);
+    return Column(
+      children: [
+        ...tasks.map(
+          (task) => TaskCard(
+            key: ValueKey('${task.id}_${controller.selectedDay.value}'),
+            task: task,
+          ),
+        ),
+      ],
+    );
   });
 }

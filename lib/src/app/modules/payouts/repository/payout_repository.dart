@@ -60,4 +60,28 @@ class PayoutRepository {
       return [];
     }
   }
+
+  /// Add Attendance for multiple employees at once
+  Future<bool> addPayouts({
+    required List<Map<String, dynamic>> employees,
+  }) async {
+    final farmerId = appDeta.farmerId;
+    try {
+      final response = await _httpService.post(
+        "/employee_payout_list/${farmerId.value}",
+        employees, // send as JSON list
+      );
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        debugPrint("✅ Attendance added successfully: ${response.body}");
+        return true;
+      } else {
+        debugPrint("❌ Error adding attendance: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      debugPrint("⚠️ Exception adding attendance: $e");
+      return false;
+    }
+  }
 }

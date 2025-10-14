@@ -21,8 +21,8 @@ class VendorCustomer {
   final String? inventoryType;
   final String? image;
   final String? pincode;
-  final String? latitude;
-  final String? longitude;
+  final double? latitude;
+  final double? longitude;
 
   VendorCustomer({
     required this.id,
@@ -77,10 +77,10 @@ class VendorCustomer {
       market: market,
       inventoryType: json['inventory_type'],
       image: json['image'],
-      pincode: json['pincode'],
-      latitude: json['latitude'],
+      pincode: json['pincode'].toString(),
+      latitude: double.tryParse(json['latitude'].toString()),
 
-      longitude: json['longitude'],
+      longitude: double.tryParse(json['longitude'].toString()),
     );
   }
 }

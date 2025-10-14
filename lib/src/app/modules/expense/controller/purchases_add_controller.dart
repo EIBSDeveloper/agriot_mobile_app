@@ -429,7 +429,7 @@ class PurchasesAddController extends GetxController {
         dateOfConsumption: selectedDate.value,
         vendor: selectedVendor.value == 0 ? null : selectedVendor.value,
         inventoryType: selectedInventoryType.value!,
-        inventoryCategory: selectedInventoryType.value!,
+     
 
         inventoryItems: selectedInventoryItem.value!,
         quantity: litre.value,

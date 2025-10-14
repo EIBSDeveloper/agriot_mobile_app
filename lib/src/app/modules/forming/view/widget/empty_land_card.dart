@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmptyLandCard extends StatelessWidget {
-   EmptyLandCard({super.key, required this.refresh, this.view = false});
+   EmptyLandCard({super.key, required this.refresh, this.view = false ,this.padding});
 final AppDataController appData = Get.find();
   final void Function()? refresh;
   final bool view;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) => view && !appData.isManager.value
       ? Padding(
-          padding: EdgeInsets.only(top: Get.size.height * 0.1),
+          padding: padding??EdgeInsets.only(top: Get.size.height * 0.1),
           child: Center(
             child: Card(
               elevation: 1,
@@ -60,9 +61,9 @@ final AppDataController appData = Get.find();
                         ),
                         onPressed: () {
                           Get.toNamed(Routes.addLand)?.then((result) {
-                            if (result ?? false) {
+                            // if (result ?? false) {
                               refresh?.call();
-                            }
+                            // }
                           });
                         },
                         child: const Text(

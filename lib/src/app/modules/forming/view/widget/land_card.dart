@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../controller/app_controller.dart';
 import '../../../../routes/app_routes.dart';
+import '../../../../service/utils/pop_messages.dart';
 import '../../../../service/utils/utils.dart';
+import '../../../subscription/model/package_usage.dart';
 import '../../model/land.dart';
 import 'crop_card.dart';
 
@@ -132,8 +134,8 @@ class LandCard extends StatelessWidget {
                     children: [
                       TextButton(
                         onPressed: () async {
-                          // PackageUsage? package = await findLimit();
-                          // if (package!.cropBalance > 0) {
+                          PackageUsage? package = await findLimit();
+                          if (package!.cropBalance > 0) {
                           Get.toNamed(Routes.addCrop, arguments: land.id)?.then(
                             (result) {
                               if (result ?? false) {
@@ -141,9 +143,9 @@ class LandCard extends StatelessWidget {
                               }
                             },
                           );
-                          // } else {
-                          //   showDefaultGetXDialog("Crop");
-                          // }
+                          } else {
+                            showDefaultGetXDialog("Crop");
+                          }
                         },
                         child: Text(
                           "Add New Crop",

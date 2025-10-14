@@ -27,7 +27,7 @@ class App extends StatelessWidget {
     fallbackLocale: const Locale('en', 'US'),
     initialBinding: AppBinding(),
     // home: ChatPage(),
-    initialRoute: Routes.home,
+    initialRoute: Routes.splash,
     getPages: AppPages.routes,
     debugShowCheckedModeBanner: false,
   );

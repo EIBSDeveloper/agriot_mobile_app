@@ -29,11 +29,13 @@ class FarmerRepository {
       // Prepare the request body
       final body = {
         "name": name,
-        if (phone != null &&phone.isNotEmpty) "phone": phone,
+        if (phone != null && phone.isNotEmpty) "phone": phone,
         "email": email,
         "door_no": doorNo,
         "pincode": pincode,
         "locations": generateGoogleMapsUrl(latitude, longitude),
+        "longitude": longitude,
+        "latitude": latitude,
         "description": description ?? '',
         if (img != null) "img": img,
         "company_name": companyName,

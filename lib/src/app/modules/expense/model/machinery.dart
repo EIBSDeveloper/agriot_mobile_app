@@ -33,7 +33,6 @@ class Machinery {
     'date_of_consumption': dateOfConsumption,
     'vendor': vendor,
     'inventory_type': inventoryType,
-    'inventory_category': inventoryCategory,
     'inventory_items': inventoryItems,
     'machinery_type': machineryType,
     'fuel_capacity': fuelCapacity,

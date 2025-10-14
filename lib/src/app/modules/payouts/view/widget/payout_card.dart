@@ -56,6 +56,10 @@ class PayoutCard extends GetView<PayoutAddController> {
                         fontSize: 12,
                       ),
                     ),
+                    //          Text(
+                    //   calculatedPayout().toString(),
+                    //   style: const TextStyle(fontSize: 14, color: Colors.black54),
+                    // ),
                   ],
                 ),
               ],
@@ -180,20 +184,9 @@ class PayoutCard extends GetView<PayoutAddController> {
                                 Colors.black54,
                           ),
                           onChanged: (val) {
-                            final entered = int.tryParse(val.trim()) ?? 0;
-                            final adv = pay.advance ?? 0;
-
-                            if (entered > adv) {
-                              controller.deductionColors[index]?.value =
-                                  Colors.red;
-                            } else {
-                              controller.deductionColors[index]?.value =
-                                  Colors.black54;
-                              pay.deductionAdvance = entered;
-                              pay.payoutAmount = pay.paidSalary - entered;
-                              pay.isEdited = true;
-                              controller.advancelist.refresh();
-                            }
+                            pay.payoutAmount = int.tryParse(val);
+                            pay.isEdited = true;
+                            controller.advancelist.refresh();
                           },
                         ),
                       ),
@@ -201,10 +194,6 @@ class PayoutCard extends GetView<PayoutAddController> {
                   ),
                 ],
               ),
-            ),
-            Text(
-              calculatedPayout().toString(),
-              style: const TextStyle(fontSize: 14, color: Colors.black54),
             ),
           ],
         ),

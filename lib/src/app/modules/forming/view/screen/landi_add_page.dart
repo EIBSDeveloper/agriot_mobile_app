@@ -91,15 +91,14 @@ class LandViewPage extends GetView<LandController> {
                 ),
               ],
               gap,
-              SearchableDropdown<AppDropdownItem>(
+            Obx(()=> SearchableDropdown<AppDropdownItem>(
                 label: 'Soil Type ',
                 items: controller.soilTypes,
                 selectedItem: controller.selectedSoilType.value,
                 onChanged: (value) => controller.selectedSoilType.value = value,
                 // validator: (value) => value == null ? 'Required field' : null,
                 displayItem: (value) => value.name.toString(),
-              ),
-
+              )),
               gap,
               _buildTextField(
                 minLines: 1,

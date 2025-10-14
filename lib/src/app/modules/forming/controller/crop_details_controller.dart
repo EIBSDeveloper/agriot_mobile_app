@@ -170,7 +170,10 @@ class CropDetailsController extends GetxController {
     if (response.events.isNotEmpty) {
       final todayEvents = response.events
           .where(
-            (e) => e.date == DateFormat('yyyy-MM-dd').format(DateTime.now()),
+            (e) {
+              var format = DateFormat('dd-MM-yyyy').format(DateTime.now());
+              return e.date == format;
+            },
           )
           .toList();
 
@@ -193,7 +196,7 @@ class CropDetailsController extends GetxController {
 
   List<Event> getEventsForDay(DateTime day) {
     if (taskResponse.value == null) return [];
-    final dateString = DateFormat('yyyy-MM-dd').format(day);
+    final dateString = DateFormat('dd-MM-yyyy').format(day);
     return taskResponse.value!.events
         .where((event) => event.date == dateString)
         .toList();
@@ -206,7 +209,7 @@ class CropDetailsController extends GetxController {
 
   List<Task> getTasksForDay(DateTime day) {
     if (taskResponse.value == null) return [];
-    final dateString = DateFormat('yyyy-MM-dd').format(day);
+    final dateString = DateFormat('dd-MM-yyyy').format(day);
     final allTasks = <Task>[];
 
     allTasks.addAll(
@@ -271,7 +274,7 @@ class CropDetailsController extends GetxController {
     if (taskResponse.value == null) return {};
     final eventsMap = <DateTime, List<Event>>{};
     for (final event in taskResponse.value!.events) {
-      final date = DateFormat('yyyy-MM-dd').parse(event.date);
+      final date = DateFormat('dd-MM-yyyy').parse(event.date);
       eventsMap[date] = eventsMap[date] ?? [];
       eventsMap[date]!.add(event);
     }

@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
-import '../../../service/utils/utils.dart';
 import '../../near_me/model/models.dart';
 import '../../registration/model/crop_model.dart';
 import '../../registration/model/dropdown_item.dart';

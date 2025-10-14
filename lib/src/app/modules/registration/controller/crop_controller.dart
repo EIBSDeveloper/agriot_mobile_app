@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 
 import '../../../bindings/app_binding.dart';
 import '../../../controller/app_controller.dart';
-import '../../../service/utils/utils.dart';
 import '../../near_me/model/models.dart';
 import '../model/crop_model.dart';
 import '../model/dropdown_item.dart';
@@ -213,8 +212,7 @@ class RegCropController extends GetxController {
           "survey_details": [...selectedSurvey.map((e) => e.id)],
         "taluk": 1,
         "village": 1,
-        "status": 0,
-        "description": "Sample crop description",
+        "description": "",
         "measurement_value": measurementController.text.trim(),
         "measurement_unit": selectedMeasurementUnit.value!.id,
         "geo_marks": convertLatLngListToMap(cropCoordinates),

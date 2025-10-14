@@ -1,8 +1,7 @@
 class English {
   static Map<String, String> list = {
     "consumption_purchase_title": "Consumption & Purchase",
-    "inventory_category": "Inventory Category",
-    "select_inventory_category": "Select Inventory Category",
+
     "inventory_item": "Inventory Item",
     "select_inventory_item": "Select Inventory Item",
     "consumption": "Consumption",
@@ -92,6 +91,8 @@ class English {
     "add_customer": "Add Customer",
     "add_vendor": "Add Vendor",
     "add_both": "Add Both",
+    "add_new_role":"Add New Role",
+    "role_name":"Role Name",
     "customer_name": "Customer Name",
     "vendor_name": "Vendor Name",
     "shop_name": "Shop Name",
@@ -330,7 +331,6 @@ class English {
     "success_message": "Machinery added successfully!",
     "vehicle_screen_title": "Vehicle",
     "date_label": "Date",
-    "inventory_category_label": "Inventory Category",
     "inventory_item_label": "Inventory Item",
     "vendor_label": "Vendor",
     "reg_no_label": "Reg No",
@@ -611,7 +611,7 @@ class English {
     "advance_amount_required": "Advance amount is required",
     "advance_updated_success": "Employee advance updated successfully",
     "name": "Name",
-    "delete_confirmation_message": "Are you sure you want to delete this item?",
+    "delete_confirmation_message": "Are you sure you want to delete this ?",
     "details": "Details",
     "market": "Market",
     "select_land_first": "Select land first",

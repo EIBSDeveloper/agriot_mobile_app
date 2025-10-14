@@ -89,6 +89,7 @@ class _AddVendorCustomerViewState extends State<AddVendorCustomerView> {
     children: [
       // _buildImagePicker(),
       const SizedBox(height: 8),
+      if( Get.arguments?["id"] == null)
       InputCardStyle(
         child: DropdownButtonFormField<String>(
           isExpanded: true,

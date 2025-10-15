@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/activity_model.dart';
 import 'package:argiot/src/app/modules/task/model/task_details.dart';
 import 'package:argiot/src/app/modules/task/repostory/task_repository.dart';
@@ -12,6 +13,7 @@ import '../model/task_types_dropdown_item.dart';
 
 class TaskDetailsController extends GetxController {
   final TaskRepository _taskRepository = TaskRepository();
+  final AppDataController appDeta= Get.find();
   final Rx<TaskDetails?> task = Rx<TaskDetails?>(null);
   final RxBool isLoading = false.obs;
   final RxBool isupdatable = true.obs;

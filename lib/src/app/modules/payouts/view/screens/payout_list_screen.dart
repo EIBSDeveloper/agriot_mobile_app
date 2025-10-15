@@ -59,13 +59,16 @@ class Payoutlistscreen extends GetView<PayoutController> {
         ),
       ],
     ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Get.toNamed(Routes.addPayout);
-      },
-      backgroundColor: Get.theme.colorScheme.primary,
-      child: const Icon(Icons.add),
-    ),
+    floatingActionButton:
+        (controller.appDeta.permission.value?.payouts?.add != 0)
+        ? FloatingActionButton(
+            onPressed: () {
+              Get.toNamed(Routes.addPayout);
+            },
+            backgroundColor: Get.theme.colorScheme.primary,
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox(),
   );
 }
 
@@ -116,15 +119,15 @@ Widget payoutCard(PayoutModel pay) => Card(
                   ),
                   const SizedBox(width: 5),
                   ...[
-                  Text(
-                    '(${pay.role})',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
+                    Text(
+                      '(${pay.role})',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
                 ],
               ),
 
@@ -132,55 +135,55 @@ Widget payoutCard(PayoutModel pay) => Card(
 
               /// Salary Type
               ...[
-              Text(
-                "${"salary_type".tr}: ${pay.salaryType}",
-                style: const TextStyle(fontSize: 14, color: Colors.black54),
-              ),
-            ],
+                Text(
+                  "${"salary_type".tr}: ${pay.salaryType}",
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+              ],
               const SizedBox(height: 4),
 
               /// Work Type
               ...[
-              Text(
-                "${"work_type".tr}: ${pay.workType}",
-                style: const TextStyle(fontSize: 14, color: Colors.black54),
-              ),
-            ],
+                Text(
+                  "${"work_type".tr}: ${pay.workType}",
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+              ],
               const SizedBox(height: 4),
 
               /// Working Days
               ...[
-              Text(
-                "${"working_days".tr}: ${pay.workingDays}",
-                style: const TextStyle(fontSize: 14, color: Colors.black54),
-              ),
-            ],
+                Text(
+                  "${"working_days".tr}: ${pay.workingDays}",
+                  style: const TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+              ],
               const SizedBox(height: 4),
 
               /// Paid Salary
               ...[
-              Text(
-                "${"paid_salary".tr}: ${pay.paidSalary}",
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  "${"paid_salary".tr}: ${pay.paidSalary}",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+              ],
               const SizedBox(height: 4),
 
               /// Unpaid Salary
               ...[
-              Text(
-                "${"unpaid_salary".tr}: ${pay.unpaidSalary}",
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
+                Text(
+                  "${"unpaid_salary".tr}: ${pay.unpaidSalary}",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+              ],
             ],
           ),
         ),

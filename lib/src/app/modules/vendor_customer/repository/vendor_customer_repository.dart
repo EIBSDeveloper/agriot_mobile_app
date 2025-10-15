@@ -5,7 +5,6 @@ import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_for
 import 'package:argiot/src/app/service/http/http_service.dart';
 import 'package:get/get.dart';
 
-
 class VendorCustomerRepository {
   final HttpService _httpService = Get.find<HttpService>();
   final AppDataController appDeta = Get.find();
@@ -13,6 +12,9 @@ class VendorCustomerRepository {
     final farmerId = appDeta.farmerId;
     try {
       String endpoint;
+      if (appDeta.permission.value?.customer?.list == 0 && appDeta.permission.value?.customer?.view == 0) {
+        type = 1;
+      }
       switch (type) {
         case 0:
           endpoint = '/get_customer_list/$farmerId';
@@ -127,7 +129,4 @@ class VendorCustomerRepository {
       throw Exception('Error adding vendor: $e');
     }
   }
-
- 
-
 }

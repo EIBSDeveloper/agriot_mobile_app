@@ -19,7 +19,7 @@ class AppDataController extends GetxController {
   Rx<Locale> appLanguage = const Locale('en', 'US').obs;
   RxString apiKey = 'eb0d8580a7a6e8a3a5f25a2d6b1366b8'.obs;
   RxString baseUrl = 'https://staging.agriotwifarm.com/Api'.obs;
-  RxString baseUrlWithoutAPi = 'https://staging.agriotwifarm.com/'.obs;
+  RxString baseUrlWithoutAPi = 'https://staging.agriotwifarm.com'.obs;
   String weatherBaseUrl = 'https://api.openweathermap.org/data/2.5/weather';
   String weatherApiKey = 'f0dd3d4a11a1446a7e29124d1911268b';
 

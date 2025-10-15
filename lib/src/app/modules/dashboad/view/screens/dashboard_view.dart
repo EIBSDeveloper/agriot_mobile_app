@@ -102,6 +102,7 @@ class DashboardView extends GetView<DashboardController> {
           ),
         ),
       ),
+       if(!controller.appDeta.isManager.value)
       IconButton(
         color: Get.theme.primaryColor,
         iconSize: 40,

@@ -113,6 +113,7 @@ class LandCard extends StatelessWidget {
                   //   ],
                   // ),
                   const SizedBox(height: 8),
+                  
                   if (appDeta.permission.value?.crop?.list != 0)
                     ...land.crops.map(
                       (crop) => InkWell(
@@ -132,6 +133,7 @@ class LandCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      if(appDeta.permission.value?.crop?.add != 0)
                       TextButton(
                         onPressed: () async {
                           PackageUsage? package = await findLimit();

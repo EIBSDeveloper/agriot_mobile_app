@@ -117,7 +117,7 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
-                    child: Obx(() => buildPayablesTab()),
+                    child: Obx(() => PayablesList(selectedTopToggle: selectedTopToggle.value)),
                   ),
                 ),
 
@@ -127,7 +127,7 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
-                    child: Obx(() => buildReceivablesTab()),
+                    child: Obx(() =>  ReceivablesList(selectedTopToggle: selectedTopToggle.value)),
                   ),
                 ),
               ],
@@ -138,9 +138,6 @@ class _PayablesReceivablesPageState extends State<PayablesReceivablesPage>
     }),
   );
 
-  Widget buildPayablesTab() =>
-      PayablesList(selectedTopToggle: selectedTopToggle.value);
 
-  Widget buildReceivablesTab() =>
-      ReceivablesList(selectedTopToggle: selectedTopToggle.value);
+
 }

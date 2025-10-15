@@ -18,7 +18,7 @@ import '../view/widgets/crop_details_bottom_sheet.dart';
 class LandMapViewController extends GetxController {
   // Variables
   final LandMapViewRepository _repository = LandMapViewRepository();
-  final AppDataController appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   final ScheduleCrop allCrop = ScheduleCrop(id: 0, name: "All");
 
   RxBool isLoading = true.obs;
@@ -319,10 +319,16 @@ class LandMapViewController extends GetxController {
                 landMapDetails.value!.crops!.length.toString(),
               ),
 
-            _buildDetailRow('Manager Name:',landMapDetails.value?.manager??"" ),
-            _buildDetailRow('Solit Type:',landMapDetails.value?.solitType??"" ),
-            // _buildDetailRow('Totel employees:', '3'),
+            _buildDetailRow(
+              'Manager Name:',
+              landMapDetails.value?.manager ?? "",
+            ),
+            _buildDetailRow(
+              'Solit Type:',
+              landMapDetails.value?.solitType ?? "",
+            ),
 
+            // _buildDetailRow('Totel employees:', '3'),
             const Divider(height: 1),
             const SizedBox(height: 8),
             // if (controller.cropDetails.value!.tasks.isNotEmpty)

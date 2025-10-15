@@ -30,6 +30,7 @@ Map<String, dynamic> flattenPermissions(Map<String, PermissionItem> perms) {
 
 class ManagerController extends GetxController {
   final ManagerRepository repository = Get.find();
+  final AppDataController appDeta = Get.find();
   final EmployeeDetailsRepository _repository =
       Get.find<EmployeeDetailsRepository>();
   final RxInt id = 0.obs;
@@ -63,7 +64,7 @@ class ManagerController extends GetxController {
   var managers = <DrapDown>[].obs;
   var isLoadingManager = false.obs;
   final formKey = GlobalKey<FormState>();
-  final RoleformKey = GlobalKey<FormState>();
+  final roleformKey = GlobalKey<FormState>();
 
   final RxDouble latitude = 0.0.obs;
   final RxDouble longitude = 0.0.obs;

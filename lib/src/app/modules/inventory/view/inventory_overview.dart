@@ -46,11 +46,13 @@ class InventoryOverview extends GetView<InventoryController> {
         );
       }),
     ),
-    floatingActionButton: FloatingActionButton(
-      backgroundColor: Get.theme.primaryColor,
-      onPressed: controller.navigateToAddInventory,
-      child: const Icon(Icons.add),
-    ),
+    floatingActionButton: controller.hasConsumption()
+        ? FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: controller.navigateToAddInventory,
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox(),
   );
 
   Widget _buildInventoryItem(String title, String quantity, int id) => Column(

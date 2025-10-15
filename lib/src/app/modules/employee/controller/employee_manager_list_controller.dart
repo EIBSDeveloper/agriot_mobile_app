@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/employee/model/user_model.dart';
 import 'package:argiot/src/app/modules/employee/repository/employee_manager_repository.dart';
 
@@ -8,6 +9,7 @@ class EmployeeManagerListController extends GetxController {
   final EmployeeManagerRepository _repository =
       Get.find<EmployeeManagerRepository>();
   
+AppDataController  appDeta= Get.find();
   // Observables
   var isLoading = false.obs;
   var groupedData = <ManagerEmployeeGroup>[].obs;
@@ -16,7 +18,6 @@ class EmployeeManagerListController extends GetxController {
   var searchQuery = ''.obs;
   var currentPage = 1.obs;
   var hasMoreData = true.obs;
-
   @override
   void onInit() {
     super.onInit();

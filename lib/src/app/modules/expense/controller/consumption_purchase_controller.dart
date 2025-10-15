@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/expense/model/inventory_item_model.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/consumption_purchase_repository.dart';
 import 'package:argiot/src/app/modules/expense/repostroy/purchases_add_repository.dart';
@@ -13,6 +14,7 @@ import '../model/inventory_item_quantity.dart';
 
 class ConsumptionPurchaseController extends GetxController
     with GetSingleTickerProviderStateMixin {
+  final AppDataController appDeta = Get.find();
   final ConsumptionPurchaseRepository _repository = Get.find();
   final PurchasesAddRepository purchasesrepository = PurchasesAddRepository();
   // Observables
@@ -108,7 +110,7 @@ class ConsumptionPurchaseController extends GetxController
   }
 
   Future<void> getItemQuantity() async {
-      inventoryItemQuantity.value = await purchasesrepository
+    inventoryItemQuantity.value = await purchasesrepository
         .fetchInventoryItemsQuantity(
           selectedInventoryType.value!,
           selectedInventoryItem.value!,
@@ -229,13 +231,25 @@ class ConsumptionPurchaseController extends GetxController
 
   void reLoad(result) {
     if (result ?? false) {
-         getItemQuantity();
+      getItemQuantity();
       purchaseRefresh();
     }
   }
 
   void open() {
-    if (tabController.index == 0) {
+    final permission = appDeta.permission.value;
+
+  bool hasConsumption() {
+    if (appDeta.permission.value == null) return true;
+    return (appDeta.permission.value?.fuel?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.fertilizer?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.pesticides?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.vehicle?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.machinery?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.tools?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.seeds?.consumption ?? 0) != 0;
+  }
+    if (tabController.index == 0 && hasConsumption()) {
       Get.toNamed(
         Routes.fuelConsumption,
         arguments: {
@@ -244,14 +258,14 @@ class ConsumptionPurchaseController extends GetxController
         },
       )?.then((result) {
         if (result ?? false) {
-             getItemQuantity();
+          getItemQuantity();
           cunsumptionRefresh();
         }
       });
-    } else {
+    } else if (tabController.index == 1 && permission?.expense?.add != 0) {
       if (selectedInventoryType.value == 6) {
         Get.toNamed(
-            Routes.addFuel,
+          Routes.addFuel,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -261,7 +275,7 @@ class ConsumptionPurchaseController extends GetxController
         });
       } else if (selectedInventoryType.value == 1) {
         Get.toNamed(
-            Routes.addVehicle,
+          Routes.addVehicle,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -271,7 +285,7 @@ class ConsumptionPurchaseController extends GetxController
         });
       } else if (selectedInventoryType.value == 2) {
         Get.toNamed(
-       Routes.addMachinery,
+          Routes.addMachinery,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -281,7 +295,7 @@ class ConsumptionPurchaseController extends GetxController
         });
       } else {
         Get.toNamed(
-         Routes.addInventoryItem,
+          Routes.addInventoryItem,
           arguments: {
             "id": selectedInventoryType.value,
             "item": selectedInventoryItem.value,
@@ -290,6 +304,8 @@ class ConsumptionPurchaseController extends GetxController
           reLoad(result);
         });
       }
+    } else {
+      showWarning("You don't have permission to access this.");
     }
   }
 }

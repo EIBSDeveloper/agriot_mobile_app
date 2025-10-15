@@ -396,23 +396,19 @@ name='get_inventory_items_by_category'),
     path("managers_with_employees/<int:farmer_id>", get_manager_user_list, name="get_employee_details"),
     # GET mangerEMPLOYEE DETAILS
     path("create_manager_user/<int:farmer_id>", create_manager_user, name="get_employee_details"),
-    
-    
     path('employee_types', get_employee_types, name='get_employee_types'),
-        # Expenses
+    # Expenses
     path(
         "myexpenses_list/<int:farmer_id>/<str:time_period>/",
       get_expense_list,
         name="get_expense_list"
     ),
-
     # Sales
     path(
         "mysales_list/<int:farmer_id>/<str:time_period>/",
        get_sales_list,
         name="get_sales_list"
     ),
-
     path('both_expense_sales_list/<int:farmer_id>/<str:time_period>', get_both_expense_sales_list, name='both_expense_sales_list'),
     path('manager_roals/<int:farmer_id>', get_manager_roals, name='get_manager_roals'),    
     path('manager_by_fermer/<int:farmer_id>', get_manager_by_fermer, name='get_manager_by_fermer'),

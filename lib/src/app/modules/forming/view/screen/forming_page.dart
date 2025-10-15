@@ -36,6 +36,7 @@ class FormingView extends GetView<FormingController> {
                 children: [
                   TitleText("Lands".tr),
                   const Spacer(),
+                  if (controller.appDeta.permission.value?.land?.location != 0)
                   InkWell(
                     onTap: () {
                       Get.toNamed(Routes.landMapView);
@@ -63,9 +64,7 @@ class FormingView extends GetView<FormingController> {
 
                   return Obx(
                     () => LandCard(
-                      key: ValueKey(
-                        land.id,
-                      ), 
+                      key: ValueKey(land.id),
                       land: land,
                       isExpanded: controller.expandedLandId.value == land.id,
                       onExpand: () => controller.toggleExpandLand(land.id),
@@ -83,20 +82,22 @@ class FormingView extends GetView<FormingController> {
       );
     }),
 
-    floatingActionButton:  (controller.appDeta.permission.value?.land?.add != 0)? FloatingActionButton(
-      backgroundColor: Get.theme.primaryColor,
-      onPressed: () async {
-        PackageUsage? package = await findLimit();
+    floatingActionButton: (controller.appDeta.permission.value?.land?.add != 0)
+        ? FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: () async {
+              PackageUsage? package = await findLimit();
 
-        if (package!.landBalance > 0) {
-        Get.toNamed(Routes.addLand)?.then((result) {
-          controller.fetchLands();
-        });
-        } else {
-          showDefaultGetXDialog("Land");
-        }
-      },
-      child: const Icon(Icons.add),
-    ):const SizedBox(),
+              if (package!.landBalance > 0) {
+                Get.toNamed(Routes.addLand)?.then((result) {
+                  controller.fetchLands();
+                });
+              } else {
+                showDefaultGetXDialog("Land");
+              }
+            },
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox(),
   );
 }

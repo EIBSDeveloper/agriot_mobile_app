@@ -23,18 +23,19 @@ class LandDetailView extends GetView<LandDetailController> {
         title: controller.landDetails.value?.name ?? 'Loading...',
         showBackButton: true,
         actions: [
-          IconButton(
-            color: Get.theme.primaryColor,
-            onPressed: () {
-              Get.toNamed(
-                 Routes.addLand,
-                arguments: {'landId': controller.landId.value},
-              )?.then((result) {
-                controller.loadData();
-              });
-            },
-            icon: const Icon(Icons.edit),
-          ),
+          if (controller.appDeta.permission.value?.land?.edit != 0)
+            IconButton(
+              color: Get.theme.primaryColor,
+              onPressed: () {
+                Get.toNamed(
+                  Routes.addLand,
+                  arguments: {'landId': controller.landId.value},
+                )?.then((result) {
+                  controller.loadData();
+                });
+              },
+              icon: const Icon(Icons.edit),
+            ),
           // IconButton(
           //   onPressed: () {
           //     controller.deleteLandDetails(controller.landId.value);
@@ -95,7 +96,7 @@ class LandDetailView extends GetView<LandDetailController> {
           const SizedBox(height: 8),
           // Crops
           if (controller.appDeta.permission.value?.crop?.list != 0)
-          _buildCropsSection(),
+            _buildCropsSection(),
 
           // Documents
           const SizedBox(height: 16),
@@ -111,19 +112,20 @@ class LandDetailView extends GetView<LandDetailController> {
         children: [
           const TitleText('Land Details'),
           const Spacer(),
-          InkWell(
-            onTap: () {
-              Get.toNamed(
-                Routes.landMapView,
-                arguments: {'landId': controller.landId.value},
-              );
-            },
-            child: SizedBox(
-              width: 50,
-              height: 50,
-              child: Image.asset(AppIcons.map),
+          if (controller.appDeta.permission.value?.land?.location != 0)
+            InkWell(
+              onTap: () {
+                Get.toNamed(
+                  Routes.landMapView,
+                  arguments: {'landId': controller.landId.value},
+                );
+              },
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: Image.asset(AppIcons.map),
+              ),
             ),
-          ),
         ],
       ),
 
@@ -137,21 +139,21 @@ class LandDetailView extends GetView<LandDetailController> {
         controller.landDetails.value?.manager?.name ?? "",
       ),
 
-      _buildDetailRow(
-        'Address',
-        controller.landDetails.value?.doorNo ?? "",
-      ),
+      _buildDetailRow('Address', controller.landDetails.value?.doorNo ?? ""),
 
       _buildDetailRow(
         'Patta No',
-        controller.landDetails.value?.pattaNumber ??"",
+        controller.landDetails.value?.pattaNumber ?? "",
       ),
       _buildDetailRow(
         'Measurement',
-        '${controller.landDetails.value?.measurementValue} ${controller.landDetails.value?.measurementUnit?.name??""}',
+        '${controller.landDetails.value?.measurementValue} ${controller.landDetails.value?.measurementUnit?.name ?? ""}',
       ),
       if (controller.landDetails.value?.description != null)
-        _buildDetailRow('Description', controller.landDetails.value?.description??""),
+        _buildDetailRow(
+          'Description',
+          controller.landDetails.value?.description ?? "",
+        ),
     ],
   );
 
@@ -182,7 +184,7 @@ class LandDetailView extends GetView<LandDetailController> {
                 ),
               ),
               subtitle: Text(
-                '${double.tryParse(survey['survey_measurement_value'])?.round()??0} ${survey['survey_measurement_unit_name']}',
+                '${double.tryParse(survey['survey_measurement_value'])?.round() ?? 0} ${survey['survey_measurement_unit_name']}',
               ),
             ),
           );
@@ -191,14 +193,13 @@ class LandDetailView extends GetView<LandDetailController> {
     );
   }
 
-
   Widget _buildDocumentsSection() {
-    final documents = controller.landDetails.value?.documents?? [];
+    final documents = controller.landDetails.value?.documents ?? [];
     if (documents.isEmpty) return const SizedBox();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const TitleText('Documents',color: Colors.black,),
+        const TitleText('Documents', color: Colors.black),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -263,7 +264,7 @@ class LandDetailView extends GetView<LandDetailController> {
             child: CropCard(crop: crop),
           ),
         ),
-        addNewCrop(),
+        if (controller.appDeta.permission.value?.crop?.add != 0) addNewCrop(),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/payouts/model/payoutmodel.dart';
 import 'package:argiot/src/app/modules/payouts/repository/payout_repository.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 
 class PayoutController extends GetxController {
   final PayoutRepository repository = Get.find();
+  final AppDataController appDeta = Get.find();
   TextEditingController searchController = TextEditingController();
   RxString searchQuery = ''.obs;
   var page = 1.obs;

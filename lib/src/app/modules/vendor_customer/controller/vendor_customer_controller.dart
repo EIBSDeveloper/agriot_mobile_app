@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer_form_data.dart';
@@ -14,7 +15,7 @@ import '../../registration/view/screen/landpicker.dart';
 
 class VendorCustomerController extends GetxController {
   final VendorCustomerRepository _repository = VendorCustomerRepository();
-  // final AddressService _addressService = Get.find();
+  final AppDataController appDeta = Get.find();
   final RxInt selectedFilter = 0.obs;
   final RxList<VendorCustomer?> vendorCustomerList = <VendorCustomer>[].obs;
   final RxBool isLoading = false.obs;

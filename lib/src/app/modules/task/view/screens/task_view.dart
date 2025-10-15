@@ -36,19 +36,21 @@ class TaskView extends GetView<TaskController> {
                   child: TitleText("tasks".tr),
                 ),
                 const Spacer(),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Get.theme.primaryColor,
+                if (controller.appDeta.permission.value?.bestSchedule?.view !=
+                    0)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Get.theme.primaryColor,
+                    ),
+                    onPressed: () {
+                      Get.toNamed(Routes.schedules)?.then((reslut) {
+                        if (reslut != null) {
+                          controller.loadTasks();
+                        }
+                      });
+                    },
+                    child: Text("best_schedule".tr),
                   ),
-                  onPressed: () {
-                    Get.toNamed(Routes.schedules)?.then((reslut) {
-                      if (reslut != null) {
-                        controller.loadTasks();
-                      }
-                    });
-                  },
-                  child: Text("best_schedule".tr),
-                ),
               ],
             ),
           ),
@@ -134,12 +136,12 @@ class TaskView extends GetView<TaskController> {
           Obx(
             () => (!controller.isLoading.value && controller.lands.isEmpty)
                 ? EmptyLandCard(
-                  padding: EdgeInsets.all(0),
-                  view:
-                      (!controller.isLoading.value &&
-                      controller.lands.isEmpty),
-                  refresh: controller.fetchLands,
-                )
+                    padding: const EdgeInsets.all(0),
+                    view:
+                        (!controller.isLoading.value &&
+                        controller.lands.isEmpty),
+                    refresh: controller.fetchLands,
+                  )
                 : const SizedBox(),
           ),
 
@@ -203,6 +205,7 @@ class TaskView extends GetView<TaskController> {
                         _buildCalendarSection(),
                         _buildFilterSection(),
                         _buildTaskListSection(),
+                        const SizedBox(height: 60),
                       ],
                     ),
                   );
@@ -210,11 +213,14 @@ class TaskView extends GetView<TaskController> {
         ],
       ),
     ),
-    floatingActionButton: FloatingActionButton(
-      backgroundColor: Get.theme.primaryColor,
-      onPressed: () => controller.showAddTaskBottomSheet(),
-      child: const Icon(Icons.add),
-    ),
+    floatingActionButton:
+        (controller.appDeta.permission.value?.crop?.schedule != 0)
+        ? FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: () => controller.showAddTaskBottomSheet(),
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox(),
   );
 
   Widget _buildCalendarSection() => Card(

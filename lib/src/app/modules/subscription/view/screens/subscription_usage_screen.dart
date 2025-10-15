@@ -78,8 +78,8 @@ class SubscriptionUsageScreen extends StatelessWidget {
                         ),
                         _buildUsageItem(
                           'manager_limit'.tr,
-                          packageUsage.employeeCount,
                           packageUsage.employeeCountUsed,
+                          packageUsage.employeeCount,
                         ),
                       ],
                     ),

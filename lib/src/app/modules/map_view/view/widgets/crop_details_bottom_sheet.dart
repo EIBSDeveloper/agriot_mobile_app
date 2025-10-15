@@ -168,10 +168,7 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          "${"humidity_percentage".tr} ${controller.weatherData.value!.humidity
-                                .toString()}"
-                          
-                    
+                          "${"humidity_percentage".tr} ${controller.weatherData.value!.humidity.toString()}",
                         ),
                       ),
                     ],
@@ -180,23 +177,24 @@ class CropDetailsBottomSheet extends GetView<LandMapViewController> {
           ),
           const Divider(height: 1),
           const SizedBox(height: 8),
-          if (controller.cropDetails.value!.tasks.isNotEmpty)
+          if (controller.cropDetails.value!.tasks.isNotEmpty) ...[
             TitleText("today_task".tr),
-          const SizedBox(height: 8),
-          Obx(
-            () => Column(
-              children: [
-                ...controller.cropDetails.value!.tasks.map(
-                  (task) => TaskCard(
-                    task: task,
-                    refresh: () {
-                      controller.fetchLandsAndCropsDetails(crop.cropId!);
-                    },
+            const SizedBox(height: 8),
+            Obx(
+              () => Column(
+                children: [
+                  ...controller.cropDetails.value!.tasks.map(
+                    (task) => TaskCard(
+                      task: task,
+                      refresh: () {
+                        controller.fetchLandsAndCropsDetails(crop.cropId!);
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+          ],
           const SizedBox(height: 20),
         ],
       ),

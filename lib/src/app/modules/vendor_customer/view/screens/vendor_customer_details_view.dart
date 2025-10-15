@@ -30,14 +30,18 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
       appBar: CustomAppBar(
         title: item.name,
         actions: [
-          IconButton(
-            onPressed: () {
-              //controller.deleteDetails(item.id, item.type);
-              _showDeleteConfirmation(controller, item.id, item.type);
-            },
-            color: Get.theme.primaryColor,
-            icon: const Icon(Icons.delete),
-          ),
+          if ((item.type == 'vendor' &&
+                  controller.appDeta.permission.value?.vendor?.delete != 0) ||
+              (item.type == 'customer' &&
+                  controller.appDeta.permission.value?.customer?.delete != 0))
+            IconButton(
+              onPressed: () {
+                //controller.deleteDetails(item.id, item.type);
+                _showDeleteConfirmation(controller, item.id, item.type);
+              },
+              color: Get.theme.primaryColor,
+              icon: const Icon(Icons.delete),
+            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -49,7 +53,11 @@ class VendorCustomerDetailsView extends GetView<VendorCustomerController> {
             if (item.type == 'customer') _buildCustomerDetails(item),
             _buildCommonDetails(item),
             const SizedBox(height: 20),
-            _buildActionButtons(item),
+            if ((item.type == 'vendor' &&
+                    controller.appDeta.permission.value?.vendor?.edit != 0) ||
+                (item.type == 'customer' &&
+                    controller.appDeta.permission.value?.customer?.edit != 0))
+              _buildActionButtons(item),
           ],
         ),
       ),

@@ -14,12 +14,17 @@ class PayoutRepository {
   Future<List<PayoutModel>> fetchAdvanceList({
     int page = 1,
     String search = '',
+    String?managerParam
   }) async {
     final farmerId = appDeta.farmerId;
-
+    final isManager = appDeta.isManager.value;
+    final managerId = managerParam ?? appDeta.managerID.value;
+    String manager = isManager || managerParam != null
+        ? "&manager_id=$managerId"
+        : "";
     try {
       final response = await _httpService.get(
-        "/advances_list/$farmerId?page=$page&search=$search",
+        "/advances_list/$farmerId?page=$page$manager&search=$search",
       );
 
       if (response.statusCode == 200) {

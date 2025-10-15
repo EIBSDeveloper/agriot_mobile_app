@@ -38,13 +38,17 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         ],
       ),
     ),
-    floatingActionButton: FloatingActionButton(
-      backgroundColor: Get.theme.primaryColor,
-      onPressed: () {
-        Get.toNamed(Routes.addVendorCustomer);
-      },
-      child: const Icon(Icons.add),
-    ),
+    floatingActionButton:
+        (controller.appDeta.permission.value?.vendor?.add != 0 ||
+            controller.appDeta.permission.value?.customer?.add != 0)
+        ? FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: () {
+              Get.toNamed(Routes.addVendorCustomer);
+            },
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox(),
   );
 
   Widget _buildFilterRow() => Padding(
@@ -54,9 +58,12 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
         onTap: (index) {
           controller.selectedFilter.value = index;
           controller.fetchVendorCustomerList();
+
         },
         activePageIndex: controller.selectedFilter.value,
-        buttonsList: ["customer".tr, "vendor".tr],
+        buttonsList: [
+         if (controller.appDeta.permission.value?.customer?.list != 0)"customer".tr, 
+         if(controller.appDeta.permission.value?.vendor?.list != 0)"vendor".tr],
       ),
     ),
   );
@@ -65,7 +72,10 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
     elevation: 1,
     margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     child: ListTile(
-      title: Text(capitalizeFirstLetter(item.name), style: Get.textTheme.titleMedium),
+      title: Text(
+        capitalizeFirstLetter(item.name),
+        style: Get.textTheme.titleMedium,
+      ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,14 +84,9 @@ class VendorCustomerListView extends GetView<VendorCustomerController> {
           if (item.businessName != null && item.businessName != '')
             Text(item.businessName!),
           if (item.doorNo != null && item.doorNo != '')
-            Text(item.doorNo!,maxLines: 1,),
+            Text(item.doorNo!, maxLines: 1),
           if (item.market != null && item.market != '') Text(item.market!),
-          // if (item.inventoryType != null)
-          //   Text(
-          //     item.inventoryType!,
-          //     maxLines: 1,
-          //     overflow: TextOverflow.ellipsis,
-          //   ),
+    
         ],
       ),
       trailing: IconButton(

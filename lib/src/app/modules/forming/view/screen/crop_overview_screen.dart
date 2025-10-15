@@ -29,6 +29,7 @@ class CropOverviewScreen extends StatefulWidget {
 
 class _CropOverviewScreenState extends State<CropOverviewScreen> {
   final CropDetailsController controller = Get.find();
+
   final int landId = Get.arguments['landId'];
 
   final int cropId = Get.arguments['cropId'];
@@ -70,10 +71,13 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildCropInfoSection(),
+              
+              if (controller.appDeta.permission.value?.sales?.view != 0 &&controller.appDeta.permission.value?.expense?.view != 0)
               _buildStatisticsSection(overview),
               const SizedBox(height: 10),
               _buildGuidelinesSection(overview),
               const SizedBox(height: 10),
+              if (controller.appDeta.permission.value?.crop?.schedule != 0)
               _buildTasksSection(overview),
             ],
           ),
@@ -137,6 +141,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
                         Text("  ${controller.getDaysSincePlantation(details.plantationDate)} - days ",style: const TextStyle(fontSize: 12),)
                       ],
                     ),
+                    if (controller.appDeta.permission.value?.crop?.edit != 0)
                     InkWell(
                       onTap: () {
                         Get.toNamed(
@@ -212,6 +217,8 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
             children: [
               const TitleText('Crop Details'),
               const Spacer(),
+              
+              if (controller.appDeta.permission.value?.land?.location != 0)
               InkWell(
                 onTap: () {
                   Get.toNamed(

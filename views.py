@@ -12266,17 +12266,24 @@ def get_otp(request):
                 land_details = {"latitude": land.latitude, "longitude": land.longitude}
 
             has_my_crop = MyCrop.objects.filter(farmer=existing_farmer, status=0).exists()
-            has_details = all([
-                existing_farmer.name,
-                existing_farmer.phone or True,
-                existing_farmer.email or True,
-            ])
+            if(manager is None):
+                has_details = all([
+                    existing_farmer.name,
+                    existing_farmer.phone or True,
+                    existing_farmer.email or True,
+                ])
+            else:
+                 has_details = all([
+                    True,
+                    True,
+                    True,
+                ])
             # name_to_display = "" if existing_farmer.status == 7 else existing_farmer.name
 
             return Response({
                 "message": "Existing Farmer",
                 "user": False,
-                "details": has_details,
+                "details": has_details ,
                 "land": has_my_land,
                 "is_manager": manager!= None,
                 "manager_id": manager.id if manager else None,
@@ -39923,7 +39930,7 @@ def get_task_list_for_month_and_crop(request, id):
                 if task.my_crop and task.my_crop.crop and task.my_crop.land
                 else "No Crop Available"
             ),
-            "date":date_str,
+            "created_at":date_str,
             "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}')
             if task.my_crop and task.my_crop.crop and task.my_crop.crop.img else "",
             "activity_type": task.schedule_activity_type.name if task.schedule_activity_type else None,
@@ -41166,8 +41173,8 @@ def get_employees_attendance_list(request,):
         manager_id =request.query_params.get("manager_id")
         onlyUpdated =request.query_params.get("onlyUpdated")
         employees =None 
-        if farmer_id:
-            employees = Employee.objects.filter(farmer=farmer_id).select_related("employee_type", "work_type",)
+        if manager_id:
+            employees = Employee.objects.filter(farmer=manager_id).select_related("employee_type", "work_type",)
         elif farmer_id:
             employees = Employee.objects.filter(manager=manager_id).select_related("employee_type", "work_type",)
         else:
@@ -42510,10 +42517,10 @@ def get_employees_advances_list(request,farmer_id):
         manager_id =request.query_params.get("manager_id")
         onlyUpdated =request.query_params.get("onlyUpdated")
         employees =None 
-        if farmer_id:
-            employees = Employee.objects.filter(farmer=farmer_id).select_related("employee_type", "work_type",)
-        elif manager_id:
-            employees = Employee.objects.filter(manager=manager_id).select_related("employee_type", "work_type",)
+        if manager_id:
+            employees = Employee.objects.filter(farmer=manager_id).select_related("employee_type", "work_type",)
+        elif farmer_id:
+            employees = Employee.objects.filter(manager=farmer_id).select_related("employee_type", "work_type",)
         else:
             Response({"error": 'NO Details'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -42557,7 +42564,7 @@ def get_employees_advances_list(request,farmer_id):
                 "image": emp.image.url if emp.image else None,
                 "working_days": attendance_count if attendance_count else 0,
                 "paid_salary": employeePayouts.paid_salary if employeePayouts and employeePayouts.paid_salary else 0,
-                "Unpaid_salary": employeePayouts.unpaid_salary if employeePayouts and employeePayouts.unpaid_salary else 0,
+                "Unpaid_salary": employeePayouts.unpaid_salary if employeePayouts and employeePayouts.unpaid_salary else ((emp.salary if emp.salary else 0) * attendance_count),
             })
 
         

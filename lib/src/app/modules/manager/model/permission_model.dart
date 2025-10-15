@@ -1,3 +1,7 @@
+
+
+import '../../../service/utils/utils.dart';
+
 class PermissionItem {
   String name;
   int status;
@@ -32,20 +36,26 @@ class PermissionItem {
   // From API response
   factory PermissionItem.fromApi(String name, dynamic json) {
     Map<String, PermissionItem> childItems = {};
-
+    int status = 0;
     if (json is Map<String, dynamic>) {
       json.forEach((k, v) {
         childItems[k] = PermissionItem.fromApi(k, v);
+        if (v is int && v != 0) {
+          status = v;
+        }
       });
     }
 
     return PermissionItem(
-      name: name,
-      status: (json is int) ? json : 0,
+      name: capitalizeFirstLetter(name),
+      status: status != 0
+          ? status
+          : (json is int)
+          ? json
+          : 0,
       children: childItems,
     );
   }
-
 
   /// Convert PermissionItem to flat JSON for API
   Map<String, dynamic> toFlatJson() {

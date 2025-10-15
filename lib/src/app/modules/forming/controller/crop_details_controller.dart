@@ -11,11 +11,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../controller/app_controller.dart';
 import '../../task/model/task.dart';
 
 class CropDetailsController extends GetxController {
   final FormingRepository _repository = Get.find();
-
+  final AppDataController appDeta = Get.find();
   // Overview
   final Rx<CropOverview?> overview = Rx<CropOverview?>(null);
   final RxBool isOverviewLoading = false.obs;

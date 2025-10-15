@@ -65,6 +65,10 @@ class Attendancelistscreen extends GetView<AttendenceController> {
       ],
     ),
     floatingActionButton: Obx(() {
+      if (controller.appDeta.permission.value?.attendance?.add == 0) {
+        return const SizedBox();
+      }
+
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
       final selected = DateTime(

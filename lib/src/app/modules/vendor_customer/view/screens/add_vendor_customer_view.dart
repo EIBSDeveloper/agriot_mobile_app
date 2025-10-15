@@ -101,7 +101,9 @@ class _AddVendorCustomerViewState extends State<AddVendorCustomerView> {
             border: InputBorder.none,
           ),
           items: [
+            if(controller.appDeta.permission.value?.customer?.add != 0)
             DropdownMenuItem(value: 'customer', child: Text('customer'.tr)),
+            if(controller.appDeta.permission.value?.vendor?.add != 0)
             DropdownMenuItem(value: 'vendor', child: Text('vendor'.tr)),
           ],
           onChanged: (String? value) {

@@ -38,7 +38,7 @@ class AppDrawer extends StatelessWidget {
                 ),
               ),
 
-              if (appDeta.permission.value?.employee?.list != 0)
+              if (appDeta.permission.value?.employee?.view != 0)
                 _buildDrawerItem(
                   icon: Icons.people,
                   label: "employee_manager".tr,
@@ -47,7 +47,7 @@ class AppDrawer extends StatelessWidget {
                     Get.toNamed(Routes.employeeManager);
                   },
                 ),
-              if (appDeta.permission.value?.attendance?.list != 0)
+              if (appDeta.permission.value?.attendance?.view != 0)
                 _buildDrawerItem(
                   icon: Icons.fact_check,
                   label: "Attendance",
@@ -57,7 +57,7 @@ class AppDrawer extends StatelessWidget {
                     Get.toNamed(Routes.attendencelistscreen);
                   },
                 ),
-              if (appDeta.permission.value?.advance?.list != 0)
+              if (appDeta.permission.value?.advance?.add != 0)
                 _buildDrawerItem(
                   icon: Icons.payments,
                   label: "add_advance".tr,
@@ -66,7 +66,7 @@ class AppDrawer extends StatelessWidget {
                     Get.toNamed(Routes.updateEmployeePayouts);
                   },
                 ),
-              if (appDeta.permission.value?.advance?.list != 0)
+              if (appDeta.permission.value?.payouts?.list != 0)
                 _buildDrawerItem(
                   icon: Icons.account_balance_wallet,
                   label: "Employee Payouts List",
@@ -77,7 +77,7 @@ class AppDrawer extends StatelessWidget {
                 ),
 
               const Divider(),
-              if (appDeta.permission.value?.payouts?.list != 0)
+               if (appDeta.permission.value?.expense?.view != 0||appDeta.permission.value?.sales?.view != 0)
                 _buildDrawerItem(
                   icon: Icons.account_balance_wallet,
                   label: "My Outstanding",
@@ -86,7 +86,7 @@ class AppDrawer extends StatelessWidget {
                     Get.to(const PayablesReceivablesPage());
                   },
                 ),
-              if (appDeta.permission.value?.vendor?.list != 0)
+              if (appDeta.permission.value?.vendor?.view != 0||appDeta.permission.value?.customer?.view != 0)
                 _buildDrawerItem(
                   icon: Icons.contacts,
                   label: "My Contacts",
@@ -105,6 +105,7 @@ class AppDrawer extends StatelessWidget {
               //   },
               // ),
               // const Divider(),
+              
               _buildDrawerItem(
                 icon: Icons.store,
                 label: "Near me",

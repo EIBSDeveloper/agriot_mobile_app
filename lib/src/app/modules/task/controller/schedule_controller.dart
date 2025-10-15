@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 
 class ScheduleController extends GetxController {
   final ScheduleRepository _repository = ScheduleRepository();
-  final AppDataController _appDataController = Get.find();
+  final AppDataController appDeta = Get.find();
   RxList<ScheduleLand> lands = <ScheduleLand>[].obs;
   Rxn<ScheduleLand> selectedLand = Rxn<ScheduleLand>();
   Rxn<ScheduleCrop> selectedCrop = Rxn<ScheduleCrop>();
@@ -80,7 +80,7 @@ class ScheduleController extends GetxController {
       return;
     }
 
-    final farmerId = _appDataController.farmerId.value;
+    final farmerId = appDeta.farmerId.value;
     try {
       isLoading(true);
       final taskRequest = TaskRequest(

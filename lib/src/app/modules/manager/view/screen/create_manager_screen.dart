@@ -33,7 +33,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
 
             /// Role Dropdown
             Obx(
-              () => controller.id.value == 0
+              () => controller.appDeta.permission.value?.users?.add != 0 &&controller.id.value == 0 
                   ? Row(
                       children: [
                         Expanded(
@@ -61,6 +61,7 @@ class CreateManagerScreen extends GetView<ManagerController> {
                             ),
                           ),
                         ),
+                        if(controller.appDeta.permission.value?.role?.add != 0 )
                         Card(
                           color: Get.theme.primaryColor,
                           child: IconButton(
@@ -578,7 +579,7 @@ class AddRole extends GetView<ManagerController> {
       borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
     ),
     child: Form(
-      key: controller.RoleformKey,
+      key: controller.roleformKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -610,7 +611,7 @@ class AddRole extends GetView<ManagerController> {
               onPressed: controller.isLoading.value
                   ? null
                   : () {
-                      if (!controller.RoleformKey.currentState!.validate()) {
+                      if (!controller.roleformKey.currentState!.validate()) {
                         return;
                       }
                       controller.addRole();

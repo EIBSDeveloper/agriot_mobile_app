@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/dashboad/model/finance_data.dart';
 import 'package:argiot/src/app/modules/dashboad/model/land_v_s_crop_model.dart';
 import 'package:argiot/src/app/modules/dashboad/model/market_price.dart';
@@ -16,6 +17,7 @@ import '../repostory/dashboard_repository.dart';
 
 class DashboardController extends GetxController {
   final DashboardRepository _repository = Get.find();
+  final AppDataController appDeta = Get.find();
   final UserLimitController userLimit = Get.find();
   var selectedLand = Land(id: 0, name: '').obs;
   var lands = <Land>[].obs;

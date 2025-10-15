@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/task/model/task.dart';
 import 'package:argiot/src/app/routes/app_routes.dart';
 import 'package:argiot/src/app/service/utils/utils.dart';
@@ -29,6 +30,7 @@ class TaskCard extends StatefulWidget {
 class _TaskCardState extends State<TaskCard> {
   late Task task;
   final TaskRepository _taskRepository = TaskRepository();
+   AppDataController appDeta = Get.find();
 
   final statusList = TaskTypes.values
       .whereMap(
@@ -132,6 +134,7 @@ class _TaskCardState extends State<TaskCard> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          if(appDeta.permission.value?.schedule?.edit != 0)
           Expanded(
             child: InputCardStyle(
               padding: const EdgeInsets.symmetric(horizontal: 8),

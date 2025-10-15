@@ -23,6 +23,7 @@ import '../view/widget/add_task.dart';
 
 class TaskController extends GetxController {
   final TaskRepository _repository = TaskRepository();
+  final AppDataController appDeta = Get.find();
   final RxList<TaskGroup> taskGroups = <TaskGroup>[].obs;
   final Rx<Land> selectedLand = Land(id: 0, name: '').obs;
   final Rx<CropModel> selectedCropType = CropModel(id: 0, name: '').obs;

@@ -1,3 +1,4 @@
+import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/inventory/repostory/inventory_repository.dart';
 import 'package:argiot/src/app/service/utils/pop_messages.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../model/inventory_item.dart';
 class InventoryController extends GetxController {
   final InventoryRepository _repository = InventoryRepository();
 
+AppDataController appDeta =Get.find();
   final Rx<List<InventoryType>?> inventory = Rx<List<InventoryType>?>(null);
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
@@ -40,6 +42,15 @@ class InventoryController extends GetxController {
         loadInventory();
       }
     });
+  }  bool hasConsumption() {
+    if (appDeta.permission.value == null) return true;
+    return (appDeta.permission.value?.fuel?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.fertilizer?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.pesticides?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.vehicle?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.machinery?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.tools?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.seeds?.consumption ?? 0) != 0;
   }
 
   void navigateToCategoryDetail( int id, {int tab = 0}) {

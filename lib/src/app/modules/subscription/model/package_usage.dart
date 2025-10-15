@@ -7,7 +7,6 @@ class PackageUsage {
   final int cropCountUsed;
   final int employeeCount;
   final int employeeCountUsed;
-  final bool isWidget;
 
   PackageUsage({
     required this.id,
@@ -18,7 +17,6 @@ class PackageUsage {
     required this.cropCountUsed,
     required this.employeeCount,
     required this.employeeCountUsed,
-    required this.isWidget,
   });
 
   factory PackageUsage.fromJson(Map<String, dynamic> json) => PackageUsage(
@@ -30,7 +28,7 @@ class PackageUsage {
       cropCountUsed: json['crop_count_used'] ?? 0,
       employeeCount: json['employee_count'] ?? 0,
       employeeCountUsed: json['employee_count_used'] ?? 0,
-      isWidget: json['is_widget'] ?? false,
+
     );
 
   // Balance Getters

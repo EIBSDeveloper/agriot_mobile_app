@@ -108,7 +108,13 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               _buildDetailItem('date'.tr, task.startDate),
               _buildDetailItem('description'.tr, task.description),
               _buildDetailItem('comment'.tr, task.comment),
-              _buildStatus('status'.tr, isEditable: isEditable),
+
+              _buildStatus(
+                'status'.tr,
+                isEditable:
+                    (controller.appDeta.permission.value?.schedule?.edit != 0 &&
+                    isEditable),
+              ),
 
               const SizedBox(height: 24),
               _buildActionButtons(),
@@ -132,7 +138,8 @@ class TaskDetailView extends GetView<TaskDetailsController> {
       return Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (!isUpdatable)
+          if (controller.appDeta.permission.value?.schedule?.edit != 0 &&
+              !isUpdatable)
             FloatingActionButton(
               heroTag: "commentBtn",
               backgroundColor: Get.theme.primaryColor,
@@ -140,7 +147,9 @@ class TaskDetailView extends GetView<TaskDetailsController> {
               child: const Icon(Icons.message),
             ),
           const SizedBox(height: 10),
-          if (!isUpdatable)
+
+          if (controller.appDeta.permission.value?.schedule?.edit != 0 &&
+              !isUpdatable)
             FloatingActionButton(
               heroTag: "editBtn",
               backgroundColor: Get.theme.primaryColor,

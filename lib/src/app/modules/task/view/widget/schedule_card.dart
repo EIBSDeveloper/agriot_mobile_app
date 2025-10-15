@@ -25,7 +25,7 @@ class ScheduleCard extends StatelessWidget {
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: MyNetworkImage(
-           schedule.cropImage,
+          schedule.cropImage,
           width: 50,
           height: 50,
           fit: BoxFit.cover,
@@ -37,28 +37,28 @@ class ScheduleCard extends StatelessWidget {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
-      trailing: Card(
-        color: Get.theme.primaryColor,
-        child: IconButton(
-          color: Colors.white,
-          icon: const Icon(Icons.add),
-          onPressed: () async {
-            controller.setParameters(
-              lId: schedule.cropId,
-              cId: schedule.cropId,
-              sId: schedule.id,
-            );
+      trailing: controller.appDeta.permission.value?.schedule?.add != 0
+          ? Card(
+              color: Get.theme.primaryColor,
+              child: IconButton(
+                color: Colors.white,
+                icon: const Icon(Icons.add),
+                onPressed: () async {
+                  controller.setParameters(
+                    lId: schedule.cropId,
+                    cId: schedule.cropId,
+                    sId: schedule.id,
+                  );
 
-            // Delay execution until after the first build
-
-            await controller.fetchScheduleDetails();
-            controller.addScheduleBottomSheet();
-          },
-        ),
-      ),
+                  await controller.fetchScheduleDetails();
+                  controller.addScheduleBottomSheet();
+                },
+              ),
+            )
+          : const SizedBox(),
       onTap: () {
         Get.toNamed(
-   Routes.scheduleDeatils,
+          Routes.scheduleDeatils,
           arguments: {
             'landId': schedule.cropId,
             'cropId': schedule.cropId,

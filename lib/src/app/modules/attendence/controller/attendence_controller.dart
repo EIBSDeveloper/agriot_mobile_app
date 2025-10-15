@@ -10,6 +10,7 @@ final AppDataController appDeta = Get.put(AppDataController());
 
 class AttendenceController extends GetxController {
   final AttendanceRepository repository = Get.find();
+  final AppDataController appDeta = Get.find();
   TextEditingController searchController = TextEditingController();
   RxString searchQuery = ''.obs;
   var page = 1.obs;

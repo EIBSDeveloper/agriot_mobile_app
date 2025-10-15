@@ -14,58 +14,63 @@ class EmployeeManagerView extends GetView<EmployeeManagerListController> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: CustomAppBar(title: 'employee_manager'.tr),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          controller.loadInitialData();
-        },
-        child: Column(
-          children: [
-            // Filter Section
-            FilterSection(controller: controller),
+    appBar: CustomAppBar(title: 'employee_manager'.tr),
+    body: RefreshIndicator(
+      onRefresh: () async {
+        controller.loadInitialData();
+      },
+      child: Column(
+        children: [
+          // Filter Section
+          FilterSection(controller: controller),
 
-            Expanded(
-              child: Obx(() {
-                if (controller.filteredGroups.isEmpty &&
-                    !controller.isLoading.value) {
-                  return Center(child: Text('no_users_found'.tr));
-                }
+          Expanded(
+            child: Obx(() {
+              if (controller.filteredGroups.isEmpty &&
+                  !controller.isLoading.value) {
+                return Center(child: Text('no_users_found'.tr));
+              }
 
-                return ListView.builder(
-                  itemCount:
-                      controller.filteredGroups.length +
-                      (controller.hasMoreData.value ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    // Load more indicator
-                    if (index == controller.filteredGroups.length) {
-                      return controller.isLoading.value
-                          ? const Padding(
-                              padding: EdgeInsets.all(100.0),
-                              child: Loading(),
-                            )
-                          : const SizedBox.shrink();
-                    }
+              return ListView.builder(
+                itemCount:
+                    controller.filteredGroups.length +
+                    (controller.hasMoreData.value ? 1 : 0),
+                itemBuilder: (context, index) {
+                  // Load more indicator
+                  if (index == controller.filteredGroups.length) {
+                    return controller.isLoading.value
+                        ? const Padding(
+                            padding: EdgeInsets.all(100.0),
+                            child: Loading(),
+                          )
+                        : const SizedBox.shrink();
+                  }
 
-                    return ManagerEmployeeGroupItem(
-                      group: controller.filteredGroups[index],
-                      controller: controller,
-                      showEmployees: controller.selectedRole.value != 'Manager',
-                    );
-                  },
-                );
-              }),
-            ),
-          ],
-        ),
+                  return ManagerEmployeeGroupItem(
+                    group: controller.filteredGroups[index],
+                    controller: controller,
+                    showEmployees: controller.selectedRole.value != 'Manager',
+                  );
+                },
+              );
+            }),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Get.theme.primaryColor,
-        onPressed: () {
-          Get.toNamed(Routes.employeeAdd)?.then((result) {
-            controller.loadInitialData();
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+    ),
+
+    floatingActionButton:
+        (controller.appDeta.permission.value?.employee?.add != 0 ||
+            controller.appDeta.permission.value?.users?.add != 0)
+        ? FloatingActionButton(
+            backgroundColor: Get.theme.primaryColor,
+            onPressed: () {
+              Get.toNamed(Routes.employeeAdd)?.then((result) {
+                controller.loadInitialData();
+              });
+            },
+            child: const Icon(Icons.add),
+          )
+        : const SizedBox(),
+  );
 }

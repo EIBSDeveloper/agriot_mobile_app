@@ -14,10 +14,10 @@ class PayoutCard extends GetView<PayoutAddController> {
     final pay = controller.advancelist[index];
 
     // Calculated payout (recompute when deduction changes)
-    int calculatedPayout() {
-      final deduction = pay.deductionAdvance ?? 0;
-      return (pay.paidSalary - deduction).clamp(0, double.infinity).toInt();
-    }
+    // int calculatedPayout() {
+    //   final deduction = pay.deductionAdvance ?? 0;
+    //   return (pay.paidSalary - deduction).clamp(0, double.infinity).toInt();
+    // }
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

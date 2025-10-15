@@ -15,14 +15,22 @@ class AttendanceRepository {
     required String date,
     int page = 1,
     String search = '',
-    bool? onlyUpdated
+    bool? onlyUpdated,
+    String? managerParam,
   }) async {
     final farmerId = appDeta.farmerId;
 
-      String key = onlyUpdated != null && onlyUpdated== true ?"&onlyUpdated=True":'';
+    String key = onlyUpdated != null && onlyUpdated == true
+        ? "&onlyUpdated=True"
+        : '';
+    final isManager = appDeta.isManager.value;
+    final managerId = managerParam ?? appDeta.managerID.value;
+    String manager = isManager || managerParam != null
+        ? "&manager_id=$managerId"
+        : "";
     try {
       final response = await _httpService.get(
-        "/attendance_list?date=$date&farmer_id=$farmerId&page=$page$key&search=$search",
+        "/attendance_list?date=$date&farmer_id=$farmerId&page=$page$key$manager&search=$search",
       );
 
       if (response.statusCode == 200) {

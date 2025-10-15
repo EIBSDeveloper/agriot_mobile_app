@@ -10,27 +10,38 @@ import '../../inventory/view/inventory_overview.dart';
 import '../../task/view/screens/task_view.dart';
 
 class BottomBarContoller extends GetxController {
-  final AppDataController appdata = Get.find();
+  final AppDataController appDeta = Get.find();
 
   final RxInt selectedIndex = 0.obs;
   late final PageController pageController;
 
+  bool hasConsumption() {
+    if (appDeta.permission.value == null) return true;
+    return (appDeta.permission.value?.fuel?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.fertilizer?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.pesticides?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.vehicle?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.machinery?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.tools?.consumption ?? 0) != 0 ||
+        (appDeta.permission.value?.seeds?.consumption ?? 0) != 0;
+  }
+
   RxList<Widget> get pages {
     final list = <Widget>[];
-    if (appdata.permission.value?.dashboard?.view != 0) {
+    if (appDeta.permission.value?.dashboard?.view != 0) {
       list.add(const DashboardView());
     }
-    if (appdata.permission.value?.land?.view != 0) {
+    if (appDeta.permission.value?.land?.view != 0) {
       list.add(const FormingView());
     }
-    if (appdata.permission.value?.expense?.view != 0) {
+    if (appDeta.permission.value?.expense?.view != 0) {
       list.add(const ExpenseOverviewScreen());
     }
 
-    // if (appdata.permission.value?.fuel?.view != 0) {
-    list.add(const InventoryOverview());
-    // }
-    if (appdata.permission.value?.schedule?.view != 0) {
+    if (hasConsumption()) {
+      list.add(const InventoryOverview());
+    }
+    if (appDeta.permission.value?.schedule?.view != 0) {
       list.add(const TaskView());
     }
     // list.addAll([
@@ -44,19 +55,19 @@ class BottomBarContoller extends GetxController {
 
   List<String> get icons {
     final list = <String>[];
-    if (appdata.permission.value?.dashboard?.view != 0) {
+    if (appDeta.permission.value?.dashboard?.view != 0) {
       list.add(AppIcons.homeSvg);
     }
-    if (appdata.permission.value?.land?.view != 0) {
+    if (appDeta.permission.value?.land?.view != 0) {
       list.add(AppIcons.treeSapling);
     }
-    if (appdata.permission.value?.expense?.view != 0) {
+    if (appDeta.permission.value?.expense?.view != 0) {
       list.add(AppIcons.calculatorMoney);
     }
-    // if (appdata.permission.value?.dashboard?.view != 0) {
+    if (hasConsumption()) {
       list.add(AppIcons.farm);
-    // }
-    if (appdata.permission.value?.schedule?.view != 0) {
+    }
+    if (appDeta.permission.value?.schedule?.view != 0) {
       list.add(AppIcons.toDoAlt);
     }
     // list.addAll([

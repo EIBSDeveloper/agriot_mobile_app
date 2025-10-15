@@ -87,7 +87,7 @@ class PayablesList extends StatelessWidget {
 
   Widget _tile(String title, String subtitle, double amount, bool isCredit) =>
       Card(
-       margin: EdgeInsets.zero,
+       margin: const EdgeInsets.symmetric(vertical: 5),
        
         child: Padding(
           padding:   const EdgeInsets.symmetric(horizontal: 10),

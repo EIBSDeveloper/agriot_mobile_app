@@ -91,14 +91,17 @@ class LandViewPage extends GetView<LandController> {
                 ),
               ],
               gap,
-            Obx(()=> SearchableDropdown<AppDropdownItem>(
-                label: 'Soil Type ',
-                items: controller.soilTypes,
-                selectedItem: controller.selectedSoilType.value,
-                onChanged: (value) => controller.selectedSoilType.value = value,
-                // validator: (value) => value == null ? 'Required field' : null,
-                displayItem: (value) => value.name.toString(),
-              )),
+              Obx(
+                () => SearchableDropdown<AppDropdownItem>(
+                  label: 'Soil Type ',
+                  items: controller.soilTypes,
+                  selectedItem: controller.selectedSoilType.value,
+                  onChanged: (value) =>
+                      controller.selectedSoilType.value = value,
+                  // validator: (value) => value == null ? 'Required field' : null,
+                  displayItem: (value) => value.name.toString(),
+                ),
+              ),
               gap,
               _buildTextField(
                 minLines: 1,
@@ -213,16 +216,21 @@ class LandViewPage extends GetView<LandController> {
             ),
           );
         }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: controller.surveyItems.length,
-          itemBuilder: (context, index) => SurveyItemWidget(
-            index: index,
-            item: controller.surveyItems[index],
-            areaUnits: controller.landUnits,
-            onRemove: () => controller.removeSurveyItem(index),
-            onChanged: (item) => controller.surveyItems[index] = item,
+
+        return Column(
+          children: List.generate(
+            controller.surveyItems.length,
+            (index) => SurveyItemWidget(
+              key: ValueKey(controller.surveyItems[index].surveyNo),
+              index: index,
+              item: controller.surveyItems[index],
+              areaUnits: controller.landUnits,
+              onRemove: () {
+                controller.surveyItems.removeAt(index);
+                controller.surveyItems.refresh();
+              },
+              onChanged: (item) => controller.surveyItems[index] = item,
+            ),
           ),
         );
       }),

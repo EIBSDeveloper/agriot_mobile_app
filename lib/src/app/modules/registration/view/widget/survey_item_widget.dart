@@ -11,7 +11,7 @@ class SurveyItemWidget extends StatelessWidget {
   final SurveyItem item;
   final List<AppDropdownItem> areaUnits;
   final VoidCallback onRemove;
-  final void Function(SurveyItem) onChanged; // Updated type
+  final void Function(SurveyItem) onChanged; 
 
   const SurveyItemWidget({
     super.key,
@@ -19,7 +19,7 @@ class SurveyItemWidget extends StatelessWidget {
     required this.item,
     required this.areaUnits,
     required this.onRemove,
-    required this.onChanged, // Updated parameter
+    required this.onChanged, 
   });
 
   @override

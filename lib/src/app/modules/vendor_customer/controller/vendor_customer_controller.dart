@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:argiot/src/app/controller/app_controller.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/market.dart';
 import 'package:argiot/src/app/modules/vendor_customer/model/vendor_customer.dart';
@@ -196,13 +198,12 @@ class VendorCustomerController extends GetxController {
         source: ImageSource.gallery,
       );
       if (pickedFile != null) {
-        isImageUploading.value = true;
-        imagePath.value = pickedFile.path;
+        imagePath(pickedFile.path);
+        final bytes = await pickedFile.readAsBytes();
+        base64Image(base64Encode(bytes));
       }
     } catch (e) {
       showError('Failed to pick image');
-    } finally {
-      isImageUploading.value = false;
     }
   }
 

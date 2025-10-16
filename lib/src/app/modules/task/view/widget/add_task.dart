@@ -42,7 +42,7 @@ class AddTask extends GetView<TaskController> {
                 selectedItem: controller.selectedCropType.value,
                 onChanged: (land) => controller.changeCrop(land!),
                 label: "${'crop'.tr} *",
-                
+                validator: (value) => value?.id == 0 ? 'Required field' : null,
                 // disable: isEditing,
               ),
             ),
@@ -53,6 +53,7 @@ class AddTask extends GetView<TaskController> {
                 selectedItem: controller.selectedActivityType.value,
                 onChanged: (land) => controller.changeActivity(land!),
                 label: "${'activity_type'.tr} *",
+                validator: (value) => value?.id == 0 ? 'Required field' : null,
               ),
             ),
             const SizedBox(height: 8),
@@ -325,6 +326,9 @@ class AddTask extends GetView<TaskController> {
                 onPressed: controller.isLoading.value
                     ? null
                     : () {
+                        if (!controller.formKey.currentState!.validate()) {
+                          return;
+                        }
                         if (controller.isRecurring.value &&
                             controller.recurrenceType.value != 2) {
                           controller.endDate.value =

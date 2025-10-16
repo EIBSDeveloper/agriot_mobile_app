@@ -11,7 +11,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
   final String? labelText;
   final EdgeInsetsGeometry? padding;
   final InputBorder? border;
-
+final String? Function(T?)? validator;
   const MyDropdown({
     super.key,
 
@@ -23,6 +23,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
     this.labelText,
     this.padding,
     this.border,
+    this.validator,
   });
 
   @override
@@ -52,7 +53,7 @@ class MyDropdown<T extends NamedItem> extends StatelessWidget {
       style: Theme.of(
         context,
       ).textTheme.titleMedium?.copyWith(color: disabled ? Colors.grey : null),
-      validator: (value) {
+      validator:validator?? (value) {
         if (value == null) {
           return 'Please select a $label';
         }

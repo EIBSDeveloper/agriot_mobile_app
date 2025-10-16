@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,9 +5,13 @@ import '../../../../routes/app_routes.dart';
 import '../../../../service/utils/enums.dart';
 import '../../model/add_document_model.dart';
 import 'document_item_widget.dart';
+
 class DocumentsSection extends StatelessWidget {
-  const 
-  DocumentsSection({super.key, required this.documentItems,required this.type});
+  const DocumentsSection({
+    super.key,
+    required this.documentItems,
+    required this.type,
+  });
 
   final RxList<AddDocumentModel> documentItems;
   final DocTypes type;
@@ -30,13 +33,13 @@ class DocumentsSection extends StatelessWidget {
         }
         return Wrap(
           spacing: 10,
+          key: key,
           runSpacing: 10,
           children: documentItems
               .asMap()
               .entries
               .map(
                 (entry) => DocumentItemWidget(
-                  key: ValueKey(entry.key),
                   index: entry.key,
                   document: entry.value,
                   onDelete: () => documentItems.removeAt(entry.key),
@@ -61,10 +64,9 @@ class DocumentsSection extends StatelessWidget {
           color: Colors.white,
           icon: const Icon(Icons.add),
           onPressed: () {
-            Get.toNamed(
-              Routes.addDocument,
-              arguments: {"type": type},
-            )?.then((result) {
+            Get.toNamed(Routes.addDocument, arguments: {"type": type})?.then((
+              result,
+            ) {
               if (result != null && result is AddDocumentModel) {
                 documentItems.add(result);
               }

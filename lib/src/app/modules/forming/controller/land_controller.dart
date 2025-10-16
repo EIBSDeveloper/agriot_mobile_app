@@ -172,10 +172,23 @@ class LandController extends GetxController {
         ),
       );
     }
+    var docList = <int, List>{};
 
     for (var document in landDetail.value.documents) {
-      // documentItems.add(AddDocumentModel(fileType: document.));
+      final categoryName = document.documentCategory?.id;
+      if (categoryName == null) continue;
+
+      docList.putIfAbsent(categoryName, () => []);
+      docList[categoryName]!.add(document.uploadDocument);
     }
+
+    for (var entry in docList.entries) {
+      documentItems.add(
+        AddDocumentModel(fileType: entry.key, documents: entry.value),
+      );
+    }
+  
+    //
   }
 
   Future<void> loadLandUnits() async {
@@ -221,10 +234,6 @@ class LandController extends GetxController {
     surveyItems.add(
       SurveyItem(surveyNo: '', measurement: '', unit: landUnits.firstOrNull),
     );
-  }
-
-  void removeSurveyItem(int index) {
-    surveyItems.removeAt(index);
   }
 
   void addDocumentItem() {

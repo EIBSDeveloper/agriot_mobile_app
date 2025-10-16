@@ -80,7 +80,7 @@ class LandDetail {
   final int status;
   final int lStatus;
   final List<SurveyDetail> surveyDetails;
-  final List<dynamic> documents;
+  final List<ApiDocuments> documents;
 
   LandDetail({
     required this.id,
@@ -128,7 +128,78 @@ class LandDetail {
           (json['survey_details'] as List<dynamic>?)
               ?.map((detail) => SurveyDetail.fromJson(detail))
               .toList() ??
+          [], 
+          documents:
+          (json['documents'] as List<dynamic>?)
+              ?.map((detail) => ApiDocuments.fromJson(detail))
+              .toList() ??
           [],
-      documents: json['documents'] ?? [],
+    
     );
+}
+
+class ApiDocuments {
+    final int? id;
+    final DocumentCate? documentCategory;
+    final String? uploadDocument;
+
+    ApiDocuments({
+        this.id,
+        this.documentCategory,
+        this.uploadDocument,
+    });
+
+    ApiDocuments copyWith({
+        int? id,
+        DocumentCate? documentCategory,
+        String? uploadDocument,
+    }) => 
+        ApiDocuments(
+            id: id ?? this.id,
+            documentCategory: documentCategory ?? this.documentCategory,
+            uploadDocument: uploadDocument ?? this.uploadDocument,
+        );
+
+    factory ApiDocuments.fromJson(Map<String, dynamic> json) => ApiDocuments(
+        id: json["id"],
+        documentCategory: json["document_category"] == null ? null : DocumentCate.fromJson(json["document_category"]),
+        uploadDocument: json["upload_document"],
+    );
+
+    // Map<String, dynamic> toJson() => {
+    //     "id": id,
+    //     "document_category": documentCategory?.toJson(),
+    //     "upload_document": uploadDocument,
+    // };
+}
+
+
+
+class DocumentCate {
+    final int? id;
+    final String? name;
+
+    DocumentCate({
+        this.id,
+        this.name,
+    });
+
+    DocumentCate copyWith({
+        int? id,
+        String? name,
+    }) => 
+        DocumentCate(
+            id: id ?? this.id,
+            name: name ?? this.name,
+        );
+
+    factory DocumentCate.fromJson(Map<String, dynamic> json) => DocumentCate(
+        id: json["id"],
+        name: json["name"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+    };
 }

@@ -2397,7 +2397,7 @@ def get_land_with_crop_list(request, id):
                     "id": crop.id,
                     "name": crop.crop.name,
                     "crop_id": crop.crop.id,
-                    "crop_image": '/assets' + crop.crop.img.url if crop.crop.img else '/assets/images/product_img/crop_default.png',
+                    "crop_image":  crop.crop.img.url if crop.crop.img else '/assets/images/product_img/crop_default.png',
                     "farmer_id": crop.farmer.id,  
                     "farmer_name": crop.farmer.name,  
                     "crop_type_id": crop.crop_type.id,  
@@ -3277,35 +3277,26 @@ def manage_vendor(request, id=None):
     if missing_fields:
         return Response({"detail": f"Missing fields: {', '.join(missing_fields)}"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Vendor Image Handling
+       # --- Handle base64 image ---
     img = data.get('img', None)
-    if img:
-        print("Processing vendor image...")
+    if img and isinstance(img, str):
+        try:
+            img = fix_base64_padding(img.strip())
+            img_data = base64.b64decode(img.split(';base64,')[1])
 
-        if isinstance(img, str):
-            try:
-                img = img.strip()
-                if img.startswith('data:image'):
-                    img = img.split(';base64,')[1]
+            image = Image.open(io.BytesIO(img_data))
+            image.verify()
 
-                img_data = base64.b64decode(img)
-                image = Image.open(BytesIO(img_data))
-                image.verify()
-
-                image_name = f'vendor_image_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
-                image_file = ContentFile(img_data, name=image_name)
-
-                # Override vendor_img in request data with processed file
-                request.data._mutable = True  # if request.data is QueryDict, make it mutable
-                request.data['img'] = image_file
-                request.data._mutable = False
-                print(f"Vendor base64 image processed: {image_name}")
-            except Exception as e:
-                return Response({"error": f"Invalid base64 image format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-        elif 'img' in request.FILES:
-            print("Regular vendor image file upload detected.")
-
+            image_name = f'customer_image_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
+            image_file = InMemoryUploadedFile(io.BytesIO(img_data), None, image_name, 'image/png', len(img_data), None)
+            data['customer_img'] = image_file
+        except Exception as e:
+            return Response({"error": f"Invalid base64 image format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+    elif 'img' in request.FILES:
+        pass 
+    else:
+        pass  
+    
     # Create Vendor
     vendor = MyVendor(
         farmer=farmer,
@@ -5223,7 +5214,7 @@ def get_task_detail(request, id):
         return Response({"error": "Task not found."}, status=status.HTTP_404_NOT_FOUND)
     crop = task.my_crop
     if crop and crop.crop.img:
-        crop_image_url = '/assets' + crop.crop.img.url
+        crop_image_url = crop.crop.img.url
     else:
         crop_image_url = '/assets/images/product_img/crop_default.png'
     task_serializer = MyScheduleDetailsSerializer(task)
@@ -8349,7 +8340,7 @@ def get_customers_as_vendors(request, farmer_id):
             "is_credit": customer.is_credit,
             "opening_balance": customer.opening_balance,
             # "customer_img": customer.customer_img.url if customer.customer_img else None,
-            "customer_img": request.build_absolute_uri(f'/SuperAdmin{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+            "customer_img": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
             "description": customer.description,
             "status": customer.status,
             "created_at": customer.created_at,
@@ -8546,7 +8537,7 @@ def get_customer_vendor_details(request, farmer_id):
             "tax_no": customer.tax_no,
             "is_credit": customer.is_credit,
             "opening_balance": customer.opening_balance,
-            "customer_img": request.build_absolute_uri(f'/SuperAdmin{customer.customer_img.url}' if customer.customer_img else "") if customer.customer_img else "",
+            "customer_img": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else "") if customer.customer_img else "",
             "description": customer.get_translated_value("description", language_code) if customer else "",
             "status": customer.status,
             "created_at": customer.created_at,
@@ -8794,7 +8785,7 @@ def get_customers_as_vendors_details(request, farmer_id):
             "is_credit": customer.is_credit,
             "opening_balance": customer.opening_balance,
             # If customer_img is available, build absolute URL
-            "customer_img": request.build_absolute_uri(f'/SuperAdmin{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+            "customer_img": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
             "description": customer.description,
             "status": customer.status,
             "created_at": customer.created_at,
@@ -9083,7 +9074,7 @@ def get_customer_list(request, farmer_id):
             'is_credit': customer.is_credit,
             'opening_balance': customer.opening_balance,
             # 'customer_img': customer.customer_img.url if customer.customer_img else "",  
-            "customer_img": request.build_absolute_uri(f'/SuperAdmin{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+            "customer_img": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
             # 'description': customer.description,
             'description': customer.get_translated_value("description", language_code) if customer else "",
             'is_customer_is_vendor': customer.is_customer_is_vendor,
@@ -9143,7 +9134,7 @@ def get_customer_details(request, farmer_id):
         'is_credit': customer.is_credit,
         'opening_balance': customer.opening_balance,
         # 'customer_img': customer.customer_img.url if customer.customer_img else "",
-        "customer_img": request.build_absolute_uri(f'/SuperAdmin{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+        "customer_img": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
         # 'description': customer.description,
         'description': customer.get_translated_value("description", language_code) if customer else "",
         'status': customer.status, 
@@ -12659,7 +12650,7 @@ def get_land_with_survey_details(request, farmer_id=None, land_id=None):
         crop_list = []
         for crop in crops:
             crop_img_url = (
-                request.build_absolute_uri('/SuperAdmin' + crop.crop.img.url)
+                request.build_absolute_uri(crop.crop.img.url)
                 if crop.crop and getattr(crop.crop, 'img', None)
                 else request.build_absolute_uri('/assets/images/product_img/crop_default.png')
             )
@@ -13438,7 +13429,7 @@ def get_task_list(request, id):
             "activity_type": task.schedule_activity_type.name if task.schedule_activity_type else None,
             "schedule_status": task.schedule_status.id if task.schedule_status else None,
             "crop_image": (
-                request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}')
+                request.build_absolute_uri(task.my_crop.crop.img.url)
                 if task.my_crop and task.my_crop.crop and task.my_crop.crop.img else ""
             ),
         }
@@ -22956,7 +22947,7 @@ def farmer_land_and_crop_details(request, farmer_id):
                 crop_data.append({
                     "id": crop_instance.id,
                     "name": crop_instance.crop.get_translated_value("name", language_code) if crop_instance.crop and language_code == 'ta' else (crop_instance.crop.name if crop_instance.crop else None),
-                    "img": request.build_absolute_uri(f'/SuperAdmin{crop_instance.crop.img.url}' if crop_instance.crop.img else crop_instance.crop.img.url) if crop_instance.crop.img else "", 
+                    "img": request.build_absolute_uri( crop_instance.crop.img.url) if crop_instance.crop.img else "", 
                     "expense": total_expenses,
                     "sales": total_sales,
                     "total_schedule_count": total_count,
@@ -23279,7 +23270,7 @@ def full_land_details(request, farmer_id):
                     "id": crop.measurement_unit.id if crop.measurement_unit else None,
                     "name": crop.measurement_unit.get_translated_value("name", language_code) if crop.measurement_unit and language_code == 'ta' else (crop.measurement_unit.name if crop.measurement_unit else None),
                 },
-                "img": request.build_absolute_uri(f'{crop.crop.img.url}' if crop.crop.img else crop.crop.img.url) if crop.crop.img else "",
+                "img": request.build_absolute_uri( crop.crop.img.url) if crop.crop.img else "",
                 "description": crop.get_translated_value("description", language_code) if crop.description and language_code == 'ta' else crop.description,
                 "status": crop.status,
                 "geo_marks": crop.geo_marks,
@@ -23387,7 +23378,7 @@ def get_land_crop_details(request, farmer_id):
             "crop_type": crop.croptype.get_translated_value("name", language_code) if crop.croptype else None,
             "crop": crop.get_translated_value("name", language_code) if crop else None,
             # "img": crop.img.url if crop.img else None,
-            "img": request.build_absolute_uri(f'/SuperAdmin{crop.img.url}' if crop.img else crop.img.url) if crop.img else "", 
+            "img": request.build_absolute_uri( crop.img.url) if crop.img else "", 
             "description": crop.get_translated_value("description", language_code) if crop else "",
             "total_sales_amount": total_sales,
             "total_expenses_amount": total_expenses,
@@ -23678,7 +23669,7 @@ def get_sales_details(request, farmer_id):
                 'id': sale.my_crop.id if sale.my_crop else "",
                 'name': safe_get_translated_value(sale.my_crop.crop, "name", language_code) if sale.my_crop and sale.my_crop.crop else "",
                 'img': request.build_absolute_uri(
-                    f'/SuperAdmin{sale.my_crop.crop.img.url}' if sale.my_crop and sale.my_crop.crop and sale.my_crop.crop.img else ""
+                    sale.my_crop.crop.img.url if sale.my_crop and sale.my_crop.crop and sale.my_crop.crop.img else ""
                 ),
             },
             'my_customer': {
@@ -23994,7 +23985,7 @@ def get_sales_by_crop(request, farmer_id):
 
         crop_img_url = ""
         if crop.crop and crop.crop.img and getattr(crop.crop.img, 'url', None):
-            crop_img_url = request.build_absolute_uri(f'/SuperAdmin{crop.crop.img.url}')
+            crop_img_url = request.build_absolute_uri({crop.crop.img.url})
 
         return Response({
             'crop_id': crop.id,
@@ -24099,7 +24090,7 @@ def get_schedule_details(request, farmer_id):
                 'id': my_schedule.my_crop.id if my_schedule.my_crop else None,
                 # 'name': my_schedule.my_crop.crop.name if my_schedule.my_crop else None,
                 'name': my_schedule.my_crop.crop.get_translated_value("name", language_code) if my_schedule.my_crop and my_schedule.my_crop.crop and language_code == 'ta' else my_schedule.my_crop.crop.name if my_schedule.my_crop and my_schedule.my_crop.crop else None,
-                "crop_img": request.build_absolute_uri(f'/{my_schedule.my_crop.crop.img.url}' if my_schedule.my_crop.crop.img else my_schedule.my_crop.crop.img.url) if my_schedule.my_crop.crop.img else "",
+                "crop_img": request.build_absolute_uri(my_schedule.my_crop.crop.img.url if my_schedule.my_crop.crop.img else my_schedule.my_crop.crop.img.url) if my_schedule.my_crop.crop.img else "",
             },
             'schedule_activity_type': {
                 'id': my_schedule.schedule_activity_type.id if my_schedule.schedule_activity_type else None,
@@ -31622,7 +31613,7 @@ def dashboard_task_list(request, farmer_id):
                 # Crop details
                 'crop_id': schedule.my_crop.id if schedule.my_crop else None,
                 'crop_name': schedule.my_crop.crop.get_translated_value("name", language_code) if schedule.my_crop else None,
-                'crop_image': request.build_absolute_uri(f'/SuperAdmin{schedule.my_crop.crop.img.url}' if schedule.my_crop.crop.img else schedule.my_crop.crop.img.url) if schedule.my_crop.crop.img else "",
+                'crop_image': request.build_absolute_uri(schedule.my_crop.crop.img.url if schedule.my_crop.crop.img else schedule.my_crop.crop.img.url) if schedule.my_crop.crop.img else "",
             }
             schedule_data.append(schedule_info)
 
@@ -31922,7 +31913,7 @@ def customer_sales_payables_list(request, farmer_id):
                     "customer_id": customer.id,
                     "customer_name": customer.customer_name,
                     "shop_name": customer.shop_name,
-                    "customer_image": request.build_absolute_uri(f'/assets{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+                    "customer_image": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
                     "sales": payables_sales
                 })
 
@@ -32593,7 +32584,7 @@ def customer_sales_receivables_list(request, farmer_id):
                     "customer_id": customer.id,
                     "customer_name": customer.customer_name,
                     "shop_name": customer.shop_name,
-                    "customer_image": request.build_absolute_uri(f'/assets{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+                    "customer_image": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
                     "sales": receivable_sales
                 })
 
@@ -32745,7 +32736,7 @@ def customer_vendor_receivables_list(request, farmer_id):
                     "customer_id": customer.id,
                     "customer_name": customer.customer_name,
                     "shop_name": customer.shop_name,
-                    "customer_image": request.build_absolute_uri(f'/assets{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+                    "customer_image": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
                     "sales": receivable_sales
                 })
 
@@ -32897,7 +32888,7 @@ def customer_vendor_payables_list(request, farmer_id):
                     "customer_id": customer.id,
                     "customer_name": customer.customer_name,
                     "shop_name": customer.shop_name,
-                    "customer_image": request.build_absolute_uri(f'/assets{customer.customer_img.url}' if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
+                    "customer_image": request.build_absolute_uri(customer.customer_img.url if customer.customer_img else customer.customer_img.url) if customer.customer_img else "",
                     "sales": payable_sales
                 })
 
@@ -33033,7 +33024,7 @@ def crop_details(request, farmer_id, land_id, crop_id):
                 "id": crop.crop.id if crop.crop else None,
                 "name": crop.crop.name if crop.crop else None
             },
-            "crop_img": request.build_absolute_uri(f'/SuperAdmin{crop.crop.img.url}' if crop.crop.img else crop.crop.img.url) if crop.crop.img else "",
+            "crop_img": request.build_absolute_uri(crop.crop.img.url if crop.crop.img else crop.crop.img.url) if crop.crop.img else "",
             "harvesting_type": {
                 "id": crop.harvesting_type.id if crop.harvesting_type else None,
                 "name": crop.harvesting_type.name if crop.harvesting_type else None
@@ -33708,7 +33699,7 @@ def get_fuel_inventory_details(request, farmer_id, inventory_type_id, inventory_
             'crop_id': inventory.crop.id if inventory.crop else None,
             'crop_name': inventory.crop.crop.get_translated_value("name", language_code) if inventory.crop else "Unknown Crop",  
             'crop_description': inventory.crop.get_translated_value("description", language_code) if inventory.crop and inventory.crop.description else "N/A",  # Added null check
-            'image_url': request.build_absolute_uri(f'/assets{inventory.crop.crop.img.url}' if inventory.crop and inventory.crop.crop.img else '/assets/images/default_crop.png'),
+            'image_url': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop and inventory.crop.crop.img else '/assets/images/default_crop.png'),
             'land': {
                 'id': inventory.crop.land.id if inventory.crop and inventory.crop.land else None,
                 'name': inventory.crop.land.get_translated_value("name", language_code) if inventory.crop and inventory.crop.land else "Unknown Land",
@@ -35119,7 +35110,7 @@ def get_machinery_inventory_details(request, farmer_id, inventory_type_id, inven
             'crop_id': inventory.crop.id if inventory.crop else None,
             'crop_name': inventory.crop.crop.get_translated_value("name", language_code) if inventory.crop else "Unknown Crop",  
             'crop_description': inventory.crop.get_translated_value("description", language_code) if inventory.crop and inventory.crop.description else "N/A",  # Added null check
-            'image_url': request.build_absolute_uri(f'/assets{inventory.crop.crop.img.url}' if inventory.crop and inventory.crop.crop.img else '/assets/images/default_crop.png'),
+            'image_url': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop and inventory.crop.crop.img else '/assets/images/default_crop.png'),
             'land': {
                 'id': inventory.crop.land.id if inventory.crop and inventory.crop.land else None,
                 'name': inventory.crop.land.get_translated_value("name", language_code) if inventory.crop and inventory.crop.land else "Unknown Land",
@@ -35519,7 +35510,7 @@ def get_pesticides_inventory_details(request, farmer_id, inventory_type_id, inve
                 'id': inventory.crop.id,
                 'crop_name': inventory.crop.crop.name,
                 'land': inventory.crop.land.name,
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}') if inventory.crop.crop.img else "",
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url) if inventory.crop.crop.img else "",
             }
             response_data['crop'].append(crop_data)
 
@@ -35546,7 +35537,7 @@ def get_pesticides_inventory_details(request, farmer_id, inventory_type_id, inve
                 'id': inventory.crop.id,
                 'crop_name': inventory.crop.crop.name,
                 'land': inventory.crop.land.name,
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}') if inventory.crop.crop.img else "",
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url) if inventory.crop.crop.img else "",
             }
 
         # Documents for pesticide consumption
@@ -36060,7 +36051,7 @@ def get_seeds_inventory_details(request, farmer_id, inventory_type_id, inventory
                 'id': inventory.crop.id,
                 'crop_name': inventory.crop.crop.name,
                 'land': inventory.crop.land.name,
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}' if inventory.crop.crop.img else inventory.crop.crop.img.url) if inventory.crop.crop.img else "",
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop.crop.img else inventory.crop.crop.img.url) if inventory.crop.crop.img else "",
             }
 
             # Append crop data to response_data['crop']
@@ -36089,7 +36080,7 @@ def get_seeds_inventory_details(request, farmer_id, inventory_type_id, inventory
                 'id': inventory.crop.id,
                 'crop_name': inventory.crop.crop.name,
                 'land': inventory.crop.land.name,
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}' if inventory.crop.crop.img else inventory.crop.crop.img.url) if inventory.crop.crop.img else "",
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop.crop.img else inventory.crop.crop.img.url) if inventory.crop.crop.img else "",
             }
 
         # Add documents related to inventory (seeds consumption)
@@ -36527,7 +36518,7 @@ def get_fertilizers_inventory_details(request, farmer_id, inventory_type_id, inv
                 'id': inventory.crop.id if inventory.crop else None,
                 'crop_name': inventory.crop.crop.name if inventory.crop else "Unknown",
                 'land': inventory.crop.land.name if inventory.crop else "Unknown",
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}' if inventory.crop and inventory.crop.crop.img else "") if inventory.crop and inventory.crop.crop.img else "",
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop and inventory.crop.crop.img else "") if inventory.crop and inventory.crop.crop.img else "",
             },
             'inventory_type': {
                 'id': inventory.inventory_type.id if inventory.inventory_type else None,
@@ -37041,7 +37032,7 @@ def get_tools_inventory_details(request, farmer_id, inventory_type_id, inventory
                 'id': inventory.crop.id,
                 'tool_name': inventory.crop.crop.name if inventory.crop.crop else "Unknown",  # Adjusted to 'tool_name'
                 'land': inventory.crop.land.name if inventory.crop.land else "Unknown",  # Assuming tools are linked to land in a similar way as crops
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}' if inventory.crop.crop.img else ""),
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop.crop.img else ""),
             }
 
             # Append tools data to response_data['tools']
@@ -37070,7 +37061,7 @@ def get_tools_inventory_details(request, farmer_id, inventory_type_id, inventory
                 'id': inventory.crop.id,
                 'tool_name': inventory.crop.crop.name if inventory.crop.crop else "Unknown",  # Adjusted to 'tool_name'
                 'land': inventory.crop.land.name if inventory.crop.land else "Unknown",  # Assuming tools are linked to land in a similar way as crops
-                'img': request.build_absolute_uri(f'/SuperAdmin{inventory.crop.crop.img.url}' if inventory.crop.crop.img else ""),
+                'img': request.build_absolute_uri(inventory.crop.crop.img.url if inventory.crop.crop.img else ""),
             }
 
         # Add documents related to tools consumption
@@ -37080,7 +37071,7 @@ def get_tools_inventory_details(request, farmer_id, inventory_type_id, inventory
             file_type_id = doc.file_type.id if doc.file_type else None
             document_data = {
                 'id': doc.id,
-                'document': request.build_absolute_uri(f'/SuperAdmin{doc.document.url}' if doc.document else doc.document.url) if doc.document else "",
+                'document': request.build_absolute_uri(doc.document.url if doc.document else doc.document.url) if doc.document else "",
             }
 
             # Group documents by file_type
@@ -37605,7 +37596,7 @@ def get_vehicle_inventory_details(request, farmer_id, inventory_type_id, invento
                 'id': vehicle.crop.id,
                 'tool_name': vehicle.crop.crop.name if vehicle.crop.crop else "Unknown",  # Adjusted to 'tool_name'
                 'land': vehicle.crop.land.name if vehicle.crop.land else "Unknown",  # Assuming tools are linked to land in a similar way as crops
-                'img': request.build_absolute_uri(f'/SuperAdmin{vehicle.crop.crop.img.url}' if vehicle.crop.crop.img else ""),
+                'img': request.build_absolute_uri(vehicle.crop.crop.img.url if vehicle.crop.crop.img else ""),
             }
 
             # Append tools data to response_data['tools']
@@ -37632,7 +37623,7 @@ def get_vehicle_inventory_details(request, farmer_id, inventory_type_id, invento
                 'id': vehicle.crop.id,
                 'tool_name': vehicle.crop.crop.name if vehicle.crop.crop else "Unknown",  # Adjusted to 'tool_name'
                 'land': vehicle.crop.land.name if vehicle.crop.land else "Unknown",  # Assuming tools are linked to land in a similar way as crops
-                'img': request.build_absolute_uri(f'/SuperAdmin{vehicle.crop.crop.img.url}' if vehicle.crop.crop.img else ""),
+                'img': request.build_absolute_uri(vehicle.crop.crop.img.url if vehicle.crop.crop.img else ""),
             }
 
         # Reuse documents for consumption
@@ -39584,7 +39575,7 @@ def land_view(request, farmer_id, land_id):
             'name': doc.document_category.name  # or any field you want to show
         } if doc.document_category else None,
         # 'upload_document': doc.upload_document.url if doc.upload_document else None,
-        'upload_document': request.build_absolute_uri('/assets' + doc.upload_document.url) if doc.upload_document else None,
+        'upload_document': request.build_absolute_uri( doc.upload_document.url) if doc.upload_document else None,
 
         'status': doc.status,
     })
@@ -39653,7 +39644,7 @@ def crop_view(request, farmer_id, land_id, crop_id):
         'id': crop.id,
         'crop_type': get_related(crop.crop_type),
         'crop': get_related(crop.crop),
-        'crop_image': request.build_absolute_uri(f'/assets{crop.crop.img.url}') if crop.crop and crop.crop and crop.crop.img else "", 
+        'crop_image': request.build_absolute_uri(crop.crop.img.url) if crop.crop and crop.crop and crop.crop.img else "", 
         'harvesting_type': get_related(crop.harvesting_type),
         'plantation_date': crop.plantation_date.isoformat() if crop.plantation_date else None,
         'land': get_related(crop.land),
@@ -39931,7 +39922,7 @@ def get_task_list_for_month_and_crop(request, id):
                 else "No Crop Available"
             ),
             "created_at":date_str,
-            "crop_image": request.build_absolute_uri(f'/assets{task.my_crop.crop.img.url}')
+            "crop_image": request.build_absolute_uri(task.my_crop.crop.img.url)
             if task.my_crop and task.my_crop.crop and task.my_crop.crop.img else "",
             "activity_type": task.schedule_activity_type.name if task.schedule_activity_type else None,
             "schedule_status": task.schedule_status.id if task.schedule_status else None,
@@ -40198,7 +40189,7 @@ def get_crop_schedule(request, farmer_id, land_id, my_crop_id):
     for s in schedules:
         crop_img = ""
         if s.crop and hasattr(s.crop, "img") and s.crop.img:
-            crop_img = request.build_absolute_uri(f'/SuperAdmin{s.crop.img.url}')
+            crop_img = request.build_absolute_uri(s.crop.img.url)
 
         schedule_list.append({
             "id": s.id,
@@ -40274,7 +40265,7 @@ def get_schedule_detail(request, farmer_id, land_id, my_crop_id, schedule_id):
     # Build crop image URL
     crop_img = ""
     if schedule.crop and hasattr(schedule.crop, "img") and schedule.crop.img:
-        crop_img = request.build_absolute_uri(f'/SuperAdmin{schedule.crop.img.url}')
+        crop_img = request.build_absolute_uri(schedule.crop.img.url)
 
     data = {
         "id": schedule.id,
@@ -40360,6 +40351,7 @@ def get_crop_summary(request, farmer_id, land_id, crop_id):
 
 
 # region Add new api function by Bala
+
 @extend_schema(operation_id="01_get_inventory_types_quantity",tags=["Inventory"],)
 @api_view(['GET'])
 def get_inventory_types_quantity(request, farmer_id):
@@ -40405,12 +40397,6 @@ def get_inventory_types_quantity(request, farmer_id):
                 'unit_type': "kg",
                 'quantity': int(total_pesticides_quantity)
             },
-            # {
-            #     'id': 5,
-            #     'name': 'Fertilizers',
-            #     'unit_type': "kg",
-            #     'quantity': int(total_fertilizers_quantity)
-            # },
             {
                 'id': 6,
                 'name': 'Fuel',
@@ -40439,6 +40425,92 @@ def get_inventory_types_quantity(request, farmer_id):
             {"error": "Item not found.", "message": str(e)},
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+@extend_schema(operation_id="01_get_inventory_types_quantity",tags=["Inventory"],)
+@api_view(['GET'])
+def get_inventory_types_item_quantity(request, farmer_id):
+    try:
+        response_data = [
+            {
+                'id': 1,
+                'name': 'Vehicle',
+                  'items': []
+            },
+            {
+                'id': 2,
+                'name': 'Machinery',
+             'items': []
+            },
+            {
+                'id': 3,
+                'name': 'Tools',
+                  'items': []
+            },
+            {
+                'id': 4,
+                'name': 'Pesticides / Fertilizers',
+                  'items': []
+            },
+            {
+                'id': 6,
+                'name': 'Fuel',
+                'items': []
+         
+            },
+            {
+                'id': 7,
+                'name': 'Seeds',
+                  'items': []
+            }
+        ]
+        inventory_map = {
+                    1: ("Vehicle",False, ""),  
+                    2: ("Machinery",False, ""),   
+                    3: ("Tools",False, ""),   
+                    4: ("Pesticides",True, "kg"),   
+                    5: ("Fertilizers",True, "kg"),  
+                    6: ("Fuel",True, "liter"),
+                    7: ("Seeds",True, "kg"),   
+                }
+        for data in response_data:
+            inventory_type_id= data["id"]
+            inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
+            for item in inventory_items:
+                inventory_items_id= item.id
+                inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
+                inventory_item = get_object_or_404(InventoryItems, id=inventory_items_id)
+
+                qs = MyInventory.objects.filter(
+                    farmer_id=farmer_id,
+                    inventory_type=inventory_type,
+                    inventory_items=inventory_item
+                )
+              
+                inventory_type, has_quantity, unit_type = inventory_map[inventory_type.id]
+                if not qs.exists():
+                    return Response(
+                        {"detail": "No inventory items found for the given category."},
+                        status=404
+                    )
+
+                data = list(qs.values("id", "available_quans"))[-1]
+                data['name'] = inventory_type
+
+                if has_quantity:
+                    data['unit_type'] = unit_type
+    
+
+
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response(
+            {"error": f"An error occurred: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
 
 @extend_schema(operation_id="02_get_inventory_items",tags=["Inventory"],)
 @api_view(['GET'])
@@ -41711,30 +41783,25 @@ def create_or_update_employee_or_manager(request):
             Response({"error": "Farmer context not found"}, status=status.HTTP_400_BAD_REQUEST)
 
          # Profile Image Handling
+         # --- Handle base64 image ---
         img = data.get('img', None)
-        if img:
-            if isinstance(img, str):
-                try:
-                    img = img.strip()
-                    if img.startswith('data:image'):
-                        img = img.split(';base64,')[1]
+        if img and isinstance(img, str):
+            try:
+                img = fix_base64_padding(img.strip())
+                img_data = base64.b64decode(img.split(';base64,')[1])
 
-                    img_data = base64.b64decode(img)
-                    image = Image.open(BytesIO(img_data))
-                    image.verify()
+                image = Image.open(io.BytesIO(img_data))
+                image.verify()
 
-                    image_name = f'profile_image_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
-                    image_file = ContentFile(img_data, name=image_name)
-
-                    request.data._mutable = True  
-                    request.data['img'] = image_file
-                    request.data._mutable = False
-                    print(f"Profile base64 image processed: {image_name}")
-                except Exception as e:
-                    return Response({"error": f"Invalid base64 image format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
-
-            elif 'img' in request.FILES:
-                print("Regular vendor image file upload detected.")
+                image_name = f'customer_image_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
+                image_file = InMemoryUploadedFile(io.BytesIO(img_data), None, image_name, 'image/png', len(img_data), None)
+                data['customer_img'] = image_file
+            except Exception as e:
+                return Response({"error": f"Invalid base64 image format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        elif 'img' in request.FILES:
+            pass 
+        else:
+            pass  
 
 
         # Prevent duplicate mobile numbers

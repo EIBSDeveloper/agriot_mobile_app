@@ -55,7 +55,7 @@ class VendorCustomerFormData {
     if (type == 'vendor' || type == 'both') 'business_name': businessName,
     'mobile_no': mobileNo,
     'email': email,
-    'img': image,
+    if (image!.isNotEmpty) "img": "data:image/png;base64,$image",
     'door_no': doorNo,
     "locations": generateGoogleMapsUrl(latitude!, longitude!),
     'longitude': longitude,

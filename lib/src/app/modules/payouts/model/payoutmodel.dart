@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class PayoutModel {
   final int id;
   final String name;
@@ -64,7 +66,7 @@ class PayoutModel {
     'balance_advance': (advance ?? 0) - (deductionAdvance ?? 0),
     'payout_amount': payoutAmount,
     'to_pay': payoutAmount,
-    "date": DateTime.now().toString(),
+    "date":  DateFormat("yyyy-MM-dd").format(DateTime.now()),
   };
 
   static List<PayoutModel> listFromJson(List<dynamic> jsonList) =>

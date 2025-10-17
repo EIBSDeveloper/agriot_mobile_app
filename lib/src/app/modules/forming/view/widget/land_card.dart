@@ -55,6 +55,7 @@ class LandCard extends StatelessWidget {
                                 // color: TEc
                               ),
                             ),
+                           
                             const SizedBox(width: 8),
                             Text(
                               '(${land.landCropCount})',
@@ -66,10 +67,14 @@ class LandCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          '${land.measurementValue.round()} ${land.measurementUnit}',
-                          style: const TextStyle(color: Colors.black),
-                        ),
+
+                        if (land.address.isNotEmpty)
+                          Text(
+                            land.address,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: Colors.black),
+                          ),
                       ],
                     ),
                   ),
@@ -113,7 +118,7 @@ class LandCard extends StatelessWidget {
                   //   ],
                   // ),
                   const SizedBox(height: 8),
-                  
+
                   if (appDeta.permission.value?.crop?.list != 0)
                     ...land.crops.map(
                       (crop) => InkWell(
@@ -133,30 +138,31 @@ class LandCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if(appDeta.permission.value?.crop?.add != 0)
-                      TextButton(
-                        onPressed: () async {
-                          PackageUsage? package = await findLimit();
-                          if (package!.cropBalance > 0) {
-                          Get.toNamed(Routes.addCrop, arguments: land.id)?.then(
-                            (result) {
-                              if (result ?? false) {
-                                refresh.call();
-                              }
-                            },
-                          );
-                          } else {
-                            showDefaultGetXDialog("Crop");
-                          }
-                        },
-                        child: Text(
-                          "Add New Crop",
-                          style: TextStyle(
-                            color: Get.theme.primaryColor,
-                            fontWeight: FontWeight.bold,
+                      if (appDeta.permission.value?.crop?.add != 0)
+                        TextButton(
+                          onPressed: () async {
+                            PackageUsage? package = await findLimit();
+                            if (package!.cropBalance > 0) {
+                              Get.toNamed(
+                                Routes.addCrop,
+                                arguments: land.id,
+                              )?.then((result) {
+                                if (result ?? false) {
+                                  refresh.call();
+                                }
+                              });
+                            } else {
+                              showDefaultGetXDialog("Crop");
+                            }
+                          },
+                          child: Text(
+                            "Add New Crop",
+                            style: TextStyle(
+                              color: Get.theme.primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ],

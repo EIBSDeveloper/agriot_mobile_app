@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-
 final AppDataController appDeta = Get.put(AppDataController());
 
 class AttendenceController extends GetxController {
@@ -26,8 +25,7 @@ class AttendenceController extends GetxController {
   void onInit() {
     super.onInit();
     dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-
-    loadEmployees();
+    loadEmployees(reset: true);
   }
 
   void updateMonthYear(DateTime date) {
@@ -35,39 +33,41 @@ class AttendenceController extends GetxController {
   }
 
   /// Fetch Employees with pagination
-  Future<void> loadEmployees({bool reset = false }) async {
+  Future<void> loadEmployees({bool reset = false}) async {
     if (reset) {
       page.value = 1;
-      hasMore.value = true;
-      employees.clear();
+    } else {
+      page.value = page.value++;
+    }
 
-      if (!hasMore.value) return;
+    hasMore.value = true;
+    employees.clear();
 
-      isLoading.value = true;
-      try {
-        final fetched = await repository.fetchEmployees(
-          date: DateFormat('yyyy-MM-dd').format(selectedDate.value),
-          page: page.value,
-          search: searchQuery.value,
-          onlyUpdated: true
-          
-        );
+    if (!hasMore.value) return;
 
-        if (fetched.length < 20) hasMore.value = false;
+    isLoading.value = true;
+    try {
+      final fetched = await repository.fetchEmployees(
+        date: DateFormat('yyyy-MM-dd').format(selectedDate.value),
+        page: page.value,
+        search: searchQuery.value,
+        onlyUpdated: true,
+      );
 
-        // 🚀 Add new data without duplicates
-        for (var emp in fetched) {
-          if (!employees.any((e) => e.id == emp.id)) {
-            employees.add(emp);
-          }
+      if (fetched.length < 20) hasMore.value = false;
+
+
+      for (var emp in fetched) {
+        if (!employees.any((e) => e.id == emp.id)) {
+          employees.add(emp);
         }
-
-        page.value += 1;
-      } catch (e) {
-        debugPrint("⚠️ Error loading employees: $e");
-      } finally {
-        isLoading.value = false;
       }
+
+      page.value += 1;
+    } catch (e) {
+      debugPrint("⚠️ Error loading employees: $e");
+    } finally {
+      isLoading.value = false;
     }
   }
 

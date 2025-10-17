@@ -67,58 +67,51 @@ class PayoutCard extends GetView<PayoutAddController> {
             const SizedBox(height: 12),
 
             /// Salary and Advance fields
-            Row(
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 8),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //             Text(
+            //               "Working days: ${pay.workingDays}",
+            //               style: const TextStyle(fontSize: 14),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //     const SizedBox(width: 8),
+            //     Expanded(
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 8),
+            //         child: Column(
+            //           crossAxisAlignment: CrossAxisAlignment.start,
+            //           children: [
+            //              Text(
+            //               "Working days: ${pay.workingDays}",
+            //               style: const TextStyle(fontSize: 14),
+            //             ),
+            //             Text(
+            //               "Advance: ${pay.advance ?? 0}",
+            //               style: const TextStyle(fontSize: 14),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: InputCardStyle(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 4),
-                          Text(
-                            pay.paidSalary.toString(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: InputCardStyle(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 4),
-                          Text(
-                            (pay.advance ?? 0).toString(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                Text("Working days: ${pay.workingDays}"),
+                Text("Advance amount: ${pay.advance ?? 0}"),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
 
             /// Editable Deduction + Auto Payout
             IntrinsicHeight(

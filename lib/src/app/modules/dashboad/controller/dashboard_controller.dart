@@ -22,7 +22,7 @@ class DashboardController extends GetxController {
   var selectedLand = Land(id: 0, name: '').obs;
   var lands = <Land>[].obs;
   final RxBool isLoading = false.obs;
-  final RxBool idlandVSCropGraph = false.obs;
+  final RxBool idlandVSCropGraph = true.obs;
 
   // Data observables
   final Rx<WeatherData?> weatherData = Rx<WeatherData?>(null);

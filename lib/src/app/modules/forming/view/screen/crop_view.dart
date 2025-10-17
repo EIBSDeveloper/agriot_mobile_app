@@ -1,6 +1,4 @@
-import 'package:argiot/src/app/modules/forming/view/widget/survey_dropdown.dart';
 import 'package:argiot/src/app/modules/near_me/views/widget/custom_app_bar.dart';
-import 'package:argiot/src/app/modules/near_me/views/widget/land_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../widgets/input_card_style.dart';
@@ -51,36 +49,39 @@ class CropView extends GetView<CropController> {
               _buildHarvestFrequencyDropdown(),
               const SizedBox(height: 16),
               _buildPlantationDateField(context),
-          //     if( controller.parameterLandID.value==0)
-          //  ... [  const SizedBox(height: 16),
-              const Text(
-                'Land Details',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Obx(
-                () => LandDropdown(
-                  lands: controller.lands,
-                  selectedLand: controller.selectedLand.value,
-                  onChanged: (land) => controller.changeLand(land!),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Obx(() {
-                if (controller.surveyList.isNotEmpty) {
-                  return SurveyMultiSelect(
-                    surveys: controller.surveyList,
-                    selectedSurveys: controller.selectedSurveys.toList(),
-                    onChanged: (value) {
-                      controller.selectedSurveys.assignAll(value);
-                    },
-                  );
-                }
-                return const SizedBox();
-              }),
+              //  const SizedBox(height: 16),
+              //   
+              //  ... [
+              //
+              // const Text(
+              //   'Land Details',
+              //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              // ),
+              // const SizedBox(height: 8),
+              //   if( controller.parameterLandID.value==0)
+              // Obx(
+              //   () => LandDropdown(
+              //     lands: controller.lands,
+              //     selectedLand: controller.selectedLand.value,
+              //     onChanged: (land) => controller.changeLand(land!),
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
+              // Obx(() {
+              //   if (controller.surveyList.isNotEmpty) {
+              //     return SurveyMultiSelect(
+              //       surveys: controller.surveyList,
+              //       selectedSurveys: controller.selectedSurveys.toList(),
+              //       onChanged: (value) {
+              //         controller.selectedSurveys.assignAll(value);
+              //       },
+              //     );
+              //   }
+              //   return const SizedBox();
+              // }),
               // ],
               const SizedBox(height: 16),
-               _buildTextField(
+              _buildTextField(
                 controller: controller.locationController,
                 label: 'Location Coordinates *',
                 validator: (value) => value!.isEmpty ? 'Required field' : null,
@@ -90,7 +91,6 @@ class CropView extends GetView<CropController> {
               const SizedBox(height: 16),
               _buildMeasurementSection(),
 
-             
               const SizedBox(height: 16),
               _buildTextField(
                 controller: controller.descriptionController,
@@ -180,7 +180,7 @@ class CropView extends GetView<CropController> {
             padding: EdgeInsets.only(top: 8),
             child: Text(
               'No crops available for selected type',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+              style: TextStyle(color: Colors.grey),
             ),
           ),
       ],
@@ -231,10 +231,7 @@ class CropView extends GetView<CropController> {
     ),
   );
 
-  Widget _buildMeasurementSection() => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
+  Widget _buildMeasurementSection() =>   Row(
         children: [
           Expanded(
             flex: 3,
@@ -282,10 +279,8 @@ class CropView extends GetView<CropController> {
             ),
           ),
         ],
-      ),
-      const SizedBox(height: 16),
-    ],
-  );
+      )
+    ;
 
   Widget _buildSubmitButton() => Obx(
     () => ElevatedButton(
@@ -306,8 +301,7 @@ class CropView extends GetView<CropController> {
     ),
   );
 
-  Widget _buildLoadingDropdown(String text) =>  InputCardStyle(
-               
+  Widget _buildLoadingDropdown(String text) => InputCardStyle(
     child: InputDecorator(
       decoration: InputDecoration(
         labelText: text,
@@ -329,7 +323,7 @@ class CropView extends GetView<CropController> {
   );
 
   // Widget _buildDisabledDropdown(String text) =>  InputCardStyle(
-               
+
   //   child: InputDecorator(
   //     decoration: InputDecoration(
   //       labelText: text,

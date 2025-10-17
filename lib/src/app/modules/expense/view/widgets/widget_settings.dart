@@ -3,6 +3,7 @@ import 'package:argiot/src/app/modules/dashboad/view/widgets/buttom_sheet_scroll
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 class WidgetSettings extends GetView<DashboardController> {
   const WidgetSettings({super.key});
 

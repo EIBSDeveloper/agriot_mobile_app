@@ -8,6 +8,7 @@ import '../../../../widgets/input_card_style.dart';
 import '../../../../widgets/loading.dart';
 import '../../../../widgets/title_text.dart';
 import '../../../../widgets/toggle_bar.dart';
+import '../../../dashboad/view/widgets/expence_sales_filter.dart';
 
 class ExpenseOverviewScreen extends GetView<ExpenseController> {
   const ExpenseOverviewScreen({super.key});
@@ -62,7 +63,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           child: Padding(
             padding: const EdgeInsets.all(3),
             child: Text(
-              "${"total_expenses".tr}\n ${controller.totalExpense.value.toStringAsFixed(0)}",
+              "${"expenses".tr}\n ${controller.totalExpense.value.toStringAsFixed(0)}",
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
@@ -70,24 +71,44 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
         ),
       ),
       const SizedBox(width: 10),
-      Expanded(
+        Expanded(
         child: InputCardStyle(
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value: controller.selectedPeriod.value,
-              padding: const EdgeInsets.all(0),
-              alignment: AlignmentDirectional.center,
-              icon: const Icon(Icons.keyboard_arrow_down),
-              isExpanded: true,
-              items: ['week', 'month', 'year']
-                  .map(
-                    (period) =>
-                        DropdownMenuItem(value: period, child: Text(period.tr)),
-                  )
-                  .toList(),
-              onChanged: controller.changePeriod,
+          child: Padding(
+            padding: const EdgeInsets.all(3),
+            child: Text(
+              "${"sales".tr}\n ${controller.totalExpense.value.toStringAsFixed(0)}",
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ),
+        ),
+      ),
+      // Expanded(
+      //   child: InputCardStyle(
+      //     child: DropdownButtonHideUnderline(
+      //       child: DropdownButton<String>(
+      //         value: controller.selectedPeriod.value,
+      //         padding: const EdgeInsets.all(0),
+      //         alignment: AlignmentDirectional.center,
+      //         icon: const Icon(Icons.keyboard_arrow_down),
+      //         isExpanded: true,
+      //         items: ['week', 'month', 'year']
+      //             .map(
+      //               (period) =>
+      //                   DropdownMenuItem(value: period, child: Text(period.tr)),
+      //             )
+      //             .toList(),
+      //         onChanged: controller.changePeriod,
+      //       ),
+      //     ),
+      //   ),
+      // ),
+    
+      const SizedBox(width: 10),
+      InputCardStyle(
+        child: IconButton(
+          onPressed:() => Get.bottomSheet(const ExpenceSalesFilter()),
+          icon: const Icon(Icons.filter_list),
         ),
       ),
     ],
@@ -121,7 +142,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           children: [
             // Date header
             Padding(
-              padding: const EdgeInsets.symmetric( vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Text(
                 groupedRecord.date,
                 style: const TextStyle(

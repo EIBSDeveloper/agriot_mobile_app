@@ -14,18 +14,24 @@ class PayoutRepository {
   Future<List<PayoutModel>> fetchAdvanceList({
     int page = 1,
     String search = '',
-    String?managerParam
+    String? managerParam,
   }) async {
     final farmerId = appDeta.farmerId;
+  
     final isManager = appDeta.isManager.value;
     final managerId = managerParam ?? appDeta.managerID.value;
     String manager = isManager || managerParam != null
         ? "&manager_id=$managerId"
         : "";
+    String searchParam = managerParam != null && search.isNotEmpty
+        ? "&search=$search"
+        : "";
+    String param = "page=$page$searchParam$manager";
     try {
       final response = await _httpService.get(
-        "/advances_list/$farmerId?page=$page$manager&search=$search",
+        "/advances_list/$farmerId?$param",
       );
+
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -44,13 +50,23 @@ class PayoutRepository {
   Future<List<PayoutModel>> fetchAdvanceListOnlyPaied({
     int page = 1,
     String search = '',
+    String? managerParam,
   }) async {
     final farmerId = appDeta.farmerId;
 
+    final isManager = appDeta.isManager.value;
+    final managerId = managerParam ?? appDeta.managerID.value;
+    String manager = isManager || managerParam != null
+        ? "&manager_id=$managerId"
+        : "";
+    String searchParam = managerParam != null && search.isNotEmpty
+        ? "&search=$search"
+        : "";
+    String updateFiledOnly = "&onlyUpdated=True";
+    String param = "page=$page$searchParam$updateFiledOnly$manager";
     try {
-      String key = "&onlyUpdated=True";
       final response = await _httpService.get(
-        "/advances_list/$farmerId?page=$page$key&search=$search",
+        "/advances_list/$farmerId?$param",
       );
 
       if (response.statusCode == 200) {

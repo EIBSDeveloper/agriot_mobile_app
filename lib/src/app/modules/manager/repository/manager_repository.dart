@@ -80,11 +80,12 @@ class ManagerRepository {
       "farmer_id": farmerId,
       "role_id": role?.id ?? 0,
       "name": name,
-      "img": profile,
+      if (profile!.isNotEmpty) "img": "data:image/png;base64,$profile",
+      // "img": profile,
       "salary": salary,
       "phone_number": phone,
       "mobile_no":
-          phone, // keep both keys, controller can send empty if not needed
+          phone,
       "email": email ?? '',
       "employee_type_id": employeeTypeId,
       "employee_type": employeeTypeId,

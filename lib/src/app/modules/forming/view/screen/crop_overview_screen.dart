@@ -104,7 +104,7 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
           Column(
             children: [
               _buildCropDetailsSection(crop),
-              _buildSurveyDetailsSection(crop),
+              // _buildSurveyDetailsSection(crop),
             ],
           ),
       ],
@@ -272,35 +272,35 @@ class _CropOverviewScreenState extends State<CropOverviewScreen> {
     ),
   );
 
-  Widget _buildSurveyDetailsSection(MyCropDetails? details) {
-    if (details!.surveyDetails!.isEmpty) return const SizedBox();
+  // Widget _buildSurveyDetailsSection(MyCropDetails? details) {
+  //   if (details!.surveyDetails!.isEmpty) return const SizedBox();
 
-    return Card(
-      elevation: 1,
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+  //   return Card(
+  //     elevation: 1,
+  //     child: Theme(
+  //       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
 
-        child: ExpansionTile(
-          title: TitleText('Survey Details (${details.surveyDetails!.length})'),
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  ...details.surveyDetails!.map(
-                    (survey) => _buildDetailRow(
-                      survey.surveyNo!,
-                      '${survey.measurementValue} ${survey.measurementUnit}',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //       child: ExpansionTile(
+  //         title: TitleText('Survey Details (${details.surveyDetails!.length})'),
+  //         children: [
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 16),
+  //             child: Column(
+  //               children: [
+  //                 ...details.surveyDetails!.map(
+  //                   (survey) => _buildDetailRow(
+  //                     survey.surveyNo!,
+  //                     '${survey.measurementValue} ${survey.measurementUnit}',
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildStatisticsSection(CropOverview overview) => Card(
     elevation: 1,

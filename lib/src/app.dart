@@ -17,7 +17,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppPermission.requestNotificationPermission();
+    AppPermission.requestPermission();
     return GetMaterialApp(
     title: 'ARGIOT App',
     theme: AppTheme.lightTheme,

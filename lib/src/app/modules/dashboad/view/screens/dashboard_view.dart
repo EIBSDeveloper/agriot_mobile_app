@@ -16,7 +16,7 @@ import '../../../home/contoller/bottombar_contoller.dart';
 import '../../../guideline/view/widget/guideline_card.dart';
 import '../../../task/view/widget/task_card.dart';
 import '../../controller/dashboard_controller.dart';
-import '../widgets/widget_settings.dart';
+import '../../../expense/view/widgets/widget_settings.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -321,39 +321,38 @@ class DashboardView extends GetView<DashboardController> {
                   ),
                 ),
 
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        controller.idlandVSCropGraph.value =
-                            !controller.idlandVSCropGraph.value;
-                      },
-                      iconSize: 30,
-                      icon: Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Get.theme.colorScheme.primary,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        controller.idlandVSCropGraph.value =
-                            !controller.idlandVSCropGraph.value;
-                      },
-                      iconSize: 30,
-                      icon: Icon(
-                        Icons.keyboard_arrow_right,
-                        color: Get.theme.colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     IconButton(
+                //       onPressed: () {
+                //         controller.idlandVSCropGraph.value =
+                //             !controller.idlandVSCropGraph.value;
+                //       },
+                //       iconSize: 30,
+                //       icon: Icon(
+                //         Icons.keyboard_arrow_left,
+                //         color: Get.theme.colorScheme.primary,
+                //       ),
+                //     ),
+                //     IconButton(
+                //       onPressed: () {
+                //         controller.idlandVSCropGraph.value =
+                //             !controller.idlandVSCropGraph.value;
+                //       },
+                //       iconSize: 30,
+                //       icon: Icon(
+                //         Icons.keyboard_arrow_right,
+                //         color: Get.theme.colorScheme.primary,
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // if (controller.financeData.value?.totalExpenses == 0 &&   controller.financeData.value?.totalSales == 0)
-                Expanded(
+                 Expanded(
                   child: (controller.idlandVSCropGraph.value)
                       ? ScrollableBarChart(
                           data: controller.landVSCropData.value!,

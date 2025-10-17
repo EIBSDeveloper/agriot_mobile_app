@@ -8,7 +8,7 @@ import '../../app.dart';
 
 class AppPermission extends GetxController {
  
-static  Future<void> requestNotificationPermission() async {
+static  Future<void> requestPermission() async {
     if (Platform.isAndroid) {
       if (await Permission.notification.isDenied) {
         await Permission.notification.request();

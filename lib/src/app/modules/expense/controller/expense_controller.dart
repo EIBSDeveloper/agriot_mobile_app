@@ -38,8 +38,10 @@ class ExpenseController extends GetxController {
 
   final isLoading = false.obs;
   var selectedVendor = Rx<int?>(null);
+  var selectedCustomer = Rx<int?>(null);
   var cardexpenses = <Chart>[].obs;
   var vendorList = <Customer>[].obs;
+  var customerList = <Customer>[].obs;
   var cardtotalExpenses = 0.0.obs;
 
   @override
@@ -47,6 +49,7 @@ class ExpenseController extends GetxController {
     super.onInit();
     loadExpenseData();
     fetchVendorList();
+    fetchCustomerList();
   }
 
   Future<void> loadExpenseData() async {
@@ -72,7 +75,14 @@ class ExpenseController extends GetxController {
       isLoading(false);
     }
   }
-
+  Future<void> fetchCustomerList() async {
+    try {
+      final response = await _repository.getCustomerList();
+      customerList.assignAll(response);
+    } catch (e) {
+      showError('Failed to fetch customers: $e');
+    }
+  }
   Future<void> _loadGroupedData() async {
     try {
       switch (selectedTab.value) {
@@ -158,6 +168,7 @@ class ExpenseController extends GetxController {
   void changePeriod(String? period) {
     if (period != null) {
       selectedPeriod(period);
+      Get.back();
       loadExpenseData();
     }
   }

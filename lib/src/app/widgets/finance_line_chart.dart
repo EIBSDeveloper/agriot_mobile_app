@@ -18,14 +18,14 @@ class FinanceLineChart extends StatelessWidget {
           style: TextStyle(
             fontSize: min(12, 12 * chartWidth / 300),
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: Colors.black,
           ),
         ),
       );
 
   Widget leftTitleWidgets(double value, TitleMeta meta, double chartWidth) {
     final style = TextStyle(
-      color: Colors.black54,
+      color: Colors.black,
       fontWeight: FontWeight.normal,
       fontSize: min(14, 14 * chartWidth / 300),
     );
@@ -73,19 +73,15 @@ class FinanceLineChart extends StatelessWidget {
                   tooltipPadding: const EdgeInsets.all(8),
                   tooltipMargin: 8,
                   maxContentWidth: 150,
-                  getTooltipColor: (spot) => Colors.blueGrey.withAlpha(180),
+                  getTooltipColor: (spot) => Colors.white,
                   getTooltipItems: (touchedSpots) => touchedSpots.map((spot) {
                     final style = TextStyle(
                       color: spot.bar.color,
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
                     );
-                    final label =
-                        spot.bar == _buildLine(financeData.sales, Colors.green)
-                        ? 'Sales'
-                        : 'Expenses';
                     return LineTooltipItem(
-                      '$label\nDay: ${spot.x.toInt()}\n${spot.y.toStringAsFixed(2)}',
+                      '${spot.y.round()} in day ${spot.x.toInt()}',
                       style,
                     );
                   }).toList(),
@@ -128,7 +124,7 @@ class FinanceLineChart extends StatelessWidget {
                     },
                   ),
                   axisNameWidget: const Text(
-                    'Amount', // Y-axis label
+                    'Amount', 
                   ),
                   axisNameSize: 20,
                 ),

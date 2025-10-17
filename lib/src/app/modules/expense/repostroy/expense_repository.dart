@@ -26,6 +26,19 @@ class ExpenseRepository {
     }
   }
 
+  Future<List<Customer>> getCustomerList() async {
+    try {
+      final farmerId = appDeta.farmerId;
+      final response = await _httpService.get('/get_customer_list/$farmerId');
+      var decode = json.decode(response.body);
+      var map = decode
+          .map<Customer>((item) => Customer.fromJson(item))
+          .toList();
+      return map;
+    } catch (e) {
+      rethrow;
+    }
+  }
   Future<List<CropModel>> getCropList() async {
     final farmerId = appDeta.farmerId;
     final isManager = appDeta.isManager.value;

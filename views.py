@@ -3289,7 +3289,7 @@ def manage_vendor(request, id=None):
 
             image_name = f'customer_image_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
             image_file = InMemoryUploadedFile(io.BytesIO(img_data), None, image_name, 'image/png', len(img_data), None)
-            data['customer_img'] = image_file
+            data['img'] = image_file
         except Exception as e:
             return Response({"error": f"Invalid base64 image format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
     elif 'img' in request.FILES:
@@ -3312,7 +3312,7 @@ def manage_vendor(request, id=None):
         credit=data.get('is_credit', False),
         debit=data.get('is_debit', False),
         opening_balance=data.get('opening_balance', 0),
-        vendor_image=request.data.get('img'),
+        vendor_image=data.get('img', None),
         description=data.get('description', ''),
         locations=data.get('locations', ""),
         latitude=data.get('latitude', 0),
@@ -22958,6 +22958,7 @@ def farmer_land_and_crop_details(request, farmer_id):
             land_data.append({
                 "id": land.id,
                 "name": land.get_translated_value("name", language_code) if language_code == 'ta' else land.name,
+                "address":  land.door_no  if land.door_no  else None,
                 "measurement_value": land.measurement_value,
                 "measurement_unit": {
                     "id": land.measurement_unit.id if land.measurement_unit else None,
@@ -40431,7 +40432,7 @@ def get_inventory_types_quantity(request, farmer_id):
 @api_view(['GET'])
 def get_inventory_types_item_quantity(request, farmer_id):
     try:
-        response_data = [
+        inventoryTypes = [
             {
                 'id': 1,
                 'name': 'Vehicle',
@@ -40473,9 +40474,10 @@ def get_inventory_types_item_quantity(request, farmer_id):
                     6: ("Fuel",True, "liter"),
                     7: ("Seeds",True, "kg"),   
                 }
-        for data in response_data:
-            inventory_type_id= data["id"]
+        for inventoryType in inventoryTypes:
+            inventory_type_id= inventoryType["id"]
             inventory_items = InventoryItems.objects.filter(inventory_type_id=inventory_type_id, status=0)
+            itemsList =[]
             for item in inventory_items:
                 inventory_items_id= item.id
                 inventory_type = get_object_or_404(InventoryType, id=inventory_type_id)
@@ -40489,27 +40491,24 @@ def get_inventory_types_item_quantity(request, farmer_id):
               
                 inventory_type, has_quantity, unit_type = inventory_map[inventory_type.id]
                 if not qs.exists():
-                    return Response(
-                        {"detail": "No inventory items found for the given category."},
-                        status=404
-                    )
+                    continue
 
-                data = list(qs.values("id", "available_quans"))[-1]
-                data['name'] = inventory_type
+                data = list(qs.values("available_quans"))[-1]
+                data['id'] = item.id
+                data['name'] = item.name
 
                 if has_quantity:
                     data['unit_type'] = unit_type
-    
+                itemsList.append(data)
 
+            inventoryType["items"]=itemsList
+            inventoryType["count"]= len(inventoryType["items"])
+                      
 
-
-        return Response(response_data, status=status.HTTP_200_OK)
+        return Response(inventoryTypes, status=status.HTTP_200_OK)
 
     except Exception as e:
-        return Response(
-            {"error": f"An error occurred: {str(e)}"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+        return Response({"error": f"An error occurred: {str(e)}"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @extend_schema(operation_id="02_get_inventory_items",tags=["Inventory"],)
@@ -41743,11 +41742,11 @@ def add_attendance(request,):
             if 'salary' in data:
                 attendance.salary = data['salary']
 
-            
-            if 'salary_status' in data:
+            salaryStatus = data['salary_status']
+            if salaryStatus:
                 attendance.salary_status = data['salary_status']
-            
-            
+            else:
+                attendance.salary_status = False
             attendance.save()
            
         except Exception as e:
@@ -41795,7 +41794,7 @@ def create_or_update_employee_or_manager(request):
 
                 image_name = f'customer_image_{timezone.now().strftime("%Y%m%d%H%M%S")}.png'
                 image_file = InMemoryUploadedFile(io.BytesIO(img_data), None, image_name, 'image/png', len(img_data), None)
-                data['customer_img'] = image_file
+                data['img'] = image_file
             except Exception as e:
                 return Response({"error": f"Invalid base64 image format: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
         elif 'img' in request.FILES:
@@ -42585,9 +42584,9 @@ def get_employees_advances_list(request,farmer_id):
         onlyUpdated =request.query_params.get("onlyUpdated")
         employees =None 
         if manager_id:
-            employees = Employee.objects.filter(farmer=manager_id).select_related("employee_type", "work_type",)
+            employees = Employee.objects.filter( manager=manager_id).select_related("employee_type", "work_type",)
         elif farmer_id:
-            employees = Employee.objects.filter(manager=farmer_id).select_related("employee_type", "work_type",)
+            employees = Employee.objects.filter(farmer=farmer_id).select_related("employee_type", "work_type",)
         else:
             Response({"error": 'NO Details'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -42621,6 +42620,11 @@ def get_employees_advances_list(request,farmer_id):
                 created_day__year=current_year,
                 created_day__month=current_month
             ).count()
+            unpaid_salary_total = AttendanceReport.objects.filter(
+                salary_status=False,
+                created_day__year=today.year,
+                created_day__month=today.month
+            ).aggregate(total_unpaid_salary=Sum('salary'))
 
             data.append({
                 "id": emp.id,
@@ -42631,7 +42635,7 @@ def get_employees_advances_list(request,farmer_id):
                 "image": emp.image.url if emp.image else None,
                 "working_days": attendance_count if attendance_count else 0,
                 "paid_salary": employeePayouts.paid_salary if employeePayouts and employeePayouts.paid_salary else 0,
-                "Unpaid_salary": employeePayouts.unpaid_salary if employeePayouts and employeePayouts.unpaid_salary else ((emp.salary if emp.salary else 0) * attendance_count),
+                "Unpaid_salary": unpaid_salary_total["total_unpaid_salary"],
             })
 
         

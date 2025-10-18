@@ -25,10 +25,10 @@ class CreateManagerScreen extends GetView<ManagerController> {
         key: controller.formKey,
         child: Column(
           children: [
-            gap,
+            // gap,
 
             // Manager Photo
-            _buildImagePicker(),
+            // _buildImagePicker(),
             gap,
 
             /// Role Dropdown

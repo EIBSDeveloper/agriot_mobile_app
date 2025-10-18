@@ -16,6 +16,7 @@ class ExpenseController extends GetxController {
 
   // For overview screen
   final totalExpense = 0.0.obs;
+  final totalSales = 0.0.obs;
   final selectedPeriod = 'month'.obs;
   final expenseSummary = <ExpenseSummary>[].obs;
 
@@ -58,6 +59,7 @@ class ExpenseController extends GetxController {
       await _loadGroupedData();
       final total = await _repository.getTotalExpense(selectedPeriod.value);
       totalExpense(total.expenseAmount);
+      totalSales(total.salesAmount);
       await fetchCrop();
 
       // Load data based on selected tab

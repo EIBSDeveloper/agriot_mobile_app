@@ -57,77 +57,80 @@ class ExpenceSalesFilter extends GetView<ExpenseController> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-             Expanded(child: TitleText("vendor".tr, color: Colors.black)),
-            const SizedBox(width: 10),
-            Expanded(
-              child: InputCardStyle(
-                      padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                        child: DropdownButtonFormField<int>(
-                          // validator: (value) => value == null ? 'required_field'.tr : null,
-                          decoration:  InputDecoration(
-                            hintText: 'vendor'.tr,
-                            border: InputBorder.none,
-                          ),
+        // const SizedBox(height: 8),
+        // Row(
+        //   children: [
+        //      Expanded(child: TitleText("vendor".tr, color: Colors.black)),
+        //     const SizedBox(width: 10),
+        //     Expanded(
+        //       child: InputCardStyle(
+        //               padding: const EdgeInsets.symmetric(
+        //           horizontal: 10,
+        //           vertical: 5,
+        //         ),
+        //                 child: DropdownButtonFormField<int>(
+        //                   // validator: (value) => value == null ? 'required_field'.tr : null,
+        //                   decoration:  InputDecoration(
+        //                     hintText: 'vendor'.tr,
+        //                     border: InputBorder.none,
+        //                   ),
 
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          initialValue: controller.selectedVendor.value,
-                          onChanged: (value) =>
-                              controller.selectedVendor.value = value,
-                          items: controller.vendorList
-                              .map(
-                                (customer) => DropdownMenuItem<int>(
-                                  value: customer.id,
-                                  child: Text(customer.name),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
+        //                   icon: const Icon(Icons.keyboard_arrow_down),
+        //                   initialValue: controller.selectedVendor.value,
+        //                   onChanged: (value) =>
+        //                       controller.selectedVendor.value = value,
+        //                   items: controller.vendorList
+        //                       .map(
+        //                         (customer) => DropdownMenuItem<int>(
+        //                           value: customer.id,
+        //                           child: Text(customer.name),
+        //                         ),
+        //                       )
+        //                       .toList(),
+        //                 ),
+        //               ),
                     
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-             Expanded(child: TitleText("customer".tr, color: Colors.black)),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: 8),
+        // Row(
+        //   children: [
+        //      Expanded(child: TitleText("customer".tr, color: Colors.black)),
 
-            const SizedBox(width: 10),
-            Expanded(
-              child: InputCardStyle(
-           padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-          child: DropdownButtonFormField<int>(
-            icon: const Icon(Icons.keyboard_arrow_down),
-            decoration: InputDecoration(
-              labelText: 'customer'.tr,
-              border: InputBorder.none,
-            ),
-            initialValue: controller.selectedCustomer.value,
-            onChanged: (value) => controller.selectedCustomer.value = value,
-            items: controller.customerList
-                .map(
-                  (customer) => DropdownMenuItem<int>(
-                    value: customer.id,
-                    child: Text(customer.name),
-                  ),
-                )
-                .toList(),
-            validator: (value) =>
-                value == null ? 'please_select_a_customer'.tr : null,
-          ),
-        )
-            ),
-          ],
-        ),            const SizedBox(height: 20),
+        //     const SizedBox(width: 10),
+        //     Expanded(
+        //       child: InputCardStyle(
+        //    padding: const EdgeInsets.symmetric(
+        //           horizontal: 10,
+        //           vertical: 5,
+        //         ),
+        //   child: DropdownButtonFormField<int>(
+        //     icon: const Icon(Icons.keyboard_arrow_down),
+        //     decoration: InputDecoration(
+        //       labelText: 'customer'.tr,
+        //       border: InputBorder.none,
+        //     ),
+        //     initialValue: controller.selectedCustomer.value,
+        //     onChanged: (value) => controller.selectedCustomer.value = value,
+        //     items: controller.customerList
+        //         .map(
+        //           (customer) => DropdownMenuItem<int>(
+        //             value: customer.id,
+        //             child: Text(customer.name),
+        //           ),
+        //         )
+        //         .toList(),
+        //     validator: (value) =>
+        //         value == null ? 'please_select_a_customer'.tr : null,
+        //   ),
+        // )
+        //     ),
+        //   ],
+        // ),          
+          const SizedBox(height: 20),
+      
+      
         ElevatedButton(
           onPressed: () {
             // controller.updateWidgetConfiguration(

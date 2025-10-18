@@ -358,6 +358,7 @@ name='get_inventory_items_by_category'),
     path("redoc/", SpectacularRedocView.as_view(url_name="schema"),name="redoc"),
 
     path('inventory_types_quantity/<int:farmer_id>/',get_inventory_types_quantity, name='get_inventory_types_quantity'),
+    path('inventory_types_item_quantity/<int:farmer_id>/',get_inventory_types_item_quantity, name='get_inventory_types_quantity'),
 
     path('inventory_item_quantity/<int:farmer_id>/<int:inventory_type_id>/<int:inventory_items_id>/', get_inventory_item_quantity,name='get_inventory_item_quantity'),
 

@@ -87,7 +87,7 @@ class _AddVendorCustomerViewState extends State<AddVendorCustomerView> {
   Widget _buildBasicInfoSection() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _buildImagePicker(),
+      // _buildImagePicker(),
       const SizedBox(height: 8),
       if( Get.arguments?["id"] == null)
       InputCardStyle(

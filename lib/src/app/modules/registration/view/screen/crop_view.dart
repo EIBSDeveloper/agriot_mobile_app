@@ -41,17 +41,19 @@ class CropView extends GetView<RegCropController> {
         //   onChanged: (value) => controller.selectedLand.value = value,
         //   validator: (value) => value == null ? 'Required field' : null,
         // ),
-        const SizedBox(height: 16),
-        Obx(() {
-          if (controller.surveyList.isNotEmpty) {
-            return SurveyMultiSelect(
-              surveys: controller.surveyList,
-              selectedSurveys: controller.selectedSurvey,
-              onChanged: (value) => controller.selectedSurvey.value = value,
-            );
-          }
-          return const SizedBox();
-        }),
+        // const SizedBox(height: 16),
+        // Obx(() {
+        //   if (controller.surveyList.isNotEmpty) {
+        //     return SurveyMultiSelect(
+        //       surveys: controller.surveyList,
+        //       selectedSurveys: controller.selectedSurvey,
+        //       onChanged: (value) => controller.selectedSurvey.value = value,
+        //     );
+        //   }
+        //   return const SizedBox();
+        // }),
+     
+     
         const SizedBox(height: 16),
         _buildTextField(
           controller: controller.locationController,

@@ -76,7 +76,7 @@ class ExpenseOverviewScreen extends GetView<ExpenseController> {
           child: Padding(
             padding: const EdgeInsets.all(3),
             child: Text(
-              "${"sales".tr}\n ${controller.totalExpense.value.toStringAsFixed(0)}",
+              "${"sales".tr}\n ${controller.totalSales.value.toStringAsFixed(0)}",
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),

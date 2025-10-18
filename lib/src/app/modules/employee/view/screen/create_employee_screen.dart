@@ -23,7 +23,7 @@ class CreateEmployeeScreen extends GetView<EmployeeController> {
             const SizedBox(height: 16),
 
             // Employee Photo
-            _buildImagePicker(),
+            // _buildImagePicker(),
             const SizedBox(height: 16),
 
             //Employee name
